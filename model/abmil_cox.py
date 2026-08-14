@@ -57,3 +57,50 @@ class ABMIL(nn.Module):
             S = torch.cumprod(1 - hazards, dim=1)
             return hazards, S, pooled, weights
         return out.squeeze(-1), pooled, weights
+
+
+class ProjABMIL(nn.Module):
+    """ABMIL with a learnable dimensionality-reduction head before the MIL
+    projector.
+
+    Reduces 1024-d UNI features to proj_dim via a trainable linear layer
+    (or MLP), then feeds them into ABMIL. The projection is optimized jointly
+    with the rest of the model, so it learns the most survival-relevant
+    low-dim subspace rather than a fixed one.
+    """
+
+    def __init__(self, in_dim=1024, proj_dim=256, proj_type="linear",
+                 hidden_dim=500, attention_dim=128, dropout=0.25, k=None,
+                 n_bins=None):
+        super().__init__()
+        self.proj_dim = proj_dim
+
+        if proj_type == "linear":
+            self.proj = nn.Sequential(
+                nn.Linear(in_dim, proj_dim),
+                nn.LayerNorm(proj_dim),
+                nn.ReLU(),
+            )
+        elif proj_type == "mlp":
+            self.proj = nn.Sequential(
+                nn.Linear(in_dim, proj_dim * 2),
+                nn.LayerNorm(proj_dim * 2),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(proj_dim * 2, proj_dim),
+                nn.LayerNorm(proj_dim),
+                nn.ReLU(),
+            )
+        else:
+            raise ValueError(f"Unknown proj_type: {proj_type}")
+
+        self.abmil = ABMIL(
+            in_dim=proj_dim, hidden_dim=hidden_dim,
+            attention_dim=attention_dim, dropout=dropout, k=k, n_bins=n_bins,
+        )
+
+    def forward(self, x):
+        if x.dim() == 2:
+            x = x.unsqueeze(0)
+        x = self.proj(x)
+        return self.abmil(x)

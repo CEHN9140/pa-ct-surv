@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from model.abmil_cox import ABMIL
+from model.abmil_cox import ABMIL, ProjABMIL
 from model.fusion import BilinearFusion, ConcatFusion, CrossAttnFusion, GatedFusion
 from model.gabmil_cox import GatedABMIL
 from model.meanpool_cox import MeanPool
@@ -13,7 +13,8 @@ from model.transmil_cox import TransMIL_cox
 class Pa_Model(nn.Module):
     """Factory for unimodal pathology MIL survival models."""
 
-    def __init__(self, model_name="abmil", feature_dim=1024, k=None, n_bins=None):
+    def __init__(self, model_name="abmil", feature_dim=1024, k=None, n_bins=None,
+                 proj_dim=256, proj_type="linear"):
         super().__init__()
         self.model_name = model_name
         self.n_bins = n_bins
@@ -28,6 +29,11 @@ class Pa_Model(nn.Module):
 
         if base_name == "abmil":
             self.mil = ABMIL(in_dim=feature_dim, k=k, n_bins=n_bins)
+        elif base_name == "abmil-proj":
+            self.mil = ProjABMIL(
+                in_dim=feature_dim, proj_dim=proj_dim,
+                proj_type=proj_type, k=k, n_bins=n_bins,
+            )
         elif base_name == "gabmil":
             self.mil = GatedABMIL(in_dim=feature_dim, k=k, n_bins=n_bins)
         elif base_name == "meanpool":

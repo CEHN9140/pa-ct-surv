@@ -22,6 +22,7 @@ from cox_utils import (
 from dataset import Path_Dataset
 from final_utils import locked_split_indices, save_final_artifacts, seed_everything
 from model.build import Pa_Model
+from sklearn.decomposition import PCA
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -171,7 +172,7 @@ def parse_args():
     parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data")
     parser.add_argument("--ct_roi_size", type=int, default=96)
     parser.add_argument("--pa_model", default="abmil",
-                        choices=["abmil", "abmil-topk", "gabmil", "gabmil-topk",
+                        choices=["abmil", "abmil-topk", "abmil-proj", "gabmil", "gabmil-topk",
                                  "meanpool", "transmil"])
     parser.add_argument("--k", type=int, default=None,
                         help="Top-k count; required only for *-topk models.")
@@ -188,6 +189,12 @@ def parse_args():
     parser.add_argument("--final_train", action="store_true")
     parser.add_argument("--eval_only", action="store_true")
     parser.add_argument("--n_bins", type=int, default=None)
+    parser.add_argument("--time_stratify", action="store_true",
+                        help="Stratify CV splits by (label, time-bin).")
+    parser.add_argument("--proj_dim", type=int, default=256,
+                        help="Projection dim for abmil-proj (default: 256).")
+    parser.add_argument("--proj_type", default="linear", choices=["linear", "mlp"],
+                        help="Projection type for abmil-proj (default: linear).")
     parser.add_argument("--alpha_surv", type=float, default=0.4)
     return parser.parse_args()
 
@@ -240,7 +247,8 @@ def main():
         print(f"NLL bin edges: {bin_edges.tolist()}")
 
     model_kwargs = {"model_name": args.pa_model, "feature_dim": 1024,
-                    "k": args.k if is_topk else None, "n_bins": n_bins}
+                    "k": args.k if is_topk else None, "n_bins": n_bins,
+                    "proj_dim": args.proj_dim, "proj_type": args.proj_type}
 
     if args.final_train:
         train_loader = DataLoader(Subset(dataset, train_indices), batch_size=1, shuffle=True,
@@ -267,8 +275,16 @@ def main():
         return
 
     train_labels = dataset.samples.loc[train_indices, "label"].to_numpy()
-    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
-    fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, train_labels)]
+    if getattr(args, "time_stratify", False):
+        train_times = dataset.samples.loc[train_indices, "time"].to_numpy()
+        time_bin = np.digitize(train_times, [24, 60]).astype(int)  # 0:<24, 1:24-60, 2:>=60
+        stratify_var = train_labels.astype(int) * 10 + time_bin
+        print(f"Time-stratified CV: bins <24mo/{time_bin.sum()>0}, groups={len(set(stratify_var.tolist()))}")
+        kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
+        fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, stratify_var)]
+    else:
+        kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
+        fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, train_labels)]
     print("Test set is not accessed during CV")
     fold_results = []
 
