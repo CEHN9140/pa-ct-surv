@@ -1,0 +1,47 @@
+# Large data / model files (never push)
+checkpoints/
+experiments/
+results/
+logs/
+data/
+
+# Project-specific exclusions (never push)
+docs/
+paper/
+tests/
+vis/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Pretrained weights (too large, download separately)
+model/ct_pretrain/*.pth
+
+# Matplotlib / other caches
+.matplotlib/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+*.swp
+*.swo
+*~
