@@ -21,6 +21,7 @@ import openslide
 import pandas as pd
 import torch
 import yaml
+from final_utils import cv_fold_indices, locked_split_indices
 from lifelines import CoxPHFitter, KaplanMeierFitter
 from lifelines.statistics import logrank_test
 from PIL import Image
@@ -62,12 +63,12 @@ def find_case_row(data_dir, case_id=None, slide_id=None, ct_id=None, roi_size=64
             slide_id = parts[0]
             ct_id = parts[1]
     if slide_id:
-        df = df[df["slide_id"].astype(str) == str(slide_id)]
+        df = df[df["pa_id"].astype(str) == str(slide_id)]
     if ct_id:
         df = df[df["ct_id"].astype(str) == str(ct_id)]
     if len(df) == 0:
         raise ValueError(
-            f"No row found for slide_id={slide_id}, ct_id={ct_id} in {label_file}"
+            f"No row found for pa_id={slide_id}, ct_id={ct_id} in {label_file}"
         )
     return df.iloc[0]
 
@@ -289,29 +290,16 @@ def collect_fold_cindex(result_root, seeds=(42, 123, 2024)):
 
 
 def get_split_ids(data_dir, fold, roi_size, sample_split="val", cv_seed=42):
-    from sklearn.model_selection import StratifiedKFold
-
     label_file = Path(data_dir) / f"all_label_roi{roi_size}.csv"
     if not label_file.exists():
         raise FileNotFoundError(label_file)
     df = pd.read_csv(label_file)
     if "split" not in df.columns:
         raise ValueError("Dataset CSV missing split column; run preprocess_data.py")
-    split_values = df["split"].astype(str).to_numpy()
-    train_mask = split_values == "train"
-    test_mask = split_values == "test"
-    if (~(train_mask | test_mask)).any() or not train_mask.any() or not test_mask.any():
-        raise ValueError("Dataset split must contain only non-empty train/test groups")
-    development_indices = np.flatnonzero(train_mask)
-    labels = df.loc[train_mask, "label"].to_numpy()
-    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=cv_seed)
-    splits = list(kf.split(development_indices, labels))
-    train_pos, val_pos = splits[fold]
-    train_idx = development_indices[train_pos]
-    val_idx = development_indices[val_pos]
+    train_idx, val_idx = cv_fold_indices(df, fold)
     split_indices = val_idx if sample_split == "val" else train_idx
     split_df = df.iloc[split_indices]
-    return list(zip(split_df["slide_id"].values, split_df["ct_id"].values))
+    return list(zip(split_df["pa_id"].values, split_df["ct_id"].values))
 
 
 # ============================================================

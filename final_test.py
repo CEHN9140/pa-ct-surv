@@ -94,7 +94,7 @@ def parse_args():
     )
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--config", required=True)
-    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data")
+    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--results_dir", required=True)
     parser.add_argument("--batch_size", type=int, default=None)
     parser.add_argument("--bootstrap_samples", type=int, default=1000)

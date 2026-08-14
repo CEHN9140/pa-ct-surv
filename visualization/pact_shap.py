@@ -23,10 +23,8 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from sklearn.model_selection import StratifiedKFold
-
 from dataset import Pa_CT_Dataset
-from final_utils import locked_split_indices
+from final_utils import cv_fold_indices, locked_split_indices
 from model.build import Pa_CT_Model
 
 
@@ -90,23 +88,8 @@ def load_model(config, checkpoint, device):
     return model
 
 
-def build_fold_splits(samples, cv_seed):
-    development_indices, _ = locked_split_indices(samples)
-    labels = samples.loc[development_indices, "label"].to_numpy()
-    splitter = StratifiedKFold(
-        n_splits=5,
-        shuffle=True,
-        random_state=cv_seed,
-    )
-    return [
-        (
-            development_indices[train_position],
-            development_indices[val_position],
-        )
-        for train_position, val_position in splitter.split(
-            development_indices, labels
-        )
-    ]
+def build_fold_splits(samples, cv_seed=None):
+    return [cv_fold_indices(samples, fold) for fold in range(5)]
 
 
 def get_sample_features(model, dataset, index, device):
@@ -184,7 +167,7 @@ def explain_fold(
                     "fold": fold,
                     "dataset_index": int(index),
                     "case_id": case_id,
-                    "slide_id": slide_id,
+                    "pa_id": slide_id,
                     "ct_id": ct_id,
                     "time": time,
                     "event": event,

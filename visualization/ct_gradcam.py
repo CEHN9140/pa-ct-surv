@@ -278,9 +278,9 @@ def collect_slices(positive_cam, negative_cam, ct_vol, args, mask_volume=None):
 def gradcam_single_case(ct_id, model, backbone, args, output_dir, device):
     """Run Grad-CAM for one CT case and save PNG views."""
     row = find_case_row(args.data_dir, ct_id=ct_id, roi_size=args.roi_size)
-    ct_path = str(row["ct_image_path"])
-    pt_path = str(row.get("pt_path", ""))
-    label = int(row["label"])
+    ct_path = str(row["ct_path"])
+    pt_path = str(row.get("pa_path", ""))
+    label = int(row["event"])
     time = float(row["time"])
 
     target_layer, target_name = find_target_layer(backbone, args.target_layer)

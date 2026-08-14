@@ -1,148 +1,181 @@
-import os
-import warnings
+import argparse
+from pathlib import Path
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold, train_test_split
 
-warnings.filterwarnings("ignore")
-
-# ================= 配置路径 =================
-survival_file = "/home/gly001/cqj/data/dz/HE预后.xlsx"
-pt_dir = "/home/gly001/cqj/data/lung_cancer/pathology/clam/uni_features/pt_files"
-ct_base_dir = "/home/gly001/cqj/data/lung_cancer/ct"
-save_root = "/home/gly001/cqj/pa_ct_surv/data"
-
-# CT ROI 尺寸列表
 CT_SIZES = [64, 96, 128]
-SPLIT_SEED = 42
-TEST_SIZE = 0.20
-
-slide_id_col = "病理号"
-ct_id_col = "ID"
-time_col = "DFS.months"
-event_col = "DFS.status"
-
-
-def clean_id(x):
-    if pd.isna(x):
-        return ""
-    x = str(x).strip()
-    if x.lower() in {"nan", "none", ""}:
-        return ""
-    if x.endswith(".0"):
-        x = x[:-2]
-    for s in [".nii.gz", ".nii", ".svs", ".pt", ".h5", ".npy"]:
-        if x.endswith(s):
-            x = x[: -len(s)]
-    return x
 
 
 def prepare_survival_dataframe(source):
-    required = [slide_id_col, ct_id_col, time_col, event_col]
-    missing = set(required) - set(source.columns)
+    """Clean clinical records and enforce one-to-one path/CT identifiers."""
+    columns = {
+        "pa_id": "病理号",
+        "ct_id": "ID",
+        "time": "DFS.months",
+        "event": "DFS.status",
+    }
+    missing = set(columns.values()) - set(source.columns)
     if missing:
         raise ValueError(f"HE预后.xlsx 缺少列: {sorted(missing)}")
 
-    df = pd.DataFrame(
+    data = pd.DataFrame(
         {
-            "slide_id": source[slide_id_col].apply(clean_id),
-            "ct_id": source[ct_id_col].apply(clean_id),
-            "label": pd.to_numeric(source[event_col], errors="coerce"),
-            "time": pd.to_numeric(source[time_col], errors="coerce"),
+            "pa_id": source[columns["pa_id"]].astype(str).str.strip(),
+            "ct_id": source[columns["ct_id"]].astype(str).str.strip(),
+            "event": pd.to_numeric(source[columns["event"]], errors="coerce"),
+            "time": pd.to_numeric(source[columns["time"]], errors="coerce"),
         }
     )
 
-    invalid_event = df["label"].isna() | ~df["label"].isin([0, 1])
+    invalid_event = data["event"].isna() | ~data["event"].isin([0, 1])
     if invalid_event.any():
-        values = source.loc[invalid_event, event_col].unique().tolist()
+        values = source.loc[invalid_event, columns["event"]].unique().tolist()
         raise ValueError(f"DFS.status 必须为 0 或 1，发现无效值: {values}")
 
-    df = df[
-        (df["slide_id"] != "") & (df["ct_id"] != "") & df["time"].notna()
+    data = data[
+        data["pa_id"].ne("") & data["ct_id"].ne("") & data["time"].notna()
     ].copy()
-    df["label"] = df["label"].astype(int)
-    df["time"] = df["time"].astype(float)
-    return df.drop_duplicates("slide_id", keep="first").reset_index(drop=True)
+    data["event"] = data["event"].astype(int)
+    data["time"] = data["time"].astype(float)
+    data.reset_index(drop=True, inplace=True)
+
+    for column in ("pa_id", "ct_id"):
+        duplicated = data[column].duplicated(keep=False)
+        if duplicated.any():
+            values = data.loc[duplicated, column].tolist()
+            raise ValueError(f"{column} 必须唯一，发现重复值: {values}")
+    return data
 
 
-def add_train_test_split(samples):
-    out = samples.copy()
-    event_counts = out["label"].value_counts()
-    if (event_counts < 5).any():
+def add_locked_splits(
+    samples,
+    seed=42,
+):
+    """Assign -1 to locked test rows and 0..4 to train CV folds."""
+    test_size = 0.20
+    n_splits = 5
+    insufficient = samples["event"].value_counts()
+    insufficient = insufficient[insufficient < n_splits]
+    if not insufficient.empty:
         raise ValueError(
-            "Cannot create 5-fold survival split; event groups with fewer than 5 "
-            f"samples: {event_counts[event_counts < 5].to_dict()}"
+            f"Cannot create {n_splits}-fold split; event groups have fewer than "
+            f"{n_splits} samples: {insufficient.to_dict()}"
         )
 
-    train_idx, test_idx = train_test_split(
-        out.index.to_numpy(),
-        test_size=TEST_SIZE,
-        random_state=SPLIT_SEED,
+    train_indices, _ = train_test_split(
+        samples.index.to_numpy(),
+        test_size=test_size,
+        random_state=seed,
         shuffle=True,
-        stratify=out["label"],
+        stratify=samples["event"],
+    )
+    result = samples.copy()
+    result["split"] = -1
+
+    splitter = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+    train_events = result.loc[train_indices, "event"].to_numpy()
+    for fold, (_, validation_positions) in enumerate(
+        splitter.split(train_indices, train_events)
+    ):
+        result.loc[train_indices[validation_positions], "split"] = fold
+
+    if (result.loc[train_indices, "split"] < 0).any():
+        raise RuntimeError("Failed to assign every train sample to a CV fold")
+    return result
+
+
+def build_roi_cohort(records, roi_size, pa_dir, h5_dir, ct_base_dir):
+    """Match pathology features and one CT ROI into the final paired cohort."""
+    pa_dir = Path(pa_dir)
+    h5_dir = Path(h5_dir)
+    ct_dir = Path(ct_base_dir) / f"processed_ct_{roi_size}" / "image"
+
+    data = records.copy()
+    data["pa_path"] = data["pa_id"].map(lambda value: str(pa_dir / f"{value}.pt"))
+    data["h5_path"] = data["pa_id"].map(lambda value: str(h5_dir / f"{value}.h5"))
+    data["ct_path"] = data["ct_id"].map(lambda value: str(ct_dir / f"{value}.npy"))
+
+    has_pa = data["pa_path"].map(lambda path: Path(path).exists())
+    has_ct = data["ct_path"].map(lambda path: Path(path).exists())
+    has_h5 = data["h5_path"].map(lambda path: Path(path).exists())
+    paired = data.loc[
+        has_pa & has_ct,
+        ["pa_id", "pa_path", "h5_path", "ct_id", "ct_path", "event", "time"],
+    ].copy()
+    return (
+        paired,
+        int((~has_pa).sum()),
+        int((~has_ct).sum()),
+        int((~has_h5).sum()),
     )
 
-    out["split"] = "test"
-    out.loc[train_idx, "split"] = "train"
-    print(pd.crosstab(out["split"], out["label"], margins=True))
-    return out
+
+def write_roi_csv(records, roi_size, seed, output_dir, pa_dir, h5_dir, ct_base_dir):
+    cohort, missing_pa, missing_ct, missing_h5 = build_roi_cohort(
+        records, roi_size, pa_dir, h5_dir, ct_base_dir
+    )
+    print(
+        f"\nROI {roi_size}: total={len(records)}, paired={len(cohort)}, "
+        f"missing PA={missing_pa}, missing CT={missing_ct}, missing H5={missing_h5}"
+    )
+    if cohort.empty:
+        print("  [Skip] No valid paired samples")
+        return None
+
+    output = add_locked_splits(cohort, seed=seed)[
+        ["pa_id", "pa_path", "h5_path", "ct_id", "ct_path", "event", "time", "split"]
+    ]
+    csv_path = output_dir / f"all_label_roi{roi_size}.csv"
+    output.to_csv(csv_path, index=False)
+
+    print(f"  Saved: {csv_path} ({len(output)} samples)")
+    print(f"  Split counts: {output['split'].value_counts().sort_index().to_dict()}")
+    print(f"  Event counts: {output['event'].value_counts().sort_index().to_dict()}")
+    return csv_path
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Build paired pathology-CT survival CSVs with locked splits."
+    )
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--data-root",
+        default="/home/gly001/cqj/pa_ct_surv/data",
+        help="Root directory for generated seed-specific CSVs.",
+    )
+    return parser.parse_args()
+
+
+def main(args):
+    survival_file = "/home/gly001/cqj/data/dz/HE预后.xlsx"
+    pa_dir = "/home/gly001/cqj/data/lung_cancer/pathology/clam/uni_features/pt_files"
+    h5_dir = "/home/gly001/cqj/data/lung_cancer/pathology/clam/uni_features/h5_files"
+    ct_base_dir = "/home/gly001/cqj/data/lung_cancer/ct"
+    output_dir = Path(args.data_root) / f"seed_{args.seed}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"Reading {survival_file}")
+    records = prepare_survival_dataframe(pd.read_excel(survival_file))
+    print(f"Valid clinical records before modality matching: {len(records)}")
+
+    generated = [
+        write_roi_csv(
+            records,
+            roi_size,
+            args.seed,
+            output_dir,
+            pa_dir=pa_dir,
+            h5_dir=h5_dir,
+            ct_base_dir=ct_base_dir,
+        )
+        for roi_size in CT_SIZES
+    ]
+    generated = [path for path in generated if path is not None]
+    print(f"Done. Generated {len(generated)} CSV file(s) in {output_dir}")
 
 
 if __name__ == "__main__":
-    print("Reading HE预后.xlsx...")
-    source = pd.read_excel(survival_file)
-    df = prepare_survival_dataframe(source)
-    df = add_train_test_split(df)
-    print(f"Valid survival records: {len(df)}")
-
-    # 病理路径
-    df["pt_path"] = df["slide_id"].apply(lambda x: os.path.join(pt_dir, x + ".pt"))
-    df["has_pt"] = df["pt_path"].apply(os.path.exists)
-
-    os.makedirs(save_root, exist_ok=True)
-
-    for size in CT_SIZES:
-        print(f"\n{'='*40}\nProcessing CT ROI size: {size}\n{'='*40}")
-        ct_image_dir = os.path.join(ct_base_dir, f"processed_ct_{size}", "image")
-
-        df[f"ct_image_path_{size}"] = df["ct_id"].apply(
-            lambda x: os.path.join(ct_image_dir, x + ".npy")
-        )
-        df[f"has_ct_{size}"] = df[f"ct_image_path_{size}"].apply(os.path.exists)
-
-        sub_df = df[df["has_pt"] & df[f"has_ct_{size}"]].copy()
-        missing_pt = (~df["has_pt"]).sum()
-        missing_ct = (~df[f"has_ct_{size}"]).sum()
-        print(f"Total HE records: {len(df)}, Missing PT: {missing_pt}, Missing CT (roi{size}): {missing_ct}")
-        print(f"Valid paired samples: {len(sub_df)}")
-
-        if sub_df.empty:
-            print(f"  [Skip] No valid samples for ROI {size}")
-            continue
-
-        out_df = sub_df[
-            [
-                "slide_id",
-                "pt_path",
-                "ct_id",
-                f"ct_image_path_{size}",
-                "label",
-                "time",
-                "split",
-            ]
-        ].copy()
-        out_df.rename(columns={f"ct_image_path_{size}": "ct_image_path"}, inplace=True)
-
-        csv_path = os.path.join(save_root, f"all_label_roi{size}.csv")
-        out_df.to_csv(csv_path, index=False)
-
-        print(f"\nSaved {len(out_df)} samples to {csv_path}")
-        print("Label distribution:")
-        print(out_df["label"].value_counts().sort_index())
-        print(out_df["label"].value_counts(normalize=True).sort_index())
-
-    print("\nDone! Generated files:")
-    for size in CT_SIZES:
-        p = os.path.join(save_root, f"all_label_roi{size}.csv")
-        if os.path.exists(p):
-            print(f"  {p} ({len(pd.read_csv(p))} samples)")
+    args = parse_args()
+    main(args)

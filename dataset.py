@@ -53,19 +53,19 @@ class Path_Dataset(Dataset):
     def __init__(self, data_dir, roi_size=64):
         label_file = _get_label_file(data_dir, roi_size=roi_size)
         df = pd.read_csv(label_file)
-        cols = ["slide_id", "pt_path", "label", "time"]
+        cols = ["pa_id", "pa_path", "event", "time"]
         missing = set(cols) - set(df.columns)
         if missing:
             raise ValueError(f"Missing columns in {label_file}: {sorted(missing)}")
-        optional_cols = [c for c in ["ct_id", "split"] if c in df.columns]
+        optional_cols = [c for c in ["ct_id", "h5_path", "split"] if c in df.columns]
         self.samples = df[cols + optional_cols].copy()
-        self.samples["slide_id"] = self.samples["slide_id"].astype(str)
-        self.samples["pt_path"] = self.samples["pt_path"].astype(str)
-        self.samples["label"] = self.samples["label"].astype(int)
+        self.samples["pa_id"] = self.samples["pa_id"].astype(str)
+        self.samples["pa_path"] = self.samples["pa_path"].astype(str)
+        self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
         before = len(self.samples)
         self.samples = self.samples[
-            self.samples["pt_path"].apply(lambda p: os.path.exists(p))
+            self.samples["pa_path"].apply(lambda p: os.path.exists(p))
         ].reset_index(drop=True)
         dropped = before - len(self.samples)
         if dropped:
@@ -78,10 +78,10 @@ class Path_Dataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        feat = torch.load(row["pt_path"], map_location="cpu").float()
-        label = torch.tensor(row["label"], dtype=torch.long)
+        feat = torch.load(row["pa_path"], map_location="cpu").float()
+        label = torch.tensor(row["event"], dtype=torch.long)
         time = torch.tensor(row["time"], dtype=torch.float32)
-        return feat, label, time, row["slide_id"]
+        return feat, label, time, row["pa_id"]
 
 
 class CT_Dataset(Dataset):
@@ -90,19 +90,20 @@ class CT_Dataset(Dataset):
     def __init__(self, data_dir, roi_size=64, augment=False):
         label_file = _get_label_file(data_dir, roi_size)
         df = pd.read_csv(label_file)
-        cols = ["ct_id", "ct_image_path", "label", "time"]
+        cols = ["ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
         if missing:
             raise ValueError(f"Missing columns in {label_file}: {sorted(missing)}")
-        optional_cols = [c for c in ["slide_id", "split"] if c in df.columns]
+        optional_cols = [c for c in ["pa_id", "h5_path", "split"] if c in df.columns]
         self.samples = df[cols + optional_cols].copy()
         self.samples["ct_id"] = self.samples["ct_id"].astype(str)
-        self.samples["ct_image_path"] = self.samples["ct_image_path"].astype(str)
-        self.samples["label"] = self.samples["label"].astype(int)
+        self.samples["pa_id"] = self.samples["pa_id"].astype(str)
+        self.samples["ct_path"] = self.samples["ct_path"].astype(str)
+        self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
         before = len(self.samples)
         self.samples = self.samples[
-            self.samples["ct_image_path"].apply(lambda p: os.path.exists(p))
+            self.samples["ct_path"].apply(lambda p: os.path.exists(p))
         ].reset_index(drop=True)
         dropped = before - len(self.samples)
         if dropped:
@@ -116,12 +117,12 @@ class CT_Dataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        ct = load_ct_npy(row["ct_image_path"])
+        ct = load_ct_npy(row["ct_path"])
         if self.ct_aug is not None:
             ct = self.ct_aug(ct)
         return (
             torch.as_tensor(ct, dtype=torch.float32),
-            torch.tensor(row["label"], dtype=torch.long),
+            torch.tensor(row["event"], dtype=torch.long),
             torch.tensor(row["time"], dtype=torch.float32),
             row["ct_id"],
         )
@@ -133,22 +134,22 @@ class Pa_CT_Dataset(Dataset):
     def __init__(self, data_dir, roi_size=64, augment=False):
         label_file = _get_label_file(data_dir, roi_size)
         df = pd.read_csv(label_file)
-        cols = ["slide_id", "pt_path", "ct_id", "ct_image_path", "label", "time"]
+        cols = ["pa_id", "pa_path", "h5_path", "ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
         if missing:
             raise ValueError(f"Missing columns in {label_file}: {sorted(missing)}")
         optional_cols = [c for c in ["split"] if c in df.columns]
         self.samples = df[cols + optional_cols].copy()
-        self.samples["slide_id"] = self.samples["slide_id"].astype(str)
+        self.samples["pa_id"] = self.samples["pa_id"].astype(str)
         self.samples["ct_id"] = self.samples["ct_id"].astype(str)
-        self.samples["pt_path"] = self.samples["pt_path"].astype(str)
-        self.samples["ct_image_path"] = self.samples["ct_image_path"].astype(str)
-        self.samples["label"] = self.samples["label"].astype(int)
+        self.samples["pa_path"] = self.samples["pa_path"].astype(str)
+        self.samples["ct_path"] = self.samples["ct_path"].astype(str)
+        self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
         before = len(self.samples)
         self.samples = self.samples[
-            self.samples["pt_path"].apply(lambda p: os.path.exists(p))
-            & self.samples["ct_image_path"].apply(lambda p: os.path.exists(p))
+            self.samples["pa_path"].apply(lambda p: os.path.exists(p))
+            & self.samples["ct_path"].apply(lambda p: os.path.exists(p))
         ].reset_index(drop=True)
         dropped = before - len(self.samples)
         if dropped:
@@ -162,15 +163,15 @@ class Pa_CT_Dataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        ct_img = load_ct_npy(row["ct_image_path"])
+        ct_img = load_ct_npy(row["ct_path"])
         if self.ct_aug is not None:
             ct_img = self.ct_aug(ct_img)
-        pa_fea = torch.load(row["pt_path"], map_location="cpu").float()
-        case_id = f"{row['slide_id']}|{row['ct_id']}"
+        pa_fea = torch.load(row["pa_path"], map_location="cpu").float()
+        case_id = f"{row['pa_id']}|{row['ct_id']}"
         return (
             torch.as_tensor(ct_img, dtype=torch.float32),
             pa_fea,
-            torch.tensor(row["label"], dtype=torch.long),
+            torch.tensor(row["event"], dtype=torch.long),
             torch.tensor(row["time"], dtype=torch.float32),
             case_id,
         )

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from sklearn.model_selection import StratifiedKFold
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
@@ -17,7 +16,7 @@ from cox_utils import (
     evaluate_survival_metrics,
 )
 from dataset import Pa_CT_Dataset
-from final_utils import locked_split_indices, save_final_artifacts, seed_everything
+from final_utils import cv_fold_indices, locked_split_indices, save_final_artifacts, seed_everything
 from model.build import Pa_CT_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -212,7 +211,7 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train PA+CT fusion survival model (5-fold CV).")
-    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data")
+    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--ct_roi_size", type=int, default=96, choices=[64, 96, 128])
     parser.add_argument("--ct_model", default="resnet18", choices=["resnet10", "resnet18"])
     parser.add_argument("--pa_model", default="abmil",
@@ -235,7 +234,7 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--seed", type=int, default=42,
-                        help="Seed for initialization, training randomness, and CV split.")
+                        help="Seed for initialization and training randomness.")
     parser.add_argument("--final_train", action="store_true")
     parser.add_argument("--use_ema", action="store_true")
     parser.add_argument("--ema_decay", type=float, default=0.99)
@@ -323,9 +322,10 @@ def main():
         print(f"Final model: {paths[0]}")
         return
 
-    train_labels = dataset.samples.loc[train_indices, "label"].to_numpy()
-    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
-    fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, train_labels)]
+    fold_splits = [
+        cv_fold_indices(dataset.samples, fold)
+        for fold in range(5)
+    ]
     print("Test set is not accessed during CV")
     fold_results = []
 

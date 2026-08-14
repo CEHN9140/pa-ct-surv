@@ -191,16 +191,16 @@ def _sample_slide_ids(args):
 def process_single_case(slide_id, args, model, output_dir, device):
     """Generate heatmap for a single slide."""
     row = find_case_row(args.data_dir, slide_id=slide_id, roi_size=args.roi_size)
-    slide_id = str(row["slide_id"])
-    pt_path = str(row["pt_path"])
-    label = int(row["label"])
+    slide_id = str(row["pa_id"])
+    pt_path = str(row["pa_path"])
+    label = int(row["event"])
     time = float(row["time"])
     print(f"\nSlide: {slide_id} | label={label} | time={time:.1f}mo")
 
     features = load_path_feature(pt_path)
     print(f"Features: {features.shape}")
 
-    h5_path = find_h5_by_slide_id(args.h5_dir, slide_id)
+    h5_path = str(row["h5_path"])
     coords = load_h5_coords(h5_path)
     print(f"Coords: {coords.shape}")
 

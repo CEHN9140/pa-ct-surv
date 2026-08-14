@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from sklearn.model_selection import StratifiedKFold
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
@@ -20,7 +19,7 @@ from cox_utils import (
     nll_loss,
 )
 from dataset import Path_Dataset
-from final_utils import locked_split_indices, save_final_artifacts, seed_everything
+from final_utils import cv_fold_indices, locked_split_indices, save_final_artifacts, seed_everything
 from model.build import Pa_Model
 from sklearn.decomposition import PCA
 
@@ -169,7 +168,7 @@ def train_path(model, train_loader, val_loader, predict_fn, optimizer, args, dev
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train pathology MIL survival model (5-fold CV).")
-    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data")
+    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--ct_roi_size", type=int, default=96)
     parser.add_argument("--pa_model", default="abmil",
                         choices=["abmil", "abmil-topk", "abmil-proj", "gabmil", "gabmil-topk",
@@ -185,12 +184,10 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--seed", type=int, default=42,
-                        help="Seed for initialization, training randomness, and CV split.")
+                        help="Seed for initialization and training randomness.")
     parser.add_argument("--final_train", action="store_true")
     parser.add_argument("--eval_only", action="store_true")
     parser.add_argument("--n_bins", type=int, default=None)
-    parser.add_argument("--time_stratify", action="store_true",
-                        help="Stratify CV splits by (label, time-bin).")
     parser.add_argument("--proj_dim", type=int, default=256,
                         help="Projection dim for abmil-proj (default: 256).")
     parser.add_argument("--proj_type", default="linear", choices=["linear", "mlp"],
@@ -242,7 +239,7 @@ def main():
     bin_edges = None
     if n_bins:
         train_times = dataset.samples.iloc[train_indices]["time"].values
-        train_events = dataset.samples.iloc[train_indices]["label"].values
+        train_events = dataset.samples.iloc[train_indices]["event"].values
         bin_edges = get_bin_edges(train_times, train_events, n_bins)
         print(f"NLL bin edges: {bin_edges.tolist()}")
 
@@ -274,17 +271,10 @@ def main():
         print(f"Final model: {paths[0]}")
         return
 
-    train_labels = dataset.samples.loc[train_indices, "label"].to_numpy()
-    if getattr(args, "time_stratify", False):
-        train_times = dataset.samples.loc[train_indices, "time"].to_numpy()
-        time_bin = np.digitize(train_times, [24, 60]).astype(int)  # 0:<24, 1:24-60, 2:>=60
-        stratify_var = train_labels.astype(int) * 10 + time_bin
-        print(f"Time-stratified CV: bins <24mo/{time_bin.sum()>0}, groups={len(set(stratify_var.tolist()))}")
-        kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
-        fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, stratify_var)]
-    else:
-        kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.seed)
-        fold_splits = [(train_indices[t], train_indices[v]) for t, v in kf.split(train_indices, train_labels)]
+    fold_splits = [
+        cv_fold_indices(dataset.samples, fold)
+        for fold in range(5)
+    ]
     print("Test set is not accessed during CV")
     fold_results = []
 
@@ -293,7 +283,7 @@ def main():
         fold_bin_edges = None
         if n_bins:
             fold_times = dataset.samples.iloc[train_idx]["time"].values
-            fold_events = dataset.samples.iloc[train_idx]["label"].values
+            fold_events = dataset.samples.iloc[train_idx]["event"].values
             fold_bin_edges = get_bin_edges(fold_times, fold_events, n_bins)
 
         fold_seed = args.seed + fold
