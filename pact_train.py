@@ -10,7 +10,6 @@ from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
 from cox_utils import (
-    _as_case_id_list,
     cox_loss,
     evaluate_survival,
     evaluate_survival_metrics,
@@ -173,7 +172,7 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(event.detach().cpu().numpy().reshape(-1).astype(int).tolist())
-                val_case_ids.extend(_as_case_id_list(case_id))
+                val_case_ids.extend(case_id)
                 val_ct.extend(risk_ct.detach().cpu().numpy().reshape(-1).tolist())
                 val_pa.extend(risk_pa.detach().cpu().numpy().reshape(-1).tolist())
 

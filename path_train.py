@@ -10,10 +10,8 @@ from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
 from cox_utils import (
-    _as_case_id_list,
     cox_loss,
     evaluate_survival,
-    evaluate_survival_metrics,
 )
 from dataset import Path_Dataset
 from final_utils import (
@@ -26,18 +24,10 @@ from model.build import Pa_Model
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def predict_path_risk(model, batch, device):
-    feat, event, time, case_id = batch
-    output = model(feat.to(device, non_blocking=True))
-    risk = output[0] if isinstance(output, tuple) else output
-    return risk, event, time, case_id
-
-
 def train_path(
     model,
     train_loader,
     val_loader,
-    predict_fn,
     optimizer,
     args,
     device,
@@ -68,10 +58,8 @@ def train_path(
             times.append(time.to(device))
             events.append(event.to(device))
 
-            if sum(risk.shape[0] for risk in risks) >= cox_batch_size:
-                loss = cox_loss(
-                    torch.cat(risks), torch.cat(times), torch.cat(events)
-                )
+            if len(risks) >= cox_batch_size:
+                loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
@@ -93,16 +81,17 @@ def train_path(
         train_cindex = float(train_cindex)
 
         model.eval()
-        val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
+        val_risks_np, val_times_np, val_events_np = [], [], []
         with torch.no_grad():
             for batch in val_loader:
-                risk, event, time, case_id = predict_fn(model, batch, device)
+                feat, event, time, _ = batch
+                output = model(feat.to(device, non_blocking=True))
+                risk = output[0] if isinstance(output, tuple) else output
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(
                     event.detach().cpu().numpy().reshape(-1).astype(int).tolist()
                 )
-                val_case_ids.extend(_as_case_id_list(case_id))
 
         val_risks_arr = np.asarray(val_risks_np, dtype=np.float32)
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
@@ -141,10 +130,8 @@ def train_path(
             break
 
     model.load_state_dict(best_state)
-    val_cindex, val_df = evaluate_survival(model, val_loader, predict_fn, device)
-    _, train_df = evaluate_survival(model, train_loader, predict_fn, device)
-    print(f"Fold {fold} final C-index: {val_cindex:.4f}")
-    return val_cindex, train_df, val_df
+    print(f"Fold {fold} final C-index: {best_cindex:.4f}")
+    return model
 
 
 def parse_args():
@@ -285,31 +272,29 @@ def main():
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            _, train_df = evaluate_survival(
-                model, train_loader, predict_path_risk, DEVICE
-            )
-            val_cindex, val_df = evaluate_survival(
-                model, val_loader, predict_path_risk, DEVICE
+            _, val_cindex, _, _ = evaluate_survival(
+                model, train_loader, val_loader, DEVICE
             )
             print(f"Fold {fold} eval C-index: {val_cindex:.4f}")
             fold_results.append({"fold": fold, "cindex": val_cindex})
             continue
 
-        fold_cindex, train_df, val_df = train_path(
+        model = train_path(
             model,
             train_loader,
             val_loader,
-            predict_path_risk,
             optimizer,
             args,
             DEVICE,
             fold,
             checkpoint_dir,
         )
-        fold_results.append({"fold": fold, "cindex": fold_cindex})
         metrics_dir = checkpoint_dir / "best_results"
         metrics_dir.mkdir(parents=True, exist_ok=True)
-        evaluate_survival_metrics(train_df, val_df, metrics_dir)
+        _, fold_cindex, _, _, _ = evaluate_survival(
+            model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
+        )
+        fold_results.append({"fold": fold, "cindex": fold_cindex})
 
     df = pd.DataFrame(fold_results)
     summary = {

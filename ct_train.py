@@ -14,7 +14,6 @@ from cox_utils import (
     evaluate_survival,
     evaluate_survival_metrics,
     pairwise_ranking_loss,
-    _as_case_id_list,
 )
 from dataset import CT_Dataset
 from final_utils import cv_fold_indices, locked_split_indices, save_final_artifacts, seed_everything
@@ -81,7 +80,7 @@ def train_ct(model, train_loader, train_eval_loader, val_loader, predict_fn,
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(event.detach().cpu().numpy().reshape(-1).astype(int).tolist())
-                val_case_ids.extend(_as_case_id_list(case_id))
+                val_case_ids.extend(case_id)
         val_loss = cox_loss(torch.cat(val_risks), torch.cat(val_times), torch.cat(val_events))
         val_risks_arr = np.asarray(val_risks_np, dtype=np.float32)
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)

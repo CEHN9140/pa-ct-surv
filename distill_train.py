@@ -16,7 +16,6 @@ from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Dataset, Subset
 
 from cox_utils import (
-    _as_case_id_list,
     cox_loss,
     evaluate_survival_metrics,
 )
@@ -273,7 +272,7 @@ def train_distill(
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.numpy().reshape(-1).tolist())
                 val_events_np.extend(event.numpy().reshape(-1).astype(int).tolist())
-                val_case_ids.extend(_as_case_id_list(case_ids))
+                val_case_ids.extend(case_ids)
 
         val_risks_arr = np.asarray(val_risks_np, dtype=np.float32)
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
@@ -406,7 +405,7 @@ def evaluate_survival_ct(model, loader, device):
             risks.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
             times.extend(time.numpy().reshape(-1).tolist())
             events.extend(event.numpy().reshape(-1).astype(int).tolist())
-            case_ids.extend(_as_case_id_list(case_id_list))
+            case_ids.extend(case_id_list)
 
     risks_arr = np.asarray(risks, dtype=np.float32)
     times_arr = np.asarray(times, dtype=np.float32)

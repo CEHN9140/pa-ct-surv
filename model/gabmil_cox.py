@@ -6,10 +6,8 @@ import torch.nn.functional as F
 class GABMIL(nn.Module):
     """Gated attention MIL for survival analysis."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128,
-                 n_bins=None):
+    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
         super().__init__()
-        self.n_bins = n_bins
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
@@ -23,8 +21,7 @@ class GABMIL(nn.Module):
             nn.Sigmoid(),
         )
         self.attention_w = nn.Linear(attention_dim, 1)
-        head_out = n_bins if n_bins is not None else 1
-        self.risk_head = nn.Linear(hidden_dim, head_out)
+        self.risk_head = nn.Linear(hidden_dim, 1)
 
     def _pool_attention(self, H, logits):
         weights = F.softmax(logits, dim=1)
@@ -37,25 +34,19 @@ class GABMIL(nn.Module):
         logits = self.attention_w(self.attention_V(H) * self.attention_U(H))
         pooled, weights = self._pool_attention(H, logits)
         out = self.risk_head(pooled)
-        if self.n_bins is not None:
-            hazards = torch.sigmoid(out)
-            S = torch.cumprod(1 - hazards, dim=1)
-            return hazards, S, pooled, weights
         return out.squeeze(-1), pooled, weights
 
 
 class GABMIL_TopK(GABMIL):
     """GABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128,
-                 k=None, n_bins=None):
+    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None):
         if k is None or k <= 0:
             raise ValueError("GABMIL_TopK requires a positive k")
         super().__init__(
             in_dim=in_dim,
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
-            n_bins=n_bins,
         )
         self.k = k
 

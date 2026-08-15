@@ -6,9 +6,8 @@ import torch.nn.functional as F
 class ABMIL(nn.Module):
     """Ilse-style attention MIL adapted to a Cox survival risk head."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, n_bins=None):
+    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
         super().__init__()
-        self.n_bins = n_bins
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
@@ -18,8 +17,7 @@ class ABMIL(nn.Module):
             nn.Tanh(),
             nn.Linear(attention_dim, 1),
         )
-        head_out = n_bins if n_bins is not None else 1
-        self.risk_head = nn.Linear(hidden_dim, head_out)
+        self.risk_head = nn.Linear(hidden_dim, 1)
 
     def pool_attention(self, H, logits):
         weights = F.softmax(logits, dim=1)
@@ -32,26 +30,19 @@ class ABMIL(nn.Module):
         logits = self.attention(H)
         pooled, weights = self.pool_attention(H, logits)
         out = self.risk_head(pooled)
-        if self.n_bins is not None:
-            hazards = torch.sigmoid(out)
-            S = torch.cumprod(1 - hazards, dim=1)
-            return hazards, S, pooled, weights
         return out.squeeze(-1), pooled, weights
 
 
 class ABMIL_TopK(ABMIL):
     """ABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(
-        self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None, n_bins=None
-    ):
+    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
         super().__init__(
             in_dim=in_dim,
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
-            n_bins=n_bins,
         )
         self.k = k
 
@@ -90,7 +81,6 @@ class ProjABMIL(nn.Module):
         attention_dim=128,
         dropout=0.25,
         k=None,
-        n_bins=None,
     ):
         super().__init__()
         self.proj_dim = proj_dim
@@ -119,7 +109,6 @@ class ProjABMIL(nn.Module):
                 in_dim=proj_dim,
                 hidden_dim=hidden_dim,
                 attention_dim=attention_dim,
-                n_bins=n_bins,
             )
         else:
             self.abmil = ABMIL_TopK(
@@ -127,7 +116,6 @@ class ProjABMIL(nn.Module):
                 hidden_dim=hidden_dim,
                 attention_dim=attention_dim,
                 k=k,
-                n_bins=n_bins,
             )
 
     def forward(self, x):

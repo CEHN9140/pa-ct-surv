@@ -13,11 +13,10 @@ from model.transmil_cox import TransMIL_cox
 class Pa_Model(nn.Module):
     """Factory for unimodal pathology MIL survival models."""
 
-    def __init__(self, model_name="abmil", feature_dim=1024, k=None, n_bins=None,
+    def __init__(self, model_name="abmil", feature_dim=1024, k=None,
                  proj_dim=256, proj_type="linear"):
         super().__init__()
         self.model_name = model_name
-        self.n_bins = n_bins
 
         if model_name.endswith("-topk"):
             base_name = model_name[:-5]
@@ -29,25 +28,21 @@ class Pa_Model(nn.Module):
 
         if base_name == "abmil":
             if k is None:
-                self.mil = ABMIL(in_dim=feature_dim, n_bins=n_bins)
+                self.mil = ABMIL(in_dim=feature_dim)
             else:
-                self.mil = ABMIL_TopK(
-                    in_dim=feature_dim, k=k, n_bins=n_bins
-                )
+                self.mil = ABMIL_TopK(in_dim=feature_dim, k=k)
         elif base_name == "abmil-proj":
             self.mil = ProjABMIL(
                 in_dim=feature_dim, proj_dim=proj_dim,
-                proj_type=proj_type, k=k, n_bins=n_bins,
+                proj_type=proj_type, k=k,
             )
         elif base_name == "gabmil":
             if k is None:
-                self.mil = GABMIL(in_dim=feature_dim, n_bins=n_bins)
+                self.mil = GABMIL(in_dim=feature_dim)
             else:
-                self.mil = GABMIL_TopK(
-                    in_dim=feature_dim, k=k, n_bins=n_bins
-                )
+                self.mil = GABMIL_TopK(in_dim=feature_dim, k=k)
         elif base_name == "meanpool":
-            self.mil = MeanPool(in_dim=feature_dim, n_bins=n_bins)
+            self.mil = MeanPool(in_dim=feature_dim)
         elif base_name == "transmil":
             self.mil = TransMIL_cox(n_classes=2)
         else:
