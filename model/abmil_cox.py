@@ -6,8 +6,7 @@ import torch.nn.functional as F
 class ABMIL(nn.Module):
     """Ilse-style attention MIL adapted to a Cox survival risk head."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128,
-                 n_bins=None):
+    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, n_bins=None):
         super().__init__()
         self.n_bins = n_bins
         self.projector = nn.Sequential(
@@ -22,7 +21,7 @@ class ABMIL(nn.Module):
         head_out = n_bins if n_bins is not None else 1
         self.risk_head = nn.Linear(hidden_dim, head_out)
 
-    def _pool_attention(self, H, logits):
+    def pool_attention(self, H, logits):
         weights = F.softmax(logits, dim=1)
         return torch.bmm(weights.transpose(1, 2), H).squeeze(1), weights
 
@@ -31,7 +30,7 @@ class ABMIL(nn.Module):
             x = x.unsqueeze(0)
         H = self.projector(x)
         logits = self.attention(H)
-        pooled, weights = self._pool_attention(H, logits)
+        pooled, weights = self.pool_attention(H, logits)
         out = self.risk_head(pooled)
         if self.n_bins is not None:
             hazards = torch.sigmoid(out)
@@ -43,8 +42,9 @@ class ABMIL(nn.Module):
 class ABMIL_TopK(ABMIL):
     """ABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128,
-                 k=None, n_bins=None):
+    def __init__(
+        self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None, n_bins=None
+    ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
         super().__init__(
@@ -55,22 +55,16 @@ class ABMIL_TopK(ABMIL):
         )
         self.k = k
 
-    def _pool_attention(self, H, logits):
+    def pool_attention(self, H, logits):
         if H.size(1) <= self.k:
             weights = F.softmax(logits, dim=1)
             return torch.bmm(weights.transpose(1, 2), H).squeeze(1), weights
 
-        topk_logits, topk_indices = torch.topk(
-            logits.squeeze(-1), self.k, dim=1
-        )
-        gather_idx = topk_indices.unsqueeze(-1).expand(
-            -1, -1, H.size(-1)
-        )
+        topk_logits, topk_indices = torch.topk(logits.squeeze(-1), self.k, dim=1)
+        gather_idx = topk_indices.unsqueeze(-1).expand(-1, -1, H.size(-1))
         H_topk = torch.gather(H, dim=1, index=gather_idx)
         topk_weights = F.softmax(topk_logits, dim=1).unsqueeze(-1)
-        pooled = torch.bmm(
-            topk_weights.transpose(1, 2), H_topk
-        ).squeeze(1)
+        pooled = torch.bmm(topk_weights.transpose(1, 2), H_topk).squeeze(1)
 
         weights = torch.zeros_like(logits)
         weights.scatter_(1, topk_indices.unsqueeze(-1), topk_weights)
@@ -87,9 +81,17 @@ class ProjABMIL(nn.Module):
     low-dim subspace rather than a fixed one.
     """
 
-    def __init__(self, in_dim=1024, proj_dim=256, proj_type="linear",
-                 hidden_dim=500, attention_dim=128, dropout=0.25, k=None,
-                 n_bins=None):
+    def __init__(
+        self,
+        in_dim=1024,
+        proj_dim=256,
+        proj_type="linear",
+        hidden_dim=500,
+        attention_dim=128,
+        dropout=0.25,
+        k=None,
+        n_bins=None,
+    ):
         super().__init__()
         self.proj_dim = proj_dim
 
