@@ -55,14 +55,6 @@ def add_locked_splits(
     """Assign -1 to locked test rows and 0..4 to train CV folds."""
     test_size = 0.20
     n_splits = 5
-    insufficient = samples["event"].value_counts()
-    insufficient = insufficient[insufficient < n_splits]
-    if not insufficient.empty:
-        raise ValueError(
-            f"Cannot create {n_splits}-fold split; event groups have fewer than "
-            f"{n_splits} samples: {insufficient.to_dict()}"
-        )
-
     train_indices, _ = train_test_split(
         samples.index.to_numpy(),
         test_size=test_size,
@@ -72,9 +64,17 @@ def add_locked_splits(
     )
     result = samples.copy()
     result["split"] = -1
+    train_events = result.loc[train_indices, "event"].to_numpy()
+
+    insufficient = pd.Series(train_events).value_counts()
+    insufficient = insufficient[insufficient < n_splits]
+    if not insufficient.empty:
+        raise ValueError(
+            f"Locked train event groups must contain at least {n_splits} samples "
+            f"for {n_splits}-fold CV: {insufficient.to_dict()}"
+        )
 
     splitter = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
-    train_events = result.loc[train_indices, "event"].to_numpy()
     for fold, (_, validation_positions) in enumerate(
         splitter.split(train_indices, train_events)
     ):
