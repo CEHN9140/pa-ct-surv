@@ -1,18 +1,19 @@
 import os
+
 import numpy as np
 import pandas as pd
 import torch
-from torch.utils.data import Dataset
 from monai.transforms import (
     Compose,
+    Lambda,
     RandFlip,
-    RandRotate,
-    RandZoom,
     RandGaussianNoise,
+    RandRotate,
     RandScaleIntensity,
     RandShiftIntensity,
-    Lambda,
+    RandZoom,
 )
+from torch.utils.data import Dataset
 
 
 def load_ct_npy(ct_path):
@@ -24,23 +25,29 @@ def load_ct_npy(ct_path):
     return np.ascontiguousarray(ct, dtype=np.float32)
 
 
-def _clip01(x):
-    return torch.clamp(x, 0, 1) if torch.is_tensor(x) else np.clip(x, 0, 1).astype(np.float32)
+def clip01(x):
+    return (
+        torch.clamp(x, 0, 1)
+        if torch.is_tensor(x)
+        else np.clip(x, 0, 1).astype(np.float32)
+    )
 
 
-def _build_ct_augmentation():
-    return Compose([
-        RandFlip(prob=0.5, spatial_axis=2),
-        RandRotate(prob=0.3, range_x=0.1, range_y=0.1, range_z=0.1),
-        RandZoom(prob=0.3),
-        RandGaussianNoise(prob=0.2, std=0.01),
-        RandScaleIntensity(prob=0.2, factors=0.1),
-        RandShiftIntensity(prob=0.2, offsets=0.05),
-        Lambda(_clip01),
-    ])
+def build_ct_augmentation():
+    return Compose(
+        [
+            RandFlip(prob=0.5, spatial_axis=2),
+            RandRotate(prob=0.3, range_x=0.1, range_y=0.1, range_z=0.1),
+            RandZoom(prob=0.3),
+            RandGaussianNoise(prob=0.2, std=0.01),
+            RandScaleIntensity(prob=0.2, factors=0.1),
+            RandShiftIntensity(prob=0.2, offsets=0.05),
+            Lambda(clip01),
+        ]
+    )
 
 
-def _get_label_file(data_dir, roi_size=None):
+def get_label_file(data_dir, roi_size=None):
     if roi_size is not None:
         fname = f"all_label_roi{roi_size}.csv"
     else:
@@ -50,8 +57,9 @@ def _get_label_file(data_dir, roi_size=None):
 
 class Path_Dataset(Dataset):
     """Pathology patch feature dataset for survival analysis."""
+
     def __init__(self, data_dir, roi_size=64):
-        label_file = _get_label_file(data_dir, roi_size=roi_size)
+        label_file = get_label_file(data_dir, roi_size=roi_size)
         df = pd.read_csv(label_file)
         cols = ["pa_id", "pa_path", "event", "time"]
         missing = set(cols) - set(df.columns)
@@ -63,13 +71,16 @@ class Path_Dataset(Dataset):
         self.samples["pa_path"] = self.samples["pa_path"].astype(str)
         self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
-        before = len(self.samples)
-        self.samples = self.samples[
-            self.samples["pa_path"].apply(lambda p: os.path.exists(p))
-        ].reset_index(drop=True)
-        dropped = before - len(self.samples)
-        if dropped:
-            print(f"[Warning] Dropped {dropped} samples with missing PT files")
+        missing_paths = self.samples.loc[
+            ~self.samples["pa_path"].apply(os.path.exists), "pa_path"
+        ].tolist()
+        if missing_paths:
+            preview = missing_paths[:10]
+            suffix = " ..." if len(missing_paths) > len(preview) else ""
+            raise FileNotFoundError(
+                f"Missing {len(missing_paths)} pathology PT file(s) in {label_file}: "
+                f"{preview}{suffix}"
+            )
         if len(self.samples) == 0:
             raise ValueError("No valid pathology samples found")
 
@@ -88,7 +99,7 @@ class CT_Dataset(Dataset):
     """CT image dataset for survival analysis."""
 
     def __init__(self, data_dir, roi_size=64, augment=False):
-        label_file = _get_label_file(data_dir, roi_size)
+        label_file = get_label_file(data_dir, roi_size)
         df = pd.read_csv(label_file)
         cols = ["ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
@@ -110,7 +121,7 @@ class CT_Dataset(Dataset):
             print(f"[Warning] Dropped {dropped} samples with missing CT files")
         if len(self.samples) == 0:
             raise ValueError("No valid CT samples found")
-        self.ct_aug = _build_ct_augmentation() if augment else None
+        self.ct_aug = build_ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)
@@ -132,7 +143,7 @@ class Pa_CT_Dataset(Dataset):
     """Paired PA+CT dataset for bimodal survival analysis."""
 
     def __init__(self, data_dir, roi_size=64, augment=False):
-        label_file = _get_label_file(data_dir, roi_size)
+        label_file = get_label_file(data_dir, roi_size)
         df = pd.read_csv(label_file)
         cols = ["pa_id", "pa_path", "h5_path", "ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
@@ -156,7 +167,7 @@ class Pa_CT_Dataset(Dataset):
             print(f"[Warning] Dropped {dropped} samples with missing CT/PT files")
         if len(self.samples) == 0:
             raise ValueError("No valid paired pathology-CT samples found")
-        self.ct_aug = _build_ct_augmentation() if augment else None
+        self.ct_aug = build_ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)

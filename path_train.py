@@ -41,6 +41,15 @@ def predict_path_risk(model, batch, device):
     return risk, event, time, case_id
 
 
+def training_pass_cindex(risks, times, events):
+    """Compute C-index from risks accumulated during one training pass."""
+    risks_np = risks.detach().cpu().numpy().reshape(-1)
+    times_np = times.detach().cpu().numpy().reshape(-1)
+    events_np = events.detach().cpu().numpy().reshape(-1).astype(bool)
+    cindex, *_ = concordance_index_censored(events_np, times_np, risks_np)
+    return float(cindex)
+
+
 def train_path(model, train_loader, val_loader, predict_fn, optimizer, args, device,
                fold, checkpoint_dir, bin_edges=None):
     best_cindex = -np.inf
@@ -54,6 +63,7 @@ def train_path(model, train_loader, val_loader, predict_fn, optimizer, args, dev
         model.train()
         optimizer.zero_grad()
         losses, risks, times, events = [], [], [], []
+        epoch_risks, epoch_times, epoch_events = [], [], []
         if is_nll:
             hazards_list, S_list = [], []
 
@@ -69,6 +79,9 @@ def train_path(model, train_loader, val_loader, predict_fn, optimizer, args, dev
                 risk = model(feat)
                 if isinstance(risk, tuple):
                     risk = risk[0]
+            epoch_risks.append(risk.detach().cpu())
+            epoch_times.append(time.detach().cpu())
+            epoch_events.append(event.detach().cpu())
             risks.append(risk)
             times.append(time.to(device))
             events.append(event.to(device))
@@ -108,7 +121,11 @@ def train_path(model, train_loader, val_loader, predict_fn, optimizer, args, dev
             losses.append(float(loss.detach().cpu()))
 
         avg_loss = float(np.mean(losses)) if losses else np.nan
-        train_cindex, _ = evaluate_survival(model, train_loader, predict_fn, device)
+        train_cindex = training_pass_cindex(
+            torch.cat(epoch_risks),
+            torch.cat(epoch_times),
+            torch.cat(epoch_events),
+        )
 
         model.eval()
         val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
