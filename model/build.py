@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from model.abmil_cox import ABMIL, ProjABMIL
+from model.abmil_cox import ABMIL, ABMIL_TopK, ProjABMIL
 from model.fusion import BilinearFusion, ConcatFusion, CrossAttnFusion, GatedFusion
-from model.gabmil_cox import GatedABMIL
+from model.gabmil_cox import GABMIL, GABMIL_TopK
 from model.meanpool_cox import MeanPool
 from model.resnet_cox import ResNetCox
 from model.transmil_cox import TransMIL_cox
@@ -28,14 +28,24 @@ class Pa_Model(nn.Module):
             k = None
 
         if base_name == "abmil":
-            self.mil = ABMIL(in_dim=feature_dim, k=k, n_bins=n_bins)
+            if k is None:
+                self.mil = ABMIL(in_dim=feature_dim, n_bins=n_bins)
+            else:
+                self.mil = ABMIL_TopK(
+                    in_dim=feature_dim, k=k, n_bins=n_bins
+                )
         elif base_name == "abmil-proj":
             self.mil = ProjABMIL(
                 in_dim=feature_dim, proj_dim=proj_dim,
                 proj_type=proj_type, k=k, n_bins=n_bins,
             )
         elif base_name == "gabmil":
-            self.mil = GatedABMIL(in_dim=feature_dim, k=k, n_bins=n_bins)
+            if k is None:
+                self.mil = GABMIL(in_dim=feature_dim, n_bins=n_bins)
+            else:
+                self.mil = GABMIL_TopK(
+                    in_dim=feature_dim, k=k, n_bins=n_bins
+                )
         elif base_name == "meanpool":
             self.mil = MeanPool(in_dim=feature_dim, n_bins=n_bins)
         elif base_name == "transmil":
@@ -129,10 +139,20 @@ class Pa_CT_Model(nn.Module):
             pa_topk = None
 
         if pa_base_name == "abmil":
-            self.pa_branch = ABMIL(in_dim=1024, k=pa_topk)
+            pa_cls = ABMIL_TopK if pa_topk is not None else ABMIL
+            self.pa_branch = (
+                pa_cls(in_dim=1024, k=pa_topk)
+                if pa_topk is not None
+                else pa_cls(in_dim=1024)
+            )
             pa_output_dim = 500
         elif pa_base_name == "gabmil":
-            self.pa_branch = GatedABMIL(in_dim=1024, k=pa_topk)
+            pa_cls = GABMIL_TopK if pa_topk is not None else GABMIL
+            self.pa_branch = (
+                pa_cls(in_dim=1024, k=pa_topk)
+                if pa_topk is not None
+                else pa_cls(in_dim=1024)
+            )
             pa_output_dim = 500
         else:
             raise ValueError(f"Unknown pa_model_name: {pa_model_name}")
