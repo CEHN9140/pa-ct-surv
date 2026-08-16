@@ -1,0 +1,223 @@
+nohup: ignoring input
+Teacher:   /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints
+Distill:   Cox + alpha*MSE(student_risk, teacher_fused_risk) | alpha=0.3 | start_KD=5
+Augment:   True | batch_size=128 | cox_batch_size=128
+Checkpoints: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v14/seed2024/ct_student_survrisk_mse_a03_bs128_aug_teacherv13/checkpoints
+Results:     /home/gly001/cqj/pa_ct_surv/experiments/final_core_v14/seed2024/ct_student_survrisk_mse_a03_bs128_aug_teacherv13/results
+Loaded 843 paired samples
+
+==================================================
+Fold 1/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints/fold_0/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 4.2410 (Cox: 4.2410, KD: 0.0000) | Val C-index: 0.6957
+Epoch 2/30 | Train Loss: 4.0584 (Cox: 4.0584, KD: 0.0000) | Val C-index: 0.7116
+Epoch 3/30 | Train Loss: 3.9949 (Cox: 3.9949, KD: 0.0000) | Val C-index: 0.7039
+Epoch 4/30 | Train Loss: 4.0057 (Cox: 4.0057, KD: 0.0000) | Val C-index: 0.7087
+Epoch 5/30 | Train Loss: 4.5762 (Cox: 3.9467, KD: 0.6294) | Val C-index: 0.7074
+Epoch 6/30 | Train Loss: 4.5197 (Cox: 3.9798, KD: 0.5399) | Val C-index: 0.7075
+Epoch 7/30 | Train Loss: 4.4506 (Cox: 3.9189, KD: 0.5317) | Val C-index: 0.7170
+Epoch 8/30 | Train Loss: 4.3357 (Cox: 3.8406, KD: 0.4952) | Val C-index: 0.7187
+Epoch 9/30 | Train Loss: 4.3584 (Cox: 3.8783, KD: 0.4801) | Val C-index: 0.7058
+Epoch 10/30 | Train Loss: 4.4353 (Cox: 3.9516, KD: 0.4837) | Val C-index: 0.7229
+Epoch 11/30 | Train Loss: 4.3649 (Cox: 3.8604, KD: 0.5045) | Val C-index: 0.7054
+Epoch 12/30 | Train Loss: 4.3148 (Cox: 3.8459, KD: 0.4689) | Val C-index: 0.7274
+Epoch 13/30 | Train Loss: 4.2877 (Cox: 3.8242, KD: 0.4635) | Val C-index: 0.7371
+Epoch 14/30 | Train Loss: 4.1723 (Cox: 3.7476, KD: 0.4248) | Val C-index: 0.7207
+Epoch 15/30 | Train Loss: 4.1866 (Cox: 3.7566, KD: 0.4300) | Val C-index: 0.7332
+Epoch 16/30 | Train Loss: 4.2270 (Cox: 3.7781, KD: 0.4489) | Val C-index: 0.7211
+Epoch 17/30 | Train Loss: 4.1712 (Cox: 3.7475, KD: 0.4237) | Val C-index: 0.7213
+Epoch 18/30 | Train Loss: 4.0687 (Cox: 3.6802, KD: 0.3884) | Val C-index: 0.6961
+Early stopping at epoch 18
+Fold 0 final Val C-index: 0.7371
+
+Extra survival metrics:
+cutoff_from_train_median: -0.612296
+n_test: 169
+n_high_risk: 73
+n_low_risk: 96
+n_event_test: 65
+logrank_stat: 30.590997
+logrank_p: 0.000000
+auc_36m: 0.774526
+auc_60m: 0.748278
+mean_auc: 0.769886
+HR_high_vs_low: 4.027331
+HR_95CI_lower: 2.365426
+HR_95CI_upper: 6.856862
+cox_p: 0.000000
+
+==================================================
+Fold 2/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints/fold_1/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 4.8219 (Cox: 4.8219, KD: 0.0000) | Val C-index: 0.6364
+Epoch 2/30 | Train Loss: 4.0948 (Cox: 4.0948, KD: 0.0000) | Val C-index: 0.6317
+Epoch 3/30 | Train Loss: 4.0775 (Cox: 4.0775, KD: 0.0000) | Val C-index: 0.6490
+Epoch 4/30 | Train Loss: 3.9596 (Cox: 3.9596, KD: 0.0000) | Val C-index: 0.6584
+Epoch 5/30 | Train Loss: 7.4073 (Cox: 3.9820, KD: 3.4253) | Val C-index: 0.6485
+Epoch 6/30 | Train Loss: 6.0992 (Cox: 4.0555, KD: 2.0438) | Val C-index: 0.6680
+Epoch 7/30 | Train Loss: 5.3143 (Cox: 4.0113, KD: 1.3030) | Val C-index: 0.6772
+Epoch 8/30 | Train Loss: 5.0866 (Cox: 4.0061, KD: 1.0805) | Val C-index: 0.6970
+Epoch 9/30 | Train Loss: 4.9473 (Cox: 3.8699, KD: 1.0775) | Val C-index: 0.6968
+Epoch 10/30 | Train Loss: 5.1278 (Cox: 3.9882, KD: 1.1396) | Val C-index: 0.6959
+Epoch 11/30 | Train Loss: 4.9916 (Cox: 3.9567, KD: 1.0349) | Val C-index: 0.6883
+Epoch 12/30 | Train Loss: 4.9172 (Cox: 3.8689, KD: 1.0484) | Val C-index: 0.7037
+Epoch 13/30 | Train Loss: 4.8441 (Cox: 3.8883, KD: 0.9558) | Val C-index: 0.7082
+Epoch 14/30 | Train Loss: 4.8613 (Cox: 3.8389, KD: 1.0223) | Val C-index: 0.6934
+Epoch 15/30 | Train Loss: 4.8437 (Cox: 3.8205, KD: 1.0232) | Val C-index: 0.6812
+Epoch 16/30 | Train Loss: 4.9002 (Cox: 3.8633, KD: 1.0369) | Val C-index: 0.6872
+Epoch 17/30 | Train Loss: 4.7948 (Cox: 3.8359, KD: 0.9590) | Val C-index: 0.7041
+Epoch 18/30 | Train Loss: 4.8210 (Cox: 3.8414, KD: 0.9796) | Val C-index: 0.6716
+Early stopping at epoch 18
+Fold 1 final Val C-index: 0.7082
+
+Extra survival metrics:
+cutoff_from_train_median: -2.341286
+n_test: 169
+n_high_risk: 89
+n_low_risk: 80
+n_event_test: 65
+logrank_stat: 21.208376
+logrank_p: 0.000004
+auc_36m: 0.758171
+auc_60m: 0.737825
+mean_auc: 0.754019
+HR_high_vs_low: 3.349485
+HR_95CI_lower: 1.941335
+HR_95CI_upper: 5.779037
+cox_p: 0.000014
+
+==================================================
+Fold 3/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints/fold_2/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 4.1866 (Cox: 4.1866, KD: 0.0000) | Val C-index: 0.6467
+Epoch 2/30 | Train Loss: 4.0334 (Cox: 4.0334, KD: 0.0000) | Val C-index: 0.6566
+Epoch 3/30 | Train Loss: 3.9839 (Cox: 3.9839, KD: 0.0000) | Val C-index: 0.6491
+Epoch 4/30 | Train Loss: 3.9548 (Cox: 3.9548, KD: 0.0000) | Val C-index: 0.6550
+Epoch 5/30 | Train Loss: 4.4981 (Cox: 3.9917, KD: 0.5064) | Val C-index: 0.6252
+Epoch 6/30 | Train Loss: 4.1893 (Cox: 3.9268, KD: 0.2626) | Val C-index: 0.6633
+Epoch 7/30 | Train Loss: 4.2001 (Cox: 3.9460, KD: 0.2542) | Val C-index: 0.6914
+Epoch 8/30 | Train Loss: 4.1656 (Cox: 3.9087, KD: 0.2569) | Val C-index: 0.7116
+Epoch 9/30 | Train Loss: 4.1168 (Cox: 3.8796, KD: 0.2372) | Val C-index: 0.7117
+Epoch 10/30 | Train Loss: 4.1031 (Cox: 3.8866, KD: 0.2166) | Val C-index: 0.7021
+Epoch 11/30 | Train Loss: 4.0819 (Cox: 3.8842, KD: 0.1977) | Val C-index: 0.7062
+Epoch 12/30 | Train Loss: 4.1343 (Cox: 3.8801, KD: 0.2542) | Val C-index: 0.7052
+Epoch 13/30 | Train Loss: 4.1033 (Cox: 3.8769, KD: 0.2264) | Val C-index: 0.7112
+Epoch 14/30 | Train Loss: 4.1008 (Cox: 3.8579, KD: 0.2429) | Val C-index: 0.7115
+Early stopping at epoch 14
+Fold 2 final Val C-index: 0.7117
+
+Extra survival metrics:
+cutoff_from_train_median: -1.521230
+n_test: 169
+n_high_risk: 94
+n_low_risk: 75
+n_event_test: 65
+logrank_stat: 28.730934
+logrank_p: 0.000000
+auc_36m: 0.759872
+auc_60m: 0.737854
+mean_auc: 0.753215
+HR_high_vs_low: 4.571933
+HR_95CI_lower: 2.484852
+HR_95CI_upper: 8.412002
+cox_p: 0.000001
+
+==================================================
+Fold 4/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints/fold_3/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 4.0907 (Cox: 4.0907, KD: 0.0000) | Val C-index: 0.6613
+Epoch 2/30 | Train Loss: 3.9975 (Cox: 3.9975, KD: 0.0000) | Val C-index: 0.6490
+Epoch 3/30 | Train Loss: 4.0275 (Cox: 4.0275, KD: 0.0000) | Val C-index: 0.6517
+Epoch 4/30 | Train Loss: 3.9699 (Cox: 3.9699, KD: 0.0000) | Val C-index: 0.6797
+Epoch 5/30 | Train Loss: 5.1768 (Cox: 3.9597, KD: 1.2171) | Val C-index: 0.7015
+Epoch 6/30 | Train Loss: 4.8278 (Cox: 3.9392, KD: 0.8887) | Val C-index: 0.6638
+Epoch 7/30 | Train Loss: 4.6626 (Cox: 3.8794, KD: 0.7833) | Val C-index: 0.6947
+Epoch 8/30 | Train Loss: 4.6591 (Cox: 3.8911, KD: 0.7680) | Val C-index: 0.7166
+Epoch 9/30 | Train Loss: 4.6656 (Cox: 3.8694, KD: 0.7962) | Val C-index: 0.7233
+Epoch 10/30 | Train Loss: 4.5409 (Cox: 3.8166, KD: 0.7244) | Val C-index: 0.7176
+Epoch 11/30 | Train Loss: 4.5582 (Cox: 3.8435, KD: 0.7148) | Val C-index: 0.7034
+Epoch 12/30 | Train Loss: 4.5002 (Cox: 3.8113, KD: 0.6889) | Val C-index: 0.6930
+Epoch 13/30 | Train Loss: 4.5313 (Cox: 3.8299, KD: 0.7014) | Val C-index: 0.7013
+Epoch 14/30 | Train Loss: 4.5049 (Cox: 3.7868, KD: 0.7181) | Val C-index: 0.6941
+Early stopping at epoch 14
+Fold 3 final Val C-index: 0.7233
+
+Extra survival metrics:
+cutoff_from_train_median: -1.061879
+n_test: 168
+n_high_risk: 89
+n_low_risk: 79
+n_event_test: 65
+logrank_stat: 27.681730
+logrank_p: 0.000000
+auc_36m: 0.725543
+auc_60m: 0.772902
+mean_auc: 0.742045
+HR_high_vs_low: 4.306883
+HR_95CI_lower: 2.380918
+HR_95CI_upper: 7.790794
+cox_p: 0.000001
+
+==================================================
+Fold 5/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/experiments/final_core_v13/seed2024/pact_teacher_aug_lr1e-3/checkpoints/fold_4/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 4.1122 (Cox: 4.1122, KD: 0.0000) | Val C-index: 0.7083
+Epoch 2/30 | Train Loss: 4.0214 (Cox: 4.0214, KD: 0.0000) | Val C-index: 0.7140
+Epoch 3/30 | Train Loss: 4.0391 (Cox: 4.0391, KD: 0.0000) | Val C-index: 0.7039
+Epoch 4/30 | Train Loss: 3.9734 (Cox: 3.9734, KD: 0.0000) | Val C-index: 0.6904
+Epoch 5/30 | Train Loss: 4.5879 (Cox: 3.9419, KD: 0.6460) | Val C-index: 0.7126
+Epoch 6/30 | Train Loss: 4.3068 (Cox: 3.9699, KD: 0.3369) | Val C-index: 0.7292
+Epoch 7/30 | Train Loss: 4.2025 (Cox: 3.9343, KD: 0.2681) | Val C-index: 0.7325
+Epoch 8/30 | Train Loss: 4.2544 (Cox: 3.9772, KD: 0.2772) | Val C-index: 0.7198
+Epoch 9/30 | Train Loss: 4.1641 (Cox: 3.9255, KD: 0.2386) | Val C-index: 0.7395
+Epoch 10/30 | Train Loss: 4.1136 (Cox: 3.8779, KD: 0.2357) | Val C-index: 0.7390
+Epoch 11/30 | Train Loss: 4.0823 (Cox: 3.8415, KD: 0.2408) | Val C-index: 0.7516
+Epoch 12/30 | Train Loss: 4.1020 (Cox: 3.8676, KD: 0.2344) | Val C-index: 0.7421
+Epoch 13/30 | Train Loss: 4.1263 (Cox: 3.8925, KD: 0.2338) | Val C-index: 0.7685
+Epoch 14/30 | Train Loss: 4.1444 (Cox: 3.9048, KD: 0.2396) | Val C-index: 0.7531
+Epoch 15/30 | Train Loss: 4.0328 (Cox: 3.8097, KD: 0.2231) | Val C-index: 0.7687
+Epoch 16/30 | Train Loss: 4.0137 (Cox: 3.8084, KD: 0.2053) | Val C-index: 0.7337
+Epoch 17/30 | Train Loss: 3.9918 (Cox: 3.7660, KD: 0.2259) | Val C-index: 0.7693
+Epoch 18/30 | Train Loss: 4.0372 (Cox: 3.8181, KD: 0.2191) | Val C-index: 0.7300
+Epoch 19/30 | Train Loss: 3.9642 (Cox: 3.7476, KD: 0.2166) | Val C-index: 0.7159
+Epoch 20/30 | Train Loss: 4.0124 (Cox: 3.7660, KD: 0.2464) | Val C-index: 0.7098
+Epoch 21/30 | Train Loss: 4.0398 (Cox: 3.7996, KD: 0.2402) | Val C-index: 0.7533
+Epoch 22/30 | Train Loss: 3.9387 (Cox: 3.7347, KD: 0.2040) | Val C-index: 0.6954
+Early stopping at epoch 22
+Fold 4 final Val C-index: 0.7693
+
+Extra survival metrics:
+cutoff_from_train_median: -0.738672
+n_test: 168
+n_high_risk: 87
+n_low_risk: 81
+n_event_test: 65
+logrank_stat: 40.356995
+logrank_p: 0.000000
+auc_36m: 0.817160
+auc_60m: 0.794975
+mean_auc: 0.812810
+HR_high_vs_low: 6.016212
+HR_95CI_lower: 3.207888
+HR_95CI_upper: 11.283065
+cox_p: 0.000000
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index: 0.7299 +/- 0.0247
