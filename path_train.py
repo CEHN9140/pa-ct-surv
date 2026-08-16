@@ -24,6 +24,48 @@ from model.build import Pa_Model
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
+def attention_statistics(weights):
+    """Return attention concentration statistics for one WSI."""
+    weights = weights.detach().float().reshape(-1)
+    weights = weights / weights.sum().clamp_min(torch.finfo(weights.dtype).eps)
+    num_patches = int(weights.numel())
+    entropy = -(weights * weights.clamp_min(1e-12).log()).sum()
+    entropy_norm = entropy / np.log(num_patches) if num_patches > 1 else 0.0
+    effective_patch_num = 1.0 / (weights.square().sum().item())
+    return {
+        "num_patches": num_patches,
+        "max_attention": float(weights.max().item()),
+        "attention_entropy": float(entropy.item()),
+        "attention_entropy_norm": float(entropy_norm),
+        "effective_patch_num": float(effective_patch_num),
+    }
+
+
+def collect_attention_stats(model, loader, device, split, epoch):
+    """Evaluate full WSIs and collect per-case attention statistics."""
+    rows = []
+    model.eval()
+    with torch.no_grad():
+        for feat, _, _, case_id in loader:
+            output = model(feat.to(device, non_blocking=True))
+            if not isinstance(output, tuple) or len(output) < 3:
+                return pd.DataFrame()
+            weights = output[2]
+            if weights is None:
+                return pd.DataFrame()
+            for index in range(weights.size(0)):
+                row = attention_statistics(weights[index])
+                row.update(
+                    {
+                        "epoch": epoch,
+                        "split": split,
+                        "case_id": case_id[index],
+                    }
+                )
+                rows.append(row)
+    return pd.DataFrame(rows)
+
+
 def train_path(
     model,
     train_loader,
@@ -33,6 +75,7 @@ def train_path(
     device,
     fold,
     checkpoint_dir,
+    attention_stats_path=None,
 ):
     best_cindex = -np.inf
     best_state = None
@@ -111,6 +154,40 @@ def train_path(
             val_events_arr.astype(bool), val_times_arr, val_risks_arr
         )
         val_cindex = float(val_cindex)
+
+        if attention_stats_path is not None:
+            attention_df = pd.concat(
+                [
+                    collect_attention_stats(
+                        model, train_loader, device, "train", epoch
+                    ),
+                    collect_attention_stats(
+                        model, val_loader, device, "val", epoch
+                    ),
+                ],
+                ignore_index=True,
+            )
+            if not attention_df.empty:
+                attention_df.to_csv(
+                    attention_stats_path,
+                    mode="a",
+                    header=not attention_stats_path.exists(),
+                    index=False,
+                )
+                summary = attention_df.groupby("split")[
+                    [
+                        "max_attention",
+                        "attention_entropy_norm",
+                        "effective_patch_num",
+                    ]
+                ].mean()
+                summary_text = " | ".join(
+                    f"{split} attention: max={row.max_attention:.4f}, "
+                    f"entropy={row.attention_entropy_norm:.4f}, "
+                    f"effective_patches={row.effective_patch_num:.1f}"
+                    for split, row in summary.iterrows()
+                )
+                print(summary_text)
 
         print(
             f"Epoch {epoch}/{args.num_epochs} | "
@@ -247,6 +324,7 @@ def main():
         "proj_type": args.proj_type,
         "patch_sample_size": args.patch_sample_size,
     }
+    track_attention = args.pa_model == "abmil" and args.patch_sample_size is None
 
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     print("Test set is not accessed during CV")
@@ -280,12 +358,15 @@ def main():
         )
         checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        metrics_dir = Path(args.results_root) / f"fold_{fold}"
+        metrics_dir.mkdir(parents=True, exist_ok=True)
+        attention_stats_path = metrics_dir / "attention_stats.csv"
+        if track_attention and not args.eval_only and attention_stats_path.exists():
+            attention_stats_path.unlink()
 
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            metrics_dir = Path(args.results_root) / f"fold_{fold}"
-            metrics_dir.mkdir(parents=True, exist_ok=True)
             _, val_cindex, _, _, metrics = evaluate_survival(
                 model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
             )
@@ -302,9 +383,10 @@ def main():
             DEVICE,
             fold,
             checkpoint_dir,
+            attention_stats_path=(
+                attention_stats_path if track_attention else None
+            ),
         )
-        metrics_dir = Path(args.results_root) / f"fold_{fold}"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
         )
