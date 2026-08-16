@@ -38,6 +38,7 @@ def attention_statistics(weights):
         "attention_entropy": float(entropy.item()),
         "attention_entropy_norm": float(entropy_norm),
         "effective_patch_num": float(effective_patch_num),
+        "effective_patch_ratio": float(effective_patch_num / num_patches),
     }
 
 
@@ -69,6 +70,7 @@ def collect_attention_stats(model, loader, device, split, epoch):
 def train_path(
     model,
     train_loader,
+    train_stats_loader,
     val_loader,
     optimizer,
     args,
@@ -159,7 +161,7 @@ def train_path(
             attention_df = pd.concat(
                 [
                     collect_attention_stats(
-                        model, train_loader, device, "train", epoch
+                        model, train_stats_loader, device, "train", epoch
                     ),
                     collect_attention_stats(
                         model, val_loader, device, "val", epoch
@@ -179,12 +181,14 @@ def train_path(
                         "max_attention",
                         "attention_entropy_norm",
                         "effective_patch_num",
+                        "effective_patch_ratio",
                     ]
                 ].mean()
                 summary_text = " | ".join(
                     f"{split} attention: max={row.max_attention:.4f}, "
                     f"entropy={row.attention_entropy_norm:.4f}, "
-                    f"effective_patches={row.effective_patch_num:.1f}"
+                    f"effective_patches={row.effective_patch_num:.1f}, "
+                    f"effective_ratio={row.effective_patch_ratio:.4f}"
                     for split, row in summary.iterrows()
                 )
                 print(summary_text)
@@ -351,6 +355,15 @@ def main():
             num_workers=args.num_workers,
             pin_memory=True,
         )
+        train_stats_loader = None
+        if track_attention:
+            train_stats_loader = DataLoader(
+                Subset(dataset, train_idx),
+                batch_size=1,
+                shuffle=False,
+                num_workers=args.num_workers,
+                pin_memory=True,
+            )
 
         model = Pa_Model(**model_kwargs).to(DEVICE)
         optimizer = torch.optim.Adam(
@@ -377,6 +390,7 @@ def main():
         model = train_path(
             model,
             train_loader,
+            train_stats_loader,
             val_loader,
             optimizer,
             args,
