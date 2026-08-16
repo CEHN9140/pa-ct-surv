@@ -200,7 +200,10 @@ def main():
     if not is_topk and args.k is not None:
         raise ValueError("--k is only valid for *-topk models")
     k_tag = f"k{args.k}" if is_topk else "all"
-    default_suffix = f"path-{args.pa_model}-{k_tag}_cox-roi{args.ct_roi_size}"
+    default_suffix = (
+        f"path-{args.pa_model}-{k_tag}_cox"
+        f"-roi{args.ct_roi_size}-seed{args.seed}"
+    )
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join(
             "/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix
