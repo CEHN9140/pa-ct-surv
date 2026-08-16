@@ -6,9 +6,17 @@ import torch.nn.functional as F
 class ABMIL(nn.Module):
     """Ilse-style attention MIL adapted to a Cox survival risk head."""
 
-    # def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
-    def __init__(self, in_dim=1024, hidden_dim=256, attention_dim=64):
+    def __init__(
+        self,
+        in_dim=1024,
+        hidden_dim=500,
+        attention_dim=128,
+        patch_sample_size=None,
+    ):
         super().__init__()
+        if patch_sample_size is not None and patch_sample_size <= 0:
+            raise ValueError("patch_sample_size must be positive")
+        self.patch_sample_size = patch_sample_size
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
@@ -27,6 +35,20 @@ class ABMIL(nn.Module):
     def forward(self, x):
         if x.dim() == 2:
             x = x.unsqueeze(0)
+        if self.training and self.patch_sample_size is not None:
+            if x.size(1) > self.patch_sample_size:
+                sample_indices = torch.stack(
+                    [
+                        torch.randperm(x.size(1), device=x.device)[
+                            : self.patch_sample_size
+                        ]
+                        for _ in range(x.size(0))
+                    ]
+                )
+                gather_indices = sample_indices.unsqueeze(-1).expand(
+                    -1, -1, x.size(-1)
+                )
+                x = torch.gather(x, dim=1, index=gather_indices)
         H = self.projector(x)
         logits = self.attention(H)
         pooled, weights = self.pool_attention(H, logits)
@@ -37,13 +59,21 @@ class ABMIL(nn.Module):
 class ABMIL_TopK(ABMIL):
     """ABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None):
+    def __init__(
+        self,
+        in_dim=1024,
+        hidden_dim=500,
+        attention_dim=128,
+        k=None,
+        patch_sample_size=None,
+    ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
         super().__init__(
             in_dim=in_dim,
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
+            patch_sample_size=patch_sample_size,
         )
         self.k = k
 
@@ -82,6 +112,7 @@ class ProjABMIL(nn.Module):
         attention_dim=128,
         dropout=0.25,
         k=None,
+        patch_sample_size=None,
     ):
         super().__init__()
         self.proj_dim = proj_dim
@@ -110,6 +141,7 @@ class ProjABMIL(nn.Module):
                 in_dim=proj_dim,
                 hidden_dim=hidden_dim,
                 attention_dim=attention_dim,
+                patch_sample_size=patch_sample_size,
             )
         else:
             self.abmil = ABMIL_TopK(
@@ -117,6 +149,7 @@ class ProjABMIL(nn.Module):
                 hidden_dim=hidden_dim,
                 attention_dim=attention_dim,
                 k=k,
+                patch_sample_size=patch_sample_size,
             )
 
     def forward(self, x):

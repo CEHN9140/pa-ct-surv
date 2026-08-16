@@ -188,6 +188,12 @@ def parse_args():
         choices=["linear", "mlp"],
         help="Projection type for abmil-proj (default: linear).",
     )
+    parser.add_argument(
+        "--patch_sample_size",
+        type=int,
+        default=None,
+        help="Random training patch count for ABMIL; validation uses all patches.",
+    )
     return parser.parse_args()
 
 
@@ -199,6 +205,8 @@ def main():
         raise ValueError("--k must be a positive integer for *-topk models")
     if not is_topk and args.k is not None:
         raise ValueError("--k is only valid for *-topk models")
+    if args.patch_sample_size is not None and not args.pa_model.startswith("abmil"):
+        raise ValueError("--patch_sample_size is only supported by ABMIL models")
     k_tag = f"k{args.k}" if is_topk else "all"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
@@ -237,6 +245,7 @@ def main():
         "k": args.k if is_topk else None,
         "proj_dim": args.proj_dim,
         "proj_type": args.proj_type,
+        "patch_sample_size": args.patch_sample_size,
     }
 
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
