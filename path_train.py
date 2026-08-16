@@ -272,11 +272,13 @@ def main():
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            _, val_cindex, _, _ = evaluate_survival(
-                model, train_loader, val_loader, DEVICE
+            metrics_dir = Path(args.results_root) / f"fold_{fold}"
+            metrics_dir.mkdir(parents=True, exist_ok=True)
+            _, val_cindex, _, _, metrics = evaluate_survival(
+                model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
             )
             print(f"Fold {fold} eval C-index: {val_cindex:.4f}")
-            fold_results.append({"fold": fold, "cindex": val_cindex})
+            fold_results.append({"fold": fold, "cindex": val_cindex, **metrics})
             continue
 
         model = train_path(
@@ -289,25 +291,24 @@ def main():
             fold,
             checkpoint_dir,
         )
-        metrics_dir = checkpoint_dir / "best_results"
+        metrics_dir = Path(args.results_root) / f"fold_{fold}"
         metrics_dir.mkdir(parents=True, exist_ok=True)
-        _, fold_cindex, _, _, _ = evaluate_survival(
+        _, fold_cindex, _, _, metrics = evaluate_survival(
             model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
         )
-        fold_results.append({"fold": fold, "cindex": fold_cindex})
+        fold_results.append({"fold": fold, "cindex": fold_cindex, **metrics})
 
     df = pd.DataFrame(fold_results)
-    summary = {
-        "cindex_mean": float(df["cindex"].mean()),
-        "cindex_std": float(df["cindex"].std(ddof=1)),
-        "n_folds": len(fold_results),
-    }
+    mean_row = {"fold": "mean"}
+    for column in df.columns:
+        if column != "fold":
+            mean_row[column] = pd.to_numeric(df[column], errors="coerce").mean()
+    results_df = pd.concat([df, pd.DataFrame([mean_row])], ignore_index=True)
     results_dir = Path(args.results_root)
     results_dir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(results_dir / "cv_fold_metrics.csv", index=False)
-    pd.DataFrame([summary]).to_csv(results_dir / "cv_summary.csv", index=False)
+    results_df.to_csv(results_dir / "fold_metrics.csv", index=False)
     print(f"\n{'=' * 50}\n5-Fold CV Summary\n{'=' * 50}")
-    print(f"  C-index: {summary['cindex_mean']:.4f} +/- {summary['cindex_std']:.4f}")
+    print(f"  C-index mean: {mean_row['cindex']:.4f}")
 
 
 if __name__ == "__main__":

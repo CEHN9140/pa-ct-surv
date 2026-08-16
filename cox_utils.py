@@ -147,8 +147,7 @@ def evaluate_survival(
     if include_hr:
         metrics.update(cox_hr(val_df, time_col, event_col))
 
-    pd.DataFrame([metrics]).to_csv(save_dir / "survival_extra_metrics.csv", index=False)
-    val_df.to_csv(save_dir / "survival_results_with_group.csv", index=False)
+    val_df.to_csv(save_dir / "predictions.csv", index=False)
 
     print("\nExtra survival metrics:")
     for key, value in metrics.items():
@@ -178,22 +177,19 @@ def time_dependent_auc(train_df, test_df, time_col, event_col, risk_col, eval_ti
             print(f"[Warning] Skip {t:g}m AUC: case={has_case}, control={has_control}")
 
     if not valid_times:
-        stats["mean_auc"] = np.nan
         return stats
 
     try:
-        aucs, mean_auc = cumulative_dynamic_auc(
+        aucs, _ = cumulative_dynamic_auc(
             y_train, y_test, test_risk, np.asarray(valid_times)
         )
     except Exception as exc:
         print(f"[Warning] Time-dependent AUC failed: {exc}")
         for t in valid_times:
             stats[f"auc_{int(t)}m"] = np.nan
-        stats["mean_auc"] = np.nan
         return stats
 
     stats.update({f"auc_{int(t)}m": float(auc) for t, auc in zip(valid_times, aucs)})
-    stats["mean_auc"] = float(mean_auc)
     return stats
 
 
