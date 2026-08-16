@@ -6,7 +6,8 @@ import torch.nn.functional as F
 class ABMIL(nn.Module):
     """Ilse-style attention MIL adapted to a Cox survival risk head."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
+    # def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
+    def __init__(self, in_dim=1024, hidden_dim=256, attention_dim=64):
         super().__init__()
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
