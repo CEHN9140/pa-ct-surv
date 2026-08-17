@@ -77,7 +77,6 @@ def train_path(
     device,
     fold,
     checkpoint_dir,
-    attention_stats_path=None,
 ):
     best_cindex = -np.inf
     best_state = None
@@ -157,7 +156,7 @@ def train_path(
         )
         val_cindex = float(val_cindex)
 
-        if attention_stats_path is not None:
+        if args.pa_model == "abmil" and args.patch_sample_size is None:
             attention_df = pd.concat(
                 [
                     collect_attention_stats(
@@ -170,12 +169,6 @@ def train_path(
                 ignore_index=True,
             )
             if not attention_df.empty:
-                attention_df.to_csv(
-                    attention_stats_path,
-                    mode="a",
-                    header=not attention_stats_path.exists(),
-                    index=False,
-                )
                 summary = attention_df.groupby("split")[
                     [
                         "max_attention",
@@ -328,8 +321,6 @@ def main():
         "proj_type": args.proj_type,
         "patch_sample_size": args.patch_sample_size,
     }
-    track_attention = args.pa_model == "abmil" and args.patch_sample_size is None
-
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     print("Test set is not accessed during CV")
     fold_results = []
@@ -356,7 +347,7 @@ def main():
             pin_memory=True,
         )
         train_stats_loader = None
-        if track_attention:
+        if args.pa_model == "abmil" and args.patch_sample_size is None:
             train_stats_loader = DataLoader(
                 Subset(dataset, train_idx),
                 batch_size=1,
@@ -373,9 +364,6 @@ def main():
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
         metrics_dir = Path(args.results_root) / f"fold_{fold}"
         metrics_dir.mkdir(parents=True, exist_ok=True)
-        attention_stats_path = metrics_dir / "attention_stats.csv"
-        if track_attention and not args.eval_only and attention_stats_path.exists():
-            attention_stats_path.unlink()
 
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
@@ -397,9 +385,6 @@ def main():
             DEVICE,
             fold,
             checkpoint_dir,
-            attention_stats_path=(
-                attention_stats_path if track_attention else None
-            ),
         )
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
