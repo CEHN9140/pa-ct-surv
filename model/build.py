@@ -14,7 +14,8 @@ class Pa_Model(nn.Module):
     """Factory for unimodal pathology MIL survival models."""
 
     def __init__(self, model_name="abmil", feature_dim=1024, k=None,
-                 proj_dim=256, proj_type="linear", patch_sample_size=None):
+                 proj_dim=256, proj_type="linear", patch_sample_size=None,
+                 abmil_dropout=0.0):
         super().__init__()
         self.model_name = model_name
 
@@ -31,12 +32,14 @@ class Pa_Model(nn.Module):
                 self.mil = ABMIL(
                     in_dim=feature_dim,
                     patch_sample_size=patch_sample_size,
+                    dropout=abmil_dropout,
                 )
             else:
                 self.mil = ABMIL_TopK(
                     in_dim=feature_dim,
                     k=k,
                     patch_sample_size=patch_sample_size,
+                    dropout=abmil_dropout,
                 )
         elif base_name == "abmil-proj":
             self.mil = ProjABMIL(

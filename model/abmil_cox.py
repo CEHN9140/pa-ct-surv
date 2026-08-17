@@ -12,14 +12,18 @@ class ABMIL(nn.Module):
         hidden_dim=500,
         attention_dim=128,
         patch_sample_size=None,
+        dropout=0.0,
     ):
         super().__init__()
         if patch_sample_size is not None and patch_sample_size <= 0:
             raise ValueError("patch_sample_size must be positive")
+        if not 0.0 <= dropout < 1.0:
+            raise ValueError("dropout must be in [0, 1)")
         self.patch_sample_size = patch_sample_size
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout),
         )
         self.attention = nn.Sequential(
             nn.Linear(hidden_dim, attention_dim),
@@ -66,6 +70,7 @@ class ABMIL_TopK(ABMIL):
         attention_dim=128,
         k=None,
         patch_sample_size=None,
+        dropout=0.0,
     ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
@@ -74,6 +79,7 @@ class ABMIL_TopK(ABMIL):
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
             patch_sample_size=patch_sample_size,
+            dropout=dropout,
         )
         self.k = k
 

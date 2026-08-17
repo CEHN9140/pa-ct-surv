@@ -1,5 +1,4 @@
 import argparse
-import math
 import os
 from pathlib import Path
 
@@ -23,18 +22,6 @@ from final_utils import (
 from model.build import Pa_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-def aem_loss(weights, eps=1e-12):
-    """Negative entropy of already-softmax-normalized attention weights."""
-    attention = weights.squeeze(-1).clamp_min(eps)
-    return (attention * attention.log()).sum(dim=1).mean()
-
-
-def get_aem_lambda(lambda0, epoch, total_epochs):
-    """Cosine-decay AEM coefficient for the current epoch."""
-    progress = (epoch - 1) / max(total_epochs - 1, 1)
-    return lambda0 * 0.5 * (1.0 + math.cos(math.pi * progress))
 
 
 def attention_statistics(weights):
@@ -99,68 +86,41 @@ def train_path(
     for epoch in range(1, args.num_epochs + 1):
         model.train()
         optimizer.zero_grad()
-        total_losses, cox_losses, aem_losses_values = [], [], []
-        risks, times, events, aem_losses = [], [], [], []
+        losses, risks, times, events = [], [], [], []
         all_risks, all_times, all_events = [], [], []
-        lambda_aem = get_aem_lambda(
-            args.aem_lambda, epoch, args.num_epochs
-        )
 
         for batch in train_loader:
             feat, event, time, case_id = batch
             feat = feat.to(device, non_blocking=True)
-            output = model(feat)
-            risk = output[0] if isinstance(output, tuple) else output
+            risk = model(feat)
+            if isinstance(risk, tuple):
+                risk = risk[0]
             all_risks.append(risk.detach().cpu())
             all_times.append(time.detach().cpu())
             all_events.append(event.detach().cpu())
             risks.append(risk)
             times.append(time.to(device))
             events.append(event.to(device))
-            if args.aem_lambda > 0:
-                if not isinstance(output, tuple) or len(output) < 3:
-                    raise ValueError("AEM requires model attention weights")
-                if output[2] is None:
-                    raise ValueError("AEM requires model attention weights")
-                aem_losses.append(aem_loss(output[2]))
 
             if len(risks) >= cox_batch_size:
-                loss_cox = cox_loss(
+                loss = cox_loss(
                     torch.cat(risks), torch.cat(times), torch.cat(events)
                 )
-                loss_aem = (
-                    torch.stack(aem_losses).mean()
-                    if aem_losses
-                    else loss_cox.new_zeros(())
-                )
-                loss = loss_cox + lambda_aem * loss_aem
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
-                total_losses.append(float(loss.detach().cpu()))
-                cox_losses.append(float(loss_cox.detach().cpu()))
-                aem_losses_values.append(float(loss_aem.detach().cpu()))
-                risks, times, events, aem_losses = [], [], [], []
+                losses.append(float(loss.detach().cpu()))
+                risks, times, events = [], [], []
 
         if risks:
-            loss_cox = cox_loss(
+            loss = cox_loss(
                 torch.cat(risks), torch.cat(times), torch.cat(events)
             )
-            loss_aem = (
-                torch.stack(aem_losses).mean()
-                if aem_losses
-                else loss_cox.new_zeros(())
-            )
-            loss = loss_cox + lambda_aem * loss_aem
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-            total_losses.append(float(loss.detach().cpu()))
-            cox_losses.append(float(loss_cox.detach().cpu()))
-            aem_losses_values.append(float(loss_aem.detach().cpu()))
-        avg_total_loss = float(np.mean(total_losses)) if total_losses else np.nan
-        avg_cox_loss = float(np.mean(cox_losses)) if cox_losses else np.nan
-        avg_aem_loss = float(np.mean(aem_losses_values)) if aem_losses_values else 0.0
+            losses.append(float(loss.detach().cpu()))
+        avg_loss = float(np.mean(losses)) if losses else np.nan
         train_cindex, *_ = concordance_index_censored(
             torch.cat(all_events).numpy().astype(bool),
             torch.cat(all_times).numpy(),
@@ -232,10 +192,7 @@ def train_path(
 
         print(
             f"Epoch {epoch}/{args.num_epochs} | "
-            f"Cox Loss: {avg_cox_loss:.4f} | "
-            f"AEM Loss: {avg_aem_loss:.4f} | "
-            f"Lambda: {lambda_aem:.6f} | "
-            f"Total Loss: {avg_total_loss:.4f} | "
+            f"Train Loss: {avg_loss:.4f} | "
             f"Train C-index: {train_cindex:.4f} | "
             f"Val Loss: {val_loss:.4f} | Val C-index: {val_cindex:.4f}"
         )
@@ -289,10 +246,10 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--weight_decay", type=float, default=5e-4)
     parser.add_argument(
-        "--aem_lambda",
+        "--dropout",
         type=float,
         default=0.0,
-        help="Initial AEM negative-entropy coefficient; cosine-decayed to zero.",
+        help="Dropout after the ABMIL projector ReLU; default 0 disables it.",
     )
     parser.add_argument("--cox_batch_size", type=int, default=32)
     parser.add_argument("--num_workers", type=int, default=8)
@@ -335,12 +292,10 @@ def main():
         raise ValueError("--k is only valid for *-topk models")
     if args.patch_sample_size is not None and not args.pa_model.startswith("abmil"):
         raise ValueError("--patch_sample_size is only supported by ABMIL models")
-    if args.aem_lambda < 0:
-        raise ValueError("--aem_lambda must be non-negative")
-    if args.aem_lambda > 0 and args.pa_model != "abmil":
-        raise ValueError("--aem_lambda is currently supported only by standard abmil")
-    if args.aem_lambda > 0 and args.patch_sample_size is not None:
-        raise ValueError("AEM requires full-patch ABMIL; omit --patch_sample_size")
+    if not 0.0 <= args.dropout < 1.0:
+        raise ValueError("--dropout must be in [0, 1)")
+    if args.dropout > 0 and args.pa_model not in {"abmil", "abmil-topk"}:
+        raise ValueError("--dropout is currently supported only by ABMIL models")
     k_tag = f"k{args.k}" if is_topk else "all"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
@@ -358,7 +313,7 @@ def main():
     print(f"Using Device: {DEVICE}")
     msg = f"PA model: {args.pa_model} | k: {args.k}"
     msg += " | Cox PH loss"
-    msg += f" | AEM lambda0: {args.aem_lambda}"
+    msg += f" | ABMIL dropout: {args.dropout}"
     print(msg)
     print(f"Checkpoints: {args.checkpoint_root}")
     print(f"Results: {args.results_root}")
@@ -381,6 +336,7 @@ def main():
         "proj_dim": args.proj_dim,
         "proj_type": args.proj_type,
         "patch_sample_size": args.patch_sample_size,
+        "abmil_dropout": args.dropout,
     }
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     print("Test set is not accessed during CV")
