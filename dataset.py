@@ -16,12 +16,22 @@ from monai.transforms import (
 from torch.utils.data import Dataset
 
 
-def load_ct_npy(ct_path):
+def load_ct_npy(ct_path, expected_roi_size=None):
     ct = np.load(ct_path).astype(np.float32)
     if ct.ndim == 3:
         ct = ct[np.newaxis, ...]
     if ct.shape[0] != 1:
         raise ValueError(f"Invalid CT shape {ct.shape} for {ct_path}")
+    if expected_roi_size is not None:
+        expected_shape = (1, expected_roi_size, expected_roi_size, expected_roi_size)
+        if tuple(ct.shape) != expected_shape:
+            raise ValueError(
+                f"Invalid CT shape {ct.shape}; expected {expected_shape} for {ct_path}"
+            )
+    if not np.isfinite(ct).all():
+        raise ValueError(f"CT values must be finite for {ct_path}")
+    if ct.min() < 0 or ct.max() > 1:
+        raise ValueError(f"CT values must be in [0, 1] for {ct_path}")
     return np.ascontiguousarray(ct, dtype=np.float32)
 
 
@@ -100,6 +110,7 @@ class CT_Dataset(Dataset):
 
     def __init__(self, data_dir, roi_size=64, augment=False):
         label_file = get_label_file(data_dir, roi_size)
+        self.roi_size = roi_size
         df = pd.read_csv(label_file)
         cols = ["ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
@@ -108,17 +119,19 @@ class CT_Dataset(Dataset):
         optional_cols = [c for c in ["pa_id", "h5_path", "split"] if c in df.columns]
         self.samples = df[cols + optional_cols].copy()
         self.samples["ct_id"] = self.samples["ct_id"].astype(str)
-        self.samples["pa_id"] = self.samples["pa_id"].astype(str)
+        if "pa_id" in self.samples:
+            self.samples["pa_id"] = self.samples["pa_id"].astype(str)
         self.samples["ct_path"] = self.samples["ct_path"].astype(str)
         self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
-        before = len(self.samples)
-        self.samples = self.samples[
-            self.samples["ct_path"].apply(lambda p: os.path.exists(p))
-        ].reset_index(drop=True)
-        dropped = before - len(self.samples)
-        if dropped:
-            print(f"[Warning] Dropped {dropped} samples with missing CT files")
+        missing_paths = self.samples.loc[
+            ~self.samples["ct_path"].apply(os.path.exists), "ct_path"
+        ].tolist()
+        if missing_paths:
+            raise FileNotFoundError(
+                f"Missing {len(missing_paths)} CT file(s) in {label_file}: "
+                f"{missing_paths[:10]}"
+            )
         if len(self.samples) == 0:
             raise ValueError("No valid CT samples found")
         self.ct_aug = ct_augmentation() if augment else None
@@ -128,7 +141,7 @@ class CT_Dataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        ct = load_ct_npy(row["ct_path"])
+        ct = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
         if self.ct_aug is not None:
             ct = self.ct_aug(ct)
         return (
@@ -144,6 +157,7 @@ class Pa_CT_Dataset(Dataset):
 
     def __init__(self, data_dir, roi_size=64, augment=False):
         label_file = get_label_file(data_dir, roi_size)
+        self.roi_size = roi_size
         df = pd.read_csv(label_file)
         cols = ["pa_id", "pa_path", "h5_path", "ct_id", "ct_path", "event", "time"]
         missing = set(cols) - set(df.columns)
@@ -157,14 +171,16 @@ class Pa_CT_Dataset(Dataset):
         self.samples["ct_path"] = self.samples["ct_path"].astype(str)
         self.samples["event"] = self.samples["event"].astype(int)
         self.samples["time"] = self.samples["time"].astype(float)
-        before = len(self.samples)
-        self.samples = self.samples[
-            self.samples["pa_path"].apply(lambda p: os.path.exists(p))
-            & self.samples["ct_path"].apply(lambda p: os.path.exists(p))
-        ].reset_index(drop=True)
-        dropped = before - len(self.samples)
-        if dropped:
-            print(f"[Warning] Dropped {dropped} samples with missing CT/PT files")
+        missing_paths = self.samples.loc[
+            ~self.samples["pa_path"].apply(os.path.exists)
+            | ~self.samples["ct_path"].apply(os.path.exists),
+            ["pa_path", "ct_path"],
+        ]
+        if len(missing_paths):
+            raise FileNotFoundError(
+                f"Missing {len(missing_paths)} paired file row(s) in {label_file}: "
+                f"{missing_paths.head(10).to_dict('records')}"
+            )
         if len(self.samples) == 0:
             raise ValueError("No valid paired pathology-CT samples found")
         self.ct_aug = ct_augmentation() if augment else None
@@ -174,7 +190,7 @@ class Pa_CT_Dataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        ct_img = load_ct_npy(row["ct_path"])
+        ct_img = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
         if self.ct_aug is not None:
             ct_img = self.ct_aug(ct_img)
         pa_fea = torch.load(row["pa_path"], map_location="cpu").float()

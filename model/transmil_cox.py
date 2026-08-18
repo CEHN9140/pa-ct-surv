@@ -54,34 +54,18 @@ class PPEG(nn.Module):
 class TransMILCox(nn.Module):
     """Official TransMIL encoder with a scalar Cox risk head."""
 
-    def __init__(self, max_patches=0, eval_max_patches=0):
+    def __init__(self):
         super().__init__()
         self.pos_layer = PPEG(dim=512)
         self._fc1 = nn.Sequential(nn.Linear(1024, 512), nn.ReLU())
         self.cls_token = nn.Parameter(torch.randn(1, 1, 512))
-        self.max_patches = int(max_patches or 0)
-        self.eval_max_patches = int(eval_max_patches or 0)
         self.layer1 = TransLayer(dim=512)
         self.layer2 = TransLayer(dim=512)
         self.norm = nn.LayerNorm(512)
         self._fc2 = nn.Linear(512, 1)
 
-    def _select_patches(self, h):
-        limit = self.max_patches if self.training else self.eval_max_patches
-        if limit <= 0 or h.size(1) <= limit:
-            return h
-
-        if self.training:
-            idx = torch.randperm(h.size(1), device=h.device)[:limit]
-        else:
-            idx = torch.linspace(
-                0, h.size(1) - 1, steps=limit, device=h.device
-            ).long()
-        return h.index_select(dim=1, index=idx)
-
     def forward(self, data):
         h = data.float()  # [B, n, 1024]
-        h = self._select_patches(h)
 
         h = self._fc1(h)  # [B, n, 512]
 

@@ -7,9 +7,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def conv3x3x3(in_planes, out_planes, stride=1, padding=1):
+def conv3x3x3(in_planes, out_planes, stride=1, dilation=1):
     return nn.Conv3d(
-        in_planes, out_planes, kernel_size=3, stride=stride, padding=padding, bias=False
+        in_planes,
+        out_planes,
+        kernel_size=3,
+        stride=stride,
+        padding=dilation,
+        dilation=dilation,
+        bias=False,
     )
 
 
@@ -30,12 +36,12 @@ def downsample_basic_block(x, planes, stride):
 class BasicBlock3D(nn.Module):
     expansion = 1
 
-    def __init__(self, in_planes, planes, stride=1, downsample=None):
+    def __init__(self, in_planes, planes, stride=1, dilation=1, downsample=None):
         super().__init__()
-        self.conv1 = conv3x3x3(in_planes, planes, stride=stride)
+        self.conv1 = conv3x3x3(in_planes, planes, stride=stride, dilation=dilation)
         self.bn1 = nn.BatchNorm3d(planes)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3x3(planes, planes)
+        self.conv2 = conv3x3x3(planes, planes, dilation=dilation)
         self.bn2 = nn.BatchNorm3d(planes)
         self.downsample = downsample
         self.stride = stride
@@ -68,6 +74,7 @@ class ResNetCox(nn.Module):
         pretrained_path=None,
         dropout=0.5,
         model_depth=18,
+        freeze_bn_stats=False,
     ):
         super().__init__()
         if model_depth not in self._DEPTH_CONFIGS:
@@ -79,6 +86,7 @@ class ResNetCox(nn.Module):
         config = self._DEPTH_CONFIGS[model_depth]
         self.model_depth = model_depth
         self.shortcut_type = config["shortcut"]
+        self.freeze_bn_stats = freeze_bn_stats
         self.inplanes = 64
 
         self.conv1 = nn.Conv3d(
@@ -93,13 +101,13 @@ class ResNetCox(nn.Module):
             BasicBlock3D, 64, blocks=layer_blocks[0], stride=1
         )
         self.layer2 = self._make_layer(
-            BasicBlock3D, 128, blocks=layer_blocks[1], stride=2
+            BasicBlock3D, 128, blocks=layer_blocks[1], stride=2, dilation=1
         )
         self.layer3 = self._make_layer(
-            BasicBlock3D, 256, blocks=layer_blocks[2], stride=2
+            BasicBlock3D, 256, blocks=layer_blocks[2], stride=1, dilation=2
         )
         self.layer4 = self._make_layer(
-            BasicBlock3D, 512, blocks=layer_blocks[3], stride=2
+            BasicBlock3D, 512, blocks=layer_blocks[3], stride=1, dilation=4
         )
 
         self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
@@ -128,6 +136,14 @@ class ResNetCox(nn.Module):
                 )
             self._load_medicalnet(pretrained_path)
 
+    def train(self, mode=True):
+        super().train(mode)
+        if mode and self.freeze_bn_stats:
+            for module in self.modules():
+                if isinstance(module, nn.BatchNorm3d):
+                    module.eval()
+        return self
+
     def _load_medicalnet(self, path):
         state = torch.load(path, map_location="cpu")
         if isinstance(state, dict) and "state_dict" in state:
@@ -151,13 +167,16 @@ class ResNetCox(nn.Module):
         if missing:
             print(f"  Missing keys (ok): {missing}")
         if unexpected:
-            print(f"  Unexpected keys: {unexpected}")
+            raise RuntimeError(
+                "Unexpected keys in MedicalNet checkpoint: "
+                f"{unexpected}"
+            )
 
     @property
     def feature_dim(self):
         return self.fc.in_features
 
-    def _make_layer(self, block, planes, blocks, stride=1):
+    def _make_layer(self, block, planes, blocks, stride=1, dilation=1):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             if self.shortcut_type == "A":
@@ -179,11 +198,17 @@ class ResNetCox(nn.Module):
                 )
         layers = []
         layers.append(
-            block(self.inplanes, planes, stride=stride, downsample=downsample)
+            block(
+                self.inplanes,
+                planes,
+                stride=stride,
+                dilation=dilation,
+                downsample=downsample,
+            )
         )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
+            layers.append(block(self.inplanes, planes, dilation=dilation))
         return nn.Sequential(*layers)
 
     def extract_features(self, x):

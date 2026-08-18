@@ -12,13 +12,11 @@ from torch.utils.data import DataLoader, Subset
 from cox_utils import (
     cox_loss,
     evaluate_survival,
-    evaluate_survival_metrics,
     pairwise_ranking_loss,
 )
 from dataset import CT_Dataset
-from final_utils import cv_fold_indices, locked_split_indices, save_final_artifacts, seed_everything
+from final_utils import cv_fold_indices, locked_split_indices, seed_everything
 from model.build import CT_Model
-from sksurv.metrics import concordance_index_censored
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -66,27 +64,16 @@ def train_ct(model, train_loader, train_eval_loader, val_loader, predict_fn,
             train_losses.append(float(loss.detach().cpu()))
 
         avg_loss = float(np.mean(train_losses)) if train_losses else np.nan
-        train_cindex, _ = evaluate_survival(model, train_eval_loader, predict_fn, device)
-
-        model.eval()
-        val_risks, val_times, val_events = [], [], []
-        val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
-        with torch.no_grad():
-            for batch in val_loader:
-                risk, event, time, case_id = predict_fn(model, batch, device)
-                val_risks.append(risk)
-                val_times.append(time.to(device))
-                val_events.append(event.to(device))
-                val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
-                val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
-                val_events_np.extend(event.detach().cpu().numpy().reshape(-1).astype(int).tolist())
-                val_case_ids.extend(case_id)
-        val_loss = cox_loss(torch.cat(val_risks), torch.cat(val_times), torch.cat(val_events))
-        val_risks_arr = np.asarray(val_risks_np, dtype=np.float32)
-        val_times_arr = np.asarray(val_times_np, dtype=np.float32)
-        val_events_arr = np.asarray(val_events_np, dtype=int)
-        val_cindex, *_ = concordance_index_censored(val_events_arr.astype(bool), val_times_arr, val_risks_arr)
-        val_cindex = float(val_cindex)
+        train_cindex, val_cindex, _, val_df = evaluate_survival(
+            model, train_eval_loader, val_loader, device
+        )
+        val_loss = float(
+            cox_loss(
+                torch.as_tensor(val_df["risk_score"].to_numpy(), device=device),
+                torch.as_tensor(val_df["dfs.month"].to_numpy(), device=device),
+                torch.as_tensor(val_df["dfs.status"].to_numpy(), device=device),
+            ).detach().cpu()
+        )
 
         print(f"Epoch {epoch}/{args.num_epochs} | "
               f"Train Loss: {avg_loss:.4f} | Train C-index: {train_cindex:.4f} | "
@@ -104,29 +91,11 @@ def train_ct(model, train_loader, train_eval_loader, val_loader, predict_fn,
 
     model.load_state_dict(best_state)
     torch.save(best_state, checkpoint_dir / "best_model.pth")
-    val_cindex, val_df = evaluate_survival(model, val_loader, predict_fn, device)
-    _, train_df = evaluate_survival(model, train_eval_loader, predict_fn, device)
+    _, val_cindex, train_df, val_df = evaluate_survival(
+        model, train_eval_loader, val_loader, device
+    )
     print(f"Fold {fold} final C-index: {val_cindex:.4f}")
     return val_cindex, train_df, val_df
-
-
-def train_ct_final(model, train_loader, optimizer, args, device):
-    history = []
-    loss_fn = pairwise_ranking_loss if getattr(args, "loss_type", "cox") == "pairwise" else cox_loss
-    for epoch in range(1, args.num_epochs + 1):
-        model.train()
-        losses = []
-        for batch in train_loader:
-            risk, event, time, _ = predict_ct_risk(model, batch, device)
-            loss = loss_fn(risk, time.to(device), event.to(device))
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            losses.append(float(loss.detach().cpu()))
-        avg_loss = float(np.mean(losses)) if losses else np.nan
-        history.append({"epoch": epoch, "train_loss": avg_loss})
-        print(f"Final train epoch {epoch}/{args.num_epochs} | Loss: {avg_loss:.4f}")
-    return history
 
 
 def parse_args():
@@ -137,6 +106,10 @@ def parse_args():
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     parser.add_argument("--ct_augment", action="store_true")
     parser.add_argument("--freeze_backbone", action="store_true")
+    parser.add_argument("--freeze_bn_stats", dest="freeze_bn_stats", action="store_true")
+    parser.add_argument("--update_bn_stats", dest="freeze_bn_stats", action="store_false")
+    parser.set_defaults(freeze_bn_stats=True)
+    parser.add_argument("--dropout", type=float, default=0.5)
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--num_epochs", type=int, default=50)
@@ -148,7 +121,6 @@ def parse_args():
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--seed", type=int, default=42,
                         help="Seed for initialization and training randomness.")
-    parser.add_argument("--final_train", action="store_true")
     parser.add_argument("--eval_only", action="store_true")
     parser.add_argument("--loss_type", default="cox", choices=["cox", "pairwise"])
     return parser.parse_args()
@@ -156,14 +128,17 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.final_train and args.eval_only:
-        raise ValueError("--final_train and --eval_only cannot be used together")
-    seeds = [args.seed, args.seed]
     seed_everything(args.seed)
 
     _ct = "_aug" if args.ct_augment else "_noaug"
     _pr = "_pretrain" if args.ct_pretrained_path else ""
-    default_suffix = f"ct-{args.ct_model}-roi{args.ct_roi_size}{_ct}{_pr}"
+    _bn = "_bnfreeze" if args.freeze_bn_stats else "_bnupdate"
+    backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
+    default_suffix = (
+        f"ct-{args.ct_model}-roi{args.ct_roi_size}{_ct}{_pr}"
+        f"-bs{args.batch_size}-lr{args.lr:g}-blr{backbone_lr:g}"
+        f"-wd{args.weight_decay:g}{_bn}-seed{args.seed}"
+    )
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
@@ -193,20 +168,9 @@ def main():
         "model_name": args.ct_model,
         "pretrained_path": args.ct_pretrained_path,
         "freeze_backbone": args.freeze_backbone,
+        "dropout": args.dropout,
+        "freeze_bn_stats": args.freeze_bn_stats,
     }
-
-    if args.final_train:
-        train_generator = torch.Generator().manual_seed(args.seed)
-        train_loader = DataLoader(Subset(dataset, train_indices), batch_size=args.batch_size,
-                                  shuffle=True, drop_last=True, num_workers=args.num_workers,
-                                  pin_memory=True, worker_init_fn=worker_init_fn, generator=train_generator)
-        model = CT_Model(**model_kwargs).to(DEVICE)
-        optimizer = build_ct_optimizer(model, lr=args.lr, weight_decay=args.weight_decay,
-                                       ct_backbone_lr=args.ct_backbone_lr)
-        history = train_ct_final(model, train_loader, optimizer, args, DEVICE)
-        paths = save_final_artifacts(model, args, args.checkpoint_root, args.results_root, history, model_type="ct")
-        print(f"Final model: {paths[0]}")
-        return
 
     fold_splits = [
         cv_fold_indices(dataset.samples, fold)
@@ -226,7 +190,7 @@ def main():
         val_subset = Subset(val_dataset, val_idx)
 
         train_loader = DataLoader(train_subset, batch_size=args.batch_size, shuffle=True,
-                                  drop_last=True, num_workers=args.num_workers, pin_memory=True,
+                                  drop_last=False, num_workers=args.num_workers, pin_memory=True,
                                   worker_init_fn=worker_init_fn, generator=train_generator)
         train_eval_loader = DataLoader(train_eval_subset, batch_size=args.batch_size, shuffle=False,
                                        drop_last=False, num_workers=args.num_workers, pin_memory=True,
@@ -243,9 +207,10 @@ def main():
 
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
-            model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            _, train_df = evaluate_survival(model, train_eval_loader, predict_ct_risk, DEVICE)
-            val_cindex, val_df = evaluate_survival(model, val_loader, predict_ct_risk, DEVICE)
+            model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE, weights_only=True))
+            _, val_cindex, _, _ = evaluate_survival(
+                model, train_eval_loader, val_loader, DEVICE
+            )
             print(f"Fold {fold} eval C-index: {val_cindex:.4f}")
             fold_results.append({"fold": fold, "cindex": val_cindex})
             continue
@@ -254,9 +219,6 @@ def main():
                                                   val_loader, predict_ct_risk, optimizer, args,
                                                   DEVICE, fold, checkpoint_dir)
         fold_results.append({"fold": fold, "cindex": fold_cindex})
-        metrics_dir = checkpoint_dir / "best_results"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
-        evaluate_survival_metrics(train_df, val_df, metrics_dir)
 
     df = pd.DataFrame(fold_results)
     summary = {"cindex_mean": float(df["cindex"].mean()),

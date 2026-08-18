@@ -1,9 +1,11 @@
 import argparse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import torch
 import yaml
+from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
 from cox_utils import evaluate_survival
@@ -15,11 +17,12 @@ from model.build import CT_Model, Pa_CT_Model, Pa_Model
 def build_model(model_type, config):
     if model_type == "ct":
         return CT_Model(
-            model_name=config["model_name"],
+            model_name=config.get("ct_model", config.get("model_name", "resnet18")),
             pretrained_path=None,
-            dropout=float(config["dropout"]),
-            freeze_backbone=False,
-            model_depth=int(config.get("model_depth", 18)),
+            dropout=float(config.get("dropout", 0.5)),
+            freeze_backbone=bool(config.get("freeze_backbone", False)),
+            model_depth=config.get("ct_model_depth"),
+            freeze_bn_stats=bool(config.get("freeze_bn_stats", True)),
         )
     if model_type == "path":
         return Pa_Model(
@@ -122,7 +125,8 @@ def main():
             f"--model_type={args.model_type}"
         )
 
-    roi_size = int(config["roi_size"])
+    roi_key = "ct_roi_size" if args.model_type == "ct" else "roi_size"
+    roi_size = int(config[roi_key])
     dataset = build_dataset(args.model_type, args.data_dir, roi_size)
     test_subset = select_split_dataset(dataset, split_name="test")
     default_batch_size = 1 if args.model_type in {"path", "pact"} else int(
@@ -141,9 +145,31 @@ def main():
     model = build_model(args.model_type, config).to(device)
     state = torch.load(checkpoint, map_location=device, weights_only=True)
     model.load_state_dict(state)
-    cindex, predictions = evaluate_survival(
-        model, loader, predict_risk(args.model_type), device
-    )
+    if args.model_type == "ct":
+        risks, times, events, case_ids = [], [], [], []
+        model.eval()
+        with torch.no_grad():
+            for ct, event, time, case_id in loader:
+                risks.extend(model(ct.to(device, non_blocking=True)).cpu().numpy())
+                times.extend(time.numpy())
+                events.extend(event.numpy())
+                case_ids.extend(case_id)
+        risks = np.asarray(risks, dtype=np.float32)
+        times = np.asarray(times, dtype=np.float32)
+        events = np.asarray(events, dtype=int)
+        cindex = float(concordance_index_censored(events.astype(bool), times, risks)[0])
+        predictions = pd.DataFrame(
+            {
+                "case_id": case_ids,
+                "dfs.month": times,
+                "dfs.status": events,
+                "risk_score": risks,
+            }
+        )
+    else:
+        cindex, predictions = evaluate_survival(
+            model, loader, predict_risk(args.model_type), device
+        )
 
     point, ci_lower, ci_upper, valid_bootstrap = bootstrap_cindex(
         predictions["dfs.status"].to_numpy(),

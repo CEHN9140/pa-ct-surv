@@ -124,25 +124,19 @@ def train_path(
     best_cindex = -np.inf
     best_state = None
     cox_batch_size = getattr(args, "cox_batch_size", 64)
-    is_dsmil = args.pa_model == "dsmil"
     wait = 0
 
     for epoch in range(1, args.num_epochs + 1):
         model.train()
         optimizer.zero_grad()
-        losses, bag_losses, instance_losses = [], [], []
-        risks, instance_risks, times, events = [], [], [], []
+        losses, risks, times, events = [], [], [], []
         all_risks, all_times, all_events = [], [], []
 
         for batch in train_loader:
             feat, event, time, case_id = batch
             feat = feat.to(device, non_blocking=True)
             output = model(feat)
-            if is_dsmil:
-                risk, instance_risk = output[:2]
-                instance_risks.append(instance_risk)
-            else:
-                risk = output[0] if isinstance(output, tuple) else output
+            risk = output[0] if isinstance(output, tuple) else output
             all_risks.append(risk.detach().cpu())
             all_times.append(time.detach().cpu())
             all_events.append(event.detach().cpu())
@@ -151,52 +145,24 @@ def train_path(
             events.append(event.to(device))
 
             if len(risks) >= cox_batch_size:
-                loss_bag = cox_loss(
+                loss = cox_loss(
                     torch.cat(risks), torch.cat(times), torch.cat(events)
                 )
-                if is_dsmil:
-                    loss_instance = cox_loss(
-                        torch.cat(instance_risks),
-                        torch.cat(times),
-                        torch.cat(events),
-                    )
-                    loss = 0.5 * (loss_bag + loss_instance)
-                else:
-                    loss_instance = loss_bag.new_zeros(())
-                    loss = loss_bag
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
                 losses.append(float(loss.detach().cpu()))
-                bag_losses.append(float(loss_bag.detach().cpu()))
-                instance_losses.append(float(loss_instance.detach().cpu()))
-                risks, instance_risks, times, events = [], [], [], []
+                risks, times, events = [], [], []
 
         if risks:
-            loss_bag = cox_loss(
+            loss = cox_loss(
                 torch.cat(risks), torch.cat(times), torch.cat(events)
             )
-            if is_dsmil:
-                loss_instance = cox_loss(
-                    torch.cat(instance_risks),
-                    torch.cat(times),
-                    torch.cat(events),
-                )
-                loss = 0.5 * (loss_bag + loss_instance)
-            else:
-                loss_instance = loss_bag.new_zeros(())
-                loss = loss_bag
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
             losses.append(float(loss.detach().cpu()))
-            bag_losses.append(float(loss_bag.detach().cpu()))
-            instance_losses.append(float(loss_instance.detach().cpu()))
         avg_loss = float(np.mean(losses)) if losses else np.nan
-        avg_bag_loss = float(np.mean(bag_losses)) if bag_losses else np.nan
-        avg_instance_loss = (
-            float(np.mean(instance_losses)) if instance_losses else np.nan
-        )
         train_cindex, *_ = concordance_index_censored(
             torch.cat(all_events).numpy().astype(bool),
             torch.cat(all_times).numpy(),
@@ -236,7 +202,7 @@ def train_path(
         )
         val_cindex = float(val_cindex)
 
-        if args.pa_model == "abmil" and args.patch_sample_size is None:
+        if args.pa_model == "abmil":
             attention_df = pd.concat(
                 [
                     collect_attention_stats(
@@ -281,17 +247,9 @@ def train_path(
                         f"{row.branch_correlation_mean:.4f}"
                     )
 
-        loss_message = (
+        print(
             f"Epoch {epoch}/{args.num_epochs} | "
             f"Train Loss: {avg_loss:.4f} | "
-        )
-        if is_dsmil:
-            loss_message += (
-                f"Bag Cox: {avg_bag_loss:.4f} | "
-                f"Instance Cox: {avg_instance_loss:.4f} | "
-            )
-        print(
-            loss_message +
             f"Train C-index: {train_cindex:.4f} | "
             f"Val Loss: {val_loss:.4f} | Val C-index: {val_cindex:.4f}"
         )
@@ -330,7 +288,6 @@ def parse_args():
             "gabmil-topk",
             "meanpool",
             "transmil",
-            "dsmil",
         ],
     )
     parser.add_argument(
@@ -366,12 +323,6 @@ def parse_args():
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
-    parser.add_argument(
-        "--patch_sample_size",
-        type=int,
-        default=None,
-        help="Random training patch count for ABMIL; validation uses all patches.",
-    )
     return parser.parse_args()
 
 
@@ -383,8 +334,6 @@ def main():
         raise ValueError("--k must be a positive integer for *-topk models")
     if not is_topk and args.k is not None:
         raise ValueError("--k is only valid for *-topk models")
-    if args.patch_sample_size is not None and not args.pa_model.startswith("abmil"):
-        raise ValueError("--patch_sample_size is only supported by ABMIL models")
     if not 0.0 <= args.dropout < 1.0:
         raise ValueError("--dropout must be in [0, 1)")
     if args.dropout > 0 and args.pa_model not in {"abmil", "abmil-topk"}:
@@ -437,7 +386,6 @@ def main():
         "model_name": args.pa_model,
         "feature_dim": 1024,
         "k": args.k if is_topk else None,
-        "patch_sample_size": args.patch_sample_size,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
     }
@@ -467,7 +415,7 @@ def main():
             pin_memory=True,
         )
         train_stats_loader = None
-        if args.pa_model == "abmil" and args.patch_sample_size is None:
+        if args.pa_model == "abmil":
             train_stats_loader = DataLoader(
                 Subset(dataset, train_idx),
                 batch_size=1,

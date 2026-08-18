@@ -11,18 +11,14 @@ class ABMIL(nn.Module):
         in_dim=1024,
         hidden_dim=500,
         attention_dim=128,
-        patch_sample_size=None,
         dropout=0.0,
         attention_branches=1,
     ):
         super().__init__()
-        if patch_sample_size is not None and patch_sample_size <= 0:
-            raise ValueError("patch_sample_size must be positive")
         if not 0.0 <= dropout < 1.0:
             raise ValueError("dropout must be in [0, 1)")
         if attention_branches <= 0:
             raise ValueError("attention_branches must be positive")
-        self.patch_sample_size = patch_sample_size
         self.attention_branches = attention_branches
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
@@ -44,20 +40,6 @@ class ABMIL(nn.Module):
     def forward(self, x):
         if x.dim() == 2:
             x = x.unsqueeze(0)
-        if self.training and self.patch_sample_size is not None:
-            if x.size(1) > self.patch_sample_size:
-                sample_indices = torch.stack(
-                    [
-                        torch.randperm(x.size(1), device=x.device)[
-                            : self.patch_sample_size
-                        ]
-                        for _ in range(x.size(0))
-                    ]
-                )
-                gather_indices = sample_indices.unsqueeze(-1).expand(
-                    -1, -1, x.size(-1)
-                )
-                x = torch.gather(x, dim=1, index=gather_indices)
         H = self.projector(x)
         logits = self.attention(H)
         pooled, weights = self.pool_attention(H, logits)
@@ -74,7 +56,6 @@ class ABMIL_TopK(ABMIL):
         hidden_dim=500,
         attention_dim=128,
         k=None,
-        patch_sample_size=None,
         dropout=0.0,
         attention_branches=1,
     ):
@@ -84,7 +65,6 @@ class ABMIL_TopK(ABMIL):
             in_dim=in_dim,
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
-            patch_sample_size=patch_sample_size,
             dropout=dropout,
             attention_branches=attention_branches,
         )

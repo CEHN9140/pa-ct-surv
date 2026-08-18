@@ -7,7 +7,6 @@ from model.fusion import BilinearFusion, ConcatFusion, CrossAttnFusion, GatedFus
 from model.gabmil_cox import GABMIL, GABMIL_TopK
 from model.meanpool_cox import MeanPool
 from model.resnet_cox import ResNetCox
-from model.dsmil_cox import DSMILCox
 from model.transmil_cox import TransMILCox
 
 
@@ -15,8 +14,7 @@ class Pa_Model(nn.Module):
     """Factory for unimodal pathology MIL survival models."""
 
     def __init__(self, model_name="abmil", feature_dim=1024, k=None,
-                 patch_sample_size=None, abmil_dropout=0.0,
-                 attention_branches=1):
+                 abmil_dropout=0.0, attention_branches=1):
         super().__init__()
         self.model_name = model_name
 
@@ -32,7 +30,6 @@ class Pa_Model(nn.Module):
             if k is None:
                 self.mil = ABMIL(
                     in_dim=feature_dim,
-                    patch_sample_size=patch_sample_size,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -40,7 +37,6 @@ class Pa_Model(nn.Module):
                 self.mil = ABMIL_TopK(
                     in_dim=feature_dim,
                     k=k,
-                    patch_sample_size=patch_sample_size,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -53,8 +49,6 @@ class Pa_Model(nn.Module):
             self.mil = MeanPool(in_dim=feature_dim)
         elif base_name == "transmil":
             self.mil = TransMILCox()
-        elif base_name == "dsmil":
-            self.mil = DSMILCox(input_size=feature_dim)
         else:
             raise ValueError(f"Unknown model_name: {model_name}")
 
@@ -68,7 +62,13 @@ class CT_Model(nn.Module):
     """Factory for unimodal CT survival models."""
 
     def __init__(
-        self, model_name="resnet18", pretrained_path=None, freeze_backbone=False
+        self,
+        model_name="resnet18",
+        pretrained_path=None,
+        freeze_backbone=False,
+        dropout=0.5,
+        model_depth=None,
+        freeze_bn_stats=False,
     ):
         super().__init__()
         self.model_name = model_name
@@ -76,11 +76,15 @@ class CT_Model(nn.Module):
         depth_map = {"resnet10": 10, "resnet18": 18}
         if model_name not in depth_map:
             raise ValueError(f"Unknown CT model: {model_name}")
+        model_depth = depth_map[model_name] if model_depth is None else model_depth
+        if model_depth not in depth_map.values():
+            raise ValueError(f"Unknown CT model depth: {model_depth}")
         self.ct = ResNetCox(
             in_channels=1,
             pretrained_path=pretrained_path,
-            dropout=0.5,
-            model_depth=depth_map[model_name],
+            dropout=dropout,
+            model_depth=model_depth,
+            freeze_bn_stats=freeze_bn_stats,
         )
         if freeze_backbone:
             for name, param in self.ct.named_parameters():
