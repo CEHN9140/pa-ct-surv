@@ -259,7 +259,6 @@ def parse_args():
         choices=[
             "abmil",
             "abmil-topk",
-            "abmil-proj",
             "gabmil",
             "gabmil-topk",
             "meanpool",
@@ -299,18 +298,6 @@ def parse_args():
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
-    parser.add_argument(
-        "--proj_dim",
-        type=int,
-        default=256,
-        help="Projection dim for abmil-proj (default: 256).",
-    )
-    parser.add_argument(
-        "--proj_type",
-        default="linear",
-        choices=["linear", "mlp"],
-        help="Projection type for abmil-proj (default: linear).",
-    )
     parser.add_argument(
         "--patch_sample_size",
         type=int,
@@ -382,8 +369,6 @@ def main():
         "model_name": args.pa_model,
         "feature_dim": 1024,
         "k": args.k if is_topk else None,
-        "proj_dim": args.proj_dim,
-        "proj_type": args.proj_type,
         "patch_sample_size": args.patch_sample_size,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
