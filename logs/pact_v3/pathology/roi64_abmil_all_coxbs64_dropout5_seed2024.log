@@ -280,3 +280,27 @@ train attention: max=0.0020, entropy=0.9369, effective_patches=4335.5, effective
 Epoch 13/30 | Train Loss: 2.6288 | Train C-index: 0.8366 | Val Loss: 4.0583 | Val C-index: 0.7320
 train attention: max=0.0025, entropy=0.9293, effective_patches=3826.7, effective_ratio=0.3398 | val attention: max=0.0023, entropy=0.9301, effective_patches=4044.4, effective_ratio=0.3497
 Epoch 14/30 | Train Loss: 2.6008 | Train C-index: 0.8458 | Val Loss: 4.1034 | Val C-index: 0.7279
+train attention: max=0.0032, entropy=0.9183, effective_patches=3268.7, effective_ratio=0.2899 | val attention: max=0.0028, entropy=0.9191, effective_patches=3468.8, effective_ratio=0.2996
+Epoch 15/30 | Train Loss: 2.6566 | Train C-index: 0.8510 | Val Loss: 4.1418 | Val C-index: 0.7279
+Early stopping at epoch 15
+Fold 4 final C-index: 0.7551
+
+Extra survival metrics:
+cutoff_from_train_median: -0.546905
+n_test: 112
+n_high_risk: 66
+n_low_risk: 46
+n_event_test: 38
+logrank_stat: 23.504879
+logrank_p: 0.000001
+auc_36m: 0.799678
+auc_60m: 0.763052
+HR_high_vs_low: 10.495979
+HR_95CI_lower: 3.222268
+HR_95CI_upper: 34.188833
+cox_p: 0.000095
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index mean: 0.7420

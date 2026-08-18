@@ -29,21 +29,17 @@ class ABMIL(nn.Module):
             nn.ReLU(),
             nn.Dropout(dropout),
         )
-        self.attention = nn.ModuleList(
-            [
-                nn.Sequential(
-                    nn.Linear(hidden_dim, attention_dim),
-                    nn.Tanh(),
-                    nn.Linear(attention_dim, 1),
-                )
-                for _ in range(attention_branches)
-            ]
+        self.attention = nn.Sequential(
+            nn.Linear(hidden_dim, attention_dim),
+            nn.Tanh(),
+            nn.Linear(attention_dim, attention_branches),
         )
         self.risk_head = nn.Linear(hidden_dim * attention_branches, 1)
 
     def pool_attention(self, H, logits):
-        weights = F.softmax(logits, dim=1)
-        return torch.bmm(weights.transpose(1, 2), H).squeeze(1), weights
+        weights = F.softmax(logits.transpose(1, 2), dim=2)
+        pooled = torch.bmm(weights, H)
+        return pooled.reshape(H.size(0), -1), weights.transpose(1, 2)
 
     def forward(self, x):
         if x.dim() == 2:
@@ -63,16 +59,10 @@ class ABMIL(nn.Module):
                 )
                 x = torch.gather(x, dim=1, index=gather_indices)
         H = self.projector(x)
-        branch_features = []
-        branch_attentions = []
-        for attention in self.attention:
-            logits = attention(H)
-            pooled, weights = self.pool_attention(H, logits)
-            branch_features.append(pooled)
-            branch_attentions.append(weights)
-        pooled = torch.cat(branch_features, dim=1)
+        logits = self.attention(H)
+        pooled, weights = self.pool_attention(H, logits)
         out = self.risk_head(pooled)
-        return out.squeeze(-1), pooled, branch_attentions
+        return out.squeeze(-1), pooled, weights
 
 
 class ABMIL_TopK(ABMIL):
@@ -102,18 +92,26 @@ class ABMIL_TopK(ABMIL):
 
     def pool_attention(self, H, logits):
         if H.size(1) <= self.k:
-            weights = F.softmax(logits, dim=1)
-            return torch.bmm(weights.transpose(1, 2), H).squeeze(1), weights
+            return super().pool_attention(H, logits)
 
-        topk_logits, topk_indices = torch.topk(logits.squeeze(-1), self.k, dim=1)
-        gather_idx = topk_indices.unsqueeze(-1).expand(-1, -1, H.size(-1))
-        H_topk = torch.gather(H, dim=1, index=gather_idx)
-        topk_weights = F.softmax(topk_logits, dim=1).unsqueeze(-1)
-        pooled = torch.bmm(topk_weights.transpose(1, 2), H_topk).squeeze(1)
+        branch_logits = logits.transpose(1, 2)
+        topk_logits, topk_indices = torch.topk(
+            branch_logits, self.k, dim=2
+        )
+        topk_weights = F.softmax(topk_logits, dim=2)
+        H_by_branch = H.unsqueeze(1).expand(
+            -1, self.attention_branches, -1, -1
+        )
+        gather_idx = topk_indices.unsqueeze(-1).expand(
+            -1, -1, -1, H.size(-1)
+        )
+        H_topk = torch.gather(H_by_branch, dim=2, index=gather_idx)
+        pooled = torch.sum(topk_weights.unsqueeze(-1) * H_topk, dim=2)
+        pooled = pooled.reshape(H.size(0), -1)
 
-        weights = torch.zeros_like(logits)
-        weights.scatter_(1, topk_indices.unsqueeze(-1), topk_weights)
-        return pooled, weights
+        weights = torch.zeros_like(branch_logits)
+        weights.scatter_(2, topk_indices, topk_weights)
+        return pooled, weights.transpose(1, 2)
 
 
 class ProjABMIL(nn.Module):

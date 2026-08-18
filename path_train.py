@@ -53,10 +53,13 @@ def collect_attention_stats(model, loader, device, split, epoch):
             if not isinstance(output, tuple) or len(output) < 3:
                 return pd.DataFrame()
             branch_attentions = output[2]
-            if not isinstance(branch_attentions, (list, tuple)):
+            if not torch.is_tensor(branch_attentions):
                 return pd.DataFrame()
             for index in range(feat.size(0)):
-                case_weights = [weights[index] for weights in branch_attentions]
+                case_weights = [
+                    branch_attentions[index, :, branch].unsqueeze(-1)
+                    for branch in range(branch_attentions.size(2))
+                ]
                 pairwise_cosines = []
                 for left in range(len(case_weights)):
                     for right in range(left + 1, len(case_weights)):
