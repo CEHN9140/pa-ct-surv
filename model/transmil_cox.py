@@ -1,4 +1,5 @@
-import numpy as np
+import math
+
 import torch
 import torch.nn as nn
 
@@ -50,13 +51,14 @@ class PPEG(nn.Module):
         return x
 
 
-class TransMIL_cox(nn.Module):
-    def __init__(self, n_classes, max_patches=0, eval_max_patches=0):
-        super(TransMIL_cox, self).__init__()
+class TransMILCox(nn.Module):
+    """Official TransMIL encoder with a scalar Cox risk head."""
+
+    def __init__(self, max_patches=0, eval_max_patches=0):
+        super().__init__()
         self.pos_layer = PPEG(dim=512)
         self._fc1 = nn.Sequential(nn.Linear(1024, 512), nn.ReLU())
         self.cls_token = nn.Parameter(torch.randn(1, 1, 512))
-        self.n_classes = n_classes
         self.max_patches = int(max_patches or 0)
         self.eval_max_patches = int(eval_max_patches or 0)
         self.layer1 = TransLayer(dim=512)
@@ -77,15 +79,15 @@ class TransMIL_cox(nn.Module):
             ).long()
         return h.index_select(dim=1, index=idx)
 
-    def forward(self, **kwargs):
-        h = kwargs["data"].float()  # [B, n, 1024]
+    def forward(self, data):
+        h = data.float()  # [B, n, 1024]
         h = self._select_patches(h)
 
         h = self._fc1(h)  # [B, n, 512]
 
         # ---->pad
         H = h.shape[1]
-        _H, _W = int(np.ceil(np.sqrt(H))), int(np.ceil(np.sqrt(H)))
+        _H = _W = math.ceil(math.sqrt(H))
         add_length = _H * _W - H
         h = torch.cat([h, h[:, :add_length, :]], dim=1)  # [B, N, 512]
 
