@@ -7,6 +7,7 @@ from model.fusion import BilinearFusion, ConcatFusion, CrossAttnFusion, GatedFus
 from model.gabmil_cox import GABMIL, GABMIL_TopK
 from model.meanpool_cox import MeanPool
 from model.resnet_cox import ResNetCox
+from model.dsmil_cox import DSMILCox
 from model.transmil_cox import TransMILCox
 
 
@@ -52,6 +53,8 @@ class Pa_Model(nn.Module):
             self.mil = MeanPool(in_dim=feature_dim)
         elif base_name == "transmil":
             self.mil = TransMILCox()
+        elif base_name == "dsmil":
+            self.mil = DSMILCox(input_size=feature_dim)
         else:
             raise ValueError(f"Unknown model_name: {model_name}")
 
