@@ -61,13 +61,25 @@ def collect_attention_stats(model, loader, device, split, epoch):
                     for branch in range(branch_attentions.size(2))
                 ]
                 pairwise_cosines = []
+                pairwise_correlations = []
                 for left in range(len(case_weights)):
                     for right in range(left + 1, len(case_weights)):
+                        left_weights = case_weights[left].reshape(-1)
+                        right_weights = case_weights[right].reshape(-1)
                         pairwise_cosines.append(
                             float(
                                 F.cosine_similarity(
-                                    case_weights[left].reshape(-1),
-                                    case_weights[right].reshape(-1),
+                                    left_weights,
+                                    right_weights,
+                                    dim=0,
+                                ).item()
+                            )
+                        )
+                        pairwise_correlations.append(
+                            float(
+                                F.cosine_similarity(
+                                    left_weights - left_weights.mean(),
+                                    right_weights - right_weights.mean(),
                                     dim=0,
                                 ).item()
                             )
@@ -75,6 +87,11 @@ def collect_attention_stats(model, loader, device, split, epoch):
                 branch_cosine = (
                     float(np.mean(pairwise_cosines))
                     if pairwise_cosines
+                    else np.nan
+                )
+                branch_correlation = (
+                    float(np.mean(pairwise_correlations))
+                    if pairwise_correlations
                     else np.nan
                 )
                 for branch, weights in enumerate(case_weights):
@@ -86,6 +103,7 @@ def collect_attention_stats(model, loader, device, split, epoch):
                             "case_id": case_id[index],
                             "branch": branch,
                             "branch_cosine_mean": branch_cosine,
+                            "branch_correlation_mean": branch_correlation,
                         }
                     )
                     rows.append(row)
@@ -215,11 +233,19 @@ def train_path(
                         f"effective_ratio={row.effective_patch_ratio:.4f}"
                     )
                 diversity = attention_df.dropna(
-                    subset=["branch_cosine_mean"]
-                ).groupby("split")["branch_cosine_mean"].mean()
-                for split, cosine in diversity.items():
+                    subset=[
+                        "branch_cosine_mean",
+                        "branch_correlation_mean",
+                    ]
+                ).groupby("split")[
+                    ["branch_cosine_mean", "branch_correlation_mean"]
+                ].mean()
+                for split, row in diversity.iterrows():
                     print(
-                        f"{split} branch cosine similarity: {cosine:.4f}"
+                        f"{split} branch cosine similarity: "
+                        f"{row.branch_cosine_mean:.4f} | "
+                        f"Pearson correlation: "
+                        f"{row.branch_correlation_mean:.4f}"
                     )
 
         print(
@@ -349,7 +375,7 @@ def main():
     msg = f"PA model: {args.pa_model} | k: {args.k}"
     msg += " | Cox PH loss"
     msg += f" | ABMIL dropout: {args.dropout}"
-    msg += f" | attention branches: {args.attention_branches}"
+    msg += f" | attention_branches: {args.attention_branches}"
     print(msg)
     print(f"Checkpoints: {args.checkpoint_root}")
     print(f"Results: {args.results_root}")

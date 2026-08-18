@@ -1,0 +1,26 @@
+nohup: ignoring input
+Using Device: cuda
+PA model: abmil | k: None | Cox PH loss | ABMIL dropout: 0.0 | attention_branches: 2
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pathology/roi96_abmil_attn2/seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v3/pathology/roi96_abmil_attn2/seed42
+Loaded 777 samples
+Locked split: train=621, test=156
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9993, effective_patches=11614.7, effective_ratio=0.9879
+train branch=1 attention: max=0.0002, entropy=0.9991, effective_patches=11562.0, effective_ratio=0.9837
+val branch=0 attention: max=0.0002, entropy=0.9993, effective_patches=11163.1, effective_ratio=0.9881
+val branch=1 attention: max=0.0002, entropy=0.9992, effective_patches=11117.9, effective_ratio=0.9842
+train branch cosine similarity: 0.9818 | Pearson correlation: -0.1918
+val branch cosine similarity: 0.9826 | Pearson correlation: -0.1774
+Epoch 1/30 | Train Loss: 3.6280 | Train C-index: 0.6411 | Val Loss: 4.1923 | Val C-index: 0.7240
+train branch=0 attention: max=0.0002, entropy=0.9990, effective_patches=11555.1, effective_ratio=0.9830
+train branch=1 attention: max=0.0002, entropy=0.9992, effective_patches=11574.2, effective_ratio=0.9846
+val branch=0 attention: max=0.0002, entropy=0.9991, effective_patches=11113.2, effective_ratio=0.9836
+val branch=1 attention: max=0.0002, entropy=0.9992, effective_patches=11126.2, effective_ratio=0.9849
+train branch cosine similarity: 0.9800 | Pearson correlation: -0.1246
+val branch cosine similarity: 0.9809 | Pearson correlation: -0.1114
+Epoch 2/30 | Train Loss: 3.4753 | Train C-index: 0.7184 | Val Loss: 4.1348 | Val C-index: 0.7260
