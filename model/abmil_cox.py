@@ -13,24 +13,33 @@ class ABMIL(nn.Module):
         attention_dim=128,
         patch_sample_size=None,
         dropout=0.0,
+        attention_branches=1,
     ):
         super().__init__()
         if patch_sample_size is not None and patch_sample_size <= 0:
             raise ValueError("patch_sample_size must be positive")
         if not 0.0 <= dropout < 1.0:
             raise ValueError("dropout must be in [0, 1)")
+        if attention_branches <= 0:
+            raise ValueError("attention_branches must be positive")
         self.patch_sample_size = patch_sample_size
+        self.attention_branches = attention_branches
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
             nn.Dropout(dropout),
         )
-        self.attention = nn.Sequential(
-            nn.Linear(hidden_dim, attention_dim),
-            nn.Tanh(),
-            nn.Linear(attention_dim, 1),
+        self.attention = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Linear(hidden_dim, attention_dim),
+                    nn.Tanh(),
+                    nn.Linear(attention_dim, 1),
+                )
+                for _ in range(attention_branches)
+            ]
         )
-        self.risk_head = nn.Linear(hidden_dim, 1)
+        self.risk_head = nn.Linear(hidden_dim * attention_branches, 1)
 
     def pool_attention(self, H, logits):
         weights = F.softmax(logits, dim=1)
@@ -54,10 +63,16 @@ class ABMIL(nn.Module):
                 )
                 x = torch.gather(x, dim=1, index=gather_indices)
         H = self.projector(x)
-        logits = self.attention(H)
-        pooled, weights = self.pool_attention(H, logits)
+        branch_features = []
+        branch_attentions = []
+        for attention in self.attention:
+            logits = attention(H)
+            pooled, weights = self.pool_attention(H, logits)
+            branch_features.append(pooled)
+            branch_attentions.append(weights)
+        pooled = torch.cat(branch_features, dim=1)
         out = self.risk_head(pooled)
-        return out.squeeze(-1), pooled, weights
+        return out.squeeze(-1), pooled, branch_attentions
 
 
 class ABMIL_TopK(ABMIL):
@@ -71,6 +86,7 @@ class ABMIL_TopK(ABMIL):
         k=None,
         patch_sample_size=None,
         dropout=0.0,
+        attention_branches=1,
     ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
@@ -80,6 +96,7 @@ class ABMIL_TopK(ABMIL):
             attention_dim=attention_dim,
             patch_sample_size=patch_sample_size,
             dropout=dropout,
+            attention_branches=attention_branches,
         )
         self.k = k
 

@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn.functional as F
 import yaml
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
@@ -43,7 +44,7 @@ def attention_statistics(weights):
 
 
 def collect_attention_stats(model, loader, device, split, epoch):
-    """Evaluate full WSIs and collect per-case attention statistics."""
+    """Evaluate full WSIs and collect per-branch attention statistics."""
     rows = []
     model.eval()
     with torch.no_grad():
@@ -51,19 +52,40 @@ def collect_attention_stats(model, loader, device, split, epoch):
             output = model(feat.to(device, non_blocking=True))
             if not isinstance(output, tuple) or len(output) < 3:
                 return pd.DataFrame()
-            weights = output[2]
-            if weights is None:
+            branch_attentions = output[2]
+            if not isinstance(branch_attentions, (list, tuple)):
                 return pd.DataFrame()
-            for index in range(weights.size(0)):
-                row = attention_statistics(weights[index])
-                row.update(
-                    {
-                        "epoch": epoch,
-                        "split": split,
-                        "case_id": case_id[index],
-                    }
+            for index in range(feat.size(0)):
+                case_weights = [weights[index] for weights in branch_attentions]
+                pairwise_cosines = []
+                for left in range(len(case_weights)):
+                    for right in range(left + 1, len(case_weights)):
+                        pairwise_cosines.append(
+                            float(
+                                F.cosine_similarity(
+                                    case_weights[left].reshape(-1),
+                                    case_weights[right].reshape(-1),
+                                    dim=0,
+                                ).item()
+                            )
+                        )
+                branch_cosine = (
+                    float(np.mean(pairwise_cosines))
+                    if pairwise_cosines
+                    else np.nan
                 )
-                rows.append(row)
+                for branch, weights in enumerate(case_weights):
+                    row = attention_statistics(weights)
+                    row.update(
+                        {
+                            "epoch": epoch,
+                            "split": split,
+                            "case_id": case_id[index],
+                            "branch": branch,
+                            "branch_cosine_mean": branch_cosine,
+                        }
+                    )
+                    rows.append(row)
     return pd.DataFrame(rows)
 
 
@@ -173,7 +195,7 @@ def train_path(
                 ignore_index=True,
             )
             if not attention_df.empty:
-                summary = attention_df.groupby("split")[
+                branch_summary = attention_df.groupby(["split", "branch"])[
                     [
                         "max_attention",
                         "attention_entropy_norm",
@@ -181,14 +203,21 @@ def train_path(
                         "effective_patch_ratio",
                     ]
                 ].mean()
-                summary_text = " | ".join(
-                    f"{split} attention: max={row.max_attention:.4f}, "
-                    f"entropy={row.attention_entropy_norm:.4f}, "
-                    f"effective_patches={row.effective_patch_num:.1f}, "
-                    f"effective_ratio={row.effective_patch_ratio:.4f}"
-                    for split, row in summary.iterrows()
-                )
-                print(summary_text)
+                for (split, branch), row in branch_summary.iterrows():
+                    print(
+                        f"{split} branch={int(branch)} attention: "
+                        f"max={row.max_attention:.4f}, "
+                        f"entropy={row.attention_entropy_norm:.4f}, "
+                        f"effective_patches={row.effective_patch_num:.1f}, "
+                        f"effective_ratio={row.effective_patch_ratio:.4f}"
+                    )
+                diversity = attention_df.dropna(
+                    subset=["branch_cosine_mean"]
+                ).groupby("split")["branch_cosine_mean"].mean()
+                for split, cosine in diversity.items():
+                    print(
+                        f"{split} branch cosine similarity: {cosine:.4f}"
+                    )
 
         print(
             f"Epoch {epoch}/{args.num_epochs} | "
@@ -251,6 +280,12 @@ def parse_args():
         default=0.0,
         help="Dropout after the ABMIL projector ReLU; default 0 disables it.",
     )
+    parser.add_argument(
+        "--attention_branches",
+        type=int,
+        default=1,
+        help="Number of independent ABMIL attention branches.",
+    )
     parser.add_argument("--cox_batch_size", type=int, default=32)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
@@ -296,10 +331,20 @@ def main():
         raise ValueError("--dropout must be in [0, 1)")
     if args.dropout > 0 and args.pa_model not in {"abmil", "abmil-topk"}:
         raise ValueError("--dropout is currently supported only by ABMIL models")
+    if args.attention_branches <= 0:
+        raise ValueError("--attention_branches must be positive")
+    if args.attention_branches != 1 and args.pa_model not in {
+        "abmil",
+        "abmil-topk",
+    }:
+        raise ValueError(
+            "--attention_branches is currently supported only by ABMIL models"
+        )
     k_tag = f"k{args.k}" if is_topk else "all"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
-        f"-roi{args.ct_roi_size}-seed{args.seed}"
+        f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
+        f"-seed{args.seed}"
     )
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join(
@@ -314,6 +359,7 @@ def main():
     msg = f"PA model: {args.pa_model} | k: {args.k}"
     msg += " | Cox PH loss"
     msg += f" | ABMIL dropout: {args.dropout}"
+    msg += f" | attention branches: {args.attention_branches}"
     print(msg)
     print(f"Checkpoints: {args.checkpoint_root}")
     print(f"Results: {args.results_root}")
@@ -337,6 +383,7 @@ def main():
         "proj_type": args.proj_type,
         "patch_sample_size": args.patch_sample_size,
         "abmil_dropout": args.dropout,
+        "attention_branches": args.attention_branches,
     }
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     print("Test set is not accessed during CV")

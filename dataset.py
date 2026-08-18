@@ -33,7 +33,7 @@ def clip01(x):
     )
 
 
-def build_ct_augmentation():
+def ct_augmentation():
     return Compose(
         [
             RandFlip(prob=0.5, spatial_axis=2),
@@ -121,7 +121,7 @@ class CT_Dataset(Dataset):
             print(f"[Warning] Dropped {dropped} samples with missing CT files")
         if len(self.samples) == 0:
             raise ValueError("No valid CT samples found")
-        self.ct_aug = build_ct_augmentation() if augment else None
+        self.ct_aug = ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)
@@ -167,7 +167,7 @@ class Pa_CT_Dataset(Dataset):
             print(f"[Warning] Dropped {dropped} samples with missing CT/PT files")
         if len(self.samples) == 0:
             raise ValueError("No valid paired pathology-CT samples found")
-        self.ct_aug = build_ct_augmentation() if augment else None
+        self.ct_aug = ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)

@@ -15,7 +15,7 @@ class Pa_Model(nn.Module):
 
     def __init__(self, model_name="abmil", feature_dim=1024, k=None,
                  proj_dim=256, proj_type="linear", patch_sample_size=None,
-                 abmil_dropout=0.0):
+                 abmil_dropout=0.0, attention_branches=1):
         super().__init__()
         self.model_name = model_name
 
@@ -33,6 +33,7 @@ class Pa_Model(nn.Module):
                     in_dim=feature_dim,
                     patch_sample_size=patch_sample_size,
                     dropout=abmil_dropout,
+                    attention_branches=attention_branches,
                 )
             else:
                 self.mil = ABMIL_TopK(
@@ -40,6 +41,7 @@ class Pa_Model(nn.Module):
                     k=k,
                     patch_sample_size=patch_sample_size,
                     dropout=abmil_dropout,
+                    attention_branches=attention_branches,
                 )
         elif base_name == "abmil-proj":
             self.mil = ProjABMIL(
