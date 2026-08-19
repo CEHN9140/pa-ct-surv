@@ -85,9 +85,7 @@ def collect_attention_stats(model, loader, device, split, epoch):
                             )
                         )
                 branch_cosine = (
-                    float(np.mean(pairwise_cosines))
-                    if pairwise_cosines
-                    else np.nan
+                    float(np.mean(pairwise_cosines)) if pairwise_cosines else np.nan
                 )
                 branch_correlation = (
                     float(np.mean(pairwise_correlations))
@@ -145,9 +143,7 @@ def train_path(
             events.append(event.to(device))
 
             if len(risks) >= cox_batch_size:
-                loss = cox_loss(
-                    torch.cat(risks), torch.cat(times), torch.cat(events)
-                )
+                loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
@@ -155,9 +151,7 @@ def train_path(
                 risks, times, events = [], [], []
 
         if risks:
-            loss = cox_loss(
-                torch.cat(risks), torch.cat(times), torch.cat(events)
-            )
+            loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
@@ -208,9 +202,7 @@ def train_path(
                     collect_attention_stats(
                         model, train_stats_loader, device, "train", epoch
                     ),
-                    collect_attention_stats(
-                        model, val_loader, device, "val", epoch
-                    ),
+                    collect_attention_stats(model, val_loader, device, "val", epoch),
                 ],
                 ignore_index=True,
             )
@@ -231,14 +223,16 @@ def train_path(
                         f"effective_patches={row.effective_patch_num:.1f}, "
                         f"effective_ratio={row.effective_patch_ratio:.4f}"
                     )
-                diversity = attention_df.dropna(
-                    subset=[
-                        "branch_cosine_mean",
-                        "branch_correlation_mean",
-                    ]
-                ).groupby("split")[
-                    ["branch_cosine_mean", "branch_correlation_mean"]
-                ].mean()
+                diversity = (
+                    attention_df.dropna(
+                        subset=[
+                            "branch_cosine_mean",
+                            "branch_correlation_mean",
+                        ]
+                    )
+                    .groupby("split")[["branch_cosine_mean", "branch_correlation_mean"]]
+                    .mean()
+                )
                 for split, row in diversity.iterrows():
                     print(
                         f"{split} branch cosine similarity: "
@@ -266,7 +260,7 @@ def train_path(
             break
 
     model.load_state_dict(best_state)
-    print(f"Fold {fold} final C-index: {best_cindex:.4f}")
+    print(f"Fold {fold} best C-index: {best_cindex:.4f}")
     return model
 
 

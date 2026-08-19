@@ -68,7 +68,6 @@ class CT_Model(nn.Module):
         freeze_backbone=False,
         dropout=0.5,
         model_depth=None,
-        freeze_bn_stats=False,
     ):
         super().__init__()
         self.model_name = model_name
@@ -84,7 +83,7 @@ class CT_Model(nn.Module):
             pretrained_path=pretrained_path,
             dropout=dropout,
             model_depth=model_depth,
-            freeze_bn_stats=freeze_bn_stats,
+            freeze_bn_stats=True,
         )
         if freeze_backbone:
             for name, param in self.ct.named_parameters():

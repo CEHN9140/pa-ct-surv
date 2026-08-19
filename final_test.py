@@ -22,7 +22,6 @@ def build_model(model_type, config):
             dropout=float(config.get("dropout", 0.5)),
             freeze_backbone=bool(config.get("freeze_backbone", False)),
             model_depth=config.get("ct_model_depth"),
-            freeze_bn_stats=bool(config.get("freeze_bn_stats", True)),
         )
     if model_type == "path":
         return Pa_Model(
