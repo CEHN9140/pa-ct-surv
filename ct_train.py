@@ -37,20 +37,26 @@ def build_ct_optimizer(model, lr, weight_decay, ct_backbone_lr=None):
     return torch.optim.Adam(groups, weight_decay=weight_decay)
 
 
-def train_ct(model, train_loader, val_loader, optimizer, args, device, fold, checkpoint_dir):
+def train_ct(
+    model,
+    train_loader,
+    train_eval_loader,
+    val_loader,
+    optimizer,
+    args,
+    device,
+    fold,
+    checkpoint_dir,
+):
     best_cindex = -np.inf
     best_state = None
     wait = 0
     for epoch in range(1, args.num_epochs + 1):
         model.train()
         train_losses = []
-        train_risks, train_times, train_events = [], [], []
         for batch in train_loader:
             ct, event, time, _ = batch
             risk = model(ct.to(device, non_blocking=True))
-            train_risks.append(risk.detach().cpu())
-            train_times.append(time.detach().cpu())
-            train_events.append(event.detach().cpu())
             loss = cox_loss(risk, time.to(device), event.to(device))
             optimizer.zero_grad()
             loss.backward()
@@ -58,14 +64,29 @@ def train_ct(model, train_loader, val_loader, optimizer, args, device, fold, che
             train_losses.append(float(loss.detach().cpu()))
 
         avg_loss = float(np.mean(train_losses)) if train_losses else np.nan
-        train_cindex = float(
-            concordance_index_censored(
-                torch.cat(train_events).numpy().astype(bool),
-                torch.cat(train_times).numpy(),
-                torch.cat(train_risks).numpy().reshape(-1),
-            )[0]
-        )
         model.eval()
+        train_risks_np, train_times_np, train_events_np = [], [], []
+        with torch.no_grad():
+            for batch in train_eval_loader:
+                ct, event, time, _ = batch
+                risk = model(ct.to(device, non_blocking=True))
+                train_risks_np.extend(
+                    risk.detach().cpu().numpy().reshape(-1).tolist()
+                )
+                train_times_np.extend(
+                    time.detach().cpu().numpy().reshape(-1).tolist()
+                )
+                train_events_np.extend(
+                    event.detach().cpu().numpy().reshape(-1).astype(int).tolist()
+                )
+
+        train_cindex, *_ = concordance_index_censored(
+            np.asarray(train_events_np, dtype=int).astype(bool),
+            np.asarray(train_times_np, dtype=np.float32),
+            np.asarray(train_risks_np, dtype=np.float32),
+        )
+        train_cindex = float(train_cindex)
+
         val_risks_np, val_times_np, val_events_np = [], [], []
         with torch.no_grad():
             for batch in val_loader:
@@ -173,7 +194,7 @@ def main():
         yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
 
     dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment)
-    val_dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=False)
+    eval_dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=False)
     print(f"Loaded {len(dataset)} samples")
 
     train_indices, test_indices = locked_split_indices(dataset.samples)
@@ -201,11 +222,21 @@ def main():
         train_generator = torch.Generator().manual_seed(fold_seed)
 
         train_subset = Subset(dataset, train_idx)
-        val_subset = Subset(val_dataset, val_idx)
+        train_eval_subset = Subset(eval_dataset, train_idx)
+        val_subset = Subset(eval_dataset, val_idx)
 
         train_loader = DataLoader(train_subset, batch_size=args.batch_size, shuffle=True,
                                   drop_last=False, num_workers=args.num_workers, pin_memory=True,
                                   worker_init_fn=worker_init_fn, generator=train_generator)
+        train_eval_loader = DataLoader(
+            train_eval_subset,
+            batch_size=args.batch_size,
+            shuffle=False,
+            drop_last=False,
+            num_workers=args.num_workers,
+            pin_memory=True,
+            worker_init_fn=worker_init_fn,
+        )
         val_loader = DataLoader(val_subset, batch_size=args.batch_size, shuffle=False,
                                 drop_last=False, num_workers=args.num_workers, pin_memory=True,
                                 worker_init_fn=worker_init_fn)
@@ -223,13 +254,13 @@ def main():
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE, weights_only=True))
         else:
             model = train_ct(
-                model, train_loader, val_loader, optimizer, args,
+                model, train_loader, train_eval_loader, val_loader, optimizer, args,
                 DEVICE, fold, checkpoint_dir
             )
 
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model,
-            train_loader,
+            train_eval_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,
