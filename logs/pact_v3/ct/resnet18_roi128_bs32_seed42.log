@@ -1,0 +1,39 @@
+nohup: ignoring input
+Using Device: cuda | ROI: 128
+Model: resnet18 | Augment: True
+LR: 0.0001 | Backbone LR: 0.0001 | Loss: Cox PH
+Pretrained: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/ct/resnet18_roi128_bs32_seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v3/ct/resnet18_roi128_bs32_seed42
+Loaded 797 samples
+Locked split: train=637, test=160
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.0454 | Train C-index: 0.5785 | Val Loss: 4.3526 | Val C-index: 0.5902
+Traceback (most recent call last):
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 316, in <module>
+    main()
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 281, in main
+    model = train_ct(
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 62, in train_ct
+    loss.backward()
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/_tensor.py", line 617, in backward
+    return handle_torch_function(
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/overrides.py", line 1742, in handle_torch_function
+    result = torch_func_method(public_api, types, args, kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/monai/data/meta_tensor.py", line 283, in __torch_function__
+    ret = super().__torch_function__(func, types, args, kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/_tensor.py", line 1648, in __torch_function__
+    ret = func(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/_tensor.py", line 626, in backward
+    torch.autograd.backward(
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/autograd/graph.py", line 823, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has a total capacity of 47.37 GiB of which 1.97 GiB is free. Process 611418 has 21.58 GiB memory in use. Process 612382 has 6.91 GiB memory in use. Including non-PyTorch memory, this process has 16.87 GiB memory in use. Of the allocated memory 10.88 GiB is allocated by PyTorch, and 5.48 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

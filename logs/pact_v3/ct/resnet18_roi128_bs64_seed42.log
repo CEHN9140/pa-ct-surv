@@ -1,0 +1,62 @@
+nohup: ignoring input
+Using Device: cuda | ROI: 128
+Model: resnet18 | Augment: True
+LR: 0.0001 | Backbone LR: 0.0001 | Loss: Cox PH
+Pretrained: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/ct/resnet18_roi128_bs64_seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v3/ct/resnet18_roi128_bs64_seed42
+Loaded 797 samples
+Locked split: train=637, test=160
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Traceback (most recent call last):
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 316, in <module>
+    main()
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 281, in main
+    model = train_ct(
+  File "/home/gly001/cqj/pa_ct_surv/ct_train.py", line 59, in train_ct
+    risk = model(ct.to(device, non_blocking=True))
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/gly001/cqj/pa_ct_surv/model/build.py", line 102, in forward
+    return self.ct(x)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/gly001/cqj/pa_ct_surv/model/resnet_cox.py", line 234, in forward
+    fea = self.extract_features(x)
+  File "/home/gly001/cqj/pa_ct_surv/model/resnet_cox.py", line 223, in extract_features
+    x = self.layer4(x)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/container.py", line 250, in forward
+    input = module(input)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/gly001/cqj/pa_ct_surv/model/resnet_cox.py", line 54, in forward
+    out = self.conv2(out)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 725, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 720, in _conv_forward
+    return F.conv3d(
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/monai/data/meta_tensor.py", line 283, in __torch_function__
+    ret = super().__torch_function__(func, types, args, kwargs)
+  File "/home/gly001/.conda/envs/UNI/lib/python3.10/site-packages/torch/_tensor.py", line 1648, in __torch_function__
+    ret = func(*args, **kwargs)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 47.37 GiB of which 189.00 MiB is free. Process 611418 has 21.58 GiB memory in use. Process 612382 has 6.91 GiB memory in use. Including non-PyTorch memory, this process has 18.67 GiB memory in use. Of the allocated memory 18.13 GiB is allocated by PyTorch, and 38.50 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
