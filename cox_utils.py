@@ -13,50 +13,6 @@ from sksurv.metrics import concordance_index_censored, cumulative_dynamic_auc
 from sksurv.util import Surv
 
 
-def pairwise_ranking_loss(risk, time, event, eps=1e-8):
-    """
-    Smooth pairwise ranking loss (soft C-index loss) for survival analysis.
-
-    For each patient i with an event (event_i=1), compare with every patient j
-    who survived longer (Tj > Ti). risk_i should be > risk_j.
-
-    Loss = mean(softplus(risk_j - risk_i)) over all comparable pairs.
-    Equivalent to a differentiable surrogate of 1 - C-index.
-
-    risk: [B] scalar risk scores
-    time: [B] survival times
-    event: [B] 1=death, 0=censored
-    """
-    risk = risk.view(-1)
-    time = time.view(-1)
-    event = event.view(-1)
-
-    n = risk.size(0)
-    if n < 2:
-        return risk.new_tensor(0.0)
-
-    # Build comparison matrix [n, n]
-    time_i = time.unsqueeze(0)  # [1, n]
-    time_j = time.unsqueeze(1)  # [n, 1]
-    event_i = event.unsqueeze(0)  # [1, n]
-
-    # comparable[i,j]: patient i has event AND Ti < Tj
-    comparable = event_i.bool() & (time_i < time_j)
-
-    n_pairs = comparable.sum()
-    if n_pairs == 0:
-        return risk.new_tensor(0.0)
-
-    risk_i = risk.unsqueeze(0)  # [1, n]
-    risk_j = risk.unsqueeze(1)  # [n, 1]
-
-    # softplus(risk_j - risk_i) = log(1 + exp(risk_j - risk_i))
-    # Penalty when risk_j > risk_i (wrong ordering)
-    losses = torch.nn.functional.softplus(risk_j - risk_i)
-
-    return (losses * comparable.float()).sum() / n_pairs.float()
-
-
 def cox_loss(risk, time, event, eps=1e-8):
     risk, time, event = risk.view(-1), time.view(-1), event.view(-1).bool()
     if event.sum() == 0:
