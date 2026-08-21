@@ -222,7 +222,7 @@ def main():
         train_generator = torch.Generator().manual_seed(fold_seed)
 
         train_subset = Subset(dataset, train_idx)
-        clean_train_subset = Subset(eval_dataset, train_idx)
+        noaug_train_subset = Subset(eval_dataset, train_idx)
         val_subset = Subset(eval_dataset, val_idx)
 
         train_loader = DataLoader(
@@ -235,8 +235,8 @@ def main():
             worker_init_fn=worker_init_fn,
             generator=train_generator,
         )
-        clean_train_loader = DataLoader(
-            clean_train_subset,
+        noaug_train_loader = DataLoader(
+            noaug_train_subset,
             batch_size=args.batch_size,
             shuffle=False,
             drop_last=False,
@@ -285,7 +285,7 @@ def main():
 
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model,
-            clean_train_loader,
+            noaug_train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,
