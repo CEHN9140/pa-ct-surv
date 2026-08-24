@@ -113,7 +113,6 @@ class Pa_CT_Model(nn.Module):
         mmhid=512,
         ct_pretrained_path=None,
         fusion_dropout=0.3,
-        head_dropout=0.5,
         pa_topk=None,
         fusion_type="concat",
     ):

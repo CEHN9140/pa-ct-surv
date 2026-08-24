@@ -6,16 +6,16 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
+from monai.data import worker_init_fn
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
 from cox_utils import (
     cox_loss,
     evaluate_survival,
-    evaluate_survival_metrics,
 )
 from dataset import Pa_CT_Dataset
-from final_utils import cv_fold_indices, locked_split_indices, save_final_artifacts, seed_everything
+from final_utils import cv_fold_indices, locked_split_indices, seed_everything
 from model.build import Pa_CT_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -27,17 +27,6 @@ def update_ema_variables(model, ema_model, alpha, global_step):
         ema_param.data.mul_(alpha).add_(param.data, alpha=1 - alpha)
     for ema_buffer, buffer in zip(ema_model.buffers(), model.buffers()):
         ema_buffer.copy_(buffer)
-
-
-def predict_pact_risk(model, batch, device):
-    ct, pa, event, time, case_id = batch
-    risk_fused, _, _, _, _, _, _ = model(ct.to(device), pa.to(device))
-    return risk_fused, event, time, case_id
-
-
-def forward_pact_risks(model, batch, device):
-    ct, pa, event, time, case_id = batch
-    return (*model(ct.to(device), pa.to(device))[:3], event, time, case_id)
 
 
 def build_pact_optimizer(model, lr, weight_decay, ct_backbone_lr=None):
@@ -62,14 +51,7 @@ def build_pact_optimizer(model, lr, weight_decay, ct_backbone_lr=None):
     return torch.optim.Adam(groups, weight_decay=weight_decay)
 
 
-def compute_pact_cox_losses(risk_fused, risk_ct, risk_pa, time, event, lambda_ct=0., lambda_pa=0.):
-    fused_loss = cox_loss(risk_fused, time, event)
-    ct_loss = cox_loss(risk_ct, time, event)
-    pa_loss = cox_loss(risk_pa, time, event)
-    return fused_loss + lambda_ct * ct_loss + lambda_pa * pa_loss, fused_loss, ct_loss, pa_loss
-
-
-def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, device, fold,
+def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
                checkpoint_dir, ema_model=None):
     best_cindex = -np.inf
     best_state = None
@@ -90,7 +72,10 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
         times, events = [], []
 
         for batch in train_loader:
-            risk_fused, risk_ct, risk_pa, event, time, _ = forward_pact_risks(model, batch, device)
+            ct, pa, event, time, _ = batch
+            ct = ct.to(device)
+            pa = pa.to(device)
+            risk_fused, risk_ct, risk_pa = model(ct, pa)[:3]
             risks_fused.append(risk_fused)
             risks_ct.append(risk_ct)
             risks_pa.append(risk_pa)
@@ -99,21 +84,25 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
 
             if ema_model is not None and epoch >= start_ema:
                 with torch.no_grad():
-                    er_f, er_c, er_p, _, _, _ = ema_model(batch[0].to(device), batch[1].to(device))
+                    er_f, er_c, er_p, _, _, _ = ema_model(ct, pa)
                     ema_fused.append(er_f)
                     ema_ct.append(er_c)
                     ema_pa.append(er_p)
 
             if len(risks_fused) >= cox_batch_size:
                 cat_fused = torch.cat(risks_fused)
-                loss_cox, loss_fused, loss_ct, loss_pa = compute_pact_cox_losses(
-                    cat_fused, torch.cat(risks_ct), torch.cat(risks_pa),
-                    torch.cat(times), torch.cat(events),
-                    lambda_ct=args.lambda_ct, lambda_pa=args.lambda_pa)
+                cat_ct = torch.cat(risks_ct)
+                cat_pa = torch.cat(risks_pa)
+                cat_times = torch.cat(times)
+                cat_events = torch.cat(events)
+                loss_fused = cox_loss(cat_fused, cat_times, cat_events)
+                loss_ct = cox_loss(cat_ct, cat_times, cat_events)
+                loss_pa = cox_loss(cat_pa, cat_times, cat_events)
+                loss_cox = loss_fused + args.lambda_ct * loss_ct + args.lambda_pa * loss_pa
                 if ema_model is not None and epoch >= start_ema and ema_fused:
                     loss_ema = (torch.mean((cat_fused - torch.cat(ema_fused).detach()) ** 2) +
-                                torch.mean((torch.cat(risks_ct) - torch.cat(ema_ct).detach()) ** 2) +
-                                torch.mean((torch.cat(risks_pa) - torch.cat(ema_pa).detach()) ** 2)) / 3.0
+                                torch.mean((cat_ct - torch.cat(ema_ct).detach()) ** 2) +
+                                torch.mean((cat_pa - torch.cat(ema_pa).detach()) ** 2)) / 3.0
                     loss = loss_cox + ema_cons_weight * loss_ema
                 else:
                     loss_ema = torch.tensor(0.0, device=device)
@@ -135,14 +124,18 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
 
         if risks_fused:
             cat_fused = torch.cat(risks_fused)
-            loss_cox, loss_fused, loss_ct, loss_pa = compute_pact_cox_losses(
-                cat_fused, torch.cat(risks_ct), torch.cat(risks_pa),
-                torch.cat(times), torch.cat(events),
-                lambda_ct=args.lambda_ct, lambda_pa=args.lambda_pa)
+            cat_ct = torch.cat(risks_ct)
+            cat_pa = torch.cat(risks_pa)
+            cat_times = torch.cat(times)
+            cat_events = torch.cat(events)
+            loss_fused = cox_loss(cat_fused, cat_times, cat_events)
+            loss_ct = cox_loss(cat_ct, cat_times, cat_events)
+            loss_pa = cox_loss(cat_pa, cat_times, cat_events)
+            loss_cox = loss_fused + args.lambda_ct * loss_ct + args.lambda_pa * loss_pa
             if ema_model is not None and epoch >= start_ema and ema_fused:
                 loss_ema = (torch.mean((cat_fused - torch.cat(ema_fused).detach()) ** 2) +
-                            torch.mean((torch.cat(risks_ct) - torch.cat(ema_ct).detach()) ** 2) +
-                            torch.mean((torch.cat(risks_pa) - torch.cat(ema_pa).detach()) ** 2)) / 3.0
+                            torch.mean((cat_ct - torch.cat(ema_ct).detach()) ** 2) +
+                            torch.mean((cat_pa - torch.cat(ema_pa).detach()) ** 2)) / 3.0
                 loss = loss_cox + ema_cons_weight * loss_ema
             else:
                 loss_ema = torch.tensor(0.0, device=device)
@@ -161,14 +154,19 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
 
         avg_loss = float(np.mean(losses)) if losses else np.nan
         avg_loss_fused = float(np.mean(losses_fused)) if losses_fused else np.nan
-        train_cindex, _ = evaluate_survival(model, train_loader, predict_fn, device)
+        train_cindex, _, _, _ = evaluate_survival(
+            model, train_loader, train_loader, device
+        )
 
         model.eval()
         val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
         val_ct, val_pa = [], []
         with torch.no_grad():
             for batch in val_loader:
-                risk, risk_ct, risk_pa, event, time, case_id = forward_pact_risks(model, batch, device)
+                ct, pa, event, time, case_id = batch
+                risk, risk_ct, risk_pa = model(
+                    ct.to(device), pa.to(device)
+                )[:3]
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(event.detach().cpu().numpy().reshape(-1).astype(int).tolist())
@@ -202,10 +200,8 @@ def train_pact(model, train_loader, val_loader, predict_fn, optimizer, args, dev
             break
 
     model.load_state_dict(best_state)
-    val_cindex, val_df = evaluate_survival(model, val_loader, predict_fn, device)
-    _, train_df = evaluate_survival(model, train_loader, predict_fn, device)
-    print(f"Fold {fold} final C-index: {val_cindex:.4f}")
-    return val_cindex, train_df, val_df
+    print(f"Fold {fold} best C-index: {best_cindex:.4f}")
+    return model
 
 
 def parse_args():
@@ -234,7 +230,6 @@ def parse_args():
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--seed", type=int, default=42,
                         help="Seed for initialization and training randomness.")
-    parser.add_argument("--final_train", action="store_true")
     parser.add_argument("--use_ema", action="store_true")
     parser.add_argument("--ema_decay", type=float, default=0.99)
     parser.add_argument("--ema_consistency_weight", type=float, default=0.3)
@@ -245,8 +240,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.final_train and args.eval_only:
-        raise ValueError("--final_train and --eval_only cannot be used together")
     seed_everything(args.seed)
     args.effective_ct_backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
 
@@ -278,8 +271,12 @@ def main():
     with open(os.path.join(args.results_root, "run_config.yaml"), "w") as f:
         yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
 
-    dataset = Pa_CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment)
-    val_dataset = Pa_CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=False)
+    dataset = Pa_CT_Dataset(
+        args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
+    )
+    eval_dataset = Pa_CT_Dataset(
+        args.data_dir, roi_size=args.ct_roi_size, augment=False
+    )
     print(f"Loaded {len(dataset)} paired samples")
 
     train_indices, test_indices = locked_split_indices(dataset.samples)
@@ -293,34 +290,6 @@ def main():
         "fusion_type": args.fusion_type,
     }
 
-    if args.final_train:
-        train_loader = DataLoader(Subset(dataset, train_indices), batch_size=1, shuffle=True,
-                                  num_workers=args.num_workers, pin_memory=True)
-        model = Pa_CT_Model(**model_kwargs).to(DEVICE)
-        ema_model = None
-        if args.use_ema:
-            ema_model = Pa_CT_Model(**model_kwargs).to(DEVICE)
-            ema_model.load_state_dict(model.state_dict())
-            for p in ema_model.parameters():
-                p.detach_()
-        optimizer = build_pact_optimizer(model, lr=args.lr, weight_decay=args.weight_decay,
-                                         ct_backbone_lr=args.ct_backbone_lr)
-        history = []
-        for epoch in range(1, args.num_epochs + 1):
-            model.train()
-            losses = []
-            for batch in train_loader:
-                risk_fused = predict_pact_risk(model, batch, DEVICE)[0]
-                loss = cox_loss(risk_fused, batch[3].to(DEVICE), batch[2].to(DEVICE))
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                losses.append(float(loss.detach().cpu()))
-            history.append({"epoch": epoch, "train_loss": float(np.mean(losses))})
-        paths = save_final_artifacts(model, args, args.checkpoint_root, args.results_root, history, model_type="pact")
-        print(f"Final model: {paths[0]}")
-        return
-
     fold_splits = [
         cv_fold_indices(dataset.samples, fold)
         for fold in range(5)
@@ -332,11 +301,33 @@ def main():
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
         fold_seed = args.seed + fold
         seed_everything(fold_seed)
+        loader_generator = torch.Generator().manual_seed(fold_seed)
 
-        train_loader = DataLoader(Subset(dataset, train_idx), batch_size=1, shuffle=True,
-                                  num_workers=args.num_workers, pin_memory=True)
-        val_loader = DataLoader(Subset(val_dataset, val_idx), batch_size=1, shuffle=False,
-                                num_workers=args.num_workers, pin_memory=True)
+        train_loader = DataLoader(
+            Subset(dataset, train_idx),
+            batch_size=1,
+            shuffle=True,
+            num_workers=args.num_workers,
+            pin_memory=True,
+            worker_init_fn=worker_init_fn,
+            generator=loader_generator,
+        )
+        noaug_train_loader = DataLoader(
+            Subset(eval_dataset, train_idx),
+            batch_size=1,
+            shuffle=False,
+            num_workers=args.num_workers,
+            pin_memory=True,
+            worker_init_fn=worker_init_fn,
+        )
+        val_loader = DataLoader(
+            Subset(eval_dataset, val_idx),
+            batch_size=1,
+            shuffle=False,
+            num_workers=args.num_workers,
+            pin_memory=True,
+            worker_init_fn=worker_init_fn,
+        )
 
         model = Pa_CT_Model(**model_kwargs).to(DEVICE)
         ema_model = None
@@ -350,22 +341,42 @@ def main():
                                          ct_backbone_lr=args.ct_backbone_lr)
         checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        metrics_dir = Path(args.results_root) / f"fold_{fold}"
+        metrics_dir.mkdir(parents=True, exist_ok=True)
 
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            _, train_df = evaluate_survival(model, train_loader, predict_pact_risk, DEVICE)
-            val_cindex, val_df = evaluate_survival(model, val_loader, predict_pact_risk, DEVICE)
+            _, val_cindex, train_df, val_df, metrics = evaluate_survival(
+                model,
+                noaug_train_loader,
+                val_loader,
+                DEVICE,
+                save_dir=metrics_dir,
+            )
             print(f"Fold {fold} eval C-index: {val_cindex:.4f}")
-            fold_results.append({"fold": fold, "cindex": val_cindex})
+            fold_results.append({"fold": fold, "cindex": val_cindex, **metrics})
             continue
 
-        fold_cindex, train_df, val_df = train_pact(model, train_loader, val_loader, predict_pact_risk,
-                                                    optimizer, args, DEVICE, fold, checkpoint_dir, ema_model)
-        fold_results.append({"fold": fold, "cindex": fold_cindex})
-        metrics_dir = checkpoint_dir / "best_results"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
-        evaluate_survival_metrics(train_df, val_df, metrics_dir)
+        model = train_pact(
+            model,
+            train_loader,
+            val_loader,
+            optimizer,
+            args,
+            DEVICE,
+            fold,
+            checkpoint_dir,
+            ema_model,
+        )
+        _, fold_cindex, _, _, metrics = evaluate_survival(
+            model,
+            noaug_train_loader,
+            val_loader,
+            DEVICE,
+            save_dir=metrics_dir,
+        )
+        fold_results.append({"fold": fold, "cindex": fold_cindex, **metrics})
 
     df = pd.DataFrame(fold_results)
     summary = {"cindex_mean": float(df["cindex"].mean()),
