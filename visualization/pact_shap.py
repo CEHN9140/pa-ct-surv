@@ -28,56 +28,40 @@ from final_utils import cv_fold_indices, locked_split_indices
 from model.build import Pa_CT_Model
 
 
-def two_modality_shapley(
-    baseline_risk,
-    pa_only_risk,
-    ct_only_risk,
-    full_risk,
+def fuse_risk(
+    model,
+    ct_feature,
+    pa_feature,
+    ct_risk=None,
+    pa_risk=None,
 ):
-    """Return exact Shapley values for PA and CT with a fixed reference."""
-    pa_shap = 0.5 * (
-        (pa_only_risk - baseline_risk) + (full_risk - ct_only_risk)
-    )
-    ct_shap = 0.5 * (
-        (ct_only_risk - baseline_risk) + (full_risk - pa_only_risk)
-    )
-    interaction = (
-        full_risk - pa_only_risk - ct_only_risk + baseline_risk
-    )
-    return {
-        "pa_shap": pa_shap,
-        "ct_shap": ct_shap,
-        "interaction": interaction,
-    }
+    """Evaluate the trained PACT risk head from modality representations."""
+    if model.fusion_type == "weighted":
+        if ct_risk is None or pa_risk is None:
+            raise ValueError("Weighted fusion requires CT and PA branch risks")
+        alpha = torch.sigmoid(model.risk_weight)
+        return (alpha * ct_risk + (1 - alpha) * pa_risk).reshape(-1)
 
-
-def fuse_risk(model, ct_feature, pa_feature):
-    """Evaluate the trained fusion risk head from projected modality features."""
     risk = model.fusion(ct_feature, pa_feature)
     if model.fusion_type == "bilinear":
         risk = model.fused_head(risk).squeeze(-1)
     return risk.reshape(-1)
 
 
-def extract_features(model, ct, pa):
-    """Extract the same normalized features used by Pa_CT_Model.forward."""
-    ct_feature = model.ct_backbone.extract_features(ct)
-    ct_feature = model.ct_projector(ct_feature)
-    ct_feature = torch.nn.functional.normalize(ct_feature, p=2, dim=1)
-
-    _, pa_feature, _ = model.pa_branch(pa)
-    pa_feature = model.pa_projector(pa_feature)
-    pa_feature = torch.nn.functional.normalize(pa_feature, p=2, dim=1)
-    return ct_feature, pa_feature
-
-
 def load_model(config, checkpoint, device):
+    pa_model_name = config["pa_model"]
+    pa_topk = None
+    if pa_model_name.endswith("-topk"):
+        if config.get("k") is None:
+            raise ValueError("Current PACT top-k model requires a numeric k")
+        pa_topk = int(config["k"])
+
     model = Pa_CT_Model(
-        pa_model_name=config["pa_model"],
-        pa_topk=int(config.get("k", 512)),
+        pa_model_name=pa_model_name,
+        ct_model_name=config.get("ct_model", "resnet18"),
+        pa_topk=pa_topk,
         fusion_type=config.get("fusion_type", "concat"),
-        ct_dropout=float(config.get("ct_dropout", 0.5)),
-        pa_implementation=config.get("implementation", "legacy"),
+        # The PACT checkpoint already contains the complete CT branch.
         ct_pretrained_path=None,
     )
     state = torch.load(checkpoint, map_location=device, weights_only=True)
@@ -88,18 +72,20 @@ def load_model(config, checkpoint, device):
     return model
 
 
-def build_fold_splits(samples, cv_seed=None):
-    return [cv_fold_indices(samples, fold) for fold in range(5)]
-
-
 def get_sample_features(model, dataset, index, device):
     ct, pa, event, time, case_id = dataset[int(index)]
     ct = ct.unsqueeze(0).to(device, non_blocking=True)
     pa = pa.to(device, non_blocking=True)
-    ct_feature, pa_feature = extract_features(model, ct, pa)
+    raw_ct_feature = model.ct_backbone.extract_features(ct)
+    ct_risk = model.ct_backbone.risk_forward(raw_ct_feature)
+    ct_feature = model.ct_projector(raw_ct_feature)
+    pa_risk, pa_feature, _ = model.pa_branch(pa)
+    pa_feature = model.pa_projector(pa_feature)
     return (
         ct_feature,
         pa_feature,
+        ct_risk,
+        pa_risk,
         int(event.item()),
         float(time.item()),
         str(case_id),
@@ -109,16 +95,29 @@ def get_sample_features(model, dataset, index, device):
 def compute_background(model, dataset, train_indices, device):
     ct_sum = None
     pa_sum = None
+    ct_risk_sum = None
+    pa_risk_sum = None
     with torch.inference_mode():
         for position, index in enumerate(train_indices, start=1):
-            ct_feature, pa_feature, _, _, _ = get_sample_features(
+            ct_feature, pa_feature, ct_risk, pa_risk, _, _, _ = get_sample_features(
                 model, dataset, index, device
             )
             ct_sum = ct_feature.clone() if ct_sum is None else ct_sum + ct_feature
             pa_sum = pa_feature.clone() if pa_sum is None else pa_sum + pa_feature
+            ct_risk_sum = (
+                ct_risk.clone() if ct_risk_sum is None else ct_risk_sum + ct_risk
+            )
+            pa_risk_sum = (
+                pa_risk.clone() if pa_risk_sum is None else pa_risk_sum + pa_risk
+            )
             if position % 100 == 0:
                 print(f"    background features: {position}/{len(train_indices)}")
-    return ct_sum / len(train_indices), pa_sum / len(train_indices)
+    return (
+        ct_sum / len(train_indices),
+        pa_sum / len(train_indices),
+        ct_risk_sum / len(train_indices),
+        pa_risk_sum / len(train_indices),
+    )
 
 
 def explain_fold(
@@ -129,39 +128,67 @@ def explain_fold(
     fold,
     device,
 ):
-    background_ct, background_pa = compute_background(
+    background_ct, background_pa, background_ct_risk, background_pa_risk = compute_background(
         model, dataset, train_indices, device
     )
     baseline_risk = float(
-        fuse_risk(model, background_ct, background_pa).item()
+        fuse_risk(
+            model,
+            background_ct,
+            background_pa,
+            background_ct_risk,
+            background_pa_risk,
+        ).item()
     )
 
     rows = []
     with torch.inference_mode():
         for position, index in enumerate(val_indices, start=1):
-            ct_feature, pa_feature, event, time, case_id = get_sample_features(
+            (
+                ct_feature,
+                pa_feature,
+                ct_risk,
+                pa_risk,
+                event,
+                time,
+                case_id,
+            ) = get_sample_features(
                 model, dataset, index, device
             )
-            full_risk = float(fuse_risk(model, ct_feature, pa_feature).item())
+            full_risk = float(
+                fuse_risk(model, ct_feature, pa_feature, ct_risk, pa_risk).item()
+            )
             pa_only_risk = float(
-                fuse_risk(model, background_ct, pa_feature).item()
+                fuse_risk(
+                    model,
+                    background_ct,
+                    pa_feature,
+                    background_ct_risk,
+                    pa_risk,
+                ).item()
             )
             ct_only_risk = float(
-                fuse_risk(model, ct_feature, background_pa).item()
+                fuse_risk(
+                    model,
+                    ct_feature,
+                    background_pa,
+                    ct_risk,
+                    background_pa_risk,
+                ).item()
             )
-            values = two_modality_shapley(
-                baseline_risk,
-                pa_only_risk,
-                ct_only_risk,
-                full_risk,
+            pa_shap = 0.5 * (
+                (pa_only_risk - baseline_risk) + (full_risk - ct_only_risk)
             )
-            slide_id, ct_id = case_id.split("|", 1)
-            reconstruction_error = (
-                baseline_risk
-                + values["pa_shap"]
-                + values["ct_shap"]
-                - full_risk
+            ct_shap = 0.5 * (
+                (ct_only_risk - baseline_risk) + (full_risk - pa_only_risk)
             )
+            interaction = (
+                full_risk - pa_only_risk - ct_only_risk + baseline_risk
+            )
+            if "|" in case_id:
+                slide_id, ct_id = case_id.split("|", 1)
+            else:
+                slide_id, ct_id = case_id, ""
             rows.append(
                 {
                     "fold": fold,
@@ -175,10 +202,9 @@ def explain_fold(
                     "pa_only_risk": pa_only_risk,
                     "ct_only_risk": ct_only_risk,
                     "full_risk": full_risk,
-                    "pa_shap": values["pa_shap"],
-                    "ct_shap": values["ct_shap"],
-                    "interaction": values["interaction"],
-                    "reconstruction_error": reconstruction_error,
+                    "pa_shap": pa_shap,
+                    "ct_shap": ct_shap,
+                    "interaction": interaction,
                 }
             )
             if position % 25 == 0:
@@ -200,9 +226,6 @@ def save_summary(df, output_dir):
                 "ct_positive_fraction": (df["ct_shap"] > 0).mean(),
                 "mean_interaction": df["interaction"].mean(),
                 "mean_abs_interaction": df["interaction"].abs().mean(),
-                "max_abs_reconstruction_error": (
-                    df["reconstruction_error"].abs().max()
-                ),
             }
         ]
     )
@@ -292,17 +315,16 @@ def main():
     with config_path.open("r") as handle:
         config = yaml.safe_load(handle)
     data_dir = config["data_dir"]
-    roi_size = int(config["roi_size"])
-    cv_seed = int(config.get("cv_seed", 42))
+    roi_size = int(config["ct_roi_size"])
     device = torch.device(args.device)
 
     dataset = Pa_CT_Dataset(data_dir, roi_size=roi_size, augment=False)
-    fold_splits = build_fold_splits(dataset.samples, cv_seed)
+    fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     all_rows = []
 
     print(
         f"PACT modality SHAP | patients={len(dataset)} | "
-        f"ROI={roi_size} | cv_seed={cv_seed} | device={device}"
+        f"ROI={roi_size} | device={device}"
     )
     for fold, (train_indices, val_indices) in enumerate(fold_splits):
         checkpoint = checkpoint_root / f"fold_{fold}" / "best_model.pth"
@@ -347,7 +369,6 @@ def main():
                 "source_config": str(config_path.resolve()),
                 "checkpoint_root": str(checkpoint_root.resolve()),
                 "roi_size": roi_size,
-                "cv_seed": cv_seed,
                 "background": "fold-training mean projected feature",
                 "explained_split": "out-of-fold validation",
                 "risk_output": "Cox log-risk",
