@@ -184,9 +184,14 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
         val_pa_cindex = float(concordance_index_censored(val_events_arr.astype(bool), val_times_arr,
                                                           np.asarray(val_pa, dtype=np.float32))[0])
 
+        alpha_text = ""
+        if model.fusion_type == "weighted":
+            alpha = torch.sigmoid(model.risk_weight).item()
+            alpha_text = f" | Alpha CT: {alpha:.4f} | Alpha PA: {1.0 - alpha:.4f}"
         print(f"Epoch {epoch}/{args.num_epochs} | Train Loss: {avg_loss:.4f} (Fused: {avg_loss_fused:.4f}) | "
               f"Train C-index: {train_cindex:.4f} | "
-              f"Val Fused: {val_cindex:.4f} | Val CT: {val_ct_cindex:.4f} | Val PA: {val_pa_cindex:.4f}")
+              f"Val Fused: {val_cindex:.4f} | Val CT: {val_ct_cindex:.4f} | Val PA: {val_pa_cindex:.4f}"
+              f"{alpha_text}")
 
         if val_cindex > best_cindex:
             best_cindex = val_cindex
@@ -200,6 +205,9 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
             break
 
     model.load_state_dict(best_state)
+    if model.fusion_type == "weighted":
+        alpha = torch.sigmoid(model.risk_weight).item()
+        print(f"Fold {fold} best fusion alpha | CT: {alpha:.4f} | PA: {1.0 - alpha:.4f}")
     print(f"Fold {fold} best C-index: {best_cindex:.4f}")
     return model
 
