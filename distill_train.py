@@ -280,7 +280,7 @@ def parse_args():
     # ── Distillation ──
     parser.add_argument("--alpha_kd", type=float, default=0.3)
     parser.add_argument("--distill_mode", default="mse", choices=["kl", "mse"])
-    parser.add_argument("--start_KD", type=int, default=5)
+    parser.add_argument("--start_KD", type=int, default=1)
 
     # ── Training ──
     parser.add_argument("--num_epochs", type=int, default=80)
