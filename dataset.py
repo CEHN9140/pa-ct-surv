@@ -202,3 +202,68 @@ class Pa_CT_Dataset(Dataset):
             torch.tensor(row["time"], dtype=torch.float32),
             case_id,
         )
+
+
+class CT_Student_Dataset(Dataset):
+    """Paired dataset for CT student distillation."""
+
+    def __init__(self, data_dir, roi_size=64, augment=False):
+        label_file = get_label_file(data_dir, roi_size)
+        self.roi_size = roi_size
+        self.augment = augment
+
+        df = pd.read_csv(label_file)
+        columns = [
+            "pa_id",
+            "pa_path",
+            "ct_id",
+            "ct_path",
+            "event",
+            "time",
+        ]
+        missing = set(columns) - set(df.columns)
+        if missing:
+            raise ValueError(f"Missing columns in {label_file}: {sorted(missing)}")
+
+        optional_columns = [column for column in ["h5_path", "split"] if column in df]
+        self.samples = df[columns + optional_columns].copy()
+        self.samples["pa_id"] = self.samples["pa_id"].astype(str)
+        self.samples["ct_id"] = self.samples["ct_id"].astype(str)
+        self.samples["pa_path"] = self.samples["pa_path"].astype(str)
+        self.samples["ct_path"] = self.samples["ct_path"].astype(str)
+        self.samples["event"] = self.samples["event"].astype(int)
+        self.samples["time"] = self.samples["time"].astype(float)
+
+        missing_paths = self.samples.loc[
+            ~self.samples["pa_path"].apply(os.path.exists)
+            | ~self.samples["ct_path"].apply(os.path.exists),
+            ["pa_path", "ct_path"],
+        ]
+        if len(missing_paths):
+            raise FileNotFoundError(
+                f"Missing {len(missing_paths)} paired file row(s) in {label_file}: "
+                f"{missing_paths.head(10).to_dict('records')}"
+            )
+        if len(self.samples) == 0:
+            raise ValueError("No valid paired pathology-CT samples found")
+
+        self.ct_aug = ct_augmentation() if augment else None
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        row = self.samples.iloc[idx]
+        ct_img = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
+        clean_ct = torch.as_tensor(ct_img, dtype=torch.float32)
+        ct = self.ct_aug(clean_ct.clone()) if self.ct_aug is not None else clean_ct
+        pa = torch.load(row["pa_path"], map_location="cpu").float()
+        case_id = f"{row['pa_id']}|{row['ct_id']}"
+        return (
+            torch.as_tensor(ct, dtype=torch.float32),
+            pa,
+            torch.tensor(row["event"], dtype=torch.long),
+            torch.tensor(row["time"], dtype=torch.float32),
+            case_id,
+            clean_ct,
+        )

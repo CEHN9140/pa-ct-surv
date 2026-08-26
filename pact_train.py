@@ -164,9 +164,7 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
         with torch.no_grad():
             for batch in val_loader:
                 ct, pa, event, time, case_id = batch
-                risk, risk_ct, risk_pa = model(
-                    ct.to(device), pa.to(device)
-                )[:3]
+                risk, risk_ct, risk_pa = model(ct.to(device), pa.to(device))[:3]
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(event.detach().cpu().numpy().reshape(-1).astype(int).tolist())

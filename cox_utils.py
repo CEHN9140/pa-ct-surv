@@ -48,16 +48,24 @@ def evaluate_survival(
             for batch in loader:
                 if len(batch) == 4:
                     feat, event, time, case_id = batch
-                    output = model(feat.to(device, non_blocking=True))
+                    output = model(feat.to(device))
                 elif len(batch) == 5:
                     ct, pa, event, time, case_id = batch
-                    output = model(
-                        ct.to(device, non_blocking=True),
-                        pa.to(device, non_blocking=True),
-                    )
+                    ct = ct.to(device)
+                    if isinstance(pa, list):
+                        output = model(ct)
+                    else:
+                        output = model(ct, pa.to(device))
+                elif len(batch) == 6:
+                    ct, pa, event, time, case_id, _ = batch
+                    ct = ct.to(device)
+                    if isinstance(pa, list):
+                        output = model(ct)
+                    else:
+                        output = model(ct, pa.to(device))
                 else:
                     raise ValueError(
-                        "Expected a 4-field unimodal batch or a 5-field PA+CT batch"
+                        "Expected a 4-, 5-, or 6-field survival batch"
                     )
                 risk = output[0] if isinstance(output, tuple) else output
                 risks.extend(risk.detach().cpu().numpy().reshape(-1).tolist())

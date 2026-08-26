@@ -60,21 +60,3 @@ def risk_distill_loss(
         reduction="batchmean",
     ) * (T**2)
     return loss
-
-
-def mse_distill_loss(
-    student_risk: torch.Tensor,
-    teacher_risk: torch.Tensor,
-) -> torch.Tensor:
-    """Direct MSE distillation on scalar risk predictions.
-
-    Simpler alternative to KL — no temperature or logit conversion needed.
-
-    Args:
-        student_risk: student risk predictions [B]
-        teacher_risk: teacher risk predictions [B] (detached internally)
-
-    Returns:
-        scalar MSE loss
-    """
-    return F.mse_loss(student_risk, teacher_risk.detach())
