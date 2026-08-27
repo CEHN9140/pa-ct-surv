@@ -1,0 +1,27 @@
+alpha_kd: 0.3
+augment: true
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/ct_student/roi64_abmil_resnet18_weighted_listwise_kd_t1_seed42
+cox_batch_size: 64
+ct_backbone_lr: 1.0e-05
+data_dir: /home/gly001/cqj/pa_ct_surv/data/seed_42
+distill_mode: listwise_kd
+eval_only: false
+kd_temperature: 1.0
+lr: 0.0001
+num_epochs: 30
+num_workers: 8
+patience: 10
+results_root: /home/gly001/cqj/pa_ct_surv/results/pact_v3/ct_student/roi64_abmil_resnet18_weighted_listwise_kd_t1_seed42
+seed: 42
+start_KD: 1
+student_model: resnet18
+student_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+teacher:
+  ct_model: resnet18
+  ct_roi_size: 64
+  fusion_type: weighted
+  k: null
+  pa_model: abmil
+teacher_ckpt_root: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_weighted/seed42
+teacher_config_path: /home/gly001/cqj/pa_ct_surv/results/pact_v3/pact/roi64_abmil_resnet18_weighted/seed42/run_config.yaml
+weight_decay: 0.0005

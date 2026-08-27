@@ -158,6 +158,8 @@ def train_student(
         optimizer.zero_grad()
 
         losses, losses_cox, losses_kd = [], [], []
+        teacher_risks_epoch = []
+        teacher_risk_set_entropies = []
 
         for batch in train_loader:
             ct, pa_list, event, time, _, teacher_ct = batch
@@ -180,6 +182,21 @@ def train_student(
                         )
                         batch_teacher_risks.append(risk_t)
                 risk_t = torch.cat(batch_teacher_risks, dim=0)
+                teacher_risks_epoch.append(risk_t.detach())
+                with torch.no_grad():
+                    for event_index in torch.where(event > 0)[0]:
+                        risk_set = time >= time[event_index]
+                        teacher_prob = torch.softmax(
+                            risk_t[risk_set] / args.kd_temperature,
+                            dim=0,
+                        )
+                        entropy = -(
+                            teacher_prob
+                            * torch.log(teacher_prob.clamp_min(1e-12))
+                        ).sum()
+                        teacher_risk_set_entropies.append(
+                            float(entropy.cpu())
+                        )
             else:
                 risk_t = None
 
@@ -213,6 +230,17 @@ def train_student(
         avg_loss = float(np.mean(losses))
         avg_cox_loss = float(np.mean(losses_cox)) if losses_cox else 0.0
         avg_kd_loss = float(np.mean(losses_kd)) if losses_kd else 0.0
+        if teacher_risks_epoch:
+            teacher_risk_std = float(
+                torch.cat(teacher_risks_epoch).std(unbiased=False).cpu()
+            )
+        else:
+            teacher_risk_std = float("nan")
+        teacher_risk_set_entropy = (
+            float(np.mean(teacher_risk_set_entropies))
+            if teacher_risk_set_entropies
+            else float("nan")
+        )
 
         # ── Val ──
         student.eval()
@@ -239,7 +267,9 @@ def train_student(
             f"Epoch {epoch}/{args.num_epochs} | "
             f"Train Loss: {avg_loss:.4f} (Cox Loss: {avg_cox_loss:.4f}, "
             f"KD Loss: {avg_kd_loss:.4f}) | "
-            f"Val C-index: {val_cindex:.4f}"
+            f"Val C-index: {val_cindex:.4f} | "
+            f"Teacher risk std: {teacher_risk_std:.4f} | "
+            f"Teacher risk-set entropy: {teacher_risk_set_entropy:.4f}"
         )
 
         if val_cindex > best_cindex:

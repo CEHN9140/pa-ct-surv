@@ -1,0 +1,248 @@
+nohup: ignoring input
+Teacher:   /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42
+Teacher config: /home/gly001/cqj/pa_ct_surv/results/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/run_config.yaml
+Data:      /home/gly001/cqj/pa_ct_surv/data/seed_42 | ROI: 64
+Teacher model: PA=abmil | CT=resnet18 | Fusion=concat | k=None
+Distill:   Cox + alpha_kd*listwise_kd(student_risk, teacher_fused_risk) | alpha_kd=0.3 | start_KD=1
+Augment:   True | cox_batch_size=64
+LR:        head=0.0001 | CT backbone=1e-05
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/ct_student/roi64_abmil_resnet18_concat_listwise_kd_t1_seed42
+Results:     /home/gly001/cqj/pa_ct_surv/results/pact_v3/ct_student/roi64_abmil_resnet18_concat_listwise_kd_t1_seed42
+Loaded 703 paired samples
+Locked split from dataset CSV: train=562, test=141
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/fold_0/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.3601 (Cox Loss: 3.2566, KD Loss: 0.3450) | Val C-index: 0.6298 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3218
+Epoch 2/30 | Train Loss: 3.3435 (Cox Loss: 3.2426, KD Loss: 0.3363) | Val C-index: 0.6289 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3033
+Epoch 3/30 | Train Loss: 3.3141 (Cox Loss: 3.2178, KD Loss: 0.3208) | Val C-index: 0.6327 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3078
+Epoch 4/30 | Train Loss: 3.3122 (Cox Loss: 3.2153, KD Loss: 0.3229) | Val C-index: 0.6365 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2763
+Epoch 5/30 | Train Loss: 3.2938 (Cox Loss: 3.2022, KD Loss: 0.3051) | Val C-index: 0.6346 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3224
+Epoch 6/30 | Train Loss: 3.2925 (Cox Loss: 3.2037, KD Loss: 0.2961) | Val C-index: 0.6467 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3178
+Epoch 7/30 | Train Loss: 3.2733 (Cox Loss: 3.1861, KD Loss: 0.2907) | Val C-index: 0.6572 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2943
+Epoch 8/30 | Train Loss: 3.2844 (Cox Loss: 3.1941, KD Loss: 0.3008) | Val C-index: 0.6674 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2990
+Epoch 9/30 | Train Loss: 3.2185 (Cox Loss: 3.1358, KD Loss: 0.2758) | Val C-index: 0.6792 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3234
+Epoch 10/30 | Train Loss: 3.2459 (Cox Loss: 3.1626, KD Loss: 0.2777) | Val C-index: 0.6900 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3043
+Epoch 11/30 | Train Loss: 3.2253 (Cox Loss: 3.1455, KD Loss: 0.2658) | Val C-index: 0.6897 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2946
+Epoch 12/30 | Train Loss: 3.2214 (Cox Loss: 3.1343, KD Loss: 0.2905) | Val C-index: 0.6916 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3124
+Epoch 13/30 | Train Loss: 3.1938 (Cox Loss: 3.1145, KD Loss: 0.2645) | Val C-index: 0.6932 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3249
+Epoch 14/30 | Train Loss: 3.1681 (Cox Loss: 3.0905, KD Loss: 0.2586) | Val C-index: 0.7050 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2881
+Epoch 15/30 | Train Loss: 3.1699 (Cox Loss: 3.0954, KD Loss: 0.2483) | Val C-index: 0.7139 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2966
+Epoch 16/30 | Train Loss: 3.1960 (Cox Loss: 3.1194, KD Loss: 0.2555) | Val C-index: 0.7088 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3173
+Epoch 17/30 | Train Loss: 3.2049 (Cox Loss: 3.1263, KD Loss: 0.2621) | Val C-index: 0.7146 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3172
+Epoch 18/30 | Train Loss: 3.1255 (Cox Loss: 3.0493, KD Loss: 0.2542) | Val C-index: 0.7005 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2776
+Epoch 19/30 | Train Loss: 3.1365 (Cox Loss: 3.0639, KD Loss: 0.2422) | Val C-index: 0.7155 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2757
+Epoch 20/30 | Train Loss: 3.1583 (Cox Loss: 3.0846, KD Loss: 0.2457) | Val C-index: 0.7155 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3010
+Epoch 21/30 | Train Loss: 3.1482 (Cox Loss: 3.0707, KD Loss: 0.2585) | Val C-index: 0.6993 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3052
+Epoch 22/30 | Train Loss: 3.1175 (Cox Loss: 3.0474, KD Loss: 0.2339) | Val C-index: 0.7244 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3011
+Epoch 23/30 | Train Loss: 3.1236 (Cox Loss: 3.0507, KD Loss: 0.2430) | Val C-index: 0.7225 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2942
+Epoch 24/30 | Train Loss: 3.1270 (Cox Loss: 3.0570, KD Loss: 0.2332) | Val C-index: 0.7267 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3123
+Epoch 25/30 | Train Loss: 3.1404 (Cox Loss: 3.0666, KD Loss: 0.2458) | Val C-index: 0.7060 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3157
+Epoch 26/30 | Train Loss: 3.1539 (Cox Loss: 3.0815, KD Loss: 0.2415) | Val C-index: 0.7263 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3054
+Epoch 27/30 | Train Loss: 3.1047 (Cox Loss: 3.0388, KD Loss: 0.2197) | Val C-index: 0.7267 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3126
+Epoch 28/30 | Train Loss: 3.1431 (Cox Loss: 3.0774, KD Loss: 0.2191) | Val C-index: 0.7260 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.3338
+Epoch 29/30 | Train Loss: 3.0726 (Cox Loss: 3.0064, KD Loss: 0.2210) | Val C-index: 0.7334 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2967
+Epoch 30/30 | Train Loss: 3.1046 (Cox Loss: 3.0388, KD Loss: 0.2196) | Val C-index: 0.7283 | Teacher risk std: 1.0167 | Teacher risk-set entropy: 3.2986
+
+Extra survival metrics:
+cutoff_from_train_median: -0.655779
+n_test: 113
+n_high_risk: 53
+n_low_risk: 60
+n_event_test: 38
+logrank_stat: 17.052454
+logrank_p: 0.000036
+auc_36m: 0.739519
+auc_60m: 0.782888
+HR_high_vs_low: 3.964461
+HR_95CI_lower: 1.958907
+HR_95CI_upper: 8.023327
+cox_p: 0.000129
+Fold 0 eval C-index: 0.7334
+
+==================================================
+Fold 2/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/fold_1/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.4204 (Cox Loss: 3.3034, KD Loss: 0.3901) | Val C-index: 0.6068 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3166
+Epoch 2/30 | Train Loss: 3.4025 (Cox Loss: 3.2938, KD Loss: 0.3623) | Val C-index: 0.6194 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.2955
+Epoch 3/30 | Train Loss: 3.3335 (Cox Loss: 3.2290, KD Loss: 0.3482) | Val C-index: 0.6273 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3187
+Epoch 4/30 | Train Loss: 3.3438 (Cox Loss: 3.2406, KD Loss: 0.3439) | Val C-index: 0.6371 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3136
+Epoch 5/30 | Train Loss: 3.3668 (Cox Loss: 3.2613, KD Loss: 0.3516) | Val C-index: 0.6487 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3225
+Epoch 6/30 | Train Loss: 3.3334 (Cox Loss: 3.2353, KD Loss: 0.3270) | Val C-index: 0.6556 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3335
+Epoch 7/30 | Train Loss: 3.3390 (Cox Loss: 3.2423, KD Loss: 0.3224) | Val C-index: 0.6579 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3105
+Epoch 8/30 | Train Loss: 3.3337 (Cox Loss: 3.2415, KD Loss: 0.3073) | Val C-index: 0.6671 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3495
+Epoch 9/30 | Train Loss: 3.2973 (Cox Loss: 3.2045, KD Loss: 0.3093) | Val C-index: 0.6701 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3135
+Epoch 10/30 | Train Loss: 3.2772 (Cox Loss: 3.1836, KD Loss: 0.3121) | Val C-index: 0.6734 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3275
+Epoch 11/30 | Train Loss: 3.2717 (Cox Loss: 3.1747, KD Loss: 0.3234) | Val C-index: 0.6829 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3109
+Epoch 12/30 | Train Loss: 3.2673 (Cox Loss: 3.1734, KD Loss: 0.3130) | Val C-index: 0.6915 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3154
+Epoch 13/30 | Train Loss: 3.2723 (Cox Loss: 3.1809, KD Loss: 0.3045) | Val C-index: 0.6974 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3045
+Epoch 14/30 | Train Loss: 3.2559 (Cox Loss: 3.1648, KD Loss: 0.3034) | Val C-index: 0.7050 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3367
+Epoch 15/30 | Train Loss: 3.2502 (Cox Loss: 3.1555, KD Loss: 0.3155) | Val C-index: 0.7037 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3318
+Epoch 16/30 | Train Loss: 3.2718 (Cox Loss: 3.1788, KD Loss: 0.3101) | Val C-index: 0.7237 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3395
+Epoch 17/30 | Train Loss: 3.2530 (Cox Loss: 3.1670, KD Loss: 0.2869) | Val C-index: 0.7195 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3202
+Epoch 18/30 | Train Loss: 3.2690 (Cox Loss: 3.1702, KD Loss: 0.3293) | Val C-index: 0.7172 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3156
+Epoch 19/30 | Train Loss: 3.2098 (Cox Loss: 3.1244, KD Loss: 0.2849) | Val C-index: 0.7356 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3287
+Epoch 20/30 | Train Loss: 3.2206 (Cox Loss: 3.1395, KD Loss: 0.2704) | Val C-index: 0.7277 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3360
+Epoch 21/30 | Train Loss: 3.2042 (Cox Loss: 3.1175, KD Loss: 0.2891) | Val C-index: 0.7389 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3153
+Epoch 22/30 | Train Loss: 3.2151 (Cox Loss: 3.1265, KD Loss: 0.2953) | Val C-index: 0.7494 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3303
+Epoch 23/30 | Train Loss: 3.1637 (Cox Loss: 3.0778, KD Loss: 0.2863) | Val C-index: 0.7428 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3211
+Epoch 24/30 | Train Loss: 3.1737 (Cox Loss: 3.0915, KD Loss: 0.2739) | Val C-index: 0.7580 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3162
+Epoch 25/30 | Train Loss: 3.1800 (Cox Loss: 3.0965, KD Loss: 0.2784) | Val C-index: 0.7481 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3135
+Epoch 26/30 | Train Loss: 3.1574 (Cox Loss: 3.0700, KD Loss: 0.2913) | Val C-index: 0.7600 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3405
+Epoch 27/30 | Train Loss: 3.1619 (Cox Loss: 3.0825, KD Loss: 0.2646) | Val C-index: 0.7455 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3388
+Epoch 28/30 | Train Loss: 3.1889 (Cox Loss: 3.1074, KD Loss: 0.2716) | Val C-index: 0.7507 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3103
+Epoch 29/30 | Train Loss: 3.1703 (Cox Loss: 3.0876, KD Loss: 0.2756) | Val C-index: 0.7600 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3365
+Epoch 30/30 | Train Loss: 3.1911 (Cox Loss: 3.1104, KD Loss: 0.2688) | Val C-index: 0.7636 | Teacher risk std: 1.0111 | Teacher risk-set entropy: 3.3223
+
+Extra survival metrics:
+cutoff_from_train_median: 0.297734
+n_test: 113
+n_high_risk: 56
+n_low_risk: 57
+n_event_test: 39
+logrank_stat: 25.769079
+logrank_p: 0.000000
+auc_36m: 0.804742
+auc_60m: 0.777507
+HR_high_vs_low: 6.383933
+HR_95CI_lower: 2.811424
+HR_95CI_upper: 14.496069
+cox_p: 0.000009
+Fold 1 eval C-index: 0.7636
+
+==================================================
+Fold 3/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/fold_2/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.3975 (Cox Loss: 3.2686, KD Loss: 0.4297) | Val C-index: 0.6719 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2288
+Epoch 2/30 | Train Loss: 3.4730 (Cox Loss: 3.3268, KD Loss: 0.4873) | Val C-index: 0.7071 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2052
+Epoch 3/30 | Train Loss: 3.4000 (Cox Loss: 3.2731, KD Loss: 0.4229) | Val C-index: 0.7017 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2409
+Epoch 4/30 | Train Loss: 3.3867 (Cox Loss: 3.2600, KD Loss: 0.4223) | Val C-index: 0.6939 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2241
+Epoch 5/30 | Train Loss: 3.3688 (Cox Loss: 3.2472, KD Loss: 0.4052) | Val C-index: 0.6949 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2353
+Epoch 6/30 | Train Loss: 3.3959 (Cox Loss: 3.2715, KD Loss: 0.4146) | Val C-index: 0.6932 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.1963
+Epoch 7/30 | Train Loss: 3.3266 (Cox Loss: 3.2058, KD Loss: 0.4026) | Val C-index: 0.6844 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2163
+Epoch 8/30 | Train Loss: 3.3242 (Cox Loss: 3.2103, KD Loss: 0.3799) | Val C-index: 0.7000 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2435
+Epoch 9/30 | Train Loss: 3.3501 (Cox Loss: 3.2344, KD Loss: 0.3855) | Val C-index: 0.6990 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2199
+Epoch 10/30 | Train Loss: 3.2723 (Cox Loss: 3.1602, KD Loss: 0.3738) | Val C-index: 0.7020 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2294
+Epoch 11/30 | Train Loss: 3.2506 (Cox Loss: 3.1378, KD Loss: 0.3762) | Val C-index: 0.6875 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2105
+Epoch 12/30 | Train Loss: 3.2916 (Cox Loss: 3.1752, KD Loss: 0.3880) | Val C-index: 0.6871 | Teacher risk std: 1.3662 | Teacher risk-set entropy: 3.2173
+Early stopping at epoch 12
+
+Extra survival metrics:
+cutoff_from_train_median: 0.033862
+n_test: 112
+n_high_risk: 55
+n_low_risk: 57
+n_event_test: 38
+logrank_stat: 12.839165
+logrank_p: 0.000339
+auc_36m: 0.734476
+auc_60m: 0.722536
+HR_high_vs_low: 3.372199
+HR_95CI_lower: 1.666213
+HR_95CI_upper: 6.824892
+cox_p: 0.000727
+Fold 2 eval C-index: 0.7071
+
+==================================================
+Fold 4/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/fold_3/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.4474 (Cox Loss: 3.2725, KD Loss: 0.5832) | Val C-index: 0.6753 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0713
+Epoch 2/30 | Train Loss: 3.4317 (Cox Loss: 3.2600, KD Loss: 0.5725) | Val C-index: 0.6667 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0296
+Epoch 3/30 | Train Loss: 3.5318 (Cox Loss: 3.3495, KD Loss: 0.6078) | Val C-index: 0.6696 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0478
+Epoch 4/30 | Train Loss: 3.4043 (Cox Loss: 3.2417, KD Loss: 0.5422) | Val C-index: 0.6700 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0548
+Epoch 5/30 | Train Loss: 3.5027 (Cox Loss: 3.3299, KD Loss: 0.5761) | Val C-index: 0.6667 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0680
+Epoch 6/30 | Train Loss: 3.3923 (Cox Loss: 3.2257, KD Loss: 0.5551) | Val C-index: 0.6604 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0506
+Epoch 7/30 | Train Loss: 3.3733 (Cox Loss: 3.2200, KD Loss: 0.5110) | Val C-index: 0.6667 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0913
+Epoch 8/30 | Train Loss: 3.3239 (Cox Loss: 3.1790, KD Loss: 0.4828) | Val C-index: 0.6647 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0634
+Epoch 9/30 | Train Loss: 3.3337 (Cox Loss: 3.1817, KD Loss: 0.5067) | Val C-index: 0.6736 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0846
+Epoch 10/30 | Train Loss: 3.3792 (Cox Loss: 3.2253, KD Loss: 0.5130) | Val C-index: 0.6723 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0640
+Epoch 11/30 | Train Loss: 3.3125 (Cox Loss: 3.1660, KD Loss: 0.4884) | Val C-index: 0.6743 | Teacher risk std: 1.4952 | Teacher risk-set entropy: 3.0592
+Early stopping at epoch 11
+
+Extra survival metrics:
+cutoff_from_train_median: -0.302529
+n_test: 112
+n_high_risk: 50
+n_low_risk: 62
+n_event_test: 38
+logrank_stat: 4.811963
+logrank_p: 0.028263
+auc_36m: 0.678900
+auc_60m: 0.669052
+HR_high_vs_low: 2.047648
+HR_95CI_lower: 1.064996
+HR_95CI_upper: 3.936973
+cox_p: 0.031653
+Fold 3 eval C-index: 0.6753
+
+==================================================
+Fold 5/5
+==================================================
+Loaded teacher from: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v3/pact/roi64_abmil_resnet18_concat/seed42/fold_4/best_model.pth
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.5476 (Cox Loss: 3.3664, KD Loss: 0.6042) | Val C-index: 0.5536 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1336
+Epoch 2/30 | Train Loss: 3.4084 (Cox Loss: 3.2624, KD Loss: 0.4865) | Val C-index: 0.5647 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1424
+Epoch 3/30 | Train Loss: 3.4188 (Cox Loss: 3.2665, KD Loss: 0.5076) | Val C-index: 0.5587 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1506
+Epoch 4/30 | Train Loss: 3.4430 (Cox Loss: 3.3010, KD Loss: 0.4732) | Val C-index: 0.5550 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1511
+Epoch 5/30 | Train Loss: 3.4769 (Cox Loss: 3.3211, KD Loss: 0.5194) | Val C-index: 0.5553 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1503
+Epoch 6/30 | Train Loss: 3.4746 (Cox Loss: 3.3162, KD Loss: 0.5279) | Val C-index: 0.5610 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1368
+Epoch 7/30 | Train Loss: 3.3151 (Cox Loss: 3.1835, KD Loss: 0.4387) | Val C-index: 0.5573 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1546
+Epoch 8/30 | Train Loss: 3.3595 (Cox Loss: 3.2213, KD Loss: 0.4606) | Val C-index: 0.5613 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1382
+Epoch 9/30 | Train Loss: 3.3979 (Cox Loss: 3.2459, KD Loss: 0.5065) | Val C-index: 0.5738 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1392
+Epoch 10/30 | Train Loss: 3.3142 (Cox Loss: 3.1860, KD Loss: 0.4271) | Val C-index: 0.5929 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1727
+Epoch 11/30 | Train Loss: 3.2566 (Cox Loss: 3.1368, KD Loss: 0.3993) | Val C-index: 0.5936 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1353
+Epoch 12/30 | Train Loss: 3.2625 (Cox Loss: 3.1363, KD Loss: 0.4210) | Val C-index: 0.6034 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1455
+Epoch 13/30 | Train Loss: 3.2879 (Cox Loss: 3.1708, KD Loss: 0.3904) | Val C-index: 0.6188 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1401
+Epoch 14/30 | Train Loss: 3.2120 (Cox Loss: 3.1034, KD Loss: 0.3620) | Val C-index: 0.6145 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1387
+Epoch 15/30 | Train Loss: 3.2490 (Cox Loss: 3.1326, KD Loss: 0.3882) | Val C-index: 0.6393 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1608
+Epoch 16/30 | Train Loss: 3.2818 (Cox Loss: 3.1675, KD Loss: 0.3808) | Val C-index: 0.6346 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1349
+Epoch 17/30 | Train Loss: 3.1961 (Cox Loss: 3.0887, KD Loss: 0.3582) | Val C-index: 0.6292 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1573
+Epoch 18/30 | Train Loss: 3.1923 (Cox Loss: 3.0926, KD Loss: 0.3321) | Val C-index: 0.6578 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1745
+Epoch 19/30 | Train Loss: 3.2224 (Cox Loss: 3.1242, KD Loss: 0.3271) | Val C-index: 0.6410 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1365
+Epoch 20/30 | Train Loss: 3.1404 (Cox Loss: 3.0444, KD Loss: 0.3200) | Val C-index: 0.6605 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1462
+Epoch 21/30 | Train Loss: 3.2098 (Cox Loss: 3.1040, KD Loss: 0.3528) | Val C-index: 0.6639 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1527
+Epoch 22/30 | Train Loss: 3.2781 (Cox Loss: 3.1650, KD Loss: 0.3772) | Val C-index: 0.6669 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1222
+Epoch 23/30 | Train Loss: 3.1669 (Cox Loss: 3.0642, KD Loss: 0.3426) | Val C-index: 0.6642 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1330
+Epoch 24/30 | Train Loss: 3.1426 (Cox Loss: 3.0412, KD Loss: 0.3377) | Val C-index: 0.6770 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1319
+Epoch 25/30 | Train Loss: 3.1387 (Cox Loss: 3.0496, KD Loss: 0.2970) | Val C-index: 0.6699 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1152
+Epoch 26/30 | Train Loss: 3.1206 (Cox Loss: 3.0248, KD Loss: 0.3191) | Val C-index: 0.6756 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1791
+Epoch 27/30 | Train Loss: 3.1470 (Cox Loss: 3.0427, KD Loss: 0.3478) | Val C-index: 0.6652 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1282
+Epoch 28/30 | Train Loss: 3.1144 (Cox Loss: 3.0231, KD Loss: 0.3043) | Val C-index: 0.6642 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1471
+Epoch 29/30 | Train Loss: 3.1061 (Cox Loss: 3.0119, KD Loss: 0.3141) | Val C-index: 0.6776 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1291
+Epoch 30/30 | Train Loss: 3.1773 (Cox Loss: 3.0820, KD Loss: 0.3175) | Val C-index: 0.6760 | Teacher risk std: 1.2630 | Teacher risk-set entropy: 3.1338
+
+Extra survival metrics:
+cutoff_from_train_median: -0.201868
+n_test: 112
+n_high_risk: 76
+n_low_risk: 36
+n_event_test: 38
+logrank_stat: 7.248450
+logrank_p: 0.007096
+auc_36m: 0.716918
+auc_60m: 0.640568
+HR_high_vs_low: 3.117376
+HR_95CI_lower: 1.301692
+HR_95CI_upper: 7.465697
+cox_p: 0.010720
+Fold 4 eval C-index: 0.6776
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index: 0.7114 +/- 0.0376
