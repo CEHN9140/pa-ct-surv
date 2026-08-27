@@ -13,8 +13,14 @@ from model.transmil_cox import TransMILCox
 class Pa_Model(nn.Module):
     """Factory for unimodal pathology MIL survival models."""
 
-    def __init__(self, model_name="abmil", feature_dim=1024, k=None,
-                 abmil_dropout=0.0, attention_branches=1):
+    def __init__(
+        self,
+        model_name="abmil",
+        feature_dim=1024,
+        k=None,
+        abmil_dropout=0.0,
+        attention_branches=1,
+    ):
         super().__init__()
         self.model_name = model_name
 
@@ -152,7 +158,7 @@ class Pa_CT_Model(nn.Module):
                 if pa_topk is not None
                 else pa_cls(in_dim=1024)
             )
-            pa_output_dim = 500
+            pa_output_dim = 512
         elif pa_base_name == "gabmil":
             pa_cls = GABMIL_TopK if pa_topk is not None else GABMIL
             self.pa_branch = (
@@ -160,7 +166,7 @@ class Pa_CT_Model(nn.Module):
                 if pa_topk is not None
                 else pa_cls(in_dim=1024)
             )
-            pa_output_dim = 500
+            pa_output_dim = 512
         else:
             raise ValueError(f"Unknown pa_model_name: {pa_model_name}")
 

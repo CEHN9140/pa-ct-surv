@@ -6,7 +6,7 @@ import torch.nn.functional as F
 class GABMIL(nn.Module):
     """Gated attention MIL for survival analysis."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128):
+    def __init__(self, in_dim=1024, hidden_dim=512, attention_dim=128):
         super().__init__()
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
@@ -40,7 +40,7 @@ class GABMIL(nn.Module):
 class GABMIL_TopK(GABMIL):
     """GABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(self, in_dim=1024, hidden_dim=500, attention_dim=128, k=None):
+    def __init__(self, in_dim=1024, hidden_dim=512, attention_dim=128, k=None):
         if k is None or k <= 0:
             raise ValueError("GABMIL_TopK requires a positive k")
         super().__init__(

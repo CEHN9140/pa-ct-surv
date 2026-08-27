@@ -9,7 +9,7 @@ class ABMIL(nn.Module):
     def __init__(
         self,
         in_dim=1024,
-        hidden_dim=500,
+        hidden_dim=512,
         attention_dim=128,
         dropout=0.0,
         attention_branches=1,
@@ -53,7 +53,7 @@ class ABMIL_TopK(ABMIL):
     def __init__(
         self,
         in_dim=1024,
-        hidden_dim=500,
+        hidden_dim=512,
         attention_dim=128,
         k=None,
         dropout=0.0,
