@@ -1,0 +1,360 @@
+Using Device: cuda
+PA model: abmil | k: None | Cox PH loss | ABMIL dropout: 0.25 | attention_branches: 1
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v4/pathology/roi64_abmil_dropout0.25_epochs30_coxbs32_lr1e-4_wd5e-4_seed2024
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v4/pathology/roi64_abmil_dropout0.25_epochs30_coxbs32_lr1e-4_wd5e-4_seed2024
+Loaded 703 samples
+Locked split: train=562, test=141
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9982, effective_patches=11339.7, effective_ratio=0.9669
+val branch=0 attention: max=0.0002, entropy=0.9983, effective_patches=10449.6, effective_ratio=0.9691
+Epoch 1/30 | Train Loss: 2.7160 | Train C-index: 0.6790 | Val Loss: 4.1867 | Val C-index: 0.6756
+train branch=0 attention: max=0.0003, entropy=0.9947, effective_patches=10619.9, effective_ratio=0.9088
+val branch=0 attention: max=0.0003, entropy=0.9952, effective_patches=9857.9, effective_ratio=0.9167
+Epoch 2/30 | Train Loss: 2.5453 | Train C-index: 0.7497 | Val Loss: 4.2048 | Val C-index: 0.6789
+train branch=0 attention: max=0.0004, entropy=0.9880, effective_patches=9405.6, effective_ratio=0.8106
+val branch=0 attention: max=0.0004, entropy=0.9891, effective_patches=8854.3, effective_ratio=0.8268
+Epoch 3/30 | Train Loss: 2.4792 | Train C-index: 0.7667 | Val Loss: 4.2461 | Val C-index: 0.6854
+train branch=0 attention: max=0.0006, entropy=0.9801, effective_patches=8237.8, effective_ratio=0.7141
+val branch=0 attention: max=0.0006, entropy=0.9817, effective_patches=7843.1, effective_ratio=0.7346
+Epoch 4/30 | Train Loss: 2.4037 | Train C-index: 0.7824 | Val Loss: 4.2176 | Val C-index: 0.6883
+train branch=0 attention: max=0.0008, entropy=0.9739, effective_patches=7451.2, effective_ratio=0.6482
+val branch=0 attention: max=0.0008, entropy=0.9756, effective_patches=7117.5, effective_ratio=0.6677
+Epoch 5/30 | Train Loss: 2.3434 | Train C-index: 0.8061 | Val Loss: 4.2119 | Val C-index: 0.6717
+train branch=0 attention: max=0.0011, entropy=0.9643, effective_patches=6426.6, effective_ratio=0.5613
+val branch=0 attention: max=0.0011, entropy=0.9664, effective_patches=6181.3, effective_ratio=0.5828
+Epoch 6/30 | Train Loss: 2.2584 | Train C-index: 0.8205 | Val Loss: 4.2179 | Val C-index: 0.6721
+train branch=0 attention: max=0.0014, entropy=0.9568, effective_patches=5722.8, effective_ratio=0.5022
+val branch=0 attention: max=0.0014, entropy=0.9595, effective_patches=5551.9, effective_ratio=0.5261
+Epoch 7/30 | Train Loss: 2.2327 | Train C-index: 0.8268 | Val Loss: 4.2138 | Val C-index: 0.6870
+train branch=0 attention: max=0.0018, entropy=0.9505, effective_patches=5122.2, effective_ratio=0.4529
+val branch=0 attention: max=0.0018, entropy=0.9536, effective_patches=5006.9, effective_ratio=0.4771
+Epoch 8/30 | Train Loss: 2.1102 | Train C-index: 0.8298 | Val Loss: 4.2836 | Val C-index: 0.6844
+train branch=0 attention: max=0.0021, entropy=0.9473, effective_patches=4749.0, effective_ratio=0.4217
+val branch=0 attention: max=0.0021, entropy=0.9503, effective_patches=4647.0, effective_ratio=0.4435
+Epoch 9/30 | Train Loss: 2.1171 | Train C-index: 0.8422 | Val Loss: 4.3040 | Val C-index: 0.6623
+train branch=0 attention: max=0.0026, entropy=0.9333, effective_patches=3905.5, effective_ratio=0.3460
+val branch=0 attention: max=0.0027, entropy=0.9362, effective_patches=3829.5, effective_ratio=0.3636
+Epoch 10/30 | Train Loss: 2.0344 | Train C-index: 0.8571 | Val Loss: 4.3561 | Val C-index: 0.6598
+train branch=0 attention: max=0.0033, entropy=0.9225, effective_patches=3277.9, effective_ratio=0.2923
+val branch=0 attention: max=0.0035, entropy=0.9254, effective_patches=3228.4, effective_ratio=0.3072
+Epoch 11/30 | Train Loss: 2.0025 | Train C-index: 0.8622 | Val Loss: 4.4466 | Val C-index: 0.6604
+train branch=0 attention: max=0.0048, entropy=0.9040, effective_patches=2441.5, effective_ratio=0.2209
+val branch=0 attention: max=0.0054, entropy=0.9063, effective_patches=2430.2, effective_ratio=0.2314
+Epoch 12/30 | Train Loss: 1.9446 | Train C-index: 0.8748 | Val Loss: 4.4557 | Val C-index: 0.6568
+train branch=0 attention: max=0.0064, entropy=0.8845, effective_patches=1872.1, effective_ratio=0.1687
+val branch=0 attention: max=0.0073, entropy=0.8859, effective_patches=1851.2, effective_ratio=0.1750
+Epoch 13/30 | Train Loss: 1.8712 | Train C-index: 0.8770 | Val Loss: 4.5230 | Val C-index: 0.6575
+train branch=0 attention: max=0.0078, entropy=0.8693, effective_patches=1532.9, effective_ratio=0.1374
+val branch=0 attention: max=0.0087, entropy=0.8709, effective_patches=1499.8, effective_ratio=0.1423
+Epoch 14/30 | Train Loss: 1.8768 | Train C-index: 0.8895 | Val Loss: 4.6743 | Val C-index: 0.6465
+Early stopping at epoch 14
+Fold 0 best C-index: 0.6883
+
+Extra survival metrics:
+cutoff_from_train_median: -0.250100
+n_test: 113
+n_high_risk: 46
+n_low_risk: 67
+n_event_test: 38
+logrank_stat: 7.278665
+logrank_p: 0.006978
+auc_36m: 0.761918
+auc_60m: 0.697628
+HR_high_vs_low: 2.364905
+HR_95CI_lower: 1.239947
+HR_95CI_upper: 4.510495
+cox_p: 0.008980
+
+==================================================
+Fold 2/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9989, effective_patches=11381.4, effective_ratio=0.9794
+val branch=0 attention: max=0.0002, entropy=0.9988, effective_patches=10981.8, effective_ratio=0.9788
+Epoch 1/30 | Train Loss: 2.7656 | Train C-index: 0.6331 | Val Loss: 3.8660 | Val C-index: 0.7833
+train branch=0 attention: max=0.0002, entropy=0.9970, effective_patches=10971.0, effective_ratio=0.9464
+val branch=0 attention: max=0.0002, entropy=0.9969, effective_patches=10570.6, effective_ratio=0.9452
+Epoch 2/30 | Train Loss: 2.6079 | Train C-index: 0.7031 | Val Loss: 3.8247 | Val C-index: 0.7806
+train branch=0 attention: max=0.0003, entropy=0.9945, effective_patches=10473.3, effective_ratio=0.9050
+val branch=0 attention: max=0.0003, entropy=0.9944, effective_patches=10089.8, effective_ratio=0.9040
+Epoch 3/30 | Train Loss: 2.5893 | Train C-index: 0.7353 | Val Loss: 3.7678 | Val C-index: 0.7932
+train branch=0 attention: max=0.0003, entropy=0.9908, effective_patches=9811.7, effective_ratio=0.8499
+val branch=0 attention: max=0.0004, entropy=0.9909, effective_patches=9459.2, effective_ratio=0.8498
+Epoch 4/30 | Train Loss: 2.5009 | Train C-index: 0.7542 | Val Loss: 3.7223 | Val C-index: 0.8071
+train branch=0 attention: max=0.0004, entropy=0.9865, effective_patches=9099.4, effective_ratio=0.7908
+val branch=0 attention: max=0.0005, entropy=0.9867, effective_patches=8771.7, effective_ratio=0.7909
+Epoch 5/30 | Train Loss: 2.4630 | Train C-index: 0.7676 | Val Loss: 3.6783 | Val C-index: 0.8081
+train branch=0 attention: max=0.0006, entropy=0.9810, effective_patches=8270.6, effective_ratio=0.7228
+val branch=0 attention: max=0.0006, entropy=0.9812, effective_patches=7942.8, effective_ratio=0.7209
+Epoch 6/30 | Train Loss: 2.4037 | Train C-index: 0.7790 | Val Loss: 3.6596 | Val C-index: 0.8169
+train branch=0 attention: max=0.0008, entropy=0.9735, effective_patches=7326.7, effective_ratio=0.6439
+val branch=0 attention: max=0.0009, entropy=0.9739, effective_patches=7010.9, effective_ratio=0.6410
+Epoch 7/30 | Train Loss: 2.3546 | Train C-index: 0.7886 | Val Loss: 3.6450 | Val C-index: 0.8121
+train branch=0 attention: max=0.0011, entropy=0.9662, effective_patches=6501.3, effective_ratio=0.5742
+val branch=0 attention: max=0.0011, entropy=0.9667, effective_patches=6186.8, effective_ratio=0.5702
+Epoch 8/30 | Train Loss: 2.2718 | Train C-index: 0.7983 | Val Loss: 3.6235 | Val C-index: 0.8210
+train branch=0 attention: max=0.0014, entropy=0.9594, effective_patches=5801.5, effective_ratio=0.5131
+val branch=0 attention: max=0.0014, entropy=0.9602, effective_patches=5526.0, effective_ratio=0.5104
+Epoch 9/30 | Train Loss: 2.2372 | Train C-index: 0.8037 | Val Loss: 3.6464 | Val C-index: 0.8142
+train branch=0 attention: max=0.0017, entropy=0.9528, effective_patches=5239.0, effective_ratio=0.4624
+val branch=0 attention: max=0.0017, entropy=0.9534, effective_patches=4982.1, effective_ratio=0.4599
+Epoch 10/30 | Train Loss: 2.1961 | Train C-index: 0.8211 | Val Loss: 3.6441 | Val C-index: 0.8159
+train branch=0 attention: max=0.0024, entropy=0.9384, effective_patches=4189.7, effective_ratio=0.3725
+val branch=0 attention: max=0.0025, entropy=0.9388, effective_patches=3959.4, effective_ratio=0.3696
+Epoch 11/30 | Train Loss: 2.1651 | Train C-index: 0.8278 | Val Loss: 3.6602 | Val C-index: 0.8152
+train branch=0 attention: max=0.0033, entropy=0.9254, effective_patches=3420.6, effective_ratio=0.3056
+val branch=0 attention: max=0.0035, entropy=0.9255, effective_patches=3226.9, effective_ratio=0.3029
+Epoch 12/30 | Train Loss: 2.0558 | Train C-index: 0.8414 | Val Loss: 3.7281 | Val C-index: 0.8104
+train branch=0 attention: max=0.0041, entropy=0.9160, effective_patches=2916.4, effective_ratio=0.2600
+val branch=0 attention: max=0.0042, entropy=0.9160, effective_patches=2743.5, effective_ratio=0.2577
+Epoch 13/30 | Train Loss: 1.9812 | Train C-index: 0.8527 | Val Loss: 3.7161 | Val C-index: 0.8084
+train branch=0 attention: max=0.0063, entropy=0.8948, effective_patches=2135.0, effective_ratio=0.1927
+val branch=0 attention: max=0.0065, entropy=0.8937, effective_patches=1973.2, effective_ratio=0.1889
+Epoch 14/30 | Train Loss: 2.0149 | Train C-index: 0.8595 | Val Loss: 3.7442 | Val C-index: 0.8128
+train branch=0 attention: max=0.0089, entropy=0.8752, effective_patches=1581.8, effective_ratio=0.1428
+val branch=0 attention: max=0.0087, entropy=0.8738, effective_patches=1447.6, effective_ratio=0.1394
+Epoch 15/30 | Train Loss: 1.9529 | Train C-index: 0.8751 | Val Loss: 3.7877 | Val C-index: 0.7982
+train branch=0 attention: max=0.0134, entropy=0.8456, effective_patches=1063.3, effective_ratio=0.0971
+val branch=0 attention: max=0.0140, entropy=0.8425, effective_patches=947.8, effective_ratio=0.0923
+Epoch 16/30 | Train Loss: 1.8419 | Train C-index: 0.8899 | Val Loss: 3.9142 | Val C-index: 0.7928
+train branch=0 attention: max=0.0163, entropy=0.8285, effective_patches=856.3, effective_ratio=0.0782
+val branch=0 attention: max=0.0162, entropy=0.8260, effective_patches=770.4, effective_ratio=0.0745
+Epoch 17/30 | Train Loss: 1.7731 | Train C-index: 0.8960 | Val Loss: 3.8995 | Val C-index: 0.7969
+train branch=0 attention: max=0.0227, entropy=0.8013, effective_patches=601.4, effective_ratio=0.0560
+val branch=0 attention: max=0.0236, entropy=0.7980, effective_patches=525.1, effective_ratio=0.0514
+Epoch 18/30 | Train Loss: 1.6421 | Train C-index: 0.9095 | Val Loss: 4.0398 | Val C-index: 0.7945
+Early stopping at epoch 18
+Fold 1 best C-index: 0.8210
+
+Extra survival metrics:
+cutoff_from_train_median: -0.777427
+n_test: 113
+n_high_risk: 55
+n_low_risk: 58
+n_event_test: 39
+logrank_stat: 32.641232
+logrank_p: 0.000000
+auc_36m: 0.857073
+auc_60m: 0.903649
+HR_high_vs_low: 9.423728
+HR_95CI_lower: 3.676079
+HR_95CI_upper: 24.157984
+cox_p: 0.000003
+
+==================================================
+Fold 3/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9989, effective_patches=11237.6, effective_ratio=0.9793
+val branch=0 attention: max=0.0002, entropy=0.9989, effective_patches=11548.5, effective_ratio=0.9792
+Epoch 1/30 | Train Loss: 2.7236 | Train C-index: 0.6756 | Val Loss: 4.1977 | Val C-index: 0.6677
+train branch=0 attention: max=0.0002, entropy=0.9970, effective_patches=10826.4, effective_ratio=0.9467
+val branch=0 attention: max=0.0002, entropy=0.9969, effective_patches=11095.8, effective_ratio=0.9439
+Epoch 2/30 | Train Loss: 2.5863 | Train C-index: 0.7398 | Val Loss: 4.2035 | Val C-index: 0.6818
+train branch=0 attention: max=0.0003, entropy=0.9931, effective_patches=10039.1, effective_ratio=0.8828
+val branch=0 attention: max=0.0003, entropy=0.9926, effective_patches=10197.5, effective_ratio=0.8728
+Epoch 3/30 | Train Loss: 2.4667 | Train C-index: 0.7582 | Val Loss: 4.2171 | Val C-index: 0.6840
+train branch=0 attention: max=0.0005, entropy=0.9858, effective_patches=8826.9, effective_ratio=0.7818
+val branch=0 attention: max=0.0005, entropy=0.9844, effective_patches=8821.8, effective_ratio=0.7608
+Epoch 4/30 | Train Loss: 2.4283 | Train C-index: 0.7732 | Val Loss: 4.2374 | Val C-index: 0.6881
+train branch=0 attention: max=0.0006, entropy=0.9801, effective_patches=8044.1, effective_ratio=0.7153
+val branch=0 attention: max=0.0006, entropy=0.9780, effective_patches=7937.7, effective_ratio=0.6870
+Epoch 5/30 | Train Loss: 2.3138 | Train C-index: 0.7891 | Val Loss: 4.2475 | Val C-index: 0.6875
+train branch=0 attention: max=0.0007, entropy=0.9774, effective_patches=7678.2, effective_ratio=0.6837
+val branch=0 attention: max=0.0007, entropy=0.9750, effective_patches=7532.2, effective_ratio=0.6528
+Epoch 6/30 | Train Loss: 2.2916 | Train C-index: 0.7998 | Val Loss: 4.2514 | Val C-index: 0.6926
+train branch=0 attention: max=0.0010, entropy=0.9709, effective_patches=6864.2, effective_ratio=0.6146
+val branch=0 attention: max=0.0010, entropy=0.9681, effective_patches=6663.6, effective_ratio=0.5835
+Epoch 7/30 | Train Loss: 2.1981 | Train C-index: 0.8061 | Val Loss: 4.2936 | Val C-index: 0.6948
+train branch=0 attention: max=0.0011, entropy=0.9680, effective_patches=6530.1, effective_ratio=0.5825
+val branch=0 attention: max=0.0011, entropy=0.9653, effective_patches=6349.1, effective_ratio=0.5533
+Epoch 8/30 | Train Loss: 2.2429 | Train C-index: 0.8145 | Val Loss: 4.2533 | Val C-index: 0.6952
+train branch=0 attention: max=0.0015, entropy=0.9552, effective_patches=5382.8, effective_ratio=0.4813
+val branch=0 attention: max=0.0015, entropy=0.9513, effective_patches=5152.7, effective_ratio=0.4499
+Epoch 9/30 | Train Loss: 2.2476 | Train C-index: 0.8272 | Val Loss: 4.2840 | Val C-index: 0.7044
+train branch=0 attention: max=0.0016, entropy=0.9497, effective_patches=4990.8, effective_ratio=0.4414
+val branch=0 attention: max=0.0016, entropy=0.9461, effective_patches=4821.8, effective_ratio=0.4164
+Epoch 10/30 | Train Loss: 2.1097 | Train C-index: 0.8360 | Val Loss: 4.2413 | Val C-index: 0.7025
+train branch=0 attention: max=0.0021, entropy=0.9349, effective_patches=4060.7, effective_ratio=0.3610
+val branch=0 attention: max=0.0021, entropy=0.9316, effective_patches=3931.2, effective_ratio=0.3427
+Epoch 11/30 | Train Loss: 2.0458 | Train C-index: 0.8439 | Val Loss: 4.3596 | Val C-index: 0.6987
+train branch=0 attention: max=0.0026, entropy=0.9252, effective_patches=3572.3, effective_ratio=0.3149
+val branch=0 attention: max=0.0024, entropy=0.9221, effective_patches=3451.7, effective_ratio=0.3002
+Epoch 12/30 | Train Loss: 2.0499 | Train C-index: 0.8481 | Val Loss: 4.3493 | Val C-index: 0.6872
+train branch=0 attention: max=0.0035, entropy=0.9137, effective_patches=2972.0, effective_ratio=0.2630
+val branch=0 attention: max=0.0033, entropy=0.9108, effective_patches=2869.7, effective_ratio=0.2507
+Epoch 13/30 | Train Loss: 2.0182 | Train C-index: 0.8615 | Val Loss: 4.2911 | Val C-index: 0.6945
+train branch=0 attention: max=0.0046, entropy=0.8985, effective_patches=2396.2, effective_ratio=0.2136
+val branch=0 attention: max=0.0045, entropy=0.8935, effective_patches=2257.8, effective_ratio=0.1987
+Epoch 14/30 | Train Loss: 1.9357 | Train C-index: 0.8657 | Val Loss: 4.3420 | Val C-index: 0.6977
+train branch=0 attention: max=0.0064, entropy=0.8812, effective_patches=1816.9, effective_ratio=0.1643
+val branch=0 attention: max=0.0062, entropy=0.8788, effective_patches=1738.9, effective_ratio=0.1551
+Epoch 15/30 | Train Loss: 1.9429 | Train C-index: 0.8765 | Val Loss: 4.4645 | Val C-index: 0.6967
+train branch=0 attention: max=0.0089, entropy=0.8490, effective_patches=1321.3, effective_ratio=0.1176
+val branch=0 attention: max=0.0083, entropy=0.8451, effective_patches=1247.3, effective_ratio=0.1108
+Epoch 16/30 | Train Loss: 1.7739 | Train C-index: 0.8876 | Val Loss: 4.4017 | Val C-index: 0.6923
+train branch=0 attention: max=0.0129, entropy=0.8267, effective_patches=916.1, effective_ratio=0.0837
+val branch=0 attention: max=0.0127, entropy=0.8231, effective_patches=859.1, effective_ratio=0.0779
+Epoch 17/30 | Train Loss: 1.7553 | Train C-index: 0.8942 | Val Loss: 4.6099 | Val C-index: 0.6894
+train branch=0 attention: max=0.0155, entropy=0.8128, effective_patches=783.0, effective_ratio=0.0708
+val branch=0 attention: max=0.0139, entropy=0.8129, effective_patches=776.5, effective_ratio=0.0698
+Epoch 18/30 | Train Loss: 1.6876 | Train C-index: 0.8944 | Val Loss: 4.5927 | Val C-index: 0.6722
+train branch=0 attention: max=0.0203, entropy=0.7909, effective_patches=571.8, effective_ratio=0.0530
+val branch=0 attention: max=0.0203, entropy=0.7867, effective_patches=538.1, effective_ratio=0.0493
+Epoch 19/30 | Train Loss: 1.7035 | Train C-index: 0.8963 | Val Loss: 4.7791 | Val C-index: 0.6875
+Early stopping at epoch 19
+Fold 2 best C-index: 0.7044
+
+Extra survival metrics:
+cutoff_from_train_median: -0.390049
+n_test: 112
+n_high_risk: 59
+n_low_risk: 53
+n_event_test: 38
+logrank_stat: 13.664242
+logrank_p: 0.000219
+auc_36m: 0.736487
+auc_60m: 0.745611
+HR_high_vs_low: 3.945781
+HR_95CI_lower: 1.802223
+HR_95CI_upper: 8.638880
+cox_p: 0.000597
+
+==================================================
+Fold 4/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9989, effective_patches=11164.5, effective_ratio=0.9805
+val branch=0 attention: max=0.0002, entropy=0.9990, effective_patches=11968.8, effective_ratio=0.9809
+Epoch 1/30 | Train Loss: 2.7437 | Train C-index: 0.6642 | Val Loss: 4.1280 | Val C-index: 0.6505
+train branch=0 attention: max=0.0002, entropy=0.9977, effective_patches=10892.4, effective_ratio=0.9588
+val branch=0 attention: max=0.0002, entropy=0.9977, effective_patches=11673.7, effective_ratio=0.9582
+Epoch 2/30 | Train Loss: 2.5583 | Train C-index: 0.7405 | Val Loss: 4.1100 | Val C-index: 0.6707
+train branch=0 attention: max=0.0003, entropy=0.9959, effective_patches=10514.2, effective_ratio=0.9283
+val branch=0 attention: max=0.0002, entropy=0.9959, effective_patches=11259.3, effective_ratio=0.9263
+Epoch 3/30 | Train Loss: 2.5045 | Train C-index: 0.7575 | Val Loss: 4.0749 | Val C-index: 0.6846
+train branch=0 attention: max=0.0004, entropy=0.9919, effective_patches=9755.3, effective_ratio=0.8644
+val branch=0 attention: max=0.0003, entropy=0.9917, effective_patches=10442.9, effective_ratio=0.8621
+Epoch 4/30 | Train Loss: 2.4457 | Train C-index: 0.7740 | Val Loss: 4.0451 | Val C-index: 0.7018
+train branch=0 attention: max=0.0005, entropy=0.9837, effective_patches=8466.4, effective_ratio=0.7544
+val branch=0 attention: max=0.0005, entropy=0.9837, effective_patches=9061.6, effective_ratio=0.7531
+Epoch 5/30 | Train Loss: 2.3943 | Train C-index: 0.7858 | Val Loss: 4.0233 | Val C-index: 0.7099
+train branch=0 attention: max=0.0008, entropy=0.9726, effective_patches=7103.1, effective_ratio=0.6359
+val branch=0 attention: max=0.0008, entropy=0.9727, effective_patches=7589.2, effective_ratio=0.6345
+Epoch 6/30 | Train Loss: 2.3708 | Train C-index: 0.7974 | Val Loss: 4.0087 | Val C-index: 0.7139
+train branch=0 attention: max=0.0012, entropy=0.9628, effective_patches=6084.1, effective_ratio=0.5469
+val branch=0 attention: max=0.0011, entropy=0.9632, effective_patches=6489.2, effective_ratio=0.5458
+Epoch 7/30 | Train Loss: 2.2658 | Train C-index: 0.8077 | Val Loss: 4.0395 | Val C-index: 0.7160
+train branch=0 attention: max=0.0015, entropy=0.9565, effective_patches=5506.7, effective_ratio=0.4936
+val branch=0 attention: max=0.0013, entropy=0.9577, effective_patches=5907.4, effective_ratio=0.4971
+Epoch 8/30 | Train Loss: 2.2811 | Train C-index: 0.8216 | Val Loss: 4.0578 | Val C-index: 0.7150
+train branch=0 attention: max=0.0021, entropy=0.9430, effective_patches=4435.7, effective_ratio=0.3985
+val branch=0 attention: max=0.0019, entropy=0.9451, effective_patches=4778.6, effective_ratio=0.4042
+Epoch 9/30 | Train Loss: 2.1803 | Train C-index: 0.8299 | Val Loss: 4.0934 | Val C-index: 0.7079
+train branch=0 attention: max=0.0036, entropy=0.9181, effective_patches=3081.1, effective_ratio=0.2781
+val branch=0 attention: max=0.0033, entropy=0.9217, effective_patches=3322.3, effective_ratio=0.2839
+Epoch 10/30 | Train Loss: 2.1206 | Train C-index: 0.8438 | Val Loss: 4.1907 | Val C-index: 0.7065
+train branch=0 attention: max=0.0060, entropy=0.8928, effective_patches=2112.2, effective_ratio=0.1926
+val branch=0 attention: max=0.0055, entropy=0.8980, effective_patches=2273.4, effective_ratio=0.1966
+Epoch 11/30 | Train Loss: 2.0460 | Train C-index: 0.8523 | Val Loss: 4.2478 | Val C-index: 0.7001
+train branch=0 attention: max=0.0077, entropy=0.8785, effective_patches=1743.0, effective_ratio=0.1599
+val branch=0 attention: max=0.0072, entropy=0.8842, effective_patches=1863.3, effective_ratio=0.1616
+Epoch 12/30 | Train Loss: 1.9946 | Train C-index: 0.8608 | Val Loss: 4.3222 | Val C-index: 0.7001
+train branch=0 attention: max=0.0107, entropy=0.8588, effective_patches=1346.3, effective_ratio=0.1236
+val branch=0 attention: max=0.0100, entropy=0.8657, effective_patches=1424.6, effective_ratio=0.1235
+Epoch 13/30 | Train Loss: 1.9371 | Train C-index: 0.8738 | Val Loss: 4.3042 | Val C-index: 0.6917
+train branch=0 attention: max=0.0159, entropy=0.8270, effective_patches=925.6, effective_ratio=0.0865
+val branch=0 attention: max=0.0149, entropy=0.8342, effective_patches=964.1, effective_ratio=0.0855
+Epoch 14/30 | Train Loss: 1.8564 | Train C-index: 0.8818 | Val Loss: 4.4154 | Val C-index: 0.6994
+train branch=0 attention: max=0.0223, entropy=0.8167, effective_patches=775.0, effective_ratio=0.0743
+val branch=0 attention: max=0.0223, entropy=0.8233, effective_patches=774.8, effective_ratio=0.0713
+Epoch 15/30 | Train Loss: 1.7961 | Train C-index: 0.8906 | Val Loss: 4.4613 | Val C-index: 0.6849
+train branch=0 attention: max=0.0297, entropy=0.7658, effective_patches=464.7, effective_ratio=0.0442
+val branch=0 attention: max=0.0300, entropy=0.7729, effective_patches=463.7, effective_ratio=0.0411
+Epoch 16/30 | Train Loss: 1.7042 | Train C-index: 0.9028 | Val Loss: 4.6961 | Val C-index: 0.6876
+train branch=0 attention: max=0.0344, entropy=0.7491, effective_patches=405.9, effective_ratio=0.0388
+val branch=0 attention: max=0.0344, entropy=0.7542, effective_patches=402.3, effective_ratio=0.0359
+Epoch 17/30 | Train Loss: 1.6708 | Train C-index: 0.9069 | Val Loss: 4.5311 | Val C-index: 0.7048
+Early stopping at epoch 17
+Fold 3 best C-index: 0.7160
+
+Extra survival metrics:
+cutoff_from_train_median: -0.314592
+n_test: 112
+n_high_risk: 63
+n_low_risk: 49
+n_event_test: 38
+logrank_stat: 12.757973
+logrank_p: 0.000354
+auc_36m: 0.699409
+auc_60m: 0.758337
+HR_high_vs_low: 3.763700
+HR_95CI_lower: 1.722734
+HR_95CI_upper: 8.222651
+cox_p: 0.000887
+
+==================================================
+Fold 5/5
+==================================================
+train branch=0 attention: max=0.0002, entropy=0.9990, effective_patches=11289.5, effective_ratio=0.9817
+val branch=0 attention: max=0.0002, entropy=0.9990, effective_patches=11510.2, effective_ratio=0.9823
+Epoch 1/30 | Train Loss: 2.7424 | Train C-index: 0.6528 | Val Loss: 4.0583 | Val C-index: 0.7390
+train branch=0 attention: max=0.0002, entropy=0.9966, effective_patches=10781.2, effective_ratio=0.9402
+val branch=0 attention: max=0.0002, entropy=0.9968, effective_patches=11020.5, effective_ratio=0.9433
+Epoch 2/30 | Train Loss: 2.5742 | Train C-index: 0.7353 | Val Loss: 3.9653 | Val C-index: 0.7462
+train branch=0 attention: max=0.0003, entropy=0.9909, effective_patches=9696.1, effective_ratio=0.8499
+val branch=0 attention: max=0.0003, entropy=0.9915, effective_patches=10002.5, effective_ratio=0.8603
+Epoch 3/30 | Train Loss: 2.5805 | Train C-index: 0.7498 | Val Loss: 3.9346 | Val C-index: 0.7500
+train branch=0 attention: max=0.0005, entropy=0.9861, effective_patches=8933.4, effective_ratio=0.7864
+val branch=0 attention: max=0.0004, entropy=0.9871, effective_patches=9283.1, effective_ratio=0.8009
+Epoch 4/30 | Train Loss: 2.5018 | Train C-index: 0.7664 | Val Loss: 3.9549 | Val C-index: 0.7462
+train branch=0 attention: max=0.0006, entropy=0.9812, effective_patches=8201.5, effective_ratio=0.7251
+val branch=0 attention: max=0.0006, entropy=0.9823, effective_patches=8564.5, effective_ratio=0.7417
+Epoch 5/30 | Train Loss: 2.3945 | Train C-index: 0.7819 | Val Loss: 3.9878 | Val C-index: 0.7364
+train branch=0 attention: max=0.0009, entropy=0.9709, effective_patches=6976.6, effective_ratio=0.6196
+val branch=0 attention: max=0.0008, entropy=0.9731, effective_patches=7398.8, effective_ratio=0.6431
+Epoch 6/30 | Train Loss: 2.3924 | Train C-index: 0.7944 | Val Loss: 3.9858 | Val C-index: 0.7345
+train branch=0 attention: max=0.0012, entropy=0.9614, effective_patches=6051.7, effective_ratio=0.5384
+val branch=0 attention: max=0.0011, entropy=0.9645, effective_patches=6480.1, effective_ratio=0.5640
+Epoch 7/30 | Train Loss: 2.3007 | Train C-index: 0.8080 | Val Loss: 4.0001 | Val C-index: 0.7314
+train branch=0 attention: max=0.0014, entropy=0.9563, effective_patches=5563.9, effective_ratio=0.4957
+val branch=0 attention: max=0.0013, entropy=0.9594, effective_patches=5965.2, effective_ratio=0.5194
+Epoch 8/30 | Train Loss: 2.2386 | Train C-index: 0.8177 | Val Loss: 4.0407 | Val C-index: 0.7348
+train branch=0 attention: max=0.0023, entropy=0.9376, effective_patches=4237.3, effective_ratio=0.3776
+val branch=0 attention: max=0.0021, entropy=0.9421, effective_patches=4618.5, effective_ratio=0.4025
+Epoch 9/30 | Train Loss: 2.1958 | Train C-index: 0.8276 | Val Loss: 4.0810 | Val C-index: 0.7330
+train branch=0 attention: max=0.0032, entropy=0.9234, effective_patches=3387.0, effective_ratio=0.3030
+val branch=0 attention: max=0.0029, entropy=0.9294, effective_patches=3758.2, effective_ratio=0.3295
+Epoch 10/30 | Train Loss: 2.1590 | Train C-index: 0.8396 | Val Loss: 4.0906 | Val C-index: 0.7314
+train branch=0 attention: max=0.0049, entropy=0.9088, effective_patches=2626.9, effective_ratio=0.2385
+val branch=0 attention: max=0.0043, entropy=0.9159, effective_patches=2933.2, effective_ratio=0.2625
+Epoch 11/30 | Train Loss: 2.1252 | Train C-index: 0.8519 | Val Loss: 4.2135 | Val C-index: 0.7156
+train branch=0 attention: max=0.0077, entropy=0.8809, effective_patches=1797.4, effective_ratio=0.1638
+val branch=0 attention: max=0.0066, entropy=0.8884, effective_patches=1994.6, effective_ratio=0.1802
+Epoch 12/30 | Train Loss: 1.9910 | Train C-index: 0.8637 | Val Loss: 4.2882 | Val C-index: 0.7058
+train branch=0 attention: max=0.0124, entropy=0.8596, effective_patches=1297.0, effective_ratio=0.1216
+val branch=0 attention: max=0.0103, entropy=0.8676, effective_patches=1428.8, effective_ratio=0.1329
+Epoch 13/30 | Train Loss: 1.9720 | Train C-index: 0.8732 | Val Loss: 4.4142 | Val C-index: 0.6989
+Early stopping at epoch 13
+Fold 4 best C-index: 0.7500
+
+Extra survival metrics:
+cutoff_from_train_median: -0.466872
+n_test: 112
+n_high_risk: 63
+n_low_risk: 49
+n_event_test: 38
+logrank_stat: 19.148968
+logrank_p: 0.000012
+auc_36m: 0.789875
+auc_60m: 0.755762
+HR_high_vs_low: 6.290921
+HR_95CI_lower: 2.451097
+HR_95CI_upper: 16.146116
+cox_p: 0.000131
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index mean: 0.7359
