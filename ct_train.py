@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from monai.data import worker_init_fn
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
 
@@ -161,7 +160,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    seed_everything(args.seed)
 
     _ct = "_aug" if args.ct_augment else "_noaug"
     _pr = "_pretrain" if args.ct_pretrained_path else ""
@@ -217,9 +215,7 @@ def main():
 
     for fold, (train_idx, val_idx) in enumerate(fold_splits):
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
-        fold_seed = args.seed + fold
-        seed_everything(fold_seed)
-        train_generator = torch.Generator().manual_seed(fold_seed)
+        seed_everything(args.seed)
 
         train_subset = Subset(dataset, train_idx)
         noaug_train_subset = Subset(eval_dataset, train_idx)
@@ -232,8 +228,6 @@ def main():
             drop_last=False,
             num_workers=args.num_workers,
             pin_memory=True,
-            worker_init_fn=worker_init_fn,
-            generator=train_generator,
         )
         noaug_train_loader = DataLoader(
             noaug_train_subset,
@@ -242,7 +236,6 @@ def main():
             drop_last=False,
             num_workers=args.num_workers,
             pin_memory=True,
-            worker_init_fn=worker_init_fn,
         )
         val_loader = DataLoader(
             val_subset,
@@ -251,7 +244,6 @@ def main():
             drop_last=False,
             num_workers=args.num_workers,
             pin_memory=True,
-            worker_init_fn=worker_init_fn,
         )
 
         model = CT_Model(**model_kwargs).to(DEVICE)

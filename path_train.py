@@ -322,7 +322,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    seed_everything(args.seed)
     is_topk = args.pa_model.endswith("-topk")
     if is_topk and (args.k is None or args.k <= 0):
         raise ValueError("--k must be a positive integer for *-topk models")
@@ -389,9 +388,7 @@ def main():
 
     for fold, (train_idx, val_idx) in enumerate(fold_splits):
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
-        fold_seed = args.seed + fold
-        seed_everything(fold_seed)
-        loader_generator = torch.Generator().manual_seed(fold_seed)
+        seed_everything(args.seed)
 
         train_loader = DataLoader(
             Subset(dataset, train_idx),
@@ -399,7 +396,6 @@ def main():
             shuffle=True,
             num_workers=args.num_workers,
             pin_memory=True,
-            generator=loader_generator,
         )
         val_loader = DataLoader(
             Subset(dataset, val_idx),
