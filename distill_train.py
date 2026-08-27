@@ -1,6 +1,6 @@
 """
 Knowledge Distillation: PACT Teacher → CT-Only Student (5-fold CV)
-Survival risk distillation: Cox supervision + teacher fused-risk MSE.
+    Survival risk distillation: Cox supervision + teacher fused-risk MSE.
 Batched CT forward + list-based PA teacher forward.
 """
 
@@ -19,7 +19,11 @@ from torch.utils.data import DataLoader, Subset
 from cox_utils import cox_loss, evaluate_survival
 from dataset import CT_Student_Dataset
 from final_utils import cv_fold_indices, locked_split_indices, seed_everything
-from loss import mse_distill_loss
+from loss import (
+    mse_distill_loss,
+    normalized_mse_distill_loss,
+    risk_set_listwise_kd,
+)
 from model.build import CT_Model, Pa_CT_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -181,7 +185,18 @@ def train_student(
 
             loss_c = cox_loss(risk_s, time, event)
             if risk_t is not None:
-                loss_kd = mse_distill_loss(risk_s, risk_t)
+                if args.distill_mode == "mse":
+                    loss_kd = mse_distill_loss(risk_s, risk_t)
+                elif args.distill_mode == "normalized_mse":
+                    loss_kd = normalized_mse_distill_loss(risk_s, risk_t)
+                else:
+                    loss_kd = risk_set_listwise_kd(
+                        risk_s,
+                        risk_t,
+                        time,
+                        event,
+                        temperature=args.kd_temperature,
+                    )
                 loss = loss_c + alpha_kd * loss_kd
             else:
                 loss_kd = torch.tensor(0.0, device=device)
@@ -279,7 +294,12 @@ def parse_args():
 
     # ── Distillation ──
     parser.add_argument("--alpha_kd", type=float, default=0.3)
-    parser.add_argument("--distill_mode", default="mse", choices=["kl", "mse"])
+    parser.add_argument(
+        "--distill_mode",
+        default="mse",
+        choices=["mse", "normalized_mse", "listwise_kd"],
+    )
+    parser.add_argument("--kd_temperature", type=float, default=2.0)
     parser.add_argument("--start_KD", type=int, default=1)
 
     # ── Training ──
@@ -323,7 +343,7 @@ def main():
     is_teacher_topk = teacher_pa_model.endswith("-topk")
 
     k_tag = f"-k{teacher_k}" if is_teacher_topk else ""
-    suffix = f"distill-{teacher_pa_model}{k_tag}-{teacher_fusion}-survrisk-mse-akd{args.alpha_kd}-start{args.start_KD}-roi{ct_roi_size}"
+    suffix = f"distill-{teacher_pa_model}{k_tag}-{teacher_fusion}-survrisk-{args.distill_mode}-akd{args.alpha_kd}-start{args.start_KD}-roi{ct_roi_size}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join(
             "/home/gly001/cqj/pa_ct_surv/experiments/ct_distill", "checkpoints", suffix
@@ -341,7 +361,7 @@ def main():
         f"Fusion={teacher_fusion} | k={teacher_k}"
     )
     print(
-        f"Distill:   Cox + alpha_kd*MSE(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | start_KD={args.start_KD}"
+        f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | start_KD={args.start_KD}"
     )
     print(f"Augment:   {args.augment} | cox_batch_size={args.cox_batch_size}")
     print(
