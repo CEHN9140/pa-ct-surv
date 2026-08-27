@@ -211,7 +211,6 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train PA+CT fusion survival model (5-fold CV).")
-    parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--ct_roi_size", type=int, default=96, choices=[64, 96, 128])
     parser.add_argument("--ct_model", default="resnet18", choices=["resnet10", "resnet18"])
     parser.add_argument("--pa_model", default="abmil",
@@ -221,7 +220,7 @@ def parse_args():
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
-    parser.add_argument("--ct_augment", action="store_true")
+    # parser.add_argument("--ct_augment", action="store_true")
     parser.add_argument("--fusion_type", default="concat",
                         choices=["concat", "bilinear", "gated", "crossattn", "weighted"])
     parser.add_argument("--num_epochs", type=int, default=50)
@@ -245,9 +244,15 @@ def parse_args():
 
 def main():
     args = parse_args()
+    args.data_dir = str(
+        Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}"
+    )
+    label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
+    if not label_file.is_file():
+        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
     args.effective_ct_backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
 
-    aug_tag = "_aug" if args.ct_augment else "_noaug"
+    # aug_tag = "_aug" if args.ct_augment else "_noaug"
     pretrain_tag = "_pretrain" if args.ct_pretrained_path else ""
     is_topk = args.pa_model.endswith("-topk")
     if is_topk and (args.k is None or args.k <= 0):
@@ -255,14 +260,16 @@ def main():
     if not is_topk and args.k is not None:
         raise ValueError("--k is only valid for *-topk PA models")
     k_tag = f"-k{args.k}" if is_topk else ""
-    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
+    # default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
+    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{pretrain_tag}-{args.fusion_type}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
         args.results_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "results", default_suffix)
 
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
-    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Augment: {args.ct_augment}")
+    # print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Augment: {args.ct_augment}")
+    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | CT augmentation: disabled")
     print(f"LR: {args.lr:g} | CT Backbone LR: {args.effective_ct_backbone_lr:g}")
     print(f"Loss: Fused Cox + {args.lambda_ct:g}*CT + {args.lambda_pa:g}*PA")
     if args.ct_pretrained_path:
@@ -275,9 +282,10 @@ def main():
     with open(os.path.join(args.results_root, "run_config.yaml"), "w") as f:
         yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
 
-    dataset = Pa_CT_Dataset(
-        args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
-    )
+    # dataset = Pa_CT_Dataset(
+    #     args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
+    # )
+    dataset = Pa_CT_Dataset(args.data_dir, roi_size=args.ct_roi_size)
     eval_dataset = Pa_CT_Dataset(
         args.data_dir, roi_size=args.ct_roi_size, augment=False
     )
@@ -312,13 +320,13 @@ def main():
             num_workers=args.num_workers,
             pin_memory=True,
         )
-        noaug_train_loader = DataLoader(
-            Subset(eval_dataset, train_idx),
-            batch_size=1,
-            shuffle=False,
-            num_workers=args.num_workers,
-            pin_memory=True,
-        )
+        # noaug_train_loader = DataLoader(
+        #     Subset(eval_dataset, train_idx),
+        #     batch_size=1,
+        #     shuffle=False,
+        #     num_workers=args.num_workers,
+        #     pin_memory=True,
+        # )
         val_loader = DataLoader(
             Subset(eval_dataset, val_idx),
             batch_size=1,
@@ -347,7 +355,7 @@ def main():
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
             _, val_cindex, train_df, val_df, metrics = evaluate_survival(
                 model,
-                noaug_train_loader,
+                train_loader,
                 val_loader,
                 DEVICE,
                 save_dir=metrics_dir,
@@ -369,7 +377,7 @@ def main():
         )
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model,
-            noaug_train_loader,
+            train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,

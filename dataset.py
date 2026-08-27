@@ -3,16 +3,16 @@ import os
 import numpy as np
 import pandas as pd
 import torch
-from monai.transforms import (
-    Compose,
-    Lambda,
-    RandFlip,
-    RandGaussianNoise,
-    RandRotate,
-    RandScaleIntensity,
-    RandShiftIntensity,
-    RandZoom,
-)
+# from monai.transforms import (
+#     Compose,
+#     Lambda,
+#     RandFlip,
+#     RandGaussianNoise,
+#     RandRotate,
+#     RandScaleIntensity,
+#     RandShiftIntensity,
+#     RandZoom,
+# )
 from torch.utils.data import Dataset
 
 
@@ -35,28 +35,29 @@ def load_ct_npy(ct_path, expected_roi_size=None):
     return np.ascontiguousarray(ct, dtype=np.float32)
 
 
-def clip01(x):
-    return (
-        torch.clamp(x, 0, 1)
-        if torch.is_tensor(x)
-        else np.clip(x, 0, 1).astype(np.float32)
-    )
-
-
-def ct_augmentation():
-    return Compose(
-        [
-            RandFlip(prob=0.5, spatial_axis=2),
-            RandRotate(prob=0.3, range_x=0.1, range_y=0.1, range_z=0.1),
-            RandZoom(prob=0.3),
-            RandGaussianNoise(prob=0.2, std=0.01),
-            RandScaleIntensity(prob=0.2, factors=0.1),
-            RandShiftIntensity(prob=0.2, offsets=0.05),
-            Lambda(clip01),
-        ]
-    )
-
-
+# CT augmentation is temporarily disabled.
+# def clip01(x):
+#     return (
+#         torch.clamp(x, 0, 1)
+#         if torch.is_tensor(x)
+#         else np.clip(x, 0, 1).astype(np.float32)
+#     )
+#
+#
+# def ct_augmentation():
+#     return Compose(
+#         [
+#             RandFlip(prob=0.5, spatial_axis=2),
+#             RandRotate(prob=0.3, range_x=0.1, range_y=0.1, range_z=0.1),
+#             RandZoom(prob=0.3),
+#             RandGaussianNoise(prob=0.2, std=0.01),
+#             RandScaleIntensity(prob=0.2, factors=0.1),
+#             RandShiftIntensity(prob=0.2, offsets=0.05),
+#             Lambda(clip01),
+#         ]
+#     )
+#
+#
 def get_label_file(data_dir, roi_size=None):
     if roi_size is not None:
         fname = f"all_label_roi{roi_size}.csv"
@@ -134,7 +135,8 @@ class CT_Dataset(Dataset):
             )
         if len(self.samples) == 0:
             raise ValueError("No valid CT samples found")
-        self.ct_aug = ct_augmentation() if augment else None
+        # CT augmentation is currently disabled; keep the argument for compatibility.
+        # self.ct_aug = ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)
@@ -142,8 +144,8 @@ class CT_Dataset(Dataset):
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
         ct = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
-        if self.ct_aug is not None:
-            ct = self.ct_aug(ct)
+        # if self.ct_aug is not None:
+        #     ct = self.ct_aug(ct)
         return (
             torch.as_tensor(ct, dtype=torch.float32),
             torch.tensor(row["event"], dtype=torch.long),
@@ -183,7 +185,8 @@ class Pa_CT_Dataset(Dataset):
             )
         if len(self.samples) == 0:
             raise ValueError("No valid paired pathology-CT samples found")
-        self.ct_aug = ct_augmentation() if augment else None
+        # CT augmentation is currently disabled; keep the argument for compatibility.
+        # self.ct_aug = ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)
@@ -191,8 +194,8 @@ class Pa_CT_Dataset(Dataset):
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
         ct_img = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
-        if self.ct_aug is not None:
-            ct_img = self.ct_aug(ct_img)
+        # if self.ct_aug is not None:
+        #     ct_img = self.ct_aug(ct_img)
         pa_fea = torch.load(row["pa_path"], map_location="cpu").float()
         case_id = f"{row['pa_id']}|{row['ct_id']}"
         return (
@@ -210,8 +213,7 @@ class CT_Student_Dataset(Dataset):
     def __init__(self, data_dir, roi_size=64, augment=False):
         label_file = get_label_file(data_dir, roi_size)
         self.roi_size = roi_size
-        self.augment = augment
-
+        # self.augment = augment
         df = pd.read_csv(label_file)
         columns = [
             "pa_id",
@@ -247,7 +249,8 @@ class CT_Student_Dataset(Dataset):
         if len(self.samples) == 0:
             raise ValueError("No valid paired pathology-CT samples found")
 
-        self.ct_aug = ct_augmentation() if augment else None
+        # CT augmentation is currently disabled; keep the argument for compatibility.
+        # self.ct_aug = ct_augmentation() if augment else None
 
     def __len__(self):
         return len(self.samples)
@@ -256,11 +259,11 @@ class CT_Student_Dataset(Dataset):
         row = self.samples.iloc[idx]
         ct_img = load_ct_npy(row["ct_path"], expected_roi_size=self.roi_size)
         clean_ct = torch.as_tensor(ct_img, dtype=torch.float32)
-        ct = self.ct_aug(clean_ct.clone()) if self.ct_aug is not None else clean_ct
+        # ct = self.ct_aug(clean_ct.clone()) if self.ct_aug is not None else clean_ct
         pa = torch.load(row["pa_path"], map_location="cpu").float()
         case_id = f"{row['pa_id']}|{row['ct_id']}"
         return (
-            torch.as_tensor(ct, dtype=torch.float32),
+            clean_ct,
             pa,
             torch.tensor(row["event"], dtype=torch.long),
             torch.tensor(row["time"], dtype=torch.float32),

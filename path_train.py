@@ -268,9 +268,6 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Train pathology MIL survival model (5-fold CV)."
     )
-    parser.add_argument(
-        "--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42"
-    )
     parser.add_argument("--ct_roi_size", type=int, default=96)
     parser.add_argument(
         "--pa_model",
@@ -322,6 +319,12 @@ def parse_args():
 
 def main():
     args = parse_args()
+    args.data_dir = str(
+        Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}"
+    )
+    label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
+    if not label_file.is_file():
+        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
     is_topk = args.pa_model.endswith("-topk")
     if is_topk and (args.k is None or args.k <= 0):
         raise ValueError("--k must be a positive integer for *-topk models")

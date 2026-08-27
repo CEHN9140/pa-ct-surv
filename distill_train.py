@@ -297,11 +297,6 @@ def parse_args():
         description="Distill PACT teacher → CT student (batched CT forward)"
     )
 
-    # ── Data ──
-    parser.add_argument(
-        "--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42"
-    )
-
     # ── Teacher ──
     parser.add_argument(
         "--teacher_ckpt_root",
@@ -315,12 +310,11 @@ def parse_args():
         type=str,
         default="/home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth",
     )
-    parser.add_argument(
-        "--augment",
-        action="store_true",
-        help="Enable CT augmentation for student training.",
-    )
-
+    # parser.add_argument(
+    #     "--augment",
+    #     action="store_true",
+    #     help="Enable CT augmentation for student training.",
+    # )
     # ── Distillation ──
     parser.add_argument("--alpha_kd", type=float, default=0.3)
     parser.add_argument(
@@ -367,7 +361,19 @@ def main():
     teacher_fusion = teacher_config.get("fusion_type", "concat")
     teacher_ct_model = teacher_config.get("ct_model", "resnet18")
     ct_roi_size = int(teacher_config["ct_roi_size"])
-    data_dir = teacher_config.get("data_dir", args.data_dir)
+    teacher_seed = teacher_config.get("seed")
+    if teacher_seed is not None and int(teacher_seed) != args.seed:
+        raise ValueError(
+            f"Student seed ({args.seed}) must match teacher seed ({teacher_seed}) "
+            "so that teacher and student use the same CSV split."
+        )
+    data_dir = str(
+        Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}"
+    )
+    label_file = Path(data_dir) / f"all_label_roi{ct_roi_size}.csv"
+    if not label_file.is_file():
+        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
+    args.data_dir = data_dir
     is_teacher_topk = teacher_pa_model.endswith("-topk")
 
     k_tag = f"-k{teacher_k}" if is_teacher_topk else ""
@@ -391,7 +397,8 @@ def main():
     print(
         f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | start_KD={args.start_KD}"
     )
-    print(f"Augment:   {args.augment} | cox_batch_size={args.cox_batch_size}")
+    # print(f"Augment:   {args.augment} | cox_batch_size={args.cox_batch_size}")
+    print(f"CT augmentation: disabled | cox_batch_size={args.cox_batch_size}")
     print(
         f"LR:        head={args.lr:g} | CT backbone={args.ct_backbone_lr or args.lr:g}"
     )
@@ -413,10 +420,11 @@ def main():
         }
         yaml.dump(run_config, f, default_flow_style=False, allow_unicode=True)
 
-    train_dataset = CT_Student_Dataset(
-        data_dir, roi_size=ct_roi_size, augment=args.augment
-    )
-    eval_dataset = CT_Student_Dataset(data_dir, roi_size=ct_roi_size, augment=False)
+    # train_dataset = CT_Student_Dataset(
+    #     data_dir, roi_size=ct_roi_size, augment=args.augment
+    # )
+    train_dataset = CT_Student_Dataset(data_dir, roi_size=ct_roi_size)
+    eval_dataset = CT_Student_Dataset(data_dir, roi_size=ct_roi_size)
     print(f"Loaded {len(train_dataset)} paired samples")
 
     train_indices, test_indices = locked_split_indices(train_dataset.samples)
@@ -434,7 +442,7 @@ def main():
         seed_everything(args.seed)
 
         train_subset = Subset(train_dataset, train_idx)
-        noaug_train_subset = Subset(eval_dataset, train_idx)
+        # noaug_train_subset = Subset(eval_dataset, train_idx)
         val_subset = Subset(eval_dataset, val_idx)
 
         train_loader = DataLoader(
@@ -444,17 +452,15 @@ def main():
             num_workers=args.num_workers,
             pin_memory=torch.cuda.is_available(),
             collate_fn=paired_collate_fn,
-            drop_last=False,
         )
-        noaug_train_loader = DataLoader(
-            noaug_train_subset,
-            batch_size=args.cox_batch_size,
-            shuffle=False,
-            num_workers=args.num_workers,
-            pin_memory=torch.cuda.is_available(),
-            collate_fn=paired_collate_fn,
-            drop_last=False,
-        )
+        # noaug_train_loader = DataLoader(
+        #     noaug_train_subset,
+        #     batch_size=args.cox_batch_size,
+        #     shuffle=False,
+        #     num_workers=args.num_workers,
+        #     pin_memory=torch.cuda.is_available(),
+        #     collate_fn=paired_collate_fn,
+        # )
         val_loader = DataLoader(
             val_subset,
             batch_size=args.cox_batch_size,
@@ -462,7 +468,6 @@ def main():
             num_workers=args.num_workers,
             pin_memory=torch.cuda.is_available(),
             collate_fn=paired_collate_fn,
-            drop_last=False,
         )
 
         # ── Load teacher ──
@@ -512,7 +517,7 @@ def main():
         metrics_dir.mkdir(parents=True, exist_ok=True)
         _, fold_cindex, _, _, metrics = evaluate_survival(
             student,
-            noaug_train_loader,
+            train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,

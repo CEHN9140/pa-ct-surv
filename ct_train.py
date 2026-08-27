@@ -128,15 +128,12 @@ def train_ct(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train CT survival model (5-fold CV).")
-    parser.add_argument(
-        "--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42"
-    )
     parser.add_argument("--ct_roi_size", type=int, default=96, choices=[64, 96, 128])
     parser.add_argument(
         "--ct_model", default="resnet18", choices=["resnet10", "resnet18"]
     )
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
-    parser.add_argument("--ct_augment", action="store_true")
+    # parser.add_argument("--ct_augment", action="store_true")
     parser.add_argument("--freeze_backbone", action="store_true")
     parser.add_argument("--dropout", type=float, default=0.5)
     parser.add_argument("--checkpoint_root", default=None)
@@ -160,12 +157,17 @@ def parse_args():
 
 def main():
     args = parse_args()
+    args.data_dir = str(Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}")
+    label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
+    if not label_file.is_file():
+        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
 
-    _ct = "_aug" if args.ct_augment else "_noaug"
+    # _ct = "_aug" if args.ct_augment else "_noaug"
     _pr = "_pretrain" if args.ct_pretrained_path else ""
     backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
     default_suffix = (
-        f"ct-{args.ct_model}-roi{args.ct_roi_size}{_ct}{_pr}"
+        # f"ct-{args.ct_model}-roi{args.ct_roi_size}{_ct}{_pr}"
+        f"ct-{args.ct_model}-roi{args.ct_roi_size}{_pr}"
         f"-bs{args.batch_size}-lr{args.lr:g}-blr{backbone_lr:g}"
         f"-wd{args.weight_decay:g}-bnfreeze-seed{args.seed}"
     )
@@ -179,7 +181,8 @@ def main():
         )
 
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
-    print(f"Model: {args.ct_model} | Augment: {args.ct_augment}")
+    # print(f"Model: {args.ct_model} | Augment: {args.ct_augment}")
+    print(f"Model: {args.ct_model} | CT augmentation: disabled")
     print(
         f"LR: {args.lr:g} | Backbone LR: {args.ct_backbone_lr or args.lr:g} | Loss: Cox PH"
     )
@@ -193,9 +196,10 @@ def main():
     with open(os.path.join(args.results_root, "run_config.yaml"), "w") as f:
         yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
 
-    dataset = CT_Dataset(
-        args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
-    )
+    # dataset = CT_Dataset(
+    #     args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
+    # )
+    dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size)
     eval_dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=False)
     print(f"Loaded {len(dataset)} samples")
 
@@ -218,30 +222,27 @@ def main():
         seed_everything(args.seed)
 
         train_subset = Subset(dataset, train_idx)
-        noaug_train_subset = Subset(eval_dataset, train_idx)
+        # noaug_train_subset = Subset(eval_dataset, train_idx)
         val_subset = Subset(eval_dataset, val_idx)
 
         train_loader = DataLoader(
             train_subset,
             batch_size=args.batch_size,
             shuffle=True,
-            drop_last=False,
             num_workers=args.num_workers,
             pin_memory=True,
         )
-        noaug_train_loader = DataLoader(
-            noaug_train_subset,
-            batch_size=args.batch_size,
-            shuffle=False,
-            drop_last=False,
-            num_workers=args.num_workers,
-            pin_memory=True,
-        )
+        # noaug_train_loader = DataLoader(
+        #     noaug_train_subset,
+        #     batch_size=args.batch_size,
+        #     shuffle=False,
+        #     num_workers=args.num_workers,
+        #     pin_memory=True,
+        # )
         val_loader = DataLoader(
             val_subset,
             batch_size=args.batch_size,
             shuffle=False,
-            drop_last=False,
             num_workers=args.num_workers,
             pin_memory=True,
         )
@@ -277,7 +278,7 @@ def main():
 
         _, fold_cindex, _, _, metrics = evaluate_survival(
             model,
-            noaug_train_loader,
+            train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,
