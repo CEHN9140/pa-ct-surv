@@ -221,6 +221,7 @@ def parse_args():
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     # parser.add_argument("--ct_augment", action="store_true")
+    parser.add_argument("--dropout", type=float, default=0.3)
     parser.add_argument("--fusion_type", default="concat",
                         choices=["concat", "bilinear", "gated", "crossattn", "weighted"])
     parser.add_argument("--num_epochs", type=int, default=50)
@@ -250,6 +251,8 @@ def main():
     label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
     if not label_file.is_file():
         raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
+    if not 0.0 <= args.dropout < 1.0:
+        raise ValueError("--dropout must be in [0, 1)")
     args.effective_ct_backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
 
     # aug_tag = "_aug" if args.ct_augment else "_noaug"
@@ -261,7 +264,7 @@ def main():
         raise ValueError("--k is only valid for *-topk PA models")
     k_tag = f"-k{args.k}" if is_topk else ""
     # default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
-    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{pretrain_tag}-{args.fusion_type}"
+    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-dropout{args.dropout}{pretrain_tag}-{args.fusion_type}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
@@ -269,7 +272,7 @@ def main():
 
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
     # print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Augment: {args.ct_augment}")
-    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | CT augmentation: disabled")
+    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Dropout: {args.dropout} | CT augmentation: disabled")
     print(f"LR: {args.lr:g} | CT Backbone LR: {args.effective_ct_backbone_lr:g}")
     print(f"Loss: Fused Cox + {args.lambda_ct:g}*CT + {args.lambda_pa:g}*PA")
     if args.ct_pretrained_path:
@@ -299,6 +302,7 @@ def main():
         "ct_model_name": args.ct_model,
         "ct_pretrained_path": args.ct_pretrained_path,
         "pa_topk": args.k if is_topk else None,
+        "dropout": args.dropout,
         "fusion_type": args.fusion_type,
     }
 

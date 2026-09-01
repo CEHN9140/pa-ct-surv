@@ -95,6 +95,7 @@ def load_frozen_teacher(ckpt_path, teacher_config, device):
         ct_model_name=teacher_config.get("ct_model", "resnet18"),
         ct_pretrained_path=None,
         pa_topk=pa_topk,
+        dropout=float(teacher_config.get("dropout", 0.3)),
         fusion_type=teacher_config.get("fusion_type", "concat"),
     ).to(device)
 

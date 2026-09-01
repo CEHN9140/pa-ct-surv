@@ -6,11 +6,14 @@ import torch.nn.functional as F
 class GABMIL(nn.Module):
     """Gated attention MIL for survival analysis."""
 
-    def __init__(self, in_dim=1024, hidden_dim=512, attention_dim=128):
+    def __init__(self, in_dim=1024, hidden_dim=512, attention_dim=128, dropout=0.0):
         super().__init__()
+        if not 0.0 <= dropout < 1.0:
+            raise ValueError("dropout must be in [0, 1)")
         self.projector = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout),
         )
         self.attention_V = nn.Sequential(
             nn.Linear(hidden_dim, attention_dim),
@@ -40,13 +43,21 @@ class GABMIL(nn.Module):
 class GABMIL_TopK(GABMIL):
     """GABMIL with attention pooling restricted to the top-k instances."""
 
-    def __init__(self, in_dim=1024, hidden_dim=512, attention_dim=128, k=None):
+    def __init__(
+        self,
+        in_dim=1024,
+        hidden_dim=512,
+        attention_dim=128,
+        k=None,
+        dropout=0.0,
+    ):
         if k is None or k <= 0:
             raise ValueError("GABMIL_TopK requires a positive k")
         super().__init__(
             in_dim=in_dim,
             hidden_dim=hidden_dim,
             attention_dim=attention_dim,
+            dropout=dropout,
         )
         self.k = k
 
