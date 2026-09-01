@@ -264,6 +264,7 @@ def parse_args():
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     # parser.add_argument("--ct_augment", action="store_true")
     parser.add_argument("--fusion_dropout", type=float, default=0.3)
+    parser.add_argument("--norm", choices=["none", "layernorm"], default="none")
     parser.add_argument("--fusion_type", default="concat",
                         choices=["concat", "bilinear", "gated", "crossattn", "weighted"])
     parser.add_argument("--num_epochs", type=int, default=30)
@@ -306,7 +307,7 @@ def main():
         raise ValueError("--k is only valid for *-topk PA models")
     k_tag = f"-k{args.k}" if is_topk else ""
     # default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
-    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-fusion_dropout{args.fusion_dropout}{pretrain_tag}-{args.fusion_type}"
+    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-fusion_dropout{args.fusion_dropout}-norm{args.norm}{pretrain_tag}-{args.fusion_type}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
@@ -314,7 +315,7 @@ def main():
 
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
     # print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Augment: {args.ct_augment}")
-    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Fusion dropout: {args.fusion_dropout} | CT/PA dropout: 0.0 | CT augmentation: disabled")
+    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Fusion dropout: {args.fusion_dropout} | Norm: {args.norm} | CT/PA dropout: 0.0 | CT augmentation: disabled")
     print(f"LR: {args.lr:g} | CT Backbone LR: {args.effective_ct_backbone_lr:g}")
     print(f"Loss: Fused Cox + {args.lambda_ct:g}*CT + {args.lambda_pa:g}*PA")
     if args.ct_pretrained_path:
@@ -346,6 +347,7 @@ def main():
         "pa_topk": args.k if is_topk else None,
         "fusion_dropout": args.fusion_dropout,
         "fusion_type": args.fusion_type,
+        "norm": args.norm,
     }
 
     fold_splits = [

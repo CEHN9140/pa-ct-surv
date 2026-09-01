@@ -101,6 +101,7 @@ def load_frozen_teacher(ckpt_path, teacher_config, device):
             )
         ),
         fusion_type=teacher_config.get("fusion_type", "concat"),
+        norm=teacher_config.get("norm", "none"),
     ).to(device)
 
     state = torch.load(ckpt_path, map_location=device, weights_only=True)

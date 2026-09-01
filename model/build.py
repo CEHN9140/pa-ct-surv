@@ -121,10 +121,13 @@ class Pa_CT_Model(nn.Module):
         fusion_dropout=0.3,
         pa_topk=None,
         fusion_type="concat",
+        norm="none",
     ):
         super().__init__()
         if not 0.0 <= fusion_dropout < 1.0:
             raise ValueError("fusion_dropout must be in [0, 1)")
+        if norm not in {"none", "layernorm"}:
+            raise ValueError("norm must be 'none' or 'layernorm'")
 
         # CT branch
         depth_map = {"resnet10": 10, "resnet18": 18}
@@ -143,7 +146,7 @@ class Pa_CT_Model(nn.Module):
                 nn.ReLU(inplace=True),
             )
         )
-        self.ct_norm = nn.LayerNorm(feature_dim)
+        self.ct_norm = nn.LayerNorm(feature_dim) if norm == "layernorm" else nn.Identity()
 
         # PA branch. A -topk suffix explicitly enables top-k pooling.
         if pa_model_name.endswith("-topk"):
@@ -178,7 +181,7 @@ class Pa_CT_Model(nn.Module):
             if pa_output_dim == feature_dim
             else nn.Linear(pa_output_dim, feature_dim)
         )
-        self.pa_norm = nn.LayerNorm(feature_dim)
+        self.pa_norm = nn.LayerNorm(feature_dim) if norm == "layernorm" else nn.Identity()
 
         # Fusion
         self.fusion_type = fusion_type
