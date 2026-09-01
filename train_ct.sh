@@ -1,6 +1,6 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
-ROI_SIZE=128
+ROI_SIZE=64
 CT_MODEL=resnet18
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 DROPOUT=0.5
@@ -8,8 +8,8 @@ NUM_EPOCHS=30
 LR=1e-4
 BACKBONE_LR=1e-5
 WEIGHT_DECAY=5e-4
-BATCH_SIZE=64
-SEED=42
+BATCH_SIZE=16
+SEED=2024
 
 RUN_TAG="roi${ROI_SIZE}_${CT_MODEL}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_bs${BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_seed${SEED}"
 
