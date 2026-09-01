@@ -140,10 +140,10 @@ class Pa_CT_Model(nn.Module):
             if self.ct_backbone.feature_dim == feature_dim
             else nn.Sequential(
                 nn.Linear(self.ct_backbone.feature_dim, feature_dim),
-                nn.LayerNorm(feature_dim),
                 nn.ReLU(inplace=True),
             )
         )
+        self.ct_norm = nn.LayerNorm(feature_dim)
 
         # PA branch. A -topk suffix explicitly enables top-k pooling.
         if pa_model_name.endswith("-topk"):
@@ -178,6 +178,7 @@ class Pa_CT_Model(nn.Module):
             if pa_output_dim == feature_dim
             else nn.Linear(pa_output_dim, feature_dim)
         )
+        self.pa_norm = nn.LayerNorm(feature_dim)
 
         # Fusion
         self.fusion_type = fusion_type
@@ -218,11 +219,9 @@ class Pa_CT_Model(nn.Module):
     def forward(self, ct, pa):
         raw_ct_fea = self.ct_backbone.extract_features(ct)
         risk_ct = self.ct_backbone.risk_forward(raw_ct_fea)
-        ct_fea = self.ct_projector(raw_ct_fea)
-        # ct_fea = F.normalize(ct_fea, p=2, dim=1)  # COMMENTED: test fusion without L2 norm
+        ct_fea = self.ct_norm(self.ct_projector(raw_ct_fea))
         risk_pa, pa_fea, pa_att = self.pa_branch(pa)
-        pa_fea = self.pa_projector(pa_fea)
-        # pa_fea = F.normalize(pa_fea, p=2, dim=1)  # COMMENTED: test fusion without L2 norm
+        pa_fea = self.pa_norm(self.pa_projector(pa_fea))
         if self.fusion_type == "weighted":
             alpha = torch.sigmoid(self.risk_weight)
             risk_fused = alpha * risk_ct + (1 - alpha) * risk_pa
