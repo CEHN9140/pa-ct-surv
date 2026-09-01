@@ -118,20 +118,20 @@ class Pa_CT_Model(nn.Module):
         feature_dim=512,
         mmhid=512,
         ct_pretrained_path=None,
-        dropout=0.3,
+        fusion_dropout=0.3,
         pa_topk=None,
         fusion_type="concat",
     ):
         super().__init__()
-        if not 0.0 <= dropout < 1.0:
-            raise ValueError("dropout must be in [0, 1)")
+        if not 0.0 <= fusion_dropout < 1.0:
+            raise ValueError("fusion_dropout must be in [0, 1)")
 
         # CT branch
         depth_map = {"resnet10": 10, "resnet18": 18}
         self.ct_backbone = ResNetCox(
             in_channels=1,
             pretrained_path=ct_pretrained_path,
-            dropout=dropout,
+            dropout=0.0,
             model_depth=depth_map.get(ct_model_name, 18),
             freeze_bn_stats=True,
         )
@@ -157,17 +157,17 @@ class Pa_CT_Model(nn.Module):
         if pa_base_name == "abmil":
             pa_cls = ABMIL_TopK if pa_topk is not None else ABMIL
             self.pa_branch = (
-                pa_cls(in_dim=1024, k=pa_topk, dropout=dropout)
+                pa_cls(in_dim=1024, k=pa_topk, dropout=0.0)
                 if pa_topk is not None
-                else pa_cls(in_dim=1024, dropout=dropout)
+                else pa_cls(in_dim=1024, dropout=0.0)
             )
             pa_output_dim = 512
         elif pa_base_name == "gabmil":
             pa_cls = GABMIL_TopK if pa_topk is not None else GABMIL
             self.pa_branch = (
-                pa_cls(in_dim=1024, k=pa_topk, dropout=dropout)
+                pa_cls(in_dim=1024, k=pa_topk, dropout=0.0)
                 if pa_topk is not None
-                else pa_cls(in_dim=1024, dropout=dropout)
+                else pa_cls(in_dim=1024, dropout=0.0)
             )
             pa_output_dim = 512
         else:
@@ -186,14 +186,14 @@ class Pa_CT_Model(nn.Module):
                 dim1=feature_dim,
                 dim2=feature_dim,
                 mmhid=mmhid,
-                dropout_rate=dropout,
+                dropout_rate=fusion_dropout,
             )
         elif fusion_type == "bilinear":
             self.fusion = BilinearFusion(
                 dim1=128,
                 dim2=128,
                 mmhid=mmhid,
-                dropout_rate=dropout,
+                dropout_rate=fusion_dropout,
                 in_dim=feature_dim,
             )
             self.fused_head = nn.Linear(mmhid, 1)
@@ -202,13 +202,13 @@ class Pa_CT_Model(nn.Module):
                 dim1=feature_dim,
                 dim2=feature_dim,
                 mmhid=mmhid,
-                dropout_rate=dropout,
+                dropout_rate=fusion_dropout,
             )
         elif fusion_type == "crossattn":
             self.fusion = CrossAttnFusion(
                 dim=feature_dim,
                 mmhid=mmhid,
-                dropout_rate=dropout,
+                dropout_rate=fusion_dropout,
             )
         elif fusion_type == "weighted":
             self.risk_weight = nn.Parameter(torch.tensor(0.0))

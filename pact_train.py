@@ -69,12 +69,20 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
         losses, losses_fused, losses_ct, losses_pa, losses_ema = [], [], [], [], []
         risks_fused, risks_ct, risks_pa, ema_fused, ema_ct, ema_pa = [], [], [], [], [], []
         times, events = [], []
+        train_risks_fused_np, train_times_np, train_events_np = [], [], []
 
         for batch in train_loader:
             ct, pa, event, time, _ = batch
             ct = ct.to(device)
             pa = pa.to(device)
             risk_fused, risk_ct, risk_pa = model(ct, pa)[:3]
+            train_risks_fused_np.extend(
+                risk_fused.detach().cpu().numpy().reshape(-1).tolist()
+            )
+            train_times_np.extend(time.numpy().reshape(-1).tolist())
+            train_events_np.extend(
+                event.numpy().reshape(-1).astype(int).tolist()
+            )
             risks_fused.append(risk_fused)
             risks_ct.append(risk_ct)
             risks_pa.append(risk_pa)
@@ -153,9 +161,12 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
 
         avg_loss = float(np.mean(losses)) if losses else np.nan
         avg_loss_fused = float(np.mean(losses_fused)) if losses_fused else np.nan
-        train_cindex, _, _, _ = evaluate_survival(
-            model, train_loader, train_loader, device
+        train_cindex, *_ = concordance_index_censored(
+            np.asarray(train_events_np, dtype=int).astype(bool),
+            np.asarray(train_times_np, dtype=np.float32),
+            np.asarray(train_risks_fused_np, dtype=np.float32),
         )
+        train_cindex = float(train_cindex)
 
         model.eval()
         val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
@@ -211,7 +222,7 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train PA+CT fusion survival model (5-fold CV).")
-    parser.add_argument("--ct_roi_size", type=int, default=96, choices=[64, 96, 128])
+    parser.add_argument("--ct_roi_size", type=int, default=64, choices=[64, 96, 128])
     parser.add_argument("--ct_model", default="resnet18", choices=["resnet10", "resnet18"])
     parser.add_argument("--pa_model", default="abmil",
                         choices=["abmil", "abmil-topk", "gabmil", "gabmil-topk"])
@@ -221,12 +232,12 @@ def parse_args():
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     # parser.add_argument("--ct_augment", action="store_true")
-    parser.add_argument("--dropout", type=float, default=0.3)
+    parser.add_argument("--fusion_dropout", type=float, default=0.3)
     parser.add_argument("--fusion_type", default="concat",
                         choices=["concat", "bilinear", "gated", "crossattn", "weighted"])
-    parser.add_argument("--num_epochs", type=int, default=50)
+    parser.add_argument("--num_epochs", type=int, default=30)
     parser.add_argument("--lr", type=float, default=1e-4)
-    parser.add_argument("--ct_backbone_lr", type=float, default=None)
+    parser.add_argument("--ct_backbone_lr", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=5e-4)
     parser.add_argument("--lambda_ct", type=float, default=0.0)
     parser.add_argument("--lambda_pa", type=float, default=0.0)
@@ -251,8 +262,8 @@ def main():
     label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
     if not label_file.is_file():
         raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
-    if not 0.0 <= args.dropout < 1.0:
-        raise ValueError("--dropout must be in [0, 1)")
+    if not 0.0 <= args.fusion_dropout < 1.0:
+        raise ValueError("--fusion_dropout must be in [0, 1)")
     args.effective_ct_backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
 
     # aug_tag = "_aug" if args.ct_augment else "_noaug"
@@ -264,7 +275,7 @@ def main():
         raise ValueError("--k is only valid for *-topk PA models")
     k_tag = f"-k{args.k}" if is_topk else ""
     # default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
-    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-dropout{args.dropout}{pretrain_tag}-{args.fusion_type}"
+    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-fusion_dropout{args.fusion_dropout}{pretrain_tag}-{args.fusion_type}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
@@ -272,7 +283,7 @@ def main():
 
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
     # print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Augment: {args.ct_augment}")
-    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Dropout: {args.dropout} | CT augmentation: disabled")
+    print(f"PA: {args.pa_model} | CT: {args.ct_model} | Fusion: {args.fusion_type} | Fusion dropout: {args.fusion_dropout} | CT/PA dropout: 0.0 | CT augmentation: disabled")
     print(f"LR: {args.lr:g} | CT Backbone LR: {args.effective_ct_backbone_lr:g}")
     print(f"Loss: Fused Cox + {args.lambda_ct:g}*CT + {args.lambda_pa:g}*PA")
     if args.ct_pretrained_path:
@@ -302,7 +313,7 @@ def main():
         "ct_model_name": args.ct_model,
         "ct_pretrained_path": args.ct_pretrained_path,
         "pa_topk": args.k if is_topk else None,
-        "dropout": args.dropout,
+        "fusion_dropout": args.fusion_dropout,
         "fusion_type": args.fusion_type,
     }
 
