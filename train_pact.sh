@@ -1,7 +1,7 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
 ROI_SIZE=64
-PA_MODEL=gabmil
+PA_MODEL=abmil
 CT_MODEL=resnet18
 FUSION_TYPE=concat
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
@@ -12,7 +12,7 @@ BACKBONE_LR=1e-5
 WEIGHT_DECAY=5e-4
 LAMBDA_CT=0.0
 LAMBDA_PA=0.0
-FUSION_DROPOUT=0.3
+FUSION_DROPOUT=0.0
 COX_BATCH_SIZE=64
 SEED=42
 
