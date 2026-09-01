@@ -4,6 +4,7 @@ ROI_SIZE=64
 PA_MODEL=abmil
 CT_MODEL=resnet18
 FUSION_TYPE=concat
+NORM=none
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 
 NUM_EPOCHS=30
@@ -16,7 +17,7 @@ FUSION_DROPOUT=0.0
 COX_BATCH_SIZE=64
 SEED=42
 
-RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_${CT_MODEL}_${FUSION_TYPE}_fusion_dropout${FUSION_DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_lct${LAMBDA_CT}_lpa${LAMBDA_PA}_seed${SEED}"
+RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_${CT_MODEL}_${FUSION_TYPE}_norm${NORM}_fusion_dropout${FUSION_DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_lct${LAMBDA_CT}_lpa${LAMBDA_PA}_seed${SEED}"
 
 mkdir -p "${BASE}/logs/pact_v4/pact"
 
@@ -26,6 +27,7 @@ CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python pact_train.
   --ct_model "${CT_MODEL}" \
   --ct_pretrained_path "${CT_PRETRAINED_PATH}" \
   --fusion_type "${FUSION_TYPE}" \
+  --norm "${NORM}" \
   --fusion_dropout "${FUSION_DROPOUT}" \
   --num_epochs "${NUM_EPOCHS}" \
   --lr "${LR}" \

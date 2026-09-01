@@ -222,14 +222,16 @@ class Pa_CT_Model(nn.Module):
     def forward(self, ct, pa):
         raw_ct_fea = self.ct_backbone.extract_features(ct)
         risk_ct = self.ct_backbone.risk_forward(raw_ct_fea)
-        ct_fea = self.ct_norm(self.ct_projector(raw_ct_fea))
+        ct_fea = self.ct_projector(raw_ct_fea)
+        ct_fea_for_fusion = self.ct_norm(ct_fea)
         risk_pa, pa_fea, pa_att = self.pa_branch(pa)
-        pa_fea = self.pa_norm(self.pa_projector(pa_fea))
+        pa_fea = self.pa_projector(pa_fea)
+        pa_fea_for_fusion = self.pa_norm(pa_fea)
         if self.fusion_type == "weighted":
             alpha = torch.sigmoid(self.risk_weight)
             risk_fused = alpha * risk_ct + (1 - alpha) * risk_pa
         else:
-            risk_fused = self.fusion(ct_fea, pa_fea)
+            risk_fused = self.fusion(ct_fea_for_fusion, pa_fea_for_fusion)
             if self.fusion_type in ("bilinear",):
                 risk_fused = self.fused_head(risk_fused).squeeze(-1)
         return risk_fused, risk_ct, risk_pa, None, ct_fea, pa_fea, pa_att
