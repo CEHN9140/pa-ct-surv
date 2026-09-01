@@ -50,6 +50,19 @@ def build_pact_optimizer(model, lr, weight_decay, ct_backbone_lr=None):
     return torch.optim.Adam(groups, weight_decay=weight_decay)
 
 
+def summarize_features(feature_batches):
+    features = torch.cat(feature_batches, dim=0).float()
+    l2_norms = torch.linalg.vector_norm(features, dim=1)
+    return {
+        "mean": float(features.mean()),
+        "std": float(features.std(unbiased=False)),
+        "mean_l2": float(l2_norms.mean()),
+        "median_l2": float(torch.median(l2_norms)),
+        "mean_abs": float(features.abs().mean()),
+        "max_abs": float(features.abs().max()),
+    }
+
+
 def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
                checkpoint_dir, ema_model=None):
     best_cindex = -np.inf
@@ -70,12 +83,15 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
         risks_fused, risks_ct, risks_pa, ema_fused, ema_ct, ema_pa = [], [], [], [], [], []
         times, events = [], []
         train_risks_fused_np, train_times_np, train_events_np = [], [], []
+        train_ct_features, train_pa_features = [], []
 
         for batch in train_loader:
             ct, pa, event, time, _ = batch
             ct = ct.to(device)
             pa = pa.to(device)
-            risk_fused, risk_ct, risk_pa = model(ct, pa)[:3]
+            risk_fused, risk_ct, risk_pa, _, ct_fea, pa_fea, _ = model(ct, pa)
+            train_ct_features.append(ct_fea.detach().cpu())
+            train_pa_features.append(pa_fea.detach().cpu())
             train_risks_fused_np.extend(
                 risk_fused.detach().cpu().numpy().reshape(-1).tolist()
             )
@@ -167,6 +183,8 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
             np.asarray(train_risks_fused_np, dtype=np.float32),
         )
         train_cindex = float(train_cindex)
+        ct_stats = summarize_features(train_ct_features)
+        pa_stats = summarize_features(train_pa_features)
 
         model.eval()
         val_risks_np, val_times_np, val_events_np, val_case_ids = [], [], [], []
@@ -200,6 +218,19 @@ def train_pact(model, train_loader, val_loader, optimizer, args, device, fold,
               f"Train C-index: {train_cindex:.4f} | "
               f"Val Fused: {val_cindex:.4f} | Val CT: {val_ct_cindex:.4f} | Val PA: {val_pa_cindex:.4f}"
               f"{alpha_text}")
+        print(
+            "Feature stats | "
+            f"CT: mean={ct_stats['mean']:.4f}, std={ct_stats['std']:.4f}, "
+            f"mean_l2={ct_stats['mean_l2']:.4f}, "
+            f"median_l2={ct_stats['median_l2']:.4f}, "
+            f"mean_abs={ct_stats['mean_abs']:.4f}, "
+            f"max_abs={ct_stats['max_abs']:.4f} | "
+            f"PA: mean={pa_stats['mean']:.4f}, std={pa_stats['std']:.4f}, "
+            f"mean_l2={pa_stats['mean_l2']:.4f}, "
+            f"median_l2={pa_stats['median_l2']:.4f}, "
+            f"mean_abs={pa_stats['mean_abs']:.4f}, "
+            f"max_abs={pa_stats['max_abs']:.4f}"
+        )
 
         if val_cindex > best_cindex:
             best_cindex = val_cindex
