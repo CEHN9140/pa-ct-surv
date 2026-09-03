@@ -152,7 +152,6 @@ def train_student(
     best_state = None
     wait = 0
     alpha_kd = getattr(args, "alpha_kd", 0.3)
-    start_kd = getattr(args, "start_KD", 5)
     use_distill = alpha_kd > 0
 
     for epoch in range(1, args.num_epochs + 1):
@@ -177,7 +176,7 @@ def train_student(
             risk_s = student(ct)
 
             # ── Teacher fused-risk forward ──
-            if use_distill and epoch >= start_kd:
+            if use_distill:
                 batch_teacher_risks = []
                 with torch.no_grad():
                     for i, pa in enumerate(pa_list):
@@ -329,7 +328,6 @@ def parse_args():
         choices=["mse", "normalized_mse", "listwise_kd"],
     )
     parser.add_argument("--kd_temperature", type=float, default=2.0)
-    parser.add_argument("--start_KD", type=int, default=1)
 
     # ── Training ──
     parser.add_argument("--num_epochs", type=int, default=80)
@@ -383,7 +381,7 @@ def main():
     is_teacher_topk = teacher_pa_model.endswith("-topk")
 
     k_tag = f"-k{teacher_k}" if is_teacher_topk else ""
-    suffix = f"distill-{teacher_pa_model}{k_tag}-{teacher_fusion}-survrisk-{args.distill_mode}-akd{args.alpha_kd}-start{args.start_KD}-roi{ct_roi_size}"
+    suffix = f"distill-{teacher_pa_model}{k_tag}-{teacher_fusion}-survrisk-{args.distill_mode}-akd{args.alpha_kd}-roi{ct_roi_size}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join(
             "/home/gly001/cqj/pa_ct_surv/experiments/ct_distill", "checkpoints", suffix
@@ -401,7 +399,7 @@ def main():
         f"Fusion={teacher_fusion} | k={teacher_k}"
     )
     print(
-        f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | start_KD={args.start_KD}"
+        f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | KD starts at epoch 1"
     )
     # print(f"Augment:   {args.augment} | cox_batch_size={args.cox_batch_size}")
     print(f"CT augmentation: disabled | cox_batch_size={args.cox_batch_size}")
