@@ -3,7 +3,7 @@ BASE=/home/gly001/cqj/pa_ct_surv
 ROI_SIZE=64
 PA_MODEL=abmil
 CT_MODEL=resnet18
-FUSION_TYPE=weighted
+FUSION_TYPE=crossattn
 NORM=none
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 
@@ -15,7 +15,7 @@ LAMBDA_CT=0.5
 LAMBDA_PA=0.3
 FUSION_DROPOUT=0.5
 COX_BATCH_SIZE=64
-SEED=2024
+SEED=123
 
 RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_${CT_MODEL}_${FUSION_TYPE}_norm${NORM}_fusion_dropout${FUSION_DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_lct${LAMBDA_CT}_lpa${LAMBDA_PA}_seed${SEED}"
 
