@@ -315,6 +315,7 @@ def parse_args():
         type=str,
         default="/home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth",
     )
+    parser.add_argument("--student_dropout", type=float, default=0.5)
     # parser.add_argument(
     #     "--augment",
     #     action="store_true",
@@ -377,6 +378,8 @@ def main():
     label_file = Path(data_dir) / f"all_label_roi{ct_roi_size}.csv"
     if not label_file.is_file():
         raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
+    if not 0.0 <= args.student_dropout < 1.0:
+        raise ValueError("--student_dropout must be in [0, 1)")
     args.data_dir = data_dir
     is_teacher_topk = teacher_pa_model.endswith("-topk")
 
@@ -401,6 +404,7 @@ def main():
     print(
         f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | KD starts at epoch 1"
     )
+    print(f"Student dropout: {args.student_dropout}")
     # print(f"Augment:   {args.augment} | cox_batch_size={args.cox_batch_size}")
     print(f"CT augmentation: disabled | cox_batch_size={args.cox_batch_size}")
     print(
@@ -491,6 +495,7 @@ def main():
         student = CT_Model(
             model_name=args.student_model,
             pretrained_path=args.student_pretrained_path,
+            dropout=args.student_dropout,
         ).to(DEVICE)
 
         optimizer = build_student_optimizer(
