@@ -1,0 +1,384 @@
+Using Device: cuda | ROI: 64
+PA: abmil | CT: resnet18 | Fusion: weighted | Fusion dropout: 0.5 | Norm: none | CT/PA dropout: 0.0 | CT augmentation: disabled
+LR: 0.0001 | CT Backbone LR: 1e-05
+Loss: Fused Cox + 0.3*CT + 0.5*PA
+CT pretrained: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.5_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.3_lpa0.5_seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.5_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.3_lpa0.5_seed42
+Loaded 703 paired samples
+Locked split: train=562, test=141
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 5.7223 (Fused: 3.1805) | Train C-index: 0.6664 | Val Fused: 0.7283 | Val CT: 0.6145 | Val PA: 0.7276 | Alpha CT: 0.4998 | Alpha PA: 0.5002
+Feature stats | CT: mean=0.8684, std=0.8830, mean_l2=28.0198, median_l2=27.9560, mean_abs=0.8684, max_abs=6.6042 | PA: mean=0.2791, std=0.2224, mean_l2=8.0681, median_l2=8.0458, mean_abs=0.2791, max_abs=1.8621
+Epoch 2/30 | Train Loss: 5.5692 (Fused: 3.0951) | Train C-index: 0.7256 | Val Fused: 0.7299 | Val CT: 0.6254 | Val PA: 0.7388 | Alpha CT: 0.4996 | Alpha PA: 0.5004
+Feature stats | CT: mean=0.8770, std=0.8845, mean_l2=28.1724, median_l2=28.0904, mean_abs=0.8770, max_abs=6.1673 | PA: mean=0.2964, std=0.2420, mean_l2=8.6422, median_l2=8.5790, mean_abs=0.2964, max_abs=2.0814
+Epoch 3/30 | Train Loss: 5.4776 (Fused: 3.0340) | Train C-index: 0.7325 | Val Fused: 0.7375 | Val CT: 0.6356 | Val PA: 0.7426 | Alpha CT: 0.4994 | Alpha PA: 0.5006
+Feature stats | CT: mean=0.8891, std=0.8936, mean_l2=28.4728, median_l2=28.2040, mean_abs=0.8891, max_abs=5.9213 | PA: mean=0.3253, std=0.2672, mean_l2=9.4961, median_l2=9.3807, mean_abs=0.3253, max_abs=2.1544
+Epoch 4/30 | Train Loss: 5.4058 (Fused: 2.9834) | Train C-index: 0.7356 | Val Fused: 0.7378 | Val CT: 0.6451 | Val PA: 0.7458 | Alpha CT: 0.4993 | Alpha PA: 0.5007
+Feature stats | CT: mean=0.9321, std=0.9432, mean_l2=29.8510, median_l2=29.3261, mean_abs=0.9321, max_abs=6.6516 | PA: mean=0.3534, std=0.2870, mean_l2=10.2676, median_l2=10.1599, mean_abs=0.3534, max_abs=2.2837
+Epoch 5/30 | Train Loss: 5.3479 (Fused: 2.9490) | Train C-index: 0.7559 | Val Fused: 0.7423 | Val CT: 0.6569 | Val PA: 0.7496 | Alpha CT: 0.4991 | Alpha PA: 0.5009
+Feature stats | CT: mean=1.0259, std=1.0510, mean_l2=33.0758, median_l2=32.7057, mean_abs=1.0259, max_abs=6.9943 | PA: mean=0.3728, std=0.2983, mean_l2=10.7719, median_l2=10.6580, mean_abs=0.3728, max_abs=2.2989
+Epoch 6/30 | Train Loss: 5.2536 (Fused: 2.8959) | Train C-index: 0.7630 | Val Fused: 0.7432 | Val CT: 0.6655 | Val PA: 0.7499 | Alpha CT: 0.4989 | Alpha PA: 0.5011
+Feature stats | CT: mean=1.0243, std=1.0490, mean_l2=32.9936, median_l2=32.9031, mean_abs=1.0243, max_abs=6.8212 | PA: mean=0.3917, std=0.3081, mean_l2=11.2458, median_l2=11.1765, mean_abs=0.3917, max_abs=2.3192
+Epoch 7/30 | Train Loss: 5.2440 (Fused: 2.8867) | Train C-index: 0.7733 | Val Fused: 0.7451 | Val CT: 0.6626 | Val PA: 0.7522 | Alpha CT: 0.4987 | Alpha PA: 0.5013
+Feature stats | CT: mean=0.9791, std=0.9992, mean_l2=31.4081, median_l2=31.1602, mean_abs=0.9791, max_abs=6.6672 | PA: mean=0.4146, std=0.3196, mean_l2=11.8124, median_l2=11.7607, mean_abs=0.4146, max_abs=2.3920
+Epoch 8/30 | Train Loss: 5.1845 (Fused: 2.8513) | Train C-index: 0.7858 | Val Fused: 0.7429 | Val CT: 0.6559 | Val PA: 0.7550 | Alpha CT: 0.4985 | Alpha PA: 0.5015
+Feature stats | CT: mean=1.0587, std=1.0976, mean_l2=34.2756, median_l2=34.8047, mean_abs=1.0587, max_abs=7.1100 | PA: mean=0.4390, std=0.3307, mean_l2=12.4036, median_l2=12.3810, mean_abs=0.4390, max_abs=2.4506
+Epoch 9/30 | Train Loss: 5.0795 (Fused: 2.7942) | Train C-index: 0.7898 | Val Fused: 0.7525 | Val CT: 0.6703 | Val PA: 0.7620 | Alpha CT: 0.4983 | Alpha PA: 0.5017
+Feature stats | CT: mean=1.0689, std=1.1242, mean_l2=34.7191, median_l2=34.3651, mean_abs=1.0689, max_abs=7.6190 | PA: mean=0.4633, std=0.3410, mean_l2=12.9803, median_l2=12.9524, mean_abs=0.4633, max_abs=2.5065
+Epoch 10/30 | Train Loss: 5.0803 (Fused: 2.7921) | Train C-index: 0.8028 | Val Fused: 0.7537 | Val CT: 0.6470 | Val PA: 0.7671 | Alpha CT: 0.4981 | Alpha PA: 0.5019
+Feature stats | CT: mean=1.1115, std=1.1736, mean_l2=36.2824, median_l2=36.4602, mean_abs=1.1115, max_abs=7.5838 | PA: mean=0.4878, std=0.3514, mean_l2=13.5650, median_l2=13.5309, mean_abs=0.4878, max_abs=2.5293
+Epoch 11/30 | Train Loss: 4.9789 (Fused: 2.7365) | Train C-index: 0.8095 | Val Fused: 0.7537 | Val CT: 0.6719 | Val PA: 0.7671 | Alpha CT: 0.4979 | Alpha PA: 0.5021
+Feature stats | CT: mean=1.0589, std=1.1082, mean_l2=34.3432, median_l2=34.3542, mean_abs=1.0589, max_abs=7.2641 | PA: mean=0.5154, std=0.3624, mean_l2=14.2159, median_l2=14.2157, mean_abs=0.5154, max_abs=2.6005
+Epoch 12/30 | Train Loss: 4.9290 (Fused: 2.7027) | Train C-index: 0.8214 | Val Fused: 0.7627 | Val CT: 0.6368 | Val PA: 0.7709 | Alpha CT: 0.4977 | Alpha PA: 0.5023
+Feature stats | CT: mean=1.0513, std=1.0967, mean_l2=34.0544, median_l2=33.9672, mean_abs=1.0513, max_abs=7.2757 | PA: mean=0.5433, std=0.3724, mean_l2=14.8594, median_l2=14.8624, mean_abs=0.5433, max_abs=2.6216
+Epoch 13/30 | Train Loss: 4.7985 (Fused: 2.6299) | Train C-index: 0.8326 | Val Fused: 0.7662 | Val CT: 0.6827 | Val PA: 0.7703 | Alpha CT: 0.4974 | Alpha PA: 0.5026
+Feature stats | CT: mean=1.1057, std=1.1671, mean_l2=36.0894, median_l2=36.1244, mean_abs=1.1057, max_abs=7.5375 | PA: mean=0.5705, std=0.3829, mean_l2=15.4973, median_l2=15.4733, mean_abs=0.5705, max_abs=2.6517
+Epoch 14/30 | Train Loss: 4.8320 (Fused: 2.6422) | Train C-index: 0.8300 | Val Fused: 0.7668 | Val CT: 0.6473 | Val PA: 0.7678 | Alpha CT: 0.4972 | Alpha PA: 0.5028
+Feature stats | CT: mean=1.0917, std=1.1629, mean_l2=35.6448, median_l2=35.4740, mean_abs=1.0917, max_abs=7.7934 | PA: mean=0.5975, std=0.3951, mean_l2=16.1547, median_l2=16.1706, mean_abs=0.5975, max_abs=2.7218
+Epoch 15/30 | Train Loss: 4.7610 (Fused: 2.5976) | Train C-index: 0.8507 | Val Fused: 0.7725 | Val CT: 0.6505 | Val PA: 0.7665 | Alpha CT: 0.4969 | Alpha PA: 0.5031
+Feature stats | CT: mean=1.1135, std=1.1734, mean_l2=36.3822, median_l2=36.6008, mean_abs=1.1135, max_abs=7.5935 | PA: mean=0.6215, std=0.4045, mean_l2=16.7225, median_l2=16.7211, mean_abs=0.6215, max_abs=2.8864
+Epoch 16/30 | Train Loss: 4.6882 (Fused: 2.5549) | Train C-index: 0.8544 | Val Fused: 0.7875 | Val CT: 0.6821 | Val PA: 0.7815 | Alpha CT: 0.4967 | Alpha PA: 0.5033
+Feature stats | CT: mean=1.0745, std=1.1250, mean_l2=34.9261, median_l2=34.8940, mean_abs=1.0745, max_abs=7.3376 | PA: mean=0.6432, std=0.4124, mean_l2=17.2316, median_l2=17.2812, mean_abs=0.6432, max_abs=2.8887
+Epoch 17/30 | Train Loss: 4.5140 (Fused: 2.4601) | Train C-index: 0.8639 | Val Fused: 0.7690 | Val CT: 0.6751 | Val PA: 0.7611 | Alpha CT: 0.4964 | Alpha PA: 0.5036
+Feature stats | CT: mean=1.0734, std=1.1219, mean_l2=34.8696, median_l2=34.8181, mean_abs=1.0734, max_abs=7.3129 | PA: mean=0.6626, std=0.4180, mean_l2=17.6684, median_l2=17.6920, mean_abs=0.6626, max_abs=2.9982
+Epoch 18/30 | Train Loss: 4.5118 (Fused: 2.4482) | Train C-index: 0.8698 | Val Fused: 0.7789 | Val CT: 0.6792 | Val PA: 0.7735 | Alpha CT: 0.4961 | Alpha PA: 0.5039
+Feature stats | CT: mean=1.0563, std=1.1003, mean_l2=34.2310, median_l2=34.2825, mean_abs=1.0563, max_abs=7.1310 | PA: mean=0.6820, std=0.4257, mean_l2=18.1241, median_l2=18.1098, mean_abs=0.6820, max_abs=3.0396
+Epoch 19/30 | Train Loss: 4.5170 (Fused: 2.4373) | Train C-index: 0.8774 | Val Fused: 0.7678 | Val CT: 0.6703 | Val PA: 0.7614 | Alpha CT: 0.4959 | Alpha PA: 0.5041
+Feature stats | CT: mean=1.0834, std=1.1322, mean_l2=35.2199, median_l2=35.4034, mean_abs=1.0834, max_abs=7.1502 | PA: mean=0.7012, std=0.4349, mean_l2=18.5998, median_l2=18.5417, mean_abs=0.7012, max_abs=3.0364
+Epoch 20/30 | Train Loss: 4.4328 (Fused: 2.3888) | Train C-index: 0.8817 | Val Fused: 0.7703 | Val CT: 0.6814 | Val PA: 0.7541 | Alpha CT: 0.4956 | Alpha PA: 0.5044
+Feature stats | CT: mean=1.0629, std=1.1145, mean_l2=34.5055, median_l2=34.5449, mean_abs=1.0629, max_abs=7.2965 | PA: mean=0.7151, std=0.4392, mean_l2=18.9180, median_l2=18.8752, mean_abs=0.7151, max_abs=3.0911
+Epoch 21/30 | Train Loss: 4.3618 (Fused: 2.3540) | Train C-index: 0.8946 | Val Fused: 0.7547 | Val CT: 0.6680 | Val PA: 0.7369 | Alpha CT: 0.4953 | Alpha PA: 0.5047
+Feature stats | CT: mean=1.0856, std=1.1339, mean_l2=35.2866, median_l2=35.4969, mean_abs=1.0856, max_abs=7.0729 | PA: mean=0.7214, std=0.4381, mean_l2=19.0216, median_l2=19.0117, mean_abs=0.7214, max_abs=3.0706
+Epoch 22/30 | Train Loss: 4.2585 (Fused: 2.2827) | Train C-index: 0.8991 | Val Fused: 0.7525 | Val CT: 0.6792 | Val PA: 0.7375 | Alpha CT: 0.4951 | Alpha PA: 0.5049
+Feature stats | CT: mean=1.0665, std=1.1140, mean_l2=34.6055, median_l2=34.8136, mean_abs=1.0665, max_abs=7.2209 | PA: mean=0.7373, std=0.4471, mean_l2=19.4301, median_l2=19.3683, mean_abs=0.7373, max_abs=3.1378
+Epoch 23/30 | Train Loss: 4.0890 (Fused: 2.1938) | Train C-index: 0.9101 | Val Fused: 0.7455 | Val CT: 0.6786 | Val PA: 0.7248 | Alpha CT: 0.4948 | Alpha PA: 0.5052
+Feature stats | CT: mean=1.0810, std=1.1277, mean_l2=35.1092, median_l2=35.1325, mean_abs=1.0810, max_abs=7.1801 | PA: mean=0.7484, std=0.4563, mean_l2=19.7533, median_l2=19.6938, mean_abs=0.7484, max_abs=3.2638
+Epoch 24/30 | Train Loss: 3.9975 (Fused: 2.1206) | Train C-index: 0.9147 | Val Fused: 0.7598 | Val CT: 0.6840 | Val PA: 0.7404 | Alpha CT: 0.4945 | Alpha PA: 0.5055
+Feature stats | CT: mean=0.9900, std=1.0145, mean_l2=31.8332, median_l2=31.9257, mean_abs=0.9900, max_abs=6.4935 | PA: mean=0.7547, std=0.4609, mean_l2=19.9195, median_l2=19.8910, mean_abs=0.7547, max_abs=3.2113
+Epoch 25/30 | Train Loss: 3.8647 (Fused: 2.0401) | Train C-index: 0.9228 | Val Fused: 0.7346 | Val CT: 0.6802 | Val PA: 0.7171 | Alpha CT: 0.4942 | Alpha PA: 0.5058
+Feature stats | CT: mean=0.9682, std=0.9868, mean_l2=31.0704, median_l2=31.1216, mean_abs=0.9682, max_abs=6.1018 | PA: mean=0.7735, std=0.4821, mean_l2=20.5249, median_l2=20.4540, mean_abs=0.7735, max_abs=3.2995
+Epoch 26/30 | Train Loss: 3.8555 (Fused: 2.0206) | Train C-index: 0.9235 | Val Fused: 0.7267 | Val CT: 0.6677 | Val PA: 0.7133 | Alpha CT: 0.4939 | Alpha PA: 0.5061
+Feature stats | CT: mean=1.0571, std=1.0964, mean_l2=34.2142, median_l2=34.2142, mean_abs=1.0571, max_abs=6.9207 | PA: mean=0.7730, std=0.4782, mean_l2=20.4634, median_l2=20.4176, mean_abs=0.7730, max_abs=3.2788
+Early stopping at epoch 26
+Fold 0 best fusion alpha | CT: 0.4967 | PA: 0.5033
+Fold 0 best C-index: 0.7875
+
+Extra survival metrics:
+cutoff_from_train_median: 0.568669
+n_test: 113
+n_high_risk: 57
+n_low_risk: 56
+n_event_test: 38
+logrank_stat: 30.094191
+logrank_p: 0.000000
+auc_36m: 0.813228
+auc_60m: 0.823157
+HR_high_vs_low: 8.941970
+HR_95CI_lower: 3.479822
+HR_95CI_upper: 22.977847
+cox_p: 0.000005
+
+==================================================
+Fold 2/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 5.7952 (Fused: 3.2213) | Train C-index: 0.6515 | Val Fused: 0.7537 | Val CT: 0.6503 | Val PA: 0.7448 | Alpha CT: 0.4998 | Alpha PA: 0.5002
+Feature stats | CT: mean=0.8685, std=0.8844, mean_l2=28.0449, median_l2=27.9817, mean_abs=0.8685, max_abs=6.6002 | PA: mean=0.2788, std=0.2229, mean_l2=8.0680, median_l2=8.0418, mean_abs=0.2788, max_abs=1.7966
+Epoch 2/30 | Train Loss: 5.6355 (Fused: 3.1320) | Train C-index: 0.7176 | Val Fused: 0.7616 | Val CT: 0.6516 | Val PA: 0.7530 | Alpha CT: 0.4996 | Alpha PA: 0.5004
+Feature stats | CT: mean=0.8861, std=0.8937, mean_l2=28.4635, median_l2=28.3186, mean_abs=0.8861, max_abs=6.4289 | PA: mean=0.2955, std=0.2430, mean_l2=8.6397, median_l2=8.5649, mean_abs=0.2955, max_abs=2.0742
+Epoch 3/30 | Train Loss: 5.5416 (Fused: 3.0712) | Train C-index: 0.7276 | Val Fused: 0.7692 | Val CT: 0.6566 | Val PA: 0.7586 | Alpha CT: 0.4995 | Alpha PA: 0.5005
+Feature stats | CT: mean=0.9030, std=0.9067, mean_l2=28.9043, median_l2=28.6342, mean_abs=0.9030, max_abs=6.1788 | PA: mean=0.3233, std=0.2683, mean_l2=9.4744, median_l2=9.4043, mean_abs=0.3233, max_abs=2.1638
+Epoch 4/30 | Train Loss: 5.4637 (Fused: 3.0206) | Train C-index: 0.7268 | Val Fused: 0.7712 | Val CT: 0.6625 | Val PA: 0.7580 | Alpha CT: 0.4993 | Alpha PA: 0.5007
+Feature stats | CT: mean=0.9251, std=0.9340, mean_l2=29.5666, median_l2=28.9389, mean_abs=0.9251, max_abs=6.4009 | PA: mean=0.3504, std=0.2893, mean_l2=10.2420, median_l2=10.0927, mean_abs=0.3504, max_abs=2.2978
+Epoch 5/30 | Train Loss: 5.4025 (Fused: 2.9833) | Train C-index: 0.7456 | Val Fused: 0.7738 | Val CT: 0.6776 | Val PA: 0.7563 | Alpha CT: 0.4991 | Alpha PA: 0.5009
+Feature stats | CT: mean=0.9986, std=1.0173, mean_l2=32.0370, median_l2=31.8155, mean_abs=0.9986, max_abs=6.8846 | PA: mean=0.3708, std=0.3004, mean_l2=10.7574, median_l2=10.6450, mean_abs=0.3708, max_abs=2.3283
+Epoch 6/30 | Train Loss: 5.3502 (Fused: 2.9526) | Train C-index: 0.7593 | Val Fused: 0.7768 | Val CT: 0.6865 | Val PA: 0.7554 | Alpha CT: 0.4989 | Alpha PA: 0.5011
+Feature stats | CT: mean=1.0343, std=1.0557, mean_l2=33.2767, median_l2=33.1110, mean_abs=1.0343, max_abs=6.8334 | PA: mean=0.3931, std=0.3110, mean_l2=11.3019, median_l2=11.1939, mean_abs=0.3931, max_abs=2.3406
+Epoch 7/30 | Train Loss: 5.2442 (Fused: 2.8929) | Train C-index: 0.7722 | Val Fused: 0.7800 | Val CT: 0.6921 | Val PA: 0.7514 | Alpha CT: 0.4987 | Alpha PA: 0.5013
+Feature stats | CT: mean=0.9576, std=0.9677, mean_l2=30.5889, median_l2=30.5177, mean_abs=0.9576, max_abs=6.3802 | PA: mean=0.4160, std=0.3220, mean_l2=11.8645, median_l2=11.7738, mean_abs=0.4160, max_abs=2.3936
+Epoch 8/30 | Train Loss: 5.1971 (Fused: 2.8605) | Train C-index: 0.7801 | Val Fused: 0.7791 | Val CT: 0.6997 | Val PA: 0.7514 | Alpha CT: 0.4985 | Alpha PA: 0.5015
+Feature stats | CT: mean=0.9849, std=1.0084, mean_l2=31.5624, median_l2=31.1300, mean_abs=0.9849, max_abs=6.9823 | PA: mean=0.4448, std=0.3376, mean_l2=12.5930, median_l2=12.5092, mean_abs=0.4448, max_abs=2.4707
+Epoch 9/30 | Train Loss: 5.1611 (Fused: 2.8358) | Train C-index: 0.7949 | Val Fused: 0.7777 | Val CT: 0.7027 | Val PA: 0.7498 | Alpha CT: 0.4983 | Alpha PA: 0.5017
+Feature stats | CT: mean=1.1499, std=1.2170, mean_l2=37.5955, median_l2=38.1306, mean_abs=1.1499, max_abs=7.5990 | PA: mean=0.4740, std=0.3530, mean_l2=13.3306, median_l2=13.3290, mean_abs=0.4740, max_abs=2.5773
+Epoch 10/30 | Train Loss: 5.0762 (Fused: 2.7811) | Train C-index: 0.8031 | Val Fused: 0.7768 | Val CT: 0.7093 | Val PA: 0.7478 | Alpha CT: 0.4981 | Alpha PA: 0.5019
+Feature stats | CT: mean=1.0441, std=1.0849, mean_l2=33.6723, median_l2=33.8531, mean_abs=1.0441, max_abs=7.3543 | PA: mean=0.5000, std=0.3652, mean_l2=13.9673, median_l2=13.9938, mean_abs=0.5000, max_abs=2.6062
+Epoch 11/30 | Train Loss: 5.0475 (Fused: 2.7666) | Train C-index: 0.8159 | Val Fused: 0.7728 | Val CT: 0.7093 | Val PA: 0.7428 | Alpha CT: 0.4979 | Alpha PA: 0.5021
+Feature stats | CT: mean=0.9941, std=1.0147, mean_l2=31.8419, median_l2=32.1758, mean_abs=0.9941, max_abs=7.0424 | PA: mean=0.5225, std=0.3747, mean_l2=14.5020, median_l2=14.5632, mean_abs=0.5225, max_abs=2.6027
+Epoch 12/30 | Train Loss: 4.9920 (Fused: 2.7365) | Train C-index: 0.8250 | Val Fused: 0.7784 | Val CT: 0.7099 | Val PA: 0.7491 | Alpha CT: 0.4976 | Alpha PA: 0.5024
+Feature stats | CT: mean=0.9854, std=1.0018, mean_l2=31.5170, median_l2=31.7969, mean_abs=0.9854, max_abs=6.7173 | PA: mean=0.5450, std=0.3872, mean_l2=15.0753, median_l2=15.1241, mean_abs=0.5450, max_abs=2.6213
+Epoch 13/30 | Train Loss: 4.8224 (Fused: 2.6391) | Train C-index: 0.8366 | Val Fused: 0.7731 | Val CT: 0.7106 | Val PA: 0.7455 | Alpha CT: 0.4974 | Alpha PA: 0.5026
+Feature stats | CT: mean=1.0241, std=1.0443, mean_l2=32.8328, median_l2=33.3873, mean_abs=1.0241, max_abs=6.7866 | PA: mean=0.5686, std=0.3974, mean_l2=15.6441, median_l2=15.6660, mean_abs=0.5686, max_abs=2.6375
+Epoch 14/30 | Train Loss: 4.7881 (Fused: 2.6186) | Train C-index: 0.8420 | Val Fused: 0.7665 | Val CT: 0.7112 | Val PA: 0.7353 | Alpha CT: 0.4971 | Alpha PA: 0.5029
+Feature stats | CT: mean=1.0362, std=1.0647, mean_l2=33.2884, median_l2=33.5797, mean_abs=1.0362, max_abs=7.0378 | PA: mean=0.5928, std=0.4060, mean_l2=16.2043, median_l2=16.3279, mean_abs=0.5928, max_abs=2.7190
+Epoch 15/30 | Train Loss: 4.7253 (Fused: 2.5725) | Train C-index: 0.8541 | Val Fused: 0.7626 | Val CT: 0.7214 | Val PA: 0.7310 | Alpha CT: 0.4968 | Alpha PA: 0.5032
+Feature stats | CT: mean=0.9891, std=1.0075, mean_l2=31.6367, median_l2=31.8964, mean_abs=0.9891, max_abs=6.6583 | PA: mean=0.6195, std=0.4188, mean_l2=16.8655, median_l2=17.0159, mean_abs=0.6195, max_abs=2.8023
+Epoch 16/30 | Train Loss: 4.5959 (Fused: 2.4898) | Train C-index: 0.8657 | Val Fused: 0.7590 | Val CT: 0.7165 | Val PA: 0.7267 | Alpha CT: 0.4966 | Alpha PA: 0.5034
+Feature stats | CT: mean=0.9884, std=0.9920, mean_l2=31.5000, median_l2=31.9005, mean_abs=0.9884, max_abs=6.2533 | PA: mean=0.6397, std=0.4271, mean_l2=17.3454, median_l2=17.4890, mean_abs=0.6397, max_abs=2.8123
+Epoch 17/30 | Train Loss: 4.5503 (Fused: 2.4627) | Train C-index: 0.8704 | Val Fused: 0.7511 | Val CT: 0.7063 | Val PA: 0.7102 | Alpha CT: 0.4963 | Alpha PA: 0.5037
+Feature stats | CT: mean=0.9459, std=0.9548, mean_l2=30.1575, median_l2=29.9752, mean_abs=0.9459, max_abs=6.1787 | PA: mean=0.6558, std=0.4331, mean_l2=17.7192, median_l2=17.9328, mean_abs=0.6558, max_abs=2.8550
+Early stopping at epoch 17
+Fold 1 best fusion alpha | CT: 0.4987 | PA: 0.5013
+Fold 1 best C-index: 0.7800
+
+Extra survival metrics:
+cutoff_from_train_median: -0.068431
+n_test: 113
+n_high_risk: 52
+n_low_risk: 61
+n_event_test: 39
+logrank_stat: 32.653553
+logrank_p: 0.000000
+auc_36m: 0.792578
+auc_60m: 0.802541
+HR_high_vs_low: 8.423839
+HR_95CI_lower: 3.519090
+HR_95CI_upper: 20.164610
+cox_p: 0.000002
+
+==================================================
+Fold 3/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 5.9233 (Fused: 3.2939) | Train C-index: 0.6617 | Val Fused: 0.6844 | Val CT: 0.6908 | Val PA: 0.6797 | Alpha CT: 0.4999 | Alpha PA: 0.5001
+Feature stats | CT: mean=0.8661, std=0.8814, mean_l2=27.9597, median_l2=27.8976, mean_abs=0.8661, max_abs=6.6032 | PA: mean=0.2788, std=0.2230, mean_l2=8.0706, median_l2=8.0164, mean_abs=0.2788, max_abs=1.7966
+Epoch 2/30 | Train Loss: 5.5732 (Fused: 3.0982) | Train C-index: 0.7281 | Val Fused: 0.6932 | Val CT: 0.6888 | Val PA: 0.6827 | Alpha CT: 0.4997 | Alpha PA: 0.5003
+Feature stats | CT: mean=0.8753, std=0.8848, mean_l2=28.1524, median_l2=28.0465, mean_abs=0.8753, max_abs=6.3247 | PA: mean=0.2979, std=0.2460, mean_l2=8.7232, median_l2=8.6361, mean_abs=0.2979, max_abs=2.1346
+Epoch 3/30 | Train Loss: 5.4965 (Fused: 3.0438) | Train C-index: 0.7401 | Val Fused: 0.6973 | Val CT: 0.6953 | Val PA: 0.6858 | Alpha CT: 0.4995 | Alpha PA: 0.5005
+Feature stats | CT: mean=0.8963, std=0.9012, mean_l2=28.7196, median_l2=28.4724, mean_abs=0.8963, max_abs=6.0830 | PA: mean=0.3280, std=0.2743, mean_l2=9.6429, median_l2=9.4898, mean_abs=0.3280, max_abs=2.2340
+Epoch 4/30 | Train Loss: 5.5536 (Fused: 3.0604) | Train C-index: 0.7458 | Val Fused: 0.7088 | Val CT: 0.7007 | Val PA: 0.6902 | Alpha CT: 0.4993 | Alpha PA: 0.5007
+Feature stats | CT: mean=0.9192, std=0.9257, mean_l2=29.4050, median_l2=29.0186, mean_abs=0.9192, max_abs=5.9862 | PA: mean=0.3584, std=0.2968, mean_l2=10.4895, median_l2=10.2720, mean_abs=0.3584, max_abs=2.2938
+Epoch 5/30 | Train Loss: 5.4274 (Fused: 2.9903) | Train C-index: 0.7552 | Val Fused: 0.7146 | Val CT: 0.7061 | Val PA: 0.6922 | Alpha CT: 0.4991 | Alpha PA: 0.5009
+Feature stats | CT: mean=0.9235, std=0.9368, mean_l2=29.5613, median_l2=28.9763, mean_abs=0.9235, max_abs=6.4970 | PA: mean=0.3774, std=0.3070, mean_l2=10.9704, median_l2=10.7919, mean_abs=0.3774, max_abs=2.3160
+Epoch 6/30 | Train Loss: 5.3893 (Fused: 2.9677) | Train C-index: 0.7670 | Val Fused: 0.7203 | Val CT: 0.6959 | Val PA: 0.7010 | Alpha CT: 0.4990 | Alpha PA: 0.5010
+Feature stats | CT: mean=0.9624, std=0.9786, mean_l2=30.8409, median_l2=30.1528, mean_abs=0.9624, max_abs=6.4654 | PA: mean=0.3924, std=0.3142, mean_l2=11.3405, median_l2=11.1738, mean_abs=0.3924, max_abs=2.3307
+Epoch 7/30 | Train Loss: 5.2292 (Fused: 2.8813) | Train C-index: 0.7838 | Val Fused: 0.7308 | Val CT: 0.6868 | Val PA: 0.7149 | Alpha CT: 0.4988 | Alpha PA: 0.5012
+Feature stats | CT: mean=0.9792, std=0.9907, mean_l2=31.3527, median_l2=30.9068, mean_abs=0.9792, max_abs=6.3423 | PA: mean=0.4086, std=0.3223, mean_l2=11.7430, median_l2=11.6491, mean_abs=0.4086, max_abs=2.4781
+Epoch 8/30 | Train Loss: 5.1626 (Fused: 2.8378) | Train C-index: 0.7922 | Val Fused: 0.7258 | Val CT: 0.6661 | Val PA: 0.7214 | Alpha CT: 0.4986 | Alpha PA: 0.5014
+Feature stats | CT: mean=0.9674, std=0.9845, mean_l2=30.9832, median_l2=30.2400, mean_abs=0.9674, max_abs=6.5588 | PA: mean=0.4312, std=0.3324, mean_l2=12.2871, median_l2=12.1798, mean_abs=0.4312, max_abs=2.4953
+Epoch 9/30 | Train Loss: 5.1622 (Fused: 2.8306) | Train C-index: 0.8015 | Val Fused: 0.7224 | Val CT: 0.6661 | Val PA: 0.7200 | Alpha CT: 0.4984 | Alpha PA: 0.5016
+Feature stats | CT: mean=1.0084, std=1.0276, mean_l2=32.3708, median_l2=32.2873, mean_abs=1.0084, max_abs=6.6005 | PA: mean=0.4527, std=0.3406, mean_l2=12.7871, median_l2=12.6418, mean_abs=0.4527, max_abs=2.5214
+Epoch 10/30 | Train Loss: 5.1446 (Fused: 2.8265) | Train C-index: 0.8077 | Val Fused: 0.7275 | Val CT: 0.6756 | Val PA: 0.7281 | Alpha CT: 0.4982 | Alpha PA: 0.5018
+Feature stats | CT: mean=1.0564, std=1.1074, mean_l2=34.2099, median_l2=33.5980, mean_abs=1.0564, max_abs=7.6069 | PA: mean=0.4758, std=0.3487, mean_l2=13.3141, median_l2=13.1825, mean_abs=0.4758, max_abs=2.5315
+Epoch 11/30 | Train Loss: 5.0584 (Fused: 2.7666) | Train C-index: 0.8157 | Val Fused: 0.7278 | Val CT: 0.6573 | Val PA: 0.7254 | Alpha CT: 0.4979 | Alpha PA: 0.5021
+Feature stats | CT: mean=1.1487, std=1.2226, mean_l2=37.5979, median_l2=37.4263, mean_abs=1.1487, max_abs=7.7413 | PA: mean=0.5003, std=0.3575, mean_l2=13.8748, median_l2=13.7543, mean_abs=0.5003, max_abs=2.5305
+Epoch 12/30 | Train Loss: 4.9331 (Fused: 2.7002) | Train C-index: 0.8260 | Val Fused: 0.7281 | Val CT: 0.6563 | Val PA: 0.7247 | Alpha CT: 0.4977 | Alpha PA: 0.5023
+Feature stats | CT: mean=1.1337, std=1.2001, mean_l2=37.0360, median_l2=36.8674, mean_abs=1.1337, max_abs=7.6486 | PA: mean=0.5225, std=0.3648, mean_l2=14.3775, median_l2=14.2451, mean_abs=0.5225, max_abs=2.5239
+Epoch 13/30 | Train Loss: 4.9798 (Fused: 2.7180) | Train C-index: 0.8337 | Val Fused: 0.7268 | Val CT: 0.6675 | Val PA: 0.7254 | Alpha CT: 0.4975 | Alpha PA: 0.5025
+Feature stats | CT: mean=1.0636, std=1.1079, mean_l2=34.4447, median_l2=34.4348, mean_abs=1.0636, max_abs=7.2622 | PA: mean=0.5467, std=0.3747, mean_l2=14.9490, median_l2=14.7689, mean_abs=0.5467, max_abs=2.5364
+Epoch 14/30 | Train Loss: 4.8250 (Fused: 2.6396) | Train C-index: 0.8370 | Val Fused: 0.7322 | Val CT: 0.6631 | Val PA: 0.7268 | Alpha CT: 0.4972 | Alpha PA: 0.5028
+Feature stats | CT: mean=1.0106, std=1.0453, mean_l2=32.5793, median_l2=32.3171, mean_abs=1.0106, max_abs=6.8625 | PA: mean=0.5644, std=0.3774, mean_l2=15.3143, median_l2=15.1124, mean_abs=0.5644, max_abs=2.5376
+Epoch 15/30 | Train Loss: 4.7927 (Fused: 2.6145) | Train C-index: 0.8499 | Val Fused: 0.7295 | Val CT: 0.6512 | Val PA: 0.7271 | Alpha CT: 0.4970 | Alpha PA: 0.5030
+Feature stats | CT: mean=1.0197, std=1.0496, mean_l2=32.8573, median_l2=33.0017, mean_abs=1.0197, max_abs=6.7262 | PA: mean=0.5839, std=0.3805, mean_l2=15.7249, median_l2=15.5486, mean_abs=0.5839, max_abs=2.5785
+Epoch 16/30 | Train Loss: 4.6987 (Fused: 2.5570) | Train C-index: 0.8576 | Val Fused: 0.7325 | Val CT: 0.6722 | Val PA: 0.7288 | Alpha CT: 0.4968 | Alpha PA: 0.5032
+Feature stats | CT: mean=1.0251, std=1.0554, mean_l2=33.0503, median_l2=33.1891, mean_abs=1.0251, max_abs=6.7363 | PA: mean=0.6045, std=0.3866, mean_l2=16.1894, median_l2=16.0012, mean_abs=0.6045, max_abs=2.5949
+Epoch 17/30 | Train Loss: 4.6851 (Fused: 2.5437) | Train C-index: 0.8592 | Val Fused: 0.7275 | Val CT: 0.6383 | Val PA: 0.7231 | Alpha CT: 0.4965 | Alpha PA: 0.5035
+Feature stats | CT: mean=1.0102, std=1.0426, mean_l2=32.5621, median_l2=32.6132, mean_abs=1.0102, max_abs=6.7637 | PA: mean=0.6252, std=0.3943, mean_l2=16.6712, median_l2=16.4994, mean_abs=0.6252, max_abs=2.7134
+Epoch 18/30 | Train Loss: 4.5883 (Fused: 2.4796) | Train C-index: 0.8716 | Val Fused: 0.7298 | Val CT: 0.6722 | Val PA: 0.7224 | Alpha CT: 0.4963 | Alpha PA: 0.5037
+Feature stats | CT: mean=1.0057, std=1.0299, mean_l2=32.3545, median_l2=32.5287, mean_abs=1.0057, max_abs=6.4093 | PA: mean=0.6436, std=0.4008, mean_l2=17.1064, median_l2=16.9602, mean_abs=0.6436, max_abs=2.8361
+Epoch 19/30 | Train Loss: 4.5093 (Fused: 2.4381) | Train C-index: 0.8752 | Val Fused: 0.7244 | Val CT: 0.6603 | Val PA: 0.7173 | Alpha CT: 0.4960 | Alpha PA: 0.5040
+Feature stats | CT: mean=0.9818, std=1.0096, mean_l2=31.5831, median_l2=31.1757, mean_abs=0.9818, max_abs=6.5197 | PA: mean=0.6587, std=0.4058, mean_l2=17.4532, median_l2=17.3528, mean_abs=0.6587, max_abs=2.8759
+Epoch 20/30 | Train Loss: 4.4438 (Fused: 2.3828) | Train C-index: 0.8833 | Val Fused: 0.7244 | Val CT: 0.6366 | Val PA: 0.7234 | Alpha CT: 0.4957 | Alpha PA: 0.5043
+Feature stats | CT: mean=1.0310, std=1.0641, mean_l2=33.2730, median_l2=33.3840, mean_abs=1.0310, max_abs=7.0194 | PA: mean=0.6762, std=0.4141, mean_l2=17.8834, median_l2=17.7600, mean_abs=0.6762, max_abs=3.0043
+Epoch 21/30 | Train Loss: 4.3816 (Fused: 2.3313) | Train C-index: 0.8926 | Val Fused: 0.7271 | Val CT: 0.6803 | Val PA: 0.7169 | Alpha CT: 0.4954 | Alpha PA: 0.5046
+Feature stats | CT: mean=1.0504, std=1.0907, mean_l2=33.9844, median_l2=34.1630, mean_abs=1.0504, max_abs=6.9826 | PA: mean=0.6933, std=0.4250, mean_l2=18.3406, median_l2=18.1868, mean_abs=0.6933, max_abs=3.0888
+Epoch 22/30 | Train Loss: 4.3045 (Fused: 2.2991) | Train C-index: 0.8960 | Val Fused: 0.7166 | Val CT: 0.6549 | Val PA: 0.7071 | Alpha CT: 0.4952 | Alpha PA: 0.5048
+Feature stats | CT: mean=0.9756, std=1.0061, mean_l2=31.4112, median_l2=30.9700, mean_abs=0.9756, max_abs=6.6256 | PA: mean=0.7050, std=0.4272, mean_l2=18.5923, median_l2=18.4586, mean_abs=0.7050, max_abs=3.1387
+Epoch 23/30 | Train Loss: 4.1987 (Fused: 2.2277) | Train C-index: 0.9047 | Val Fused: 0.7156 | Val CT: 0.6844 | Val PA: 0.7047 | Alpha CT: 0.4949 | Alpha PA: 0.5051
+Feature stats | CT: mean=1.0357, std=1.0673, mean_l2=33.4308, median_l2=33.3128, mean_abs=1.0357, max_abs=6.9465 | PA: mean=0.7188, std=0.4313, mean_l2=18.9084, median_l2=18.8323, mean_abs=0.7188, max_abs=3.2178
+Epoch 24/30 | Train Loss: 4.0991 (Fused: 2.1568) | Train C-index: 0.9071 | Val Fused: 0.7254 | Val CT: 0.6668 | Val PA: 0.7163 | Alpha CT: 0.4946 | Alpha PA: 0.5054
+Feature stats | CT: mean=0.9989, std=1.0379, mean_l2=32.2545, median_l2=31.5324, mean_abs=0.9989, max_abs=6.9281 | PA: mean=0.7322, std=0.4409, mean_l2=19.2713, median_l2=19.1115, mean_abs=0.7322, max_abs=3.5318
+Epoch 25/30 | Train Loss: 3.9753 (Fused: 2.0831) | Train C-index: 0.9168 | Val Fused: 0.7061 | Val CT: 0.6631 | Val PA: 0.6980 | Alpha CT: 0.4943 | Alpha PA: 0.5057
+Feature stats | CT: mean=0.9704, std=0.9870, mean_l2=31.1399, median_l2=31.1892, mean_abs=0.9704, max_abs=6.2103 | PA: mean=0.7444, std=0.4577, mean_l2=19.7008, median_l2=19.6058, mean_abs=0.7444, max_abs=3.4300
+Epoch 26/30 | Train Loss: 3.9526 (Fused: 2.0409) | Train C-index: 0.9192 | Val Fused: 0.7169 | Val CT: 0.6814 | Val PA: 0.7010 | Alpha CT: 0.4940 | Alpha PA: 0.5060
+Feature stats | CT: mean=0.9793, std=0.9980, mean_l2=31.4409, median_l2=31.4788, mean_abs=0.9793, max_abs=6.1609 | PA: mean=0.7515, std=0.4648, mean_l2=19.9212, median_l2=19.7459, mean_abs=0.7515, max_abs=3.6600
+Early stopping at epoch 26
+Fold 2 best fusion alpha | CT: 0.4968 | PA: 0.5032
+Fold 2 best C-index: 0.7325
+
+Extra survival metrics:
+cutoff_from_train_median: 0.128914
+n_test: 112
+n_high_risk: 62
+n_low_risk: 50
+n_event_test: 38
+logrank_stat: 19.935223
+logrank_p: 0.000008
+auc_36m: 0.759682
+auc_60m: 0.761716
+HR_high_vs_low: 5.824565
+HR_95CI_lower: 2.428591
+HR_95CI_upper: 13.969235
+cox_p: 0.000079
+
+==================================================
+Fold 4/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 5.9667 (Fused: 3.3173) | Train C-index: 0.6447 | Val Fused: 0.7157 | Val CT: 0.6607 | Val PA: 0.7111 | Alpha CT: 0.4998 | Alpha PA: 0.5002
+Feature stats | CT: mean=0.8661, std=0.8822, mean_l2=27.9704, median_l2=27.9336, mean_abs=0.8661, max_abs=6.5883 | PA: mean=0.2788, std=0.2226, mean_l2=8.0649, median_l2=8.0401, mean_abs=0.2788, max_abs=1.8033
+Epoch 2/30 | Train Loss: 5.7243 (Fused: 3.1808) | Train C-index: 0.7228 | Val Fused: 0.7184 | Val CT: 0.6634 | Val PA: 0.7074 | Alpha CT: 0.4996 | Alpha PA: 0.5004
+Feature stats | CT: mean=0.8856, std=0.8925, mean_l2=28.4384, median_l2=28.3414, mean_abs=0.8856, max_abs=6.4067 | PA: mean=0.2963, std=0.2422, mean_l2=8.6445, median_l2=8.5945, mean_abs=0.2963, max_abs=1.8782
+Epoch 3/30 | Train Loss: 5.5126 (Fused: 3.0514) | Train C-index: 0.7332 | Val Fused: 0.7167 | Val CT: 0.6667 | Val PA: 0.7117 | Alpha CT: 0.4994 | Alpha PA: 0.5006
+Feature stats | CT: mean=0.8892, std=0.8920, mean_l2=28.4501, median_l2=28.1462, mean_abs=0.8892, max_abs=6.0300 | PA: mean=0.3239, std=0.2654, mean_l2=9.4509, median_l2=9.3403, mean_abs=0.3239, max_abs=1.9504
+Epoch 4/30 | Train Loss: 5.4635 (Fused: 3.0136) | Train C-index: 0.7378 | Val Fused: 0.7276 | Val CT: 0.6750 | Val PA: 0.7097 | Alpha CT: 0.4992 | Alpha PA: 0.5008
+Feature stats | CT: mean=0.9319, std=0.9378, mean_l2=29.7875, median_l2=29.4032, mean_abs=0.9319, max_abs=6.4183 | PA: mean=0.3494, std=0.2832, mean_l2=10.1479, median_l2=10.0226, mean_abs=0.3494, max_abs=2.1411
+Epoch 5/30 | Train Loss: 5.3543 (Fused: 2.9530) | Train C-index: 0.7541 | Val Fused: 0.7326 | Val CT: 0.6763 | Val PA: 0.7177 | Alpha CT: 0.4990 | Alpha PA: 0.5010
+Feature stats | CT: mean=0.9700, std=0.9840, mean_l2=31.0448, median_l2=30.4423, mean_abs=0.9700, max_abs=6.6327 | PA: mean=0.3732, std=0.2982, mean_l2=10.7792, median_l2=10.6403, mean_abs=0.3732, max_abs=2.3288
+Epoch 6/30 | Train Loss: 5.2895 (Fused: 2.9156) | Train C-index: 0.7671 | Val Fused: 0.7359 | Val CT: 0.6769 | Val PA: 0.7207 | Alpha CT: 0.4988 | Alpha PA: 0.5012
+Feature stats | CT: mean=0.9894, std=1.0026, mean_l2=31.6659, median_l2=31.2992, mean_abs=0.9894, max_abs=6.6184 | PA: mean=0.3945, std=0.3108, mean_l2=11.3349, median_l2=11.2603, mean_abs=0.3945, max_abs=2.3907
+Epoch 7/30 | Train Loss: 5.2173 (Fused: 2.8746) | Train C-index: 0.7803 | Val Fused: 0.7386 | Val CT: 0.6750 | Val PA: 0.7197 | Alpha CT: 0.4987 | Alpha PA: 0.5013
+Feature stats | CT: mean=0.9762, std=0.9834, mean_l2=31.1590, median_l2=31.0270, mean_abs=0.9762, max_abs=6.3000 | PA: mean=0.4153, std=0.3212, mean_l2=11.8486, median_l2=11.8176, mean_abs=0.4153, max_abs=2.4877
+Epoch 8/30 | Train Loss: 5.1505 (Fused: 2.8385) | Train C-index: 0.7920 | Val Fused: 0.7406 | Val CT: 0.6670 | Val PA: 0.7237 | Alpha CT: 0.4984 | Alpha PA: 0.5016
+Feature stats | CT: mean=0.9894, std=1.0112, mean_l2=31.6802, median_l2=31.3226, mean_abs=0.9894, max_abs=7.0363 | PA: mean=0.4384, std=0.3315, mean_l2=12.4046, median_l2=12.4124, mean_abs=0.4384, max_abs=2.5396
+Epoch 9/30 | Train Loss: 5.1312 (Fused: 2.8176) | Train C-index: 0.8014 | Val Fused: 0.7382 | Val CT: 0.6667 | Val PA: 0.7260 | Alpha CT: 0.4982 | Alpha PA: 0.5018
+Feature stats | CT: mean=1.1310, std=1.1864, mean_l2=36.8285, median_l2=36.9880, mean_abs=1.1310, max_abs=7.3459 | PA: mean=0.4647, std=0.3427, mean_l2=13.0286, median_l2=13.0296, mean_abs=0.4647, max_abs=2.6290
+Epoch 10/30 | Train Loss: 5.0268 (Fused: 2.7582) | Train C-index: 0.8051 | Val Fused: 0.7379 | Val CT: 0.6700 | Val PA: 0.7250 | Alpha CT: 0.4980 | Alpha PA: 0.5020
+Feature stats | CT: mean=1.0396, std=1.0690, mean_l2=33.4358, median_l2=33.2365, mean_abs=1.0396, max_abs=6.9325 | PA: mean=0.4901, std=0.3534, mean_l2=13.6311, median_l2=13.6346, mean_abs=0.4901, max_abs=2.6733
+Epoch 11/30 | Train Loss: 5.1249 (Fused: 2.8118) | Train C-index: 0.8151 | Val Fused: 0.7309 | Val CT: 0.6455 | Val PA: 0.7194 | Alpha CT: 0.4978 | Alpha PA: 0.5022
+Feature stats | CT: mean=1.0484, std=1.0840, mean_l2=33.7830, median_l2=33.7123, mean_abs=1.0484, max_abs=7.0413 | PA: mean=0.5120, std=0.3625, mean_l2=14.1529, median_l2=14.1766, mean_abs=0.5120, max_abs=2.7357
+Epoch 12/30 | Train Loss: 4.9694 (Fused: 2.7216) | Train C-index: 0.8253 | Val Fused: 0.7396 | Val CT: 0.6723 | Val PA: 0.7233 | Alpha CT: 0.4975 | Alpha PA: 0.5025
+Feature stats | CT: mean=1.1109, std=1.1595, mean_l2=36.0653, median_l2=36.0630, mean_abs=1.1109, max_abs=7.0702 | PA: mean=0.5332, std=0.3696, mean_l2=14.6371, median_l2=14.6733, mean_abs=0.5332, max_abs=2.7528
+Epoch 13/30 | Train Loss: 4.9169 (Fused: 2.6844) | Train C-index: 0.8206 | Val Fused: 0.7389 | Val CT: 0.6643 | Val PA: 0.7260 | Alpha CT: 0.4972 | Alpha PA: 0.5028
+Feature stats | CT: mean=0.9460, std=0.9637, mean_l2=30.2143, median_l2=29.3529, mean_abs=0.9460, max_abs=6.7941 | PA: mean=0.5577, std=0.3823, mean_l2=15.2479, median_l2=15.2758, mean_abs=0.5577, max_abs=2.7686
+Epoch 14/30 | Train Loss: 4.8595 (Fused: 2.6473) | Train C-index: 0.8380 | Val Fused: 0.7362 | Val CT: 0.6418 | Val PA: 0.7237 | Alpha CT: 0.4970 | Alpha PA: 0.5030
+Feature stats | CT: mean=1.0293, std=1.0518, mean_l2=33.0434, median_l2=33.2978, mean_abs=1.0293, max_abs=6.6685 | PA: mean=0.5758, std=0.3881, mean_l2=15.6619, median_l2=15.6796, mean_abs=0.5758, max_abs=2.8435
+Epoch 15/30 | Train Loss: 4.8038 (Fused: 2.6052) | Train C-index: 0.8517 | Val Fused: 0.7432 | Val CT: 0.6776 | Val PA: 0.7223 | Alpha CT: 0.4968 | Alpha PA: 0.5032
+Feature stats | CT: mean=1.0149, std=1.0361, mean_l2=32.5413, median_l2=32.6698, mean_abs=1.0149, max_abs=6.6345 | PA: mean=0.5912, std=0.3927, mean_l2=16.0058, median_l2=16.0470, mean_abs=0.5912, max_abs=2.8838
+Epoch 16/30 | Train Loss: 4.6859 (Fused: 2.5588) | Train C-index: 0.8431 | Val Fused: 0.7459 | Val CT: 0.6726 | Val PA: 0.7316 | Alpha CT: 0.4965 | Alpha PA: 0.5035
+Feature stats | CT: mean=0.9955, std=1.0295, mean_l2=31.9719, median_l2=31.2539, mean_abs=0.9955, max_abs=7.1812 | PA: mean=0.6099, std=0.4003, mean_l2=16.4494, median_l2=16.5633, mean_abs=0.6099, max_abs=2.9193
+Epoch 17/30 | Train Loss: 4.6582 (Fused: 2.5370) | Train C-index: 0.8610 | Val Fused: 0.7349 | Val CT: 0.6554 | Val PA: 0.7190 | Alpha CT: 0.4963 | Alpha PA: 0.5037
+Feature stats | CT: mean=1.1138, std=1.1672, mean_l2=36.2148, median_l2=36.2480, mean_abs=1.1138, max_abs=7.2606 | PA: mean=0.6284, std=0.4092, mean_l2=16.9085, median_l2=16.9996, mean_abs=0.6284, max_abs=2.9469
+Epoch 18/30 | Train Loss: 4.7741 (Fused: 2.5982) | Train C-index: 0.8657 | Val Fused: 0.7412 | Val CT: 0.6776 | Val PA: 0.7177 | Alpha CT: 0.4961 | Alpha PA: 0.5039
+Feature stats | CT: mean=1.0163, std=1.0439, mean_l2=32.6375, median_l2=32.2894, mean_abs=1.0163, max_abs=6.8878 | PA: mean=0.6479, std=0.4227, mean_l2=17.4333, median_l2=17.5410, mean_abs=0.6479, max_abs=2.9605
+Epoch 19/30 | Train Loss: 4.5922 (Fused: 2.4828) | Train C-index: 0.8602 | Val Fused: 0.7416 | Val CT: 0.6776 | Val PA: 0.7220 | Alpha CT: 0.4958 | Alpha PA: 0.5042
+Feature stats | CT: mean=1.0249, std=1.0671, mean_l2=33.0094, median_l2=32.3339, mean_abs=1.0249, max_abs=7.3690 | PA: mean=0.6637, std=0.4323, mean_l2=17.8508, median_l2=18.0371, mean_abs=0.6637, max_abs=2.9549
+Epoch 20/30 | Train Loss: 4.5011 (Fused: 2.4205) | Train C-index: 0.8783 | Val Fused: 0.7326 | Val CT: 0.6673 | Val PA: 0.7217 | Alpha CT: 0.4955 | Alpha PA: 0.5045
+Feature stats | CT: mean=1.1388, std=1.2003, mean_l2=37.1206, median_l2=36.7348, mean_abs=1.1388, max_abs=7.4873 | PA: mean=0.6735, std=0.4373, mean_l2=18.0959, median_l2=18.2733, mean_abs=0.6735, max_abs=2.9680
+Epoch 21/30 | Train Loss: 4.5948 (Fused: 2.4760) | Train C-index: 0.8934 | Val Fused: 0.7194 | Val CT: 0.6660 | Val PA: 0.6958 | Alpha CT: 0.4953 | Alpha PA: 0.5047
+Feature stats | CT: mean=1.1113, std=1.1549, mean_l2=36.0424, median_l2=36.1826, mean_abs=1.1113, max_abs=6.9823 | PA: mean=0.6785, std=0.4389, mean_l2=18.2062, median_l2=18.4565, mean_abs=0.6785, max_abs=3.0290
+Epoch 22/30 | Train Loss: 4.3585 (Fused: 2.3421) | Train C-index: 0.8923 | Val Fused: 0.7144 | Val CT: 0.6687 | Val PA: 0.6885 | Alpha CT: 0.4950 | Alpha PA: 0.5050
+Feature stats | CT: mean=0.9542, std=0.9664, mean_l2=30.4709, median_l2=30.3202, mean_abs=0.9542, max_abs=6.2253 | PA: mean=0.6890, std=0.4451, mean_l2=18.4791, median_l2=18.6641, mean_abs=0.6890, max_abs=3.1189
+Epoch 23/30 | Train Loss: 4.3517 (Fused: 2.3430) | Train C-index: 0.8964 | Val Fused: 0.7087 | Val CT: 0.6577 | Val PA: 0.6849 | Alpha CT: 0.4948 | Alpha PA: 0.5052
+Feature stats | CT: mean=0.9150, std=0.9279, mean_l2=29.2141, median_l2=28.3948, mean_abs=0.9150, max_abs=6.2992 | PA: mean=0.7037, std=0.4565, mean_l2=18.8995, median_l2=19.1163, mean_abs=0.7037, max_abs=3.1590
+Epoch 24/30 | Train Loss: 4.1922 (Fused: 2.2497) | Train C-index: 0.9081 | Val Fused: 0.7041 | Val CT: 0.6571 | Val PA: 0.6839 | Alpha CT: 0.4945 | Alpha PA: 0.5055
+Feature stats | CT: mean=1.0386, std=1.0674, mean_l2=33.4224, median_l2=33.6851, mean_abs=1.0386, max_abs=6.9467 | PA: mean=0.7144, std=0.4659, mean_l2=19.2080, median_l2=19.3375, mean_abs=0.7144, max_abs=3.3002
+Epoch 25/30 | Train Loss: 4.0442 (Fused: 2.1597) | Train C-index: 0.9161 | Val Fused: 0.7107 | Val CT: 0.6667 | Val PA: 0.6882 | Alpha CT: 0.4942 | Alpha PA: 0.5058
+Feature stats | CT: mean=1.0605, std=1.0948, mean_l2=34.2035, median_l2=34.5589, mean_abs=1.0605, max_abs=6.9398 | PA: mean=0.7267, std=0.4723, mean_l2=19.5221, median_l2=19.7265, mean_abs=0.7267, max_abs=3.3000
+Epoch 26/30 | Train Loss: 3.9967 (Fused: 2.1256) | Train C-index: 0.9193 | Val Fused: 0.7015 | Val CT: 0.6696 | Val PA: 0.6683 | Alpha CT: 0.4939 | Alpha PA: 0.5061
+Feature stats | CT: mean=1.0051, std=1.0261, mean_l2=32.2084, median_l2=32.0366, mean_abs=1.0051, max_abs=6.5438 | PA: mean=0.7355, std=0.4746, mean_l2=19.7115, median_l2=19.9459, mean_abs=0.7355, max_abs=3.2266
+Early stopping at epoch 26
+Fold 3 best fusion alpha | CT: 0.4965 | PA: 0.5035
+Fold 3 best C-index: 0.7459
+
+Extra survival metrics:
+cutoff_from_train_median: 0.766608
+n_test: 112
+n_high_risk: 46
+n_low_risk: 66
+n_event_test: 38
+logrank_stat: 13.815024
+logrank_p: 0.000202
+auc_36m: 0.808205
+auc_60m: 0.721696
+HR_high_vs_low: 3.279175
+HR_95CI_lower: 1.690638
+HR_95CI_upper: 6.360313
+cox_p: 0.000442
+
+==================================================
+Fold 5/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 5.8727 (Fused: 3.2661) | Train C-index: 0.6725 | Val Fused: 0.6481 | Val CT: 0.5486 | Val PA: 0.6447 | Alpha CT: 0.4998 | Alpha PA: 0.5002
+Feature stats | CT: mean=0.8689, std=0.8821, mean_l2=28.0127, median_l2=27.9304, mean_abs=0.8689, max_abs=6.5594 | PA: mean=0.2794, std=0.2235, mean_l2=8.0872, median_l2=8.0594, mean_abs=0.2794, max_abs=1.9506
+Epoch 2/30 | Train Loss: 5.6704 (Fused: 3.1521) | Train C-index: 0.7467 | Val Fused: 0.6376 | Val CT: 0.5539 | Val PA: 0.6397 | Alpha CT: 0.4996 | Alpha PA: 0.5004
+Feature stats | CT: mean=0.8836, std=0.8898, mean_l2=28.3570, median_l2=28.2249, mean_abs=0.8836, max_abs=6.2070 | PA: mean=0.3001, std=0.2475, mean_l2=8.7830, median_l2=8.7199, mean_abs=0.3001, max_abs=1.9927
+Epoch 3/30 | Train Loss: 5.5302 (Fused: 3.0608) | Train C-index: 0.7584 | Val Fused: 0.6390 | Val CT: 0.5624 | Val PA: 0.6393 | Alpha CT: 0.4994 | Alpha PA: 0.5006
+Feature stats | CT: mean=0.9084, std=0.9130, mean_l2=29.0662, median_l2=28.6831, mean_abs=0.9084, max_abs=5.9439 | PA: mean=0.3343, std=0.2797, mean_l2=9.8276, median_l2=9.6944, mean_abs=0.3343, max_abs=2.1529
+Epoch 4/30 | Train Loss: 5.4701 (Fused: 3.0128) | Train C-index: 0.7601 | Val Fused: 0.6353 | Val CT: 0.5704 | Val PA: 0.6363 | Alpha CT: 0.4992 | Alpha PA: 0.5008
+Feature stats | CT: mean=0.9097, std=0.9192, mean_l2=29.0728, median_l2=28.3906, mean_abs=0.9097, max_abs=6.5051 | PA: mean=0.3705, std=0.3071, mean_l2=10.8388, median_l2=10.6928, mean_abs=0.3705, max_abs=2.2940
+Epoch 5/30 | Train Loss: 5.4107 (Fused: 2.9768) | Train C-index: 0.7697 | Val Fused: 0.6477 | Val CT: 0.5832 | Val PA: 0.6360 | Alpha CT: 0.4990 | Alpha PA: 0.5010
+Feature stats | CT: mean=0.9657, std=0.9855, mean_l2=30.9772, median_l2=30.5881, mean_abs=0.9657, max_abs=6.8347 | PA: mean=0.3929, std=0.3204, mean_l2=11.4197, median_l2=11.2551, mean_abs=0.3929, max_abs=2.3557
+Epoch 6/30 | Train Loss: 5.2027 (Fused: 2.8583) | Train C-index: 0.7812 | Val Fused: 0.6427 | Val CT: 0.5929 | Val PA: 0.6329 | Alpha CT: 0.4988 | Alpha PA: 0.5012
+Feature stats | CT: mean=0.9930, std=1.0141, mean_l2=31.8962, median_l2=31.4284, mean_abs=0.9930, max_abs=6.7789 | PA: mean=0.4113, std=0.3313, mean_l2=11.8969, median_l2=11.7798, mean_abs=0.4113, max_abs=2.3787
+Epoch 7/30 | Train Loss: 5.1723 (Fused: 2.8430) | Train C-index: 0.7916 | Val Fused: 0.6578 | Val CT: 0.5953 | Val PA: 0.6353 | Alpha CT: 0.4987 | Alpha PA: 0.5013
+Feature stats | CT: mean=0.9555, std=0.9716, mean_l2=30.5772, median_l2=30.1157, mean_abs=0.9555, max_abs=6.6060 | PA: mean=0.4303, std=0.3424, mean_l2=12.3897, median_l2=12.2898, mean_abs=0.4303, max_abs=2.3892
+Epoch 8/30 | Train Loss: 5.1350 (Fused: 2.8216) | Train C-index: 0.8030 | Val Fused: 0.6615 | Val CT: 0.6084 | Val PA: 0.6387 | Alpha CT: 0.4985 | Alpha PA: 0.5015
+Feature stats | CT: mean=0.9595, std=0.9740, mean_l2=30.6862, median_l2=29.9629, mean_abs=0.9595, max_abs=6.6033 | PA: mean=0.4515, std=0.3543, mean_l2=12.9296, median_l2=12.9014, mean_abs=0.4515, max_abs=2.4403
+Epoch 9/30 | Train Loss: 5.0438 (Fused: 2.7698) | Train C-index: 0.8146 | Val Fused: 0.6662 | Val CT: 0.6131 | Val PA: 0.6487 | Alpha CT: 0.4983 | Alpha PA: 0.5017
+Feature stats | CT: mean=0.9780, std=0.9920, mean_l2=31.2974, median_l2=31.0128, mean_abs=0.9780, max_abs=6.7022 | PA: mean=0.4757, std=0.3652, mean_l2=13.5169, median_l2=13.5334, mean_abs=0.4757, max_abs=2.4799
+Epoch 10/30 | Train Loss: 4.9544 (Fused: 2.7157) | Train C-index: 0.8194 | Val Fused: 0.6686 | Val CT: 0.6208 | Val PA: 0.6575 | Alpha CT: 0.4980 | Alpha PA: 0.5020
+Feature stats | CT: mean=0.9575, std=0.9763, mean_l2=30.6399, median_l2=29.7687, mean_abs=0.9575, max_abs=6.8379 | PA: mean=0.5025, std=0.3760, mean_l2=14.1442, median_l2=14.1967, mean_abs=0.5025, max_abs=2.5227
+Epoch 11/30 | Train Loss: 4.9376 (Fused: 2.7023) | Train C-index: 0.8277 | Val Fused: 0.6733 | Val CT: 0.6255 | Val PA: 0.6568 | Alpha CT: 0.4978 | Alpha PA: 0.5022
+Feature stats | CT: mean=0.9344, std=0.9513, mean_l2=29.8636, median_l2=28.8882, mean_abs=0.9344, max_abs=6.6595 | PA: mean=0.5266, std=0.3856, mean_l2=14.7057, median_l2=14.7441, mean_abs=0.5266, max_abs=2.5614
+Epoch 12/30 | Train Loss: 4.8707 (Fused: 2.6601) | Train C-index: 0.8412 | Val Fused: 0.6746 | Val CT: 0.6195 | Val PA: 0.6608 | Alpha CT: 0.4976 | Alpha PA: 0.5024
+Feature stats | CT: mean=0.9572, std=0.9628, mean_l2=30.5319, median_l2=30.3252, mean_abs=0.9572, max_abs=6.3193 | PA: mean=0.5490, std=0.3928, mean_l2=15.2060, median_l2=15.2981, mean_abs=0.5490, max_abs=2.5649
+Epoch 13/30 | Train Loss: 4.7680 (Fused: 2.6060) | Train C-index: 0.8438 | Val Fused: 0.6770 | Val CT: 0.6218 | Val PA: 0.6635 | Alpha CT: 0.4974 | Alpha PA: 0.5026
+Feature stats | CT: mean=0.9607, std=0.9768, mean_l2=30.7097, median_l2=29.9850, mean_abs=0.9607, max_abs=6.8140 | PA: mean=0.5746, std=0.4034, mean_l2=15.8099, median_l2=15.8729, mean_abs=0.5746, max_abs=2.6086
+Epoch 14/30 | Train Loss: 4.7283 (Fused: 2.5734) | Train C-index: 0.8512 | Val Fused: 0.6894 | Val CT: 0.6262 | Val PA: 0.6793 | Alpha CT: 0.4971 | Alpha PA: 0.5029
+Feature stats | CT: mean=0.9836, std=1.0002, mean_l2=31.4662, median_l2=30.9843, mean_abs=0.9836, max_abs=6.7690 | PA: mean=0.5992, std=0.4076, mean_l2=16.3245, median_l2=16.4450, mean_abs=0.5992, max_abs=2.6990
+Epoch 15/30 | Train Loss: 4.7140 (Fused: 2.5348) | Train C-index: 0.8612 | Val Fused: 0.6874 | Val CT: 0.6329 | Val PA: 0.6854 | Alpha CT: 0.4969 | Alpha PA: 0.5031
+Feature stats | CT: mean=1.0148, std=1.0374, mean_l2=32.5400, median_l2=32.1962, mean_abs=1.0148, max_abs=6.9727 | PA: mean=0.6233, std=0.4169, mean_l2=16.8893, median_l2=17.0260, mean_abs=0.6233, max_abs=2.7507
+Epoch 16/30 | Train Loss: 4.5914 (Fused: 2.4892) | Train C-index: 0.8685 | Val Fused: 0.6834 | Val CT: 0.6323 | Val PA: 0.6733 | Alpha CT: 0.4966 | Alpha PA: 0.5034
+Feature stats | CT: mean=1.0176, std=1.0365, mean_l2=32.5879, median_l2=32.2300, mean_abs=1.0176, max_abs=6.8758 | PA: mean=0.6490, std=0.4359, mean_l2=17.5961, median_l2=17.7759, mean_abs=0.6490, max_abs=2.8870
+Epoch 17/30 | Train Loss: 4.5900 (Fused: 2.4886) | Train C-index: 0.8769 | Val Fused: 0.6776 | Val CT: 0.6343 | Val PA: 0.6733 | Alpha CT: 0.4964 | Alpha PA: 0.5036
+Feature stats | CT: mean=0.9961, std=1.0075, mean_l2=31.7979, median_l2=31.5009, mean_abs=0.9961, max_abs=6.6229 | PA: mean=0.6685, std=0.4421, mean_l2=18.0416, median_l2=18.2577, mean_abs=0.6685, max_abs=2.9753
+Epoch 18/30 | Train Loss: 4.4476 (Fused: 2.4002) | Train C-index: 0.8849 | Val Fused: 0.6951 | Val CT: 0.6316 | Val PA: 0.6840 | Alpha CT: 0.4961 | Alpha PA: 0.5039
+Feature stats | CT: mean=1.0054, std=1.0115, mean_l2=32.0590, median_l2=31.8414, mean_abs=1.0054, max_abs=6.2982 | PA: mean=0.6846, std=0.4437, mean_l2=18.3734, median_l2=18.5615, mean_abs=0.6846, max_abs=3.0760
+Epoch 19/30 | Train Loss: 4.3356 (Fused: 2.3274) | Train C-index: 0.8809 | Val Fused: 0.6941 | Val CT: 0.6282 | Val PA: 0.6837 | Alpha CT: 0.4959 | Alpha PA: 0.5041
+Feature stats | CT: mean=0.9449, std=0.9633, mean_l2=30.1642, median_l2=28.8432, mean_abs=0.9449, max_abs=6.5241 | PA: mean=0.7013, std=0.4477, mean_l2=18.7425, median_l2=18.9245, mean_abs=0.7013, max_abs=3.1606
+Epoch 20/30 | Train Loss: 4.3528 (Fused: 2.3181) | Train C-index: 0.8949 | Val Fused: 0.6891 | Val CT: 0.6350 | Val PA: 0.6827 | Alpha CT: 0.4956 | Alpha PA: 0.5044
+Feature stats | CT: mean=0.9150, std=0.9184, mean_l2=29.0940, median_l2=28.3690, mean_abs=0.9150, max_abs=5.8782 | PA: mean=0.7192, std=0.4569, mean_l2=19.1893, median_l2=19.4130, mean_abs=0.7192, max_abs=3.3071
+Epoch 21/30 | Train Loss: 4.3061 (Fused: 2.2930) | Train C-index: 0.8994 | Val Fused: 0.6948 | Val CT: 0.6400 | Val PA: 0.6840 | Alpha CT: 0.4953 | Alpha PA: 0.5047
+Feature stats | CT: mean=0.9089, std=0.8992, mean_l2=28.8010, median_l2=28.5680, mean_abs=0.9089, max_abs=5.6771 | PA: mean=0.7370, std=0.4666, mean_l2=19.6407, median_l2=19.9153, mean_abs=0.7370, max_abs=3.3058
+Epoch 22/30 | Train Loss: 4.1374 (Fused: 2.1940) | Train C-index: 0.9058 | Val Fused: 0.7008 | Val CT: 0.6383 | Val PA: 0.6827 | Alpha CT: 0.4950 | Alpha PA: 0.5050
+Feature stats | CT: mean=0.9206, std=0.9188, mean_l2=29.2336, median_l2=28.4279, mean_abs=0.9206, max_abs=5.8928 | PA: mean=0.7498, std=0.4725, mean_l2=19.9573, median_l2=20.2959, mean_abs=0.7498, max_abs=3.2773
+Epoch 23/30 | Train Loss: 4.0120 (Fused: 2.1246) | Train C-index: 0.9121 | Val Fused: 0.6948 | Val CT: 0.6440 | Val PA: 0.6793 | Alpha CT: 0.4947 | Alpha PA: 0.5053
+Feature stats | CT: mean=1.0305, std=1.0480, mean_l2=32.9512, median_l2=32.0299, mean_abs=1.0305, max_abs=6.9314 | PA: mean=0.7618, std=0.4801, mean_l2=20.2780, median_l2=20.5497, mean_abs=0.7618, max_abs=3.2924
+Epoch 24/30 | Train Loss: 3.9751 (Fused: 2.0884) | Train C-index: 0.9199 | Val Fused: 0.6881 | Val CT: 0.6417 | Val PA: 0.6746 | Alpha CT: 0.4945 | Alpha PA: 0.5055
+Feature stats | CT: mean=1.1135, std=1.1486, mean_l2=35.9150, median_l2=35.5564, mean_abs=1.1135, max_abs=7.4960 | PA: mean=0.7728, std=0.4864, mean_l2=20.5577, median_l2=20.8375, mean_abs=0.7728, max_abs=3.3252
+Epoch 25/30 | Train Loss: 3.9032 (Fused: 2.0385) | Train C-index: 0.9259 | Val Fused: 0.6934 | Val CT: 0.6373 | Val PA: 0.6770 | Alpha CT: 0.4942 | Alpha PA: 0.5058
+Feature stats | CT: mean=1.1289, std=1.1729, mean_l2=36.4932, median_l2=35.9788, mean_abs=1.1289, max_abs=7.6056 | PA: mean=0.7796, std=0.4932, mean_l2=20.7643, median_l2=21.0559, mean_abs=0.7796, max_abs=3.3797
+Epoch 26/30 | Train Loss: 3.7693 (Fused: 1.9769) | Train C-index: 0.9324 | Val Fused: 0.6914 | Val CT: 0.6403 | Val PA: 0.6763 | Alpha CT: 0.4939 | Alpha PA: 0.5061
+Feature stats | CT: mean=1.1085, std=1.1343, mean_l2=35.6410, median_l2=35.3640, mean_abs=1.1085, max_abs=7.2036 | PA: mean=0.7882, std=0.5015, mean_l2=21.0231, median_l2=21.2847, mean_abs=0.7882, max_abs=3.3446
+Epoch 27/30 | Train Loss: 3.6474 (Fused: 1.8908) | Train C-index: 0.9418 | Val Fused: 0.6709 | Val CT: 0.6407 | Val PA: 0.6582 | Alpha CT: 0.4937 | Alpha PA: 0.5063
+Feature stats | CT: mean=1.0369, std=1.0513, mean_l2=33.0977, median_l2=32.5429, mean_abs=1.0369, max_abs=6.9511 | PA: mean=0.7970, std=0.5117, mean_l2=21.2985, median_l2=21.5815, mean_abs=0.7970, max_abs=3.3737
+Epoch 28/30 | Train Loss: 3.5476 (Fused: 1.8256) | Train C-index: 0.9456 | Val Fused: 0.6760 | Val CT: 0.6323 | Val PA: 0.6676 | Alpha CT: 0.4934 | Alpha PA: 0.5066
+Feature stats | CT: mean=1.0317, std=1.0325, mean_l2=32.8211, median_l2=32.7133, mean_abs=1.0317, max_abs=6.8459 | PA: mean=0.8044, std=0.5205, mean_l2=21.5354, median_l2=21.7202, mean_abs=0.8044, max_abs=3.4616
+Epoch 29/30 | Train Loss: 3.4827 (Fused: 1.7755) | Train C-index: 0.9515 | Val Fused: 0.6729 | Val CT: 0.6276 | Val PA: 0.6595 | Alpha CT: 0.4931 | Alpha PA: 0.5069
+Feature stats | CT: mean=1.0700, std=1.0877, mean_l2=34.2309, median_l2=33.7754, mean_abs=1.0700, max_abs=7.0593 | PA: mean=0.8151, std=0.5312, mean_l2=21.8677, median_l2=22.1094, mean_abs=0.8151, max_abs=3.6185
+Epoch 30/30 | Train Loss: 3.3012 (Fused: 1.6634) | Train C-index: 0.9577 | Val Fused: 0.6679 | Val CT: 0.6266 | Val PA: 0.6575 | Alpha CT: 0.4928 | Alpha PA: 0.5072
+Feature stats | CT: mean=1.0883, std=1.1112, mean_l2=34.8928, median_l2=34.4787, mean_abs=1.0883, max_abs=7.3144 | PA: mean=0.8289, std=0.5523, mean_l2=22.3780, median_l2=22.5736, mean_abs=0.8289, max_abs=3.6017
+Fold 4 best fusion alpha | CT: 0.4950 | PA: 0.5050
+Fold 4 best C-index: 0.7008
+
+Extra survival metrics:
+cutoff_from_train_median: 0.248520
+n_test: 112
+n_high_risk: 71
+n_low_risk: 41
+n_event_test: 38
+logrank_stat: 6.461167
+logrank_p: 0.011026
+auc_36m: 0.789665
+auc_60m: 0.683007
+HR_high_vs_low: 2.655905
+HR_95CI_lower: 1.214233
+HR_95CI_upper: 5.809290
+cox_p: 0.014443
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index: 0.7494 +/- 0.0355
