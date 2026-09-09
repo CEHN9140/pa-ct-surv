@@ -30,7 +30,13 @@ class HRCASingle(nn.Module):
             dropout=dropout_rate,
             batch_first=True,
         )
-        self.head = nn.Linear(hidden_dim * 2, 1)
+        self.head = nn.Sequential(
+            nn.Linear(hidden_dim * 2, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.3),
+            nn.Linear(hidden_dim, 1),
+        )
 
     def forward(self, ct_fea, pa_fea):
         query = self.ct_proj(ct_fea).unsqueeze(1)
