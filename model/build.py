@@ -3,7 +3,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from model.abmil_cox import ABMIL, ABMIL_TopK
-from model.fusion import BilinearFusion, ConcatFusion, CrossAttnFusion, GatedFusion
+from model.fusion import (
+    BilinearFusion,
+    ConcatFusion,
+    CrossAttnFusion,
+    GatedFusion,
+    HRCASingle,
+)
 from model.gabmil_cox import GABMIL, GABMIL_TopK
 from model.meanpool_cox import MeanPool
 from model.resnet_cox import ResNetCox
@@ -214,6 +220,12 @@ class Pa_CT_Model(nn.Module):
                 mmhid=mmhid,
                 dropout_rate=fusion_dropout,
             )
+        elif fusion_type == "hrca-single":
+            self.fusion = HRCASingle(
+                ct_dim=self.ct_backbone.feature_dim,
+                path_dim=1024,
+                dropout_rate=fusion_dropout,
+            )
         elif fusion_type == "weighted":
             self.risk_weight = nn.Parameter(torch.tensor(0.0))
         else:
@@ -230,6 +242,8 @@ class Pa_CT_Model(nn.Module):
         if self.fusion_type == "weighted":
             alpha = torch.sigmoid(self.risk_weight)
             risk_fused = alpha * risk_ct + (1 - alpha) * risk_pa
+        elif self.fusion_type == "hrca-single":
+            risk_fused = self.fusion(raw_ct_fea, pa)
         else:
             risk_fused = self.fusion(ct_fea_for_fusion, pa_fea_for_fusion)
             if self.fusion_type in ("bilinear",):

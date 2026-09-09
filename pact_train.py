@@ -266,7 +266,10 @@ def parse_args():
     parser.add_argument("--fusion_dropout", type=float, default=0.3)
     parser.add_argument("--norm", choices=["none", "layernorm"], default="none")
     parser.add_argument("--fusion_type", default="concat",
-                        choices=["concat", "bilinear", "gated", "crossattn", "weighted"])
+                        choices=[
+                            "concat", "bilinear", "gated", "crossattn",
+                            "hrca-single", "weighted",
+                        ])
     parser.add_argument("--num_epochs", type=int, default=30)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--ct_backbone_lr", type=float, default=1e-5)

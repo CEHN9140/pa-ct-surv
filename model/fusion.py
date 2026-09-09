@@ -2,6 +2,46 @@ import torch
 import torch.nn as nn
 
 
+class HRCASingle(nn.Module):
+    """CT-guided attention pooling over pathology patch features."""
+
+    def __init__(
+        self,
+        ct_dim=512,
+        path_dim=1024,
+        hidden_dim=256,
+        num_heads=4,
+        dropout_rate=0.0,
+    ):
+        super().__init__()
+        if hidden_dim % num_heads != 0:
+            raise ValueError("hidden_dim must be divisible by num_heads")
+        self.ct_proj = nn.Sequential(
+            nn.Linear(ct_dim, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+        )
+        self.path_proj = nn.Sequential(
+            nn.Linear(path_dim, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+        )
+        self.attention = nn.MultiheadAttention(
+            hidden_dim,
+            num_heads,
+            dropout=dropout_rate,
+            batch_first=True,
+        )
+        self.head = nn.Linear(hidden_dim * 2, 1)
+
+    def forward(self, ct_fea, pa_fea):
+        query = self.ct_proj(ct_fea).unsqueeze(1)
+        path_tokens = self.path_proj(pa_fea)
+        guided_path, _ = self.attention(
+            query, path_tokens, path_tokens, need_weights=False
+        )
+        fused = torch.cat([query.squeeze(1), guided_path.squeeze(1)], dim=1)
+        return self.head(fused).squeeze(-1)
+
+
 class ConcatFusion(nn.Module):
     """简单的 concat 融合 + MLP。"""
 
