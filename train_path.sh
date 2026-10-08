@@ -1,7 +1,7 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
 ROI_SIZE=64
-PA_MODEL=abmil
+PA_MODEL=meanpool
 DROPOUT=0.0
 NUM_EPOCHS=30
 LR=1e-4
