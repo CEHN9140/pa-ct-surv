@@ -122,6 +122,7 @@ def evaluate_survival(
     if include_hr:
         metrics.update(cox_hr(val_df, time_col, event_col))
 
+    train_df.to_csv(save_dir / "train_predictions.csv", index=False)
     val_df.to_csv(save_dir / "val_predictions.csv", index=False)
 
     print("\nExtra survival metrics:")

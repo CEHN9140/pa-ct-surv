@@ -276,14 +276,28 @@ def main():
                 checkpoint_dir,
             )
 
-        _, fold_cindex, _, _, metrics = evaluate_survival(
+        train_cindex, val_cindex, _, _, metrics = evaluate_survival(
             model,
             train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,
         )
-        fold_results.append({"fold": fold, "cindex": fold_cindex, **metrics})
+        gap = train_cindex - val_cindex
+        print(
+            f"Fold {fold} | Train C-index: {train_cindex:.4f} | "
+            f"Val C-index: {val_cindex:.4f} | Gap: {gap:.4f}"
+        )
+        fold_results.append(
+            {
+                "fold": fold,
+                "cindex": val_cindex,
+                "train_cindex": train_cindex,
+                "val_cindex": val_cindex,
+                "gap": gap,
+                **metrics,
+            }
+        )
 
     df = pd.DataFrame(fold_results)
     mean_row = {"fold": "mean"}

@@ -11,7 +11,7 @@ SEED=42
 
 RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_wd${WEIGHT_DECAY}_seed${SEED}"
 
-mkdir -p "${BASE}/logs/pact_v4/pathology"
+mkdir -p "${BASE}/logs/pact_v5/pathology"
 
 CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python path_train.py \
   --ct_roi_size "${ROI_SIZE}" \
