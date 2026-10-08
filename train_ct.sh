@@ -3,17 +3,17 @@ BASE=/home/gly001/cqj/pa_ct_surv
 ROI_SIZE=64
 CT_MODEL=resnet18
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
-DROPOUT=0.5
+DROPOUT=0.0
 NUM_EPOCHS=30
 LR=1e-4
 BACKBONE_LR=1e-5
 WEIGHT_DECAY=5e-4
-BATCH_SIZE=16
-SEED=2024
+BATCH_SIZE=32
+SEED=42
 
 RUN_TAG="roi${ROI_SIZE}_${CT_MODEL}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_bs${BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_seed${SEED}"
 
-mkdir -p "${BASE}/logs/pact_v4/ct"
+mkdir -p "${BASE}/logs/pact_v5/ct"
 
 CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python ct_train.py \
   --ct_roi_size "${ROI_SIZE}" \
@@ -28,6 +28,6 @@ CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python ct_train.py
   --num_workers 8 \
   --patience 10 \
   --seed "${SEED}" \
-  --checkpoint_root "${BASE}/checkpoints/pact_v4/ct/${RUN_TAG}" \
-  --results_root "${BASE}/results/pact_v4/ct/${RUN_TAG}" \
-  > "${BASE}/logs/pact_v4/ct/${RUN_TAG}.log" 2>&1 &
+  --checkpoint_root "${BASE}/checkpoints/pact_v5/ct/${RUN_TAG}" \
+  --results_root "${BASE}/results/pact_v5/ct/${RUN_TAG}" \
+  > "${BASE}/logs/pact_v5/ct/${RUN_TAG}.log" 2>&1 &

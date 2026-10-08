@@ -1,12 +1,12 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
 ROI_SIZE=64
-PA_MODEL=gabmil
-DROPOUT=0.25
+PA_MODEL=abmil
+DROPOUT=0.0
 NUM_EPOCHS=30
 LR=1e-4
 WEIGHT_DECAY=5e-4
-COX_BATCH_SIZE=32
+COX_BATCH_SIZE=64
 SEED=42
 
 RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_wd${WEIGHT_DECAY}_seed${SEED}"
@@ -24,6 +24,6 @@ CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python path_train.
   --num_workers 8 \
   --patience 10 \
   --seed "${SEED}" \
-  --checkpoint_root "${BASE}/checkpoints/pact_v4/pathology/${RUN_TAG}" \
-  --results_root "${BASE}/results/pact_v4/pathology/${RUN_TAG}" \
-  > "${BASE}/logs/pact_v4/pathology/${RUN_TAG}.log" 2>&1 &
+  --checkpoint_root "${BASE}/checkpoints/pact_v5/pathology/${RUN_TAG}" \
+  --results_root "${BASE}/results/pact_v5/pathology/${RUN_TAG}" \
+  > "${BASE}/logs/pact_v5/pathology/${RUN_TAG}.log" 2>&1 &

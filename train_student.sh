@@ -3,8 +3,8 @@ BASE=/home/gly001/cqj/pa_ct_surv
 STUDENT_MODEL=resnet18
 STUDENT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 STUDENT_DROPOUT=0.5
-SEED=123
-TEACHER_TAG="roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed${SEED}"
+SEED=42
+TEACHER_TAG="roi64_abmil_resnet18_hrca-single_normnone_fusion_dropout0.5_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed${SEED}"
 TEACHER_CKPT_ROOT="${BASE}/checkpoints/pact_v4/pact/${TEACHER_TAG}"
 
 DISTILL_MODE=mse
