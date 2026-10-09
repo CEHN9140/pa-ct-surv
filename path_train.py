@@ -37,20 +37,50 @@ class PCAFeatureTransform:
         return (features - self.mean) @ self.components.t()
 
 
-def fit_patch_pca(dataset, indices, n_components, batch_size=4096):
-    """Fit IncrementalPCA using only the patients in one training fold."""
+def save_pca_transform(transform, path):
+    torch.save(
+        {
+            "mean": transform.mean,
+            "components": transform.components,
+            "n_components": int(transform.components.shape[0]),
+        },
+        path,
+    )
+
+
+def load_pca_transform(path):
+    try:
+        state = torch.load(path, map_location="cpu", weights_only=True)
+    except TypeError:
+        state = torch.load(path, map_location="cpu")
+    return PCAFeatureTransform(state["mean"], state["components"])
+
+
+def fit_patch_pca(
+    dataset,
+    indices,
+    n_components,
+    patches_per_patient=256,
+    batch_size=4096,
+    seed=42,
+):
+    """Fit IncrementalPCA on a fixed, patient-balanced training-patch sample."""
     if n_components <= 0:
         raise ValueError("pca_dim must be positive")
     pca = IncrementalPCA(n_components=n_components, batch_size=batch_size)
     buffer = []
     buffered_rows = 0
     total_rows = 0
+    rng = np.random.default_rng(seed)
     for index in indices:
         path = dataset.samples.iloc[int(index)]["pa_path"]
         feat = torch.load(path, map_location="cpu").float()
         if feat.ndim != 2:
             raise ValueError(f"Expected 2D patch features for PCA, got {tuple(feat.shape)}")
         array = feat.numpy()
+        if patches_per_patient is not None and patches_per_patient < len(array):
+            selected = rng.choice(len(array), size=patches_per_patient, replace=False)
+            array = array[np.sort(selected)]
         buffer.append(array)
         buffered_rows += array.shape[0]
         total_rows += array.shape[0]
@@ -60,14 +90,17 @@ def fit_patch_pca(dataset, indices, n_components, batch_size=4096):
             remainder = batch[batch_size:]
             buffer = [remainder] if len(remainder) else []
             buffered_rows = len(remainder)
+    fitted_rows = total_rows - buffered_rows
     if buffered_rows >= n_components:
-        pca.partial_fit(np.concatenate(buffer, axis=0))
+        final_batch = np.concatenate(buffer, axis=0)
+        pca.partial_fit(final_batch)
+        fitted_rows += len(final_batch)
     if not hasattr(pca, "components_"):
         raise ValueError(
             f"Not enough training patches ({total_rows}) to fit pca_dim={n_components}"
         )
     print(
-        f"Fitted PCA on {len(indices)} training patients and {total_rows} patches: "
+        f"Fitted PCA on {len(indices)} training patients and {fitted_rows} patches: "
         f"{pca.n_features_in_} -> {n_components}"
     )
     return PCAFeatureTransform(pca.mean_, pca.components_)
@@ -341,6 +374,12 @@ def parse_args():
         help="Optional PCA dimension for UNI patch features; fitted per training fold only.",
     )
     parser.add_argument(
+        "--pca_patches_per_patient",
+        type=int,
+        default=256,
+        help="Number of training patches sampled per patient for PCA fitting.",
+    )
+    parser.add_argument(
         "--pa_model",
         default="abmil",
         choices=[
@@ -376,6 +415,8 @@ def parse_args():
         default=1,
         help="Number of independent ABMIL attention branches.",
     )
+    parser.add_argument("--abmil_hidden_dim", type=int, default=512)
+    parser.add_argument("--abmil_attention_dim", type=int, default=128)
     parser.add_argument("--cox_batch_size", type=int, default=32)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
@@ -413,6 +454,16 @@ def main():
         raise ValueError("--pca_dim must be positive when provided")
     if args.pca_dim is not None and args.pca_dim >= 1024:
         raise ValueError("--pca_dim must be smaller than the original 1024 feature dimensions")
+    if args.pca_patches_per_patient <= 0:
+        raise ValueError("--pca_patches_per_patient must be positive")
+    if args.abmil_hidden_dim <= 0 or args.abmil_attention_dim <= 0:
+        raise ValueError("ABMIL hidden and attention dimensions must be positive")
+    if args.pca_dim is not None and args.pa_model not in {
+        "abmil",
+        "abmil-topk",
+        "abmil_randsample",
+    }:
+        raise ValueError("PCA is currently supported only by ABMIL models")
     if args.dropout > 0 and args.pa_model not in {
         "abmil",
         "abmil-topk",
@@ -431,6 +482,8 @@ def main():
         )
     k_tag = f"k{args.k}" if (is_topk or is_random_sample) else "all"
     pca_tag = f"-pca{args.pca_dim}" if args.pca_dim is not None else "-pca_none"
+    pca_tag += f"-ppp{args.pca_patches_per_patient}"
+    pca_tag += f"-hd{args.abmil_hidden_dim}-ad{args.abmil_attention_dim}"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
         f"-roi{args.ct_roi_size}{pca_tag}-attn{args.attention_branches}"
@@ -469,8 +522,9 @@ def main():
     model_kwargs = {
         "model_name": args.pa_model,
         "feature_dim": args.pca_dim if args.pca_dim is not None else 1024,
-        "lightweight_abmil": args.pca_dim is not None,
         "k": args.k if (is_topk or is_random_sample) else None,
+        "abmil_hidden_dim": args.abmil_hidden_dim,
+        "abmil_attention_dim": args.abmil_attention_dim,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
     }
@@ -482,10 +536,26 @@ def main():
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
         seed_everything(args.seed)
 
+        checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
+        metrics_dir = Path(args.results_root) / f"fold_{fold}"
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        metrics_dir.mkdir(parents=True, exist_ok=True)
         if args.pca_dim is not None:
-            dataset.set_pca_transform(
-                fit_patch_pca(dataset, train_idx, args.pca_dim)
-            )
+            pca_path = checkpoint_dir / "pca_transform.pt"
+            if args.eval_only:
+                if not pca_path.is_file():
+                    raise FileNotFoundError(f"PCA transform not found: {pca_path}")
+                pca_transform = load_pca_transform(pca_path)
+            else:
+                pca_transform = fit_patch_pca(
+                    dataset,
+                    train_idx,
+                    args.pca_dim,
+                    patches_per_patient=args.pca_patches_per_patient,
+                    seed=args.seed + fold,
+                )
+                save_pca_transform(pca_transform, pca_path)
+            dataset.set_pca_transform(pca_transform)
         else:
             dataset.set_pca_transform(None)
 
@@ -517,11 +587,6 @@ def main():
         optimizer = torch.optim.Adam(
             model.parameters(), lr=args.lr, weight_decay=args.weight_decay
         )
-        checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
-        checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        metrics_dir = Path(args.results_root) / f"fold_{fold}"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
-
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
             model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
