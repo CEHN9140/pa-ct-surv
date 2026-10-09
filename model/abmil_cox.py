@@ -47,6 +47,49 @@ class ABMIL(nn.Module):
         return out.squeeze(-1), pooled, weights
 
 
+class ABMIL_RandomSample(ABMIL):
+    """ABMIL that samples a random patch subset only while training.
+
+    Evaluation uses the complete patch bag so validation and downstream
+    interpretation remain deterministic and cover every available patch.
+    """
+
+    def __init__(
+        self,
+        in_dim=1024,
+        hidden_dim=512,
+        attention_dim=128,
+        k=None,
+        dropout=0.0,
+        attention_branches=1,
+    ):
+        if k is None or k <= 0:
+            raise ValueError("ABMIL_RandomSample requires a positive k")
+        super().__init__(
+            in_dim=in_dim,
+            hidden_dim=hidden_dim,
+            attention_dim=attention_dim,
+            dropout=dropout,
+            attention_branches=attention_branches,
+        )
+        self.k = int(k)
+
+    def forward(self, x):
+        if x.dim() == 2:
+            x = x.unsqueeze(0)
+        if self.training and x.size(1) > self.k:
+            # Independent sampling for each bag in a possible batched input.
+            random_scores = torch.rand(
+                x.size(0), x.size(1), device=x.device
+            )
+            indices = random_scores.topk(self.k, dim=1, sorted=False).indices
+            gather_indices = indices.unsqueeze(-1).expand(
+                -1, -1, x.size(-1)
+            )
+            x = torch.gather(x, dim=1, index=gather_indices)
+        return super().forward(x)
+
+
 class ABMIL_TopK(ABMIL):
     """ABMIL with attention pooling restricted to the top-k instances."""
 

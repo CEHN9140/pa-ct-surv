@@ -275,6 +275,7 @@ def parse_args():
         choices=[
             "abmil",
             "abmil-topk",
+            "abmil_randsample",
             "gabmil",
             "gabmil-topk",
             "meanpool",
@@ -285,7 +286,7 @@ def parse_args():
         "--k",
         type=int,
         default=None,
-        help="Top-k count; required only for *-topk models.",
+        help="Patch count k; required for *-topk and abmil_randsample models.",
     )
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
@@ -326,24 +327,34 @@ def main():
     if not label_file.is_file():
         raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
     is_topk = args.pa_model.endswith("-topk")
-    if is_topk and (args.k is None or args.k <= 0):
-        raise ValueError("--k must be a positive integer for *-topk models")
-    if not is_topk and args.k is not None:
-        raise ValueError("--k is only valid for *-topk models")
+    is_random_sample = args.pa_model == "abmil_randsample"
+    if (is_topk or is_random_sample) and (args.k is None or args.k <= 0):
+        raise ValueError(
+            "--k must be a positive integer for *-topk and abmil_randsample models"
+        )
+    if not is_topk and not is_random_sample and args.k is not None:
+        raise ValueError(
+            "--k is only valid for *-topk and abmil_randsample models"
+        )
     if not 0.0 <= args.dropout < 1.0:
         raise ValueError("--dropout must be in [0, 1)")
-    if args.dropout > 0 and args.pa_model not in {"abmil", "abmil-topk"}:
+    if args.dropout > 0 and args.pa_model not in {
+        "abmil",
+        "abmil-topk",
+        "abmil_randsample",
+    }:
         raise ValueError("--dropout is currently supported only by ABMIL models")
     if args.attention_branches <= 0:
         raise ValueError("--attention_branches must be positive")
     if args.attention_branches != 1 and args.pa_model not in {
         "abmil",
         "abmil-topk",
+        "abmil_randsample",
     }:
         raise ValueError(
             "--attention_branches is currently supported only by ABMIL models"
         )
-    k_tag = f"k{args.k}" if is_topk else "all"
+    k_tag = f"k{args.k}" if (is_topk or is_random_sample) else "all"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
         f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
@@ -381,7 +392,7 @@ def main():
     model_kwargs = {
         "model_name": args.pa_model,
         "feature_dim": 1024,
-        "k": args.k if is_topk else None,
+        "k": args.k if (is_topk or is_random_sample) else None,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
     }

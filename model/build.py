@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from model.abmil_cox import ABMIL, ABMIL_TopK
+from model.abmil_cox import ABMIL, ABMIL_RandomSample, ABMIL_TopK
 from model.fusion import (
     BilinearFusion,
     ConcatFusion,
@@ -30,7 +30,12 @@ class Pa_Model(nn.Module):
         super().__init__()
         self.model_name = model_name
 
-        if model_name.endswith("-topk"):
+        is_random_sample = model_name == "abmil_randsample"
+        if is_random_sample:
+            if k is None or k <= 0:
+                raise ValueError("abmil_randsample requires a positive k")
+            base_name = model_name
+        elif model_name.endswith("-topk"):
             base_name = model_name[:-5]
             if k is None or k <= 0:
                 raise ValueError(f"{model_name} requires a positive k")
@@ -52,6 +57,13 @@ class Pa_Model(nn.Module):
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
+        elif base_name == "abmil_randsample":
+            self.mil = ABMIL_RandomSample(
+                in_dim=feature_dim,
+                k=k,
+                dropout=abmil_dropout,
+                attention_branches=attention_branches,
+            )
         elif base_name == "gabmil":
             if k is None:
                 self.mil = GABMIL(in_dim=feature_dim)
