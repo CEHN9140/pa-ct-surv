@@ -121,10 +121,13 @@ def train_path(
 ):
     best_cindex = -np.inf
     best_state = None
+    best_epoch = None
+    last_epoch = 0
     cox_batch_size = getattr(args, "cox_batch_size", 64)
     wait = 0
 
     for epoch in range(1, args.num_epochs + 1):
+        last_epoch = epoch
         model.train()
         optimizer.zero_grad()
         losses, risks, times, events = [], [], [], []
@@ -250,6 +253,7 @@ def train_path(
 
         if val_cindex > best_cindex:
             best_cindex = val_cindex
+            best_epoch = epoch
             best_state = {k: v.clone() for k, v in model.state_dict().items()}
             torch.save(model.state_dict(), checkpoint_dir / "best_model.pth")
             wait = 0
@@ -259,6 +263,19 @@ def train_path(
             print(f"Early stopping at epoch {epoch}")
             break
 
+    # Save the parameters from the final completed epoch before restoring best.
+    torch.save(model.state_dict(), checkpoint_dir / "last_model.pth")
+    with open(checkpoint_dir / "checkpoint_metadata.yaml", "w") as f:
+        yaml.safe_dump(
+            {
+                "fold": int(fold),
+                "best_epoch": int(best_epoch),
+                "last_epoch": int(last_epoch),
+                "best_val_cindex": float(best_cindex),
+            },
+            f,
+            sort_keys=True,
+        )
     model.load_state_dict(best_state)
     print(f"Fold {fold} best C-index: {best_cindex:.4f}")
     return model

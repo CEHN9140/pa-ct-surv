@@ -136,6 +136,17 @@ def parse_args():
         ),
     )
     parser.add_argument(
+        "--checkpoint_name",
+        choices=("best_model.pth", "last_model.pth"),
+        default="best_model.pth",
+        help="Checkpoint file to intervene on.",
+    )
+    parser.add_argument(
+        "--entropy_match_checkpoint_root",
+        default=None,
+        help="Optional Best-checkpoint root used to choose T_match from the train-set entropy.",
+    )
+    parser.add_argument(
         "--results_root",
         default=(
             "/home/gly001/cqj/pa_ct_surv/results/pact_v5/diagnostics/pathology/"
@@ -160,13 +171,30 @@ def main():
     train_indices, _ = locked_split_indices(dataset.samples)
     fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
     checkpoint_root = Path(args.checkpoint_root)
-    missing = [fold for fold in range(5) if not (checkpoint_root / f"fold_{fold}" / "best_model.pth").is_file()]
+    missing = [
+        fold
+        for fold in range(5)
+        if not (checkpoint_root / f"fold_{fold}" / args.checkpoint_name).is_file()
+    ]
     if missing:
         raise FileNotFoundError(
-            "Missing best_model.pth for fold(s): "
+            f"Missing {args.checkpoint_name} for fold(s): "
             + ", ".join(map(str, missing))
             + f" under {checkpoint_root}"
         )
+    match_root = Path(args.entropy_match_checkpoint_root) if args.entropy_match_checkpoint_root else None
+    if match_root is not None:
+        missing_match = [
+            fold
+            for fold in range(5)
+            if not (match_root / f"fold_{fold}" / "best_model.pth").is_file()
+        ]
+        if missing_match:
+            raise FileNotFoundError(
+                "Missing best_model.pth for entropy matching fold(s): "
+                + ", ".join(map(str, missing_match))
+                + f" under {match_root}"
+            )
 
     results_root = Path(args.results_root)
     results_root.mkdir(parents=True, exist_ok=True)
@@ -177,7 +205,7 @@ def main():
     for fold in folds_to_run:
         train_idx, val_idx = fold_splits[fold]
         model = Pa_Model(model_name="abmil", feature_dim=1024).to(device)
-        _load_state_dict(model, checkpoint_root / f"fold_{fold}" / "best_model.pth")
+        _load_state_dict(model, checkpoint_root / f"fold_{fold}" / args.checkpoint_name)
         model.eval()
         train_loader = DataLoader(Subset(dataset, train_idx), batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True)
         val_loader = DataLoader(Subset(dataset, val_idx), batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True)
@@ -193,6 +221,54 @@ def main():
         if not torch.allclose(native, intervention, atol=1e-6, rtol=1e-5):
             raise RuntimeError(f"T=1 consistency check failed in fold {fold}")
         baseline_checked = True
+        matched_temperature = None
+        if match_root is not None and args.checkpoint_name == "last_model.pth":
+            late_entropy = {
+                temperature: float(
+                    train_results[temperature][2]["attention_entropy_norm"].mean()
+                )
+                for temperature in temperatures
+            }
+            _load_state_dict(model, match_root / f"fold_{fold}" / "best_model.pth")
+            best_train = evaluate_split(model, train_loader, device, (1.0,), "train")[1.0]
+            best_entropy = float(best_train[2]["attention_entropy_norm"].mean())
+            matched_temperature = min(
+                late_entropy,
+                key=lambda temperature: abs(late_entropy[temperature] - best_entropy),
+            )
+            _load_state_dict(model, checkpoint_root / f"fold_{fold}" / args.checkpoint_name)
+            match_c, match_pred, match_attention = train_results[matched_temperature]
+            match_val_c, match_val_pred, match_val_attention = val_results[matched_temperature]
+            for split, pred, attention, cindex in (
+                ("train", match_pred, match_attention, match_c),
+                ("val", match_val_pred, match_val_attention, match_val_c),
+            ):
+                pred_dir = results_root / f"fold_{fold}" / "T_match"
+                pred_dir.mkdir(parents=True, exist_ok=True)
+                pred.to_csv(pred_dir / f"{split}_predictions.csv", index=False)
+                attention.to_csv(pred_dir / f"{split}_attention_stats.csv", index=False)
+                metric_rows.append({
+                    "fold": fold,
+                    "temperature": matched_temperature,
+                    "temperature_label": "T_match",
+                    "split": split,
+                    "cindex": cindex,
+                    "risk_spearman_vs_T1": np.nan,
+                    "attention_entropy_norm_mean": float(attention["attention_entropy_norm"].mean()),
+                    "effective_patch_ratio_mean": float(attention["effective_patch_ratio"].mean()),
+                    "max_attention_mean": float(attention["max_attention"].mean()),
+                    "best_train_entropy_target": best_entropy,
+                })
+            summary_rows.append({
+                "fold": fold,
+                "temperature": matched_temperature,
+                "temperature_label": "T_match",
+                "train_cindex": match_c,
+                "val_cindex": match_val_c,
+                "gap": match_c - match_val_c,
+                "t1_consistency_checked": baseline_checked,
+                "best_train_entropy_target": best_entropy,
+            })
         for temperature in temperatures:
             train_c, train_pred, train_attention = train_results[temperature]
             val_c, val_pred, val_attention = val_results[temperature]
@@ -213,12 +289,13 @@ def main():
                         risk_corr = float(spearmanr(joined.iloc[:, 0], joined.iloc[:, 1]).statistic)
                 metric_rows.append({
                     "fold": fold, "temperature": temperature, "split": split,
+                    "temperature_label": f"T={temperature:g}",
                     "cindex": cindex, "risk_spearman_vs_T1": risk_corr,
                     "attention_entropy_norm_mean": float(attention["attention_entropy_norm"].mean()),
                     "effective_patch_ratio_mean": float(attention["effective_patch_ratio"].mean()),
                     "max_attention_mean": float(attention["max_attention"].mean()),
                 })
-            summary_rows.append({"fold": fold, "temperature": temperature, "train_cindex": train_c, "val_cindex": val_c, "gap": train_c - val_c, "t1_consistency_checked": baseline_checked})
+            summary_rows.append({"fold": fold, "temperature": temperature, "temperature_label": f"T={temperature:g}", "train_cindex": train_c, "val_cindex": val_c, "gap": train_c - val_c, "t1_consistency_checked": baseline_checked})
 
     metrics = pd.DataFrame(metric_rows)
     summary = pd.DataFrame(summary_rows)
