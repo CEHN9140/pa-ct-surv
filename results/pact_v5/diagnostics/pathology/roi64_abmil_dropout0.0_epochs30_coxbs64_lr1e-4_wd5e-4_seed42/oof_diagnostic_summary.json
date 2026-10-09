@@ -1,0 +1,96 @@
+{
+  "source_label_file": "data/seed_42/all_label_roi64.csv",
+  "prediction_root": "results/pact_v5/pathology/roi64_abmil_dropout0.0_epochs30_coxbs64_lr1e-4_wd5e-4_seed42",
+  "n_total": 703,
+  "n_development": 562,
+  "n_locked_test": 141,
+  "split_counts": {
+    "-1": 141,
+    "0": 113,
+    "1": 113,
+    "2": 112,
+    "3": 112,
+    "4": 112
+  },
+  "event_counts_by_split": {
+    "-1": {
+      "0": 93,
+      "1": 48
+    },
+    "0": {
+      "0": 75,
+      "1": 38
+    },
+    "1": {
+      "0": 74,
+      "1": 39
+    },
+    "2": {
+      "0": 74,
+      "1": 38
+    },
+    "3": {
+      "0": 74,
+      "1": 38
+    },
+    "4": {
+      "0": 74,
+      "1": 38
+    }
+  },
+  "source_integrity": {
+    "duplicate_pa_id": 0,
+    "duplicate_ct_id": 0,
+    "invalid_event": 0,
+    "nonpositive_time": 0,
+    "missing_pa_path": 0,
+    "missing_ct_path": 0,
+    "raw_he_time_match_atol_1e-8": 0,
+    "raw_he_event_mismatch": 0
+  },
+  "oof_coverage": {
+    "oof_rows": 562,
+    "oof_unique_pa_id": 562,
+    "dev_rows": 562,
+    "oof_missing_in_labels": 0,
+    "dev_missing_oof": 0,
+    "test_predictions_present": 0,
+    "duplicate_oof_pa_id": 0
+  },
+  "oof_label_match": {
+    "event_mismatch": 0,
+    "time_mismatch": 0,
+    "fold_mismatch": 0
+  },
+  "oof_cindex": 0.7228815680282413,
+  "bootstrap_seed": 42,
+  "bootstrap_n_requested": 2000,
+  "bootstrap_n_valid": 2000,
+  "bootstrap_ci95": [
+    0.6872773207008553,
+    0.7596741833617803
+  ],
+  "available_columns_for_clinical_stratification": [
+    "pa_id",
+    "pa_path",
+    "h5_path",
+    "ct_id",
+    "ct_path",
+    "event",
+    "time",
+    "split",
+    "n_patches"
+  ],
+  "clinical_stratification_status": "Unavailable: current all_label_roi64.csv contains no stage, tumor_size, or histology columns.",
+  "raw_he_source_audit": {
+    "source_file": "/home/gly001/cqj/data/dz/HE预后.xlsx",
+    "raw_rows": 994,
+    "cohort_rows": 703,
+    "matched_pa_ct_pairs": 703,
+    "missing_raw_match": 0,
+    "time_mismatch_atol_1e-8": 0,
+    "event_mismatch": 0,
+    "raw_duplicate_pa_ct_pairs": 0,
+    "cohort_duplicate_pa_ct_pairs": 0
+  }
+}
