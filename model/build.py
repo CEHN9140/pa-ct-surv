@@ -26,9 +26,12 @@ class Pa_Model(nn.Module):
         k=None,
         abmil_dropout=0.0,
         attention_branches=1,
+        lightweight_abmil=False,
     ):
         super().__init__()
         self.model_name = model_name
+        hidden_dim = 128 if lightweight_abmil else 512
+        attention_dim = 32 if lightweight_abmil else 128
 
         is_random_sample = model_name == "abmil_randsample"
         if is_random_sample:
@@ -47,6 +50,8 @@ class Pa_Model(nn.Module):
             if k is None:
                 self.mil = ABMIL(
                     in_dim=feature_dim,
+                    hidden_dim=hidden_dim,
+                    attention_dim=attention_dim,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -54,6 +59,8 @@ class Pa_Model(nn.Module):
                 self.mil = ABMIL_TopK(
                     in_dim=feature_dim,
                     k=k,
+                    hidden_dim=hidden_dim,
+                    attention_dim=attention_dim,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -61,6 +68,8 @@ class Pa_Model(nn.Module):
             self.mil = ABMIL_RandomSample(
                 in_dim=feature_dim,
                 k=k,
+                hidden_dim=hidden_dim,
+                attention_dim=attention_dim,
                 dropout=abmil_dropout,
                 attention_branches=attention_branches,
             )

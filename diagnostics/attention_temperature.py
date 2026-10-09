@@ -26,6 +26,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from dataset import Path_Dataset
 from final_utils import cv_fold_indices, locked_split_indices
 from model.build import Pa_Model
+from path_train import fit_patch_pca
 
 
 DEFAULT_TEMPERATURES = (0.5, 1.0, 1.5, 2.0, 4.0)
@@ -129,6 +130,12 @@ def parse_args():
     parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--roi_size", type=int, default=64)
     parser.add_argument(
+        "--pca_dim",
+        type=int,
+        default=None,
+        help="PCA dimension used by the checkpoint; fit separately per training fold.",
+    )
+    parser.add_argument(
         "--checkpoint_root",
         default=(
             "/home/gly001/cqj/pa_ct_surv/checkpoints/pact_v5/pathology/"
@@ -166,6 +173,8 @@ def main():
     temperatures = tuple(args.temperatures)
     if any(t <= 0 for t in temperatures):
         raise ValueError("all temperatures must be positive")
+    if args.pca_dim is not None and not 0 < args.pca_dim < 1024:
+        raise ValueError("pca_dim must be between 1 and 1023")
 
     dataset = Path_Dataset(args.data_dir, roi_size=args.roi_size)
     train_indices, _ = locked_split_indices(dataset.samples)
@@ -204,7 +213,15 @@ def main():
         raise ValueError("--fold must be in [0, 4]")
     for fold in folds_to_run:
         train_idx, val_idx = fold_splits[fold]
-        model = Pa_Model(model_name="abmil", feature_dim=1024).to(device)
+        if args.pca_dim is not None:
+            dataset.set_pca_transform(fit_patch_pca(dataset, train_idx, args.pca_dim))
+        else:
+            dataset.set_pca_transform(None)
+        model = Pa_Model(
+            model_name="abmil",
+            feature_dim=args.pca_dim if args.pca_dim is not None else 1024,
+            lightweight_abmil=args.pca_dim is not None,
+        ).to(device)
         _load_state_dict(model, checkpoint_root / f"fold_{fold}" / args.checkpoint_name)
         model.eval()
         train_loader = DataLoader(Subset(dataset, train_idx), batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True)

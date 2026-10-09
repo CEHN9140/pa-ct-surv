@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import yaml
 from sksurv.metrics import concordance_index_censored
 from torch.utils.data import DataLoader, Subset
+from sklearn.decomposition import IncrementalPCA
 
 from cox_utils import (
     cox_loss,
@@ -23,6 +24,53 @@ from final_utils import (
 from model.build import Pa_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+class PCAFeatureTransform:
+    """Fixed PCA projection fitted on training-fold patch features only."""
+
+    def __init__(self, mean, components):
+        self.mean = torch.as_tensor(mean, dtype=torch.float32)
+        self.components = torch.as_tensor(components, dtype=torch.float32)
+
+    def __call__(self, features):
+        return (features - self.mean) @ self.components.t()
+
+
+def fit_patch_pca(dataset, indices, n_components, batch_size=4096):
+    """Fit IncrementalPCA using only the patients in one training fold."""
+    if n_components <= 0:
+        raise ValueError("pca_dim must be positive")
+    pca = IncrementalPCA(n_components=n_components, batch_size=batch_size)
+    buffer = []
+    buffered_rows = 0
+    total_rows = 0
+    for index in indices:
+        path = dataset.samples.iloc[int(index)]["pa_path"]
+        feat = torch.load(path, map_location="cpu").float()
+        if feat.ndim != 2:
+            raise ValueError(f"Expected 2D patch features for PCA, got {tuple(feat.shape)}")
+        array = feat.numpy()
+        buffer.append(array)
+        buffered_rows += array.shape[0]
+        total_rows += array.shape[0]
+        while buffered_rows >= batch_size:
+            batch = np.concatenate(buffer, axis=0)
+            pca.partial_fit(batch[:batch_size])
+            remainder = batch[batch_size:]
+            buffer = [remainder] if len(remainder) else []
+            buffered_rows = len(remainder)
+    if buffered_rows >= n_components:
+        pca.partial_fit(np.concatenate(buffer, axis=0))
+    if not hasattr(pca, "components_"):
+        raise ValueError(
+            f"Not enough training patches ({total_rows}) to fit pca_dim={n_components}"
+        )
+    print(
+        f"Fitted PCA on {len(indices)} training patients and {total_rows} patches: "
+        f"{pca.n_features_in_} -> {n_components}"
+    )
+    return PCAFeatureTransform(pca.mean_, pca.components_)
 
 
 def attention_statistics(weights):
@@ -287,6 +335,12 @@ def parse_args():
     )
     parser.add_argument("--ct_roi_size", type=int, default=96)
     parser.add_argument(
+        "--pca_dim",
+        type=int,
+        default=None,
+        help="Optional PCA dimension for UNI patch features; fitted per training fold only.",
+    )
+    parser.add_argument(
         "--pa_model",
         default="abmil",
         choices=[
@@ -355,6 +409,10 @@ def main():
         )
     if not 0.0 <= args.dropout < 1.0:
         raise ValueError("--dropout must be in [0, 1)")
+    if args.pca_dim is not None and args.pca_dim <= 0:
+        raise ValueError("--pca_dim must be positive when provided")
+    if args.pca_dim is not None and args.pca_dim >= 1024:
+        raise ValueError("--pca_dim must be smaller than the original 1024 feature dimensions")
     if args.dropout > 0 and args.pa_model not in {
         "abmil",
         "abmil-topk",
@@ -372,9 +430,10 @@ def main():
             "--attention_branches is currently supported only by ABMIL models"
         )
     k_tag = f"k{args.k}" if (is_topk or is_random_sample) else "all"
+    pca_tag = f"-pca{args.pca_dim}" if args.pca_dim is not None else "-pca_none"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
-        f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
+        f"-roi{args.ct_roi_size}{pca_tag}-attn{args.attention_branches}"
         f"-seed{args.seed}"
     )
     if args.checkpoint_root is None:
@@ -389,6 +448,7 @@ def main():
     print(f"Using Device: {DEVICE}")
     msg = f"PA model: {args.pa_model} | k: {args.k}"
     msg += " | Cox PH loss"
+    msg += f" | PCA dim: {args.pca_dim if args.pca_dim is not None else 'disabled'}"
     msg += f" | ABMIL dropout: {args.dropout}"
     msg += f" | attention_branches: {args.attention_branches}"
     print(msg)
@@ -408,7 +468,8 @@ def main():
 
     model_kwargs = {
         "model_name": args.pa_model,
-        "feature_dim": 1024,
+        "feature_dim": args.pca_dim if args.pca_dim is not None else 1024,
+        "lightweight_abmil": args.pca_dim is not None,
         "k": args.k if (is_topk or is_random_sample) else None,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
@@ -420,6 +481,13 @@ def main():
     for fold, (train_idx, val_idx) in enumerate(fold_splits):
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
         seed_everything(args.seed)
+
+        if args.pca_dim is not None:
+            dataset.set_pca_transform(
+                fit_patch_pca(dataset, train_idx, args.pca_dim)
+            )
+        else:
+            dataset.set_pca_transform(None)
 
         train_loader = DataLoader(
             Subset(dataset, train_idx),
