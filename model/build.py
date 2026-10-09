@@ -24,8 +24,6 @@ class Pa_Model(nn.Module):
         model_name="abmil",
         feature_dim=1024,
         k=None,
-        abmil_hidden_dim=512,
-        abmil_attention_dim=128,
         abmil_dropout=0.0,
         attention_branches=1,
     ):
@@ -49,8 +47,6 @@ class Pa_Model(nn.Module):
             if k is None:
                 self.mil = ABMIL(
                     in_dim=feature_dim,
-                    hidden_dim=abmil_hidden_dim,
-                    attention_dim=abmil_attention_dim,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -58,8 +54,6 @@ class Pa_Model(nn.Module):
                 self.mil = ABMIL_TopK(
                     in_dim=feature_dim,
                     k=k,
-                    hidden_dim=abmil_hidden_dim,
-                    attention_dim=abmil_attention_dim,
                     dropout=abmil_dropout,
                     attention_branches=attention_branches,
                 )
@@ -67,8 +61,6 @@ class Pa_Model(nn.Module):
             self.mil = ABMIL_RandomSample(
                 in_dim=feature_dim,
                 k=k,
-                hidden_dim=abmil_hidden_dim,
-                attention_dim=abmil_attention_dim,
                 dropout=abmil_dropout,
                 attention_branches=attention_branches,
             )

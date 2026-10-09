@@ -300,18 +300,6 @@ def parse_args():
         help="Dropout after the ABMIL projector ReLU; default 0 disables it.",
     )
     parser.add_argument(
-        "--abmil_hidden_dim",
-        type=int,
-        default=512,
-        help="ABMIL projector hidden dimension.",
-    )
-    parser.add_argument(
-        "--abmil_attention_dim",
-        type=int,
-        default=128,
-        help="ABMIL attention MLP dimension.",
-    )
-    parser.add_argument(
         "--attention_branches",
         type=int,
         default=1,
@@ -350,10 +338,6 @@ def main():
         )
     if not 0.0 <= args.dropout < 1.0:
         raise ValueError("--dropout must be in [0, 1)")
-    if args.abmil_hidden_dim <= 0:
-        raise ValueError("--abmil_hidden_dim must be positive")
-    if args.abmil_attention_dim <= 0:
-        raise ValueError("--abmil_attention_dim must be positive")
     if args.dropout > 0 and args.pa_model not in {
         "abmil",
         "abmil-topk",
@@ -373,8 +357,7 @@ def main():
     k_tag = f"k{args.k}" if (is_topk or is_random_sample) else "all"
     default_suffix = (
         f"path-{args.pa_model}-{k_tag}_cox"
-        f"-roi{args.ct_roi_size}-hd{args.abmil_hidden_dim}"
-        f"-ad{args.abmil_attention_dim}-attn{args.attention_branches}"
+        f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
         f"-seed{args.seed}"
     )
     if args.checkpoint_root is None:
@@ -390,8 +373,6 @@ def main():
     msg = f"PA model: {args.pa_model} | k: {args.k}"
     msg += " | Cox PH loss"
     msg += f" | ABMIL dropout: {args.dropout}"
-    msg += f" | ABMIL hidden_dim: {args.abmil_hidden_dim}"
-    msg += f" | ABMIL attention_dim: {args.abmil_attention_dim}"
     msg += f" | attention_branches: {args.attention_branches}"
     print(msg)
     print(f"Checkpoints: {args.checkpoint_root}")
@@ -412,8 +393,6 @@ def main():
         "model_name": args.pa_model,
         "feature_dim": 1024,
         "k": args.k if (is_topk or is_random_sample) else None,
-        "abmil_hidden_dim": args.abmil_hidden_dim,
-        "abmil_attention_dim": args.abmil_attention_dim,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
     }
