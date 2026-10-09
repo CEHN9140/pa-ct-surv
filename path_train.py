@@ -196,7 +196,7 @@ def train_path(
         )
         val_cindex = float(val_cindex)
 
-        if args.pa_model == "abmil":
+        if args.pa_model in {"abmil", "abmil_randsample"}:
             attention_df = pd.concat(
                 [
                     collect_attention_stats(
@@ -419,7 +419,7 @@ def main():
             pin_memory=True,
         )
         train_stats_loader = None
-        if args.pa_model == "abmil":
+        if args.pa_model in {"abmil", "abmil_randsample"}:
             train_stats_loader = DataLoader(
                 Subset(dataset, train_idx),
                 batch_size=1,

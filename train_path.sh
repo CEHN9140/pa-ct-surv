@@ -1,21 +1,23 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
 ROI_SIZE=64
-PA_MODEL=abmil
+PA_MODEL=abmil_randsample
+K=4096
 DROPOUT=0.0
 NUM_EPOCHS=30
 LR=1e-4
 WEIGHT_DECAY=5e-4
 COX_BATCH_SIZE=64
-SEED=2024
+SEED=42
 
-RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_wd${WEIGHT_DECAY}_seed${SEED}"
+RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_k${K}_dropout${DROPOUT}_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_wd${WEIGHT_DECAY}_seed${SEED}"
  
 mkdir -p "${BASE}/logs/pact_v5/pathology"
 
 CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python path_train.py \
   --ct_roi_size "${ROI_SIZE}" \
   --pa_model "${PA_MODEL}" \
+  --k "${K}" \
   --dropout "${DROPOUT}" \
   --num_epochs "${NUM_EPOCHS}" \
   --lr "${LR}" \
