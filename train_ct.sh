@@ -1,12 +1,12 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
-ROI_SIZE=128
+ROI_SIZE=64
 CT_MODEL=resnet18
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 DROPOUT=0.0
 NUM_EPOCHS=30
 LR=1e-4
-BACKBONE_LR=1e-5
+BACKBONE_LR=0
 WEIGHT_DECAY=5e-4
 BATCH_SIZE=32
 SEED=42
@@ -23,6 +23,7 @@ CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python ct_train.py
   --num_epochs "${NUM_EPOCHS}" \
   --lr "${LR}" \
   --ct_backbone_lr "${BACKBONE_LR}" \
+  --freeze_backbone \
   --weight_decay "${WEIGHT_DECAY}" \
   --batch_size "${BATCH_SIZE}" \
   --num_workers 8 \

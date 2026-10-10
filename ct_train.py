@@ -183,8 +183,11 @@ def main():
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
     # print(f"Model: {args.ct_model} | Augment: {args.ct_augment}")
     print(f"Model: {args.ct_model} | CT augmentation: disabled")
+    effective_backbone_lr = (
+        args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
+    )
     print(
-        f"LR: {args.lr:g} | Backbone LR: {args.ct_backbone_lr or args.lr:g} | Loss: Cox PH"
+        f"LR: {args.lr:g} | Backbone LR: {effective_backbone_lr:g} | Loss: Cox PH"
     )
     if args.ct_pretrained_path:
         print(f"Pretrained: {args.ct_pretrained_path}")
