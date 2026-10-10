@@ -1,6 +1,6 @@
 BASE=/home/gly001/cqj/pa_ct_surv
 
-ROI_SIZE=64
+ROI_SIZE=128
 CT_MODEL=resnet18
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 DROPOUT=0.0

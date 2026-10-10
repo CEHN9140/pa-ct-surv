@@ -94,11 +94,6 @@ class Path_Dataset(Dataset):
             )
         if len(self.samples) == 0:
             raise ValueError("No valid pathology samples found")
-        self.pca_transform = None
-
-    def set_pca_transform(self, transform):
-        """Set a fitted patch-feature transform for the current CV fold."""
-        self.pca_transform = transform
 
     def __len__(self):
         return len(self.samples)
@@ -106,8 +101,6 @@ class Path_Dataset(Dataset):
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
         feat = torch.load(row["pa_path"], map_location="cpu").float()
-        if self.pca_transform is not None:
-            feat = self.pca_transform(feat)
         label = torch.tensor(row["event"], dtype=torch.long)
         time = torch.tensor(row["time"], dtype=torch.float32)
         return feat, label, time, row["pa_id"]

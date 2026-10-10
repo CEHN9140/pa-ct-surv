@@ -26,7 +26,6 @@ if str(PROJECT_ROOT) not in sys.path:
 from dataset import Path_Dataset
 from final_utils import cv_fold_indices, locked_split_indices
 from model.build import Pa_Model
-from path_train import load_pca_transform
 
 
 DEFAULT_TEMPERATURES = (0.5, 1.0, 1.5, 2.0, 4.0)
@@ -130,14 +129,6 @@ def parse_args():
     parser.add_argument("--data_dir", default="/home/gly001/cqj/pa_ct_surv/data/seed_42")
     parser.add_argument("--roi_size", type=int, default=64)
     parser.add_argument(
-        "--pca_dim",
-        type=int,
-        default=None,
-        help="PCA dimension used by the checkpoint; fit separately per training fold.",
-    )
-    parser.add_argument("--abmil_hidden_dim", type=int, default=512)
-    parser.add_argument("--abmil_attention_dim", type=int, default=128)
-    parser.add_argument(
         "--checkpoint_root",
         default=(
             "/home/gly001/cqj/pa_ct_surv/checkpoints/pact_v5/pathology/"
@@ -175,8 +166,6 @@ def main():
     temperatures = tuple(args.temperatures)
     if any(t <= 0 for t in temperatures):
         raise ValueError("all temperatures must be positive")
-    if args.pca_dim is not None and not 0 < args.pca_dim < 1024:
-        raise ValueError("pca_dim must be between 1 and 1023")
 
     dataset = Path_Dataset(args.data_dir, roi_size=args.roi_size)
     train_indices, _ = locked_split_indices(dataset.samples)
@@ -215,20 +204,8 @@ def main():
         raise ValueError("--fold must be in [0, 4]")
     for fold in folds_to_run:
         train_idx, val_idx = fold_splits[fold]
-        if args.pca_dim is not None:
-            late_pca_path = checkpoint_root / f"fold_{fold}" / "pca_transform.pt"
-            if not late_pca_path.is_file():
-                raise FileNotFoundError(f"PCA transform not found: {late_pca_path}")
-            late_pca_transform = load_pca_transform(late_pca_path)
-            dataset.set_pca_transform(late_pca_transform)
-        else:
-            late_pca_transform = None
-            dataset.set_pca_transform(None)
         model = Pa_Model(
             model_name="abmil",
-            feature_dim=args.pca_dim if args.pca_dim is not None else 1024,
-            abmil_hidden_dim=args.abmil_hidden_dim,
-            abmil_attention_dim=args.abmil_attention_dim,
         ).to(device)
         _load_state_dict(model, checkpoint_root / f"fold_{fold}" / args.checkpoint_name)
         model.eval()
@@ -255,11 +232,6 @@ def main():
                 for temperature in temperatures
             }
             _load_state_dict(model, match_root / f"fold_{fold}" / "best_model.pth")
-            if args.pca_dim is not None:
-                best_pca_path = match_root / f"fold_{fold}" / "pca_transform.pt"
-                if not best_pca_path.is_file():
-                    raise FileNotFoundError(f"PCA transform not found: {best_pca_path}")
-                dataset.set_pca_transform(load_pca_transform(best_pca_path))
             best_train = evaluate_split(model, train_loader, device, (1.0,), "train")[1.0]
             best_entropy = float(best_train[2]["attention_entropy_norm"].mean())
             matched_temperature = min(
@@ -267,7 +239,6 @@ def main():
                 key=lambda temperature: abs(late_entropy[temperature] - best_entropy),
             )
             _load_state_dict(model, checkpoint_root / f"fold_{fold}" / args.checkpoint_name)
-            dataset.set_pca_transform(late_pca_transform)
             match_c, match_pred, match_attention = train_results[matched_temperature]
             match_val_c, match_val_pred, match_val_attention = val_results[matched_temperature]
             for split, pred, attention, cindex in (
