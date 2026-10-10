@@ -112,7 +112,11 @@ class ResNetCox(nn.Module):
 
         self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
         self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(512 * BasicBlock3D.expansion, 1)
+        self.fc = nn.Sequential(
+            nn.Linear(512 * BasicBlock3D.expansion, 128),
+            nn.ReLU(inplace=True),
+            nn.Linear(128, 1),
+        )
 
         # init weights (only for layers not covered by pretrained)
         for m in self.modules():
@@ -153,9 +157,8 @@ class ResNetCox(nn.Module):
             new_key = k.replace("module.", "") if k.startswith("module.") else k
             new_state[new_key] = v
         missing, unexpected = self.load_state_dict(new_state, strict=False)
-        allowed_missing = {"fc.weight", "fc.bias"}
         incompatible_missing = [
-            key for key in missing if key not in allowed_missing
+            key for key in missing if not key.startswith("fc.")
         ]
         if incompatible_missing:
             raise RuntimeError(
@@ -174,7 +177,7 @@ class ResNetCox(nn.Module):
 
     @property
     def feature_dim(self):
-        return self.fc.in_features
+        return self.fc[0].in_features
 
     def _make_layer(self, block, planes, blocks, stride=1, dilation=1):
         downsample = None
