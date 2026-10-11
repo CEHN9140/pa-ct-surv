@@ -348,3 +348,35 @@ Epoch 24/30 | Train Loss: 5.6399 (Fused: 2.0712) | Train C-index: 0.9181 | Val F
 Feature stats | CT: mean=1.0628, std=1.0796, mean_l2=34.0065, median_l2=33.5410, mean_abs=1.0628, max_abs=6.9119 | PA: mean=0.7892, std=0.4963, mean_l2=20.9855, median_l2=21.2872, mean_abs=0.7892, max_abs=3.2886
 Epoch 25/30 | Train Loss: 5.6224 (Fused: 2.0142) | Train C-index: 0.9250 | Val Fused: 0.6951 | Val CT: 0.6491 | Val PA: 0.6810 | Alpha CT: 0.4943 | Alpha PA: 0.5057
 Feature stats | CT: mean=1.0715, std=1.0949, mean_l2=34.3372, median_l2=33.9900, mean_abs=1.0715, max_abs=7.0541 | PA: mean=0.7955, std=0.5019, mean_l2=21.1692, median_l2=21.4544, mean_abs=0.7955, max_abs=3.3524
+Epoch 26/30 | Train Loss: 5.4427 (Fused: 1.9465) | Train C-index: 0.9315 | Val Fused: 0.6931 | Val CT: 0.6471 | Val PA: 0.6800 | Alpha CT: 0.4941 | Alpha PA: 0.5059
+Feature stats | CT: mean=1.0551, std=1.0640, mean_l2=33.6639, median_l2=33.4565, mean_abs=1.0551, max_abs=6.8650 | PA: mean=0.8051, std=0.5124, mean_l2=21.4716, median_l2=21.7538, mean_abs=0.8051, max_abs=3.3824
+Epoch 27/30 | Train Loss: 5.3769 (Fused: 1.8663) | Train C-index: 0.9401 | Val Fused: 0.6756 | Val CT: 0.6447 | Val PA: 0.6662 | Alpha CT: 0.4938 | Alpha PA: 0.5062
+Feature stats | CT: mean=0.9632, std=0.9684, mean_l2=30.5889, median_l2=29.6841, mean_abs=0.9632, max_abs=6.4154 | PA: mean=0.8126, std=0.5221, mean_l2=21.7144, median_l2=21.9989, mean_abs=0.8126, max_abs=3.4571
+Epoch 28/30 | Train Loss: 5.2502 (Fused: 1.7971) | Train C-index: 0.9451 | Val Fused: 0.6840 | Val CT: 0.6430 | Val PA: 0.6703 | Alpha CT: 0.4935 | Alpha PA: 0.5065
+Feature stats | CT: mean=0.9692, std=0.9592, mean_l2=30.6644, median_l2=30.3106, mean_abs=0.9692, max_abs=6.4143 | PA: mean=0.8206, std=0.5326, mean_l2=21.9795, median_l2=22.2271, mean_abs=0.8206, max_abs=3.5291
+Epoch 29/30 | Train Loss: 5.1883 (Fused: 1.7429) | Train C-index: 0.9509 | Val Fused: 0.6817 | Val CT: 0.6329 | Val PA: 0.6655 | Alpha CT: 0.4933 | Alpha PA: 0.5067
+Feature stats | CT: mean=1.0740, std=1.1005, mean_l2=34.4308, median_l2=33.8144, mean_abs=1.0740, max_abs=7.1779 | PA: mean=0.8318, std=0.5437, mean_l2=22.3263, median_l2=22.5251, mean_abs=0.8318, max_abs=3.5756
+Epoch 30/30 | Train Loss: 5.0111 (Fused: 1.6223) | Train C-index: 0.9581 | Val Fused: 0.6763 | Val CT: 0.6363 | Val PA: 0.6622 | Alpha CT: 0.4930 | Alpha PA: 0.5070
+Feature stats | CT: mean=1.1104, std=1.1422, mean_l2=35.7271, median_l2=35.4325, mean_abs=1.1104, max_abs=7.3948 | PA: mean=0.8468, std=0.5672, mean_l2=22.8891, median_l2=23.1116, mean_abs=0.8468, max_abs=3.6646
+Fold 4 best fusion alpha | CT: 0.4951 | PA: 0.5049
+Fold 4 best C-index: 0.7008
+
+Extra survival metrics:
+cutoff_from_train_median: 0.190184
+n_test: 112
+n_high_risk: 70
+n_low_risk: 42
+n_event_test: 38
+logrank_stat: 6.907572
+logrank_p: 0.008583
+auc_36m: 0.789637
+auc_60m: 0.683547
+HR_high_vs_low: 2.738921
+HR_95CI_lower: 1.252117
+HR_95CI_upper: 5.991206
+cox_p: 0.011637
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index: 0.7492 +/- 0.0359
