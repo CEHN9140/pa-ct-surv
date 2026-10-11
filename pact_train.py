@@ -263,7 +263,8 @@ def parse_args():
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     # parser.add_argument("--ct_augment", action="store_true")
-    parser.add_argument("--fusion_dropout", type=float, default=0.3)
+    # Fusion dropout is intentionally disabled for the current experiment.
+    # parser.add_argument("--fusion_dropout", type=float, default=0.3)
     parser.add_argument("--norm", choices=["none", "layernorm"], default="none")
     parser.add_argument("--fusion_type", default="concat",
                         choices=[
@@ -297,8 +298,8 @@ def main():
     label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
     if not label_file.is_file():
         raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
-    if not 0.0 <= args.fusion_dropout < 1.0:
-        raise ValueError("--fusion_dropout must be in [0, 1)")
+    # Keep the old setting documented while running the no-dropout ablation.
+    args.fusion_dropout = 0.0
     args.effective_ct_backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
 
     # aug_tag = "_aug" if args.ct_augment else "_noaug"
@@ -310,7 +311,7 @@ def main():
         raise ValueError("--k is only valid for *-topk PA models")
     k_tag = f"-k{args.k}" if is_topk else ""
     # default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}{aug_tag}{pretrain_tag}-{args.fusion_type}"
-    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-fusion_dropout{args.fusion_dropout}-norm{args.norm}{pretrain_tag}-{args.fusion_type}"
+    default_suffix = f"pact-{args.pa_model}{k_tag}-{args.ct_model}-roi{args.ct_roi_size}-nodropout-norm{args.norm}{pretrain_tag}-{args.fusion_type}"
     if args.checkpoint_root is None:
         args.checkpoint_root = os.path.join("/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix)
     if args.results_root is None:
