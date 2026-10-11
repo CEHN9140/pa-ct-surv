@@ -1,0 +1,18 @@
+Using Device: cuda | ROI: 64
+PA: abmil | CT: resnet18 | Fusion: concat | Fusion dropout: 0.0 | Norm: none | CT/PA dropout: 0.0 | CT augmentation: disabled
+LR: 0.0001 | CT Backbone LR: 1e-05
+Loss: Fused Cox + 0*CT + 0*PA
+CT pretrained: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v4/pact/roi64_abmil_resnet18_concat_normnone_nodropout_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.0_lpa0.0_seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v4/pact/roi64_abmil_resnet18_concat_normnone_nodropout_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.0_lpa0.0_seed42
+Loaded 703 paired samples
+Locked split: train=562, test=141
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.weight', 'fc.bias']
+Epoch 1/30 | Train Loss: 3.1700 (Fused: 3.1700) | Train C-index: 0.5920 | Val Fused: 0.7181 | Val CT: 0.3616 | Val PA: 0.5925
+Feature stats | CT: mean=0.8668, std=0.8874, mean_l2=28.0673, median_l2=28.0619, mean_abs=0.8668, max_abs=6.8357 | PA: mean=0.2767, std=0.2190, mean_l2=7.9784, median_l2=7.9485, mean_abs=0.2767, max_abs=1.7966

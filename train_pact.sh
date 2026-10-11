@@ -3,7 +3,7 @@ BASE=/home/gly001/cqj/pa_ct_surv
 ROI_SIZE=64
 PA_MODEL=abmil
 CT_MODEL=resnet18
-FUSION_TYPE=hrca-single
+FUSION_TYPE=weighted
 NORM=none
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 
@@ -20,7 +20,7 @@ SEED=42
 
 RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_${CT_MODEL}_${FUSION_TYPE}_norm${NORM}_nodropout_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_lct${LAMBDA_CT}_lpa${LAMBDA_PA}_seed${SEED}"
 
-mkdir -p "${BASE}/logs/pact_v4/pact"
+mkdir -p "${BASE}/logs/pact_v5/pact"
 
 #   --fusion_dropout "${FUSION_DROPOUT}" \
 CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python pact_train.py \
@@ -40,6 +40,6 @@ CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python pact_train.
   --num_workers 8 \
   --patience 10 \
   --seed "${SEED}" \
-  --checkpoint_root "${BASE}/checkpoints/pact_v4/pact/${RUN_TAG}" \
-  --results_root "${BASE}/results/pact_v4/pact/${RUN_TAG}" \
-  > "${BASE}/logs/pact_v4/pact/${RUN_TAG}.log" 2>&1 &
+  --checkpoint_root "${BASE}/checkpoints/pact_v5/pact/${RUN_TAG}" \
+  --results_root "${BASE}/results/pact_v5/pact/${RUN_TAG}" \
+  > "${BASE}/logs/pact_v5/pact/${RUN_TAG}.log" 2>&1 &
