@@ -3,7 +3,7 @@ BASE=/home/gly001/cqj/pa_ct_surv
 ROI_SIZE=64
 PA_MODEL=abmil
 CT_MODEL=resnet18
-FUSION_TYPE=concat
+FUSION_TYPE=weighted
 NORM=none
 CT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 
@@ -11,8 +11,8 @@ NUM_EPOCHS=30
 LR=1e-4
 BACKBONE_LR=1e-5
 WEIGHT_DECAY=5e-4
-LAMBDA_CT=0.5
-LAMBDA_PA=0.0
+LAMBDA_CT=0.0
+LAMBDA_PA=0.5
 # Fusion dropout is disabled for this experiment.
 # FUSION_DROPOUT=0.0
 COX_BATCH_SIZE=64
