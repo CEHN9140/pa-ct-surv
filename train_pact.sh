@@ -16,7 +16,7 @@ LAMBDA_PA=0.3
 # Fusion dropout is disabled for this experiment.
 # FUSION_DROPOUT=0.0
 COX_BATCH_SIZE=64
-SEED=123
+SEED=2024
 
 RUN_TAG="roi${ROI_SIZE}_${PA_MODEL}_${CT_MODEL}_${FUSION_TYPE}_norm${NORM}_nodropout_epochs${NUM_EPOCHS}_coxbs${COX_BATCH_SIZE}_lr${LR}_blr${BACKBONE_LR}_wd${WEIGHT_DECAY}_lct${LAMBDA_CT}_lpa${LAMBDA_PA}_seed${SEED}"
 
