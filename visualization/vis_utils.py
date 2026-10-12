@@ -127,6 +127,23 @@ def load_h5_coords(h5_path):
     return coords
 
 
+def validate_attention_weights(att_weights, n_patches):
+    """Validate one ABMIL attention branch without silently truncating it."""
+    att = _to_numpy_1d(att_weights)
+    if att.shape[0] != int(n_patches):
+        raise ValueError(
+            f"Attention count ({att.shape[0]}) != patch count ({n_patches})"
+        )
+    if not np.isfinite(att).all():
+        raise ValueError("Attention contains NaN or Inf")
+    if (att < -1e-6).any():
+        raise ValueError("Attention contains negative weights")
+    total = float(att.sum())
+    if not np.isclose(total, 1.0, atol=1e-4):
+        raise ValueError(f"Attention weights must sum to 1; got {total:.8f}")
+    return att.astype(np.float32)
+
+
 def find_h5_by_slide_id(h5_dir, slide_id):
     h5_dir = Path(h5_dir)
     exact = h5_dir / f"{slide_id}.h5"
@@ -149,64 +166,164 @@ def find_h5_by_slide_id(h5_dir, slide_id):
 # ============================================================
 
 
-def load_ct_model(ckpt_path, pretrained_path, dropout, device):
+def _load_checkpoint_strict(ckpt_path, model, device):
+    ckpt_path = Path(ckpt_path)
+    if not ckpt_path.is_file():
+        raise FileNotFoundError(f"Checkpoint not found: {ckpt_path}")
+    state = torch.load(ckpt_path, map_location=device, weights_only=True)
+    if not isinstance(state, dict):
+        raise TypeError(f"Checkpoint must contain a state dict: {ckpt_path}")
+    try:
+        model.load_state_dict(state, strict=True)
+    except RuntimeError as exc:
+        raise RuntimeError(
+            f"Checkpoint/configuration mismatch for {ckpt_path}: {exc}"
+        ) from exc
+    return model
+
+
+def resolve_config_path(config=None, checkpoint_root=None):
+    """Resolve the run_config.yaml associated with a visualization run."""
+    if config:
+        path = Path(config)
+        if not path.is_file():
+            raise FileNotFoundError(f"Run config not found: {path}")
+        return path
+    if checkpoint_root:
+        root = Path(checkpoint_root)
+        candidates = [root / "run_config.yaml", root.parent / "run_config.yaml"]
+        for candidate in candidates:
+            if candidate.is_file():
+                return candidate
+    raise ValueError("Provide --config pointing to run_config.yaml")
+
+
+def _config_data_dir(config):
+    data_dir = config.get("data_dir")
+    if not data_dir:
+        raise ValueError("run_config.yaml is missing data_dir")
+    return Path(data_dir)
+
+
+def _config_roi_size(config):
+    if "ct_roi_size" in config:
+        return int(config["ct_roi_size"])
+    teacher = config.get("teacher") or {}
+    if "ct_roi_size" in teacher:
+        return int(teacher["ct_roi_size"])
+    raise ValueError("run_config.yaml is missing ct_roi_size")
+
+
+def _run_tag(checkpoint_root, config_path):
+    root = Path(checkpoint_root) if checkpoint_root else config_path.parent
+    return root.name if root.name.startswith("seed") is False else root.parent.name
+
+
+def load_visualization_model(model_type, config_path, checkpoint_root, fold, device):
+    """Build and strictly load one of the four supported visualization models."""
+    config_path = resolve_config_path(config_path, checkpoint_root)
+    config = load_yaml(config_path) or {}
+    checkpoint_root = Path(
+        checkpoint_root or config.get("checkpoint_root", "")
+    )
+    if not checkpoint_root:
+        raise ValueError("checkpoint_root is required")
+    ckpt_path = checkpoint_root / f"fold_{int(fold)}" / "best_model.pth"
+
+    from model.build import CT_Model, Pa_CT_Model, Pa_Model
+
+    if model_type == "pathology":
+        pa_model = config.get("pa_model", "abmil")
+        if pa_model not in {"abmil", "abmil-topk", "abmil_randsample"}:
+            raise ValueError(
+                f"Pathology attention visualization does not support pa_model={pa_model}"
+            )
+        model = Pa_Model(
+            model_name=pa_model,
+            feature_dim=1024,
+            k=config.get("k"),
+            abmil_dropout=float(config.get("dropout", 0.0)),
+            attention_branches=int(config.get("attention_branches", 1)),
+        )
+    elif model_type == "pact":
+        teacher = config.get("teacher") or {}
+        pa_model = config.get("pa_model", teacher.get("pa_model", "abmil"))
+        ct_model = config.get("ct_model", teacher.get("ct_model", "resnet18"))
+        model = Pa_CT_Model(
+            pa_model_name=pa_model,
+            ct_model_name=ct_model,
+            ct_pretrained_path=None,
+            pa_topk=config.get("k", teacher.get("k")),
+            fusion_type=config.get("fusion_type", teacher.get("fusion_type", "concat")),
+            fusion_dropout=float(config.get("fusion_dropout", 0.0)),
+            norm=config.get("norm", "none"),
+        )
+    elif model_type == "ct":
+        model = CT_Model(
+            model_name=config.get("ct_model", "resnet18"),
+            pretrained_path=None,
+            freeze_backbone=bool(config.get("freeze_backbone", False)),
+            dropout=float(config.get("dropout", 0.0)),
+        )
+    elif model_type == "ct_student":
+        model = CT_Model(
+            model_name=config.get("student_model", "resnet18"),
+            pretrained_path=None,
+            freeze_backbone=False,
+            dropout=float(config.get("student_dropout", 0.0)),
+        )
+    else:
+        raise ValueError(f"Unsupported visualization model_type={model_type}")
+
+    model = _load_checkpoint_strict(ckpt_path, model, device)
+    model.to(device)
+    model.eval()
+    metadata = {
+        "model_type": model_type,
+        "config_path": str(config_path),
+        "checkpoint_path": str(ckpt_path),
+        "checkpoint_root": str(checkpoint_root),
+        "run_tag": _run_tag(checkpoint_root, config_path),
+        "seed": int(config.get("seed", 42)),
+        "data_dir": str(_config_data_dir(config)),
+        "roi_size": _config_roi_size(config),
+        "config": config,
+    }
+    return model, metadata
+
+
+def load_ct_model(ckpt_path, pretrained_path=None, dropout=0.0, device=None):
+    """Backward-compatible strict CT loader using the current CT_Model API."""
     from model.build import CT_Model
 
-    model = CT_Model(
-        model_name="resnet", pretrained_path=pretrained_path, dropout=dropout
-    )
-    state = torch.load(ckpt_path, map_location=device, weights_only=True)
-    model.load_state_dict(state)
-    model.to(device)
-    model.eval()
-    for p in model.parameters():
-        p.requires_grad = False
-    return model
+    device = device or torch.device("cpu")
+    model = CT_Model(model_name="resnet18", pretrained_path=None, dropout=dropout)
+    _load_checkpoint_strict(ckpt_path, model, device)
+    return model.to(device).eval()
 
 
-def load_pa_model(ckpt_path, pa_model_name, k, device, implementation="original"):
+def load_pa_model(ckpt_path, pa_model_name, k, device, implementation=None):
     from model.build import Pa_Model
 
-    model = Pa_Model(
-        model_name=pa_model_name,
-        k=k,
-        implementation=implementation,
-    )
-    state = torch.load(ckpt_path, map_location=device, weights_only=True)
-    model.load_state_dict(state)
-    model.to(device)
-    model.eval()
-    for p in model.parameters():
-        p.requires_grad = False
-    return model
+    model = Pa_Model(model_name=pa_model_name, feature_dim=1024, k=k)
+    _load_checkpoint_strict(ckpt_path, model, device)
+    return model.to(device).eval()
 
 
-def load_pact_model(
-    ckpt_path,
-    pa_model_name,
-    fusion_type,
-    k,
-    ct_dropout,
-    device,
-    implementation="legacy",
-):
+def load_pact_model(ckpt_path, pa_model_name, fusion_type, k, ct_dropout, device, implementation=None):
     from model.build import Pa_CT_Model
 
     model = Pa_CT_Model(
         pa_model_name=pa_model_name,
+        ct_model_name="resnet18",
         ct_pretrained_path=None,
         pa_topk=k,
         fusion_type=fusion_type,
-        ct_dropout=ct_dropout,
-        pa_implementation=implementation,
+        fusion_dropout=0.0,
+        norm="none",
     )
-    state = torch.load(ckpt_path, map_location=device, weights_only=True)
-    model.load_state_dict(state)
-    model.to(device)
-    model.eval()
-    for p in model.parameters():
-        p.requires_grad = False
-    return model
+    _load_checkpoint_strict(ckpt_path, model, device)
+    return model.to(device).eval()
 
 
 # ============================================================
@@ -296,9 +413,13 @@ def get_split_ids(data_dir, fold, roi_size, sample_split="val", cv_seed=42):
     df = pd.read_csv(label_file)
     if "split" not in df.columns:
         raise ValueError("Dataset CSV missing split column; run preprocess_data.py")
-    train_idx, val_idx = cv_fold_indices(df, fold)
-    split_indices = val_idx if sample_split == "val" else train_idx
-    split_df = df.iloc[split_indices]
+    split_values = pd.to_numeric(df["split"], errors="coerce")
+    if sample_split == "val":
+        split_df = df.loc[split_values == int(fold)]
+    elif sample_split == "train":
+        split_df = df.loc[(split_values >= 0) & (split_values != int(fold))]
+    else:
+        raise ValueError(f"Unsupported sample_split={sample_split}")
     return list(zip(split_df["pa_id"].values, split_df["ct_id"].values))
 
 
@@ -447,29 +568,37 @@ def draw_heatmap_overlay(
         clip_percentiles=clip_percentiles,
         mode=normalize_mode,
     )
-    n = min(len(coords), len(att))
-    if n == 0:
+    if len(coords) != len(att):
+        raise ValueError(
+            f"coords ({len(coords)}) != attention ({len(att)}); refusing truncation"
+        )
+    if len(coords) == 0:
         raise ValueError("No patch coordinates or attention weights to draw")
-    coords, att = coords[:n], att[:n]
 
     min_x, min_y = coords.min(axis=0)
     max_x, max_y = coords.max(axis=0) + patch_size
     content_w = int(max_x - min_x)
     content_h = int(max_y - min_y)
-    target_w = max(1, int(np.ceil(content_w / downsample)))
-    target_h = max(1, int(np.ceil(content_h / downsample)))
+    slide = openslide.OpenSlide(str(wsi_path))
+    level = slide.get_best_level_for_downsample(float(downsample))
+    level_downsample = float(slide.level_downsamples[level])
+    target_w = max(1, int(np.ceil(content_w / level_downsample)))
+    target_h = max(1, int(np.ceil(content_h / level_downsample)))
 
     mask = np.zeros((target_h, target_w), dtype=np.float32)
     count = np.zeros((target_h, target_w), dtype=np.float32)
-    patch_ds = max(1, int(np.ceil(patch_size / downsample)))
+    patch_ds = max(1, int(np.ceil(patch_size / level_downsample)))
 
     for (x, y), value in zip(coords, att):
-        x0 = int((x - min_x) / downsample)
-        y0 = int((y - min_y) / downsample)
+        x0 = int((x - min_x) / level_downsample)
+        y0 = int((y - min_y) / level_downsample)
         x1 = min(target_w, x0 + patch_ds)
         y1 = min(target_h, y0 + patch_ds)
-        mask[y0:y1, x0:x1] += float(value)
-        count[y0:y1, x0:x1] += 1.0
+        if x0 < target_w and y0 < target_h and x1 > 0 and y1 > 0:
+            ys, ye = max(0, y0), y1
+            xs, xe = max(0, x0), x1
+            mask[ys:ye, xs:xe] += float(value)
+            count[ys:ye, xs:xe] += 1.0
     mask = np.divide(mask, np.maximum(count, 1.0))
     if smooth_sigma and smooth_sigma > 0:
         mask = cv2.GaussianBlur(mask, (0, 0), sigmaX=float(smooth_sigma))
@@ -477,15 +606,12 @@ def draw_heatmap_overlay(
     coverage = (count > 0).astype(np.float32)
     heatmap_color = cv2.applyColorMap((mask * 255).astype(np.uint8), cv2.COLORMAP_JET)
 
-    slide = openslide.OpenSlide(str(wsi_path))
     try:
         region = slide.read_region(
-            (int(min_x), int(min_y)), 0, (content_w, content_h)
+            (int(min_x), int(min_y)), level, (target_w, target_h)
         ).convert("RGB")
     finally:
         slide.close()
-    if downsample != 1:
-        region = region.resize((target_w, target_h), Image.LANCZOS)
     thumbnail = cv2.cvtColor(np.asarray(region), cv2.COLOR_RGB2BGR)
 
     if save_wsi_path is not None:
@@ -529,11 +655,14 @@ def save_top_patches(
 
     coords = load_patch_coords(h5_path, coord_key)
     att = _to_numpy_1d(att_weights)
-    n = min(len(coords), len(att))
-    if n == 0:
+    if len(coords) != len(att):
+        raise ValueError(
+            f"coords ({len(coords)}) != attention ({len(att)}); refusing truncation"
+        )
+    if len(coords) == 0:
         return []
 
-    top_idx = np.argsort(att[:n])[-min(top_k, n) :][::-1]
+    top_idx = np.argsort(att)[-min(top_k, len(att)) :][::-1]
     saved = []
     slide = openslide.OpenSlide(str(wsi_path))
     try:
