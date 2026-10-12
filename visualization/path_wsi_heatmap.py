@@ -167,9 +167,22 @@ def main():
         except Exception as exc:
             print(f"[Error] {slide_id}: {exc}")
             failed.append(str(slide_id))
+    summary_dir = (
+        Path(args.output_root)
+        / args.model_type
+        / metadata["run_tag"]
+        / f"seed{metadata['seed']}"
+        / f"fold_{args.fold}"
+    )
+    ensure_dir(summary_dir)
+    save_json(
+        {"total": len(ids), "succeeded": succeeded, "failed": failed},
+        summary_dir / "failed_cases.json",
+    )
     print(f"Completed: {succeeded} succeeded, {len(failed)} failed")
     if failed:
         print(f"Failed cases: {', '.join(failed)}")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

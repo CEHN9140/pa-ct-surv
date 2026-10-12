@@ -131,6 +131,7 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
     ct_id = str(row["ct_id"])
     ct_path = str(row["ct_path"])
     ct_volume = load_ct_volume(ct_path).unsqueeze(0).to(device)
+    ct_volume.requires_grad_(True)
     if tuple(ct_volume.shape[-3:]) != (roi_size, roi_size, roi_size):
         raise ValueError(f"CT shape {tuple(ct_volume.shape)} does not match ROI {roi_size}")
 
@@ -253,9 +254,22 @@ def main():
         except Exception as exc:
             print(f"[Error] {ct_id}: {exc}")
             failed.append(str(ct_id))
+    summary_dir = (
+        Path(args.output_root)
+        / args.model_type
+        / metadata["run_tag"]
+        / f"seed{metadata['seed']}"
+        / f"fold_{args.fold}"
+    )
+    ensure_dir(summary_dir)
+    save_json(
+        {"total": len(ids), "succeeded": succeeded, "failed": failed},
+        summary_dir / "failed_cases.json",
+    )
     print(f"Completed: {succeeded} succeeded, {len(failed)} failed")
     if failed:
         print(f"Failed cases: {', '.join(failed)}")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

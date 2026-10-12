@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 BASE=/home/gly001/cqj/pa_ct_surv
 PYTHON=/home/gly001/.conda/envs/UNI/bin/python
@@ -7,9 +8,9 @@ PYTHON=/home/gly001/.conda/envs/UNI/bin/python
 MODEL_TYPE=ct
 OUTPUT_ROOT=${BASE}/vis/pact_v5
 
-# 根据模型类型自动选择对应配置；当前 CT/PACT/Student 继续使用 v4
+# 根据模型类型自动选择对应的 v4 可视化配置
 if [[ "${MODEL_TYPE}" == "pathology" ]]; then
-  CONFIG=${BASE}/results/pact_v5/pathology/roi64_abmil_dropout0.0_epochs30_coxbs64_lr1e-4_wd5e-4_seed42/run_config.yaml
+  CONFIG=${BASE}/results/pact_v4/pathology/roi64_abmil_dropout0.0_epochs30_coxbs64_lr1e-4_wd5e-4_seed42/run_config.yaml
 elif [[ "${MODEL_TYPE}" == "pact" ]]; then
   CONFIG=${BASE}/results/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42/run_config.yaml
 elif [[ "${MODEL_TYPE}" == "ct_student" ]]; then
