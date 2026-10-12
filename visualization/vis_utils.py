@@ -423,6 +423,27 @@ def get_split_ids(data_dir, fold, roi_size, sample_split="val", cv_seed=42):
     return list(zip(split_df["pa_id"].values, split_df["ct_id"].values))
 
 
+def load_visualization_case_file(case_file, fold):
+    """Load fold-matched cases from a tab-separated vis file."""
+    rows = []
+    with Path(case_file).open() as handle:
+        for line_number, line in enumerate(handle, 1):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            fields = line.split("\t")
+            if fields[0] == "fold":
+                continue
+            if len(fields) != 3:
+                raise ValueError(f"Invalid case file line {line_number}: {line}")
+            row_fold, pa_id, ct_id = fields
+            if int(row_fold) == int(fold):
+                rows.append((pa_id, ct_id))
+    if not rows:
+        raise ValueError(f"No cases found for fold={fold} in {case_file}")
+    return rows
+
+
 # ============================================================
 # 1.5 Plotting tools
 # ============================================================

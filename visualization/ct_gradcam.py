@@ -18,6 +18,7 @@ from visualization.vis_utils import (
     ensure_dir,
     find_case_row,
     get_split_ids,
+    load_visualization_case_file,
     load_ct_mask,
     load_ct_volume,
     load_visualization_model,
@@ -30,7 +31,7 @@ def parse_args():
     parser.add_argument("--model_type", required=True, choices=["ct", "pact", "ct_student"])
     parser.add_argument("--config", required=True, help="Path to run_config.yaml")
     parser.add_argument("--checkpoint_root", required=True)
-    parser.add_argument("--fold", type=int, default=0, choices=range(5))
+    parser.add_argument("--fold", type=int, default=None, choices=range(5))
     parser.add_argument("--output_root", default="vis/pact_v5")
     parser.add_argument("--data_dir", default=None)
     parser.add_argument("--roi_size", type=int, default=None)
@@ -39,6 +40,7 @@ def parse_args():
     parser.add_argument("--sample_n", type=int, default=0)
     parser.add_argument("--sample_split", choices=["train", "val"], default="val")
     parser.add_argument("--sample_seed", type=int, default=42)
+    parser.add_argument("--case_file", default=None)
     parser.add_argument("--target_layer", default="layer3.1.conv2")
     parser.add_argument(
         "--slice_mode", choices=["tumor", "maxcam", "center", "fixed"], default="tumor"
@@ -225,26 +227,27 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
     print(f"[OK] {ct_id}: risk={float(risk.detach()):.4f}, axial={axial} -> {output_dir}")
 
 
-def main():
-    args = parse_args()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def _run_fold(args, fold, device):
+    args.fold = fold
     model, metadata = load_visualization_model(
-        args.model_type, args.config, args.checkpoint_root, args.fold, device
+        args.model_type, args.config, args.checkpoint_root, fold, device
     )
     data_dir = args.data_dir or metadata["data_dir"]
     roi_size = args.roi_size or metadata["roi_size"]
-    if args.ct_id:
+    if args.case_file:
+        ids = [ct_id for _, ct_id in load_visualization_case_file(args.case_file, fold)]
+    elif args.ct_id:
         ids = [args.ct_id]
     elif args.ct_ids:
         ids = args.ct_ids
     elif args.sample_n > 0:
-        pairs = get_split_ids(data_dir, args.fold, roi_size, args.sample_split)
+        pairs = get_split_ids(data_dir, fold, roi_size, args.sample_split)
         rng = random.Random(args.sample_seed)
         ids = [ctid for _, ctid in rng.sample(pairs, min(args.sample_n, len(pairs)))]
     else:
-        raise ValueError("Specify --ct_id, --ct_ids, or --sample_n > 0")
+        raise ValueError("Specify --case_file, --ct_id, --ct_ids, or --sample_n > 0")
 
-    print(f"Using {len(ids)} CT case(s), model={args.model_type}, fold={args.fold}")
+    print(f"Using {len(ids)} CT case(s), model={args.model_type}, fold={fold}")
     failed = []
     succeeded = 0
     for ct_id in ids:
@@ -255,18 +258,24 @@ def main():
             print(f"[Error] {ct_id}: {exc}")
             failed.append(str(ct_id))
     summary_dir = (
-        Path(args.output_root)
-        / args.model_type
-        / metadata["run_tag"]
-        / f"seed{metadata['seed']}"
-        / f"fold_{args.fold}"
+        Path(args.output_root) / args.model_type / metadata["run_tag"]
+        / f"seed{metadata['seed']}" / f"fold_{fold}"
     )
     ensure_dir(summary_dir)
-    save_json(
-        {"total": len(ids), "succeeded": succeeded, "failed": failed},
-        summary_dir / "failed_cases.json",
-    )
-    print(f"Completed: {succeeded} succeeded, {len(failed)} failed")
+    save_json({"total": len(ids), "succeeded": succeeded, "failed": failed}, summary_dir / "failed_cases.json")
+    print(f"Completed fold_{fold}: {succeeded} succeeded, {len(failed)} failed")
+    return failed
+
+
+def main():
+    args = parse_args()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if args.fold is None and not args.case_file:
+        raise ValueError("Omit --fold only when using --case_file")
+    folds = [args.fold] if args.fold is not None else range(5)
+    failed = []
+    for fold in folds:
+        failed.extend(_run_fold(args, fold, device))
     if failed:
         print(f"Failed cases: {', '.join(failed)}")
         raise SystemExit(1)
