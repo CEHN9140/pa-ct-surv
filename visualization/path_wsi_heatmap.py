@@ -158,12 +158,18 @@ def main():
         raise ValueError("Specify --slide_id, --slide_ids, or --sample_n > 0")
 
     print(f"Using {len(ids)} slide(s), model={args.model_type}, fold={args.fold}")
+    failed = []
+    succeeded = 0
     for slide_id in ids:
         try:
             process_single_case(slide_id, args, model, metadata, device)
+            succeeded += 1
         except Exception as exc:
             print(f"[Error] {slide_id}: {exc}")
-            raise
+            failed.append(str(slide_id))
+    print(f"Completed: {succeeded} succeeded, {len(failed)} failed")
+    if failed:
+        print(f"Failed cases: {', '.join(failed)}")
 
 
 if __name__ == "__main__":

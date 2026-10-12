@@ -82,15 +82,19 @@ def compute_positive_gradcam(backbone, risk, activations, gradients, target_size
     cam_max = float(cam.max())
     if cam_max > 1e-8:
         cam /= cam_max
-    return cam
+    return cam, cam_max
 
 
-def _axial_index(mask, cam, args):
-    if args.slice_mode in {"tumor", "maxcam"}:
+def _axial_index(mask, cam, args, mask_fallback_reason=None):
+    if args.slice_mode == "tumor":
         area = mask.reshape(mask.shape[0], -1).sum(axis=1)
         if area.max() <= 0:
+            if mask_fallback_reason is not None:
+                return int(cam.shape[0] // 2)
             raise ValueError("Tumor mask is empty; use --allow_mask_fallback to use center")
         return int(np.argmax(area))
+    if args.slice_mode == "maxcam":
+        return int(np.argmax(cam.reshape(cam.shape[0], -1).sum(axis=1)))
     if args.slice_mode == "center":
         return int(cam.shape[0] // 2)
     if args.axial_slice is None:
@@ -137,6 +141,8 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
             raise ValueError(
                 f"Mask shape {tumor_mask.shape} != CT shape {tuple(ct_volume.shape[-3:])}"
             )
+        if not np.any(tumor_mask):
+            raise ValueError("Tumor mask is empty")
     except Exception as exc:
         if not args.allow_mask_fallback:
             raise
@@ -156,13 +162,13 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
         model.zero_grad(set_to_none=True)
         risk = _risk_from_model(args.model_type, model, ct_volume)
         risk.backward()
-        cam = compute_positive_gradcam(
+        cam, raw_cam_max = compute_positive_gradcam(
             backbone, risk, activations, gradients, tuple(ct_volume.shape[-3:])
         )
     finally:
         handle.remove()
 
-    axial = _axial_index(tumor_mask, cam, args)
+    axial = _axial_index(tumor_mask, cam, args, mask_fallback_reason)
     ct_slice = ct_volume.detach().squeeze().cpu().numpy()[axial]
     cam_slice = cam[axial]
     mask_slice = tumor_mask[axial]
@@ -206,7 +212,9 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
             "ct_id": ct_id, "risk": float(risk.detach()),
             "target_layer": effective_target_layer, "requested_target_layer": args.target_layer,
             "slice_mode": args.slice_mode,
-            "axial_slice": axial, "cam_max": float(cam.max()),
+            "axial_slice": axial, "cam_max_raw": raw_cam_max,
+            "cam_max_normalized": float(cam.max()),
+            "cam_is_all_zero": bool(not np.any(cam)),
             "ct_path": ct_path, "mask_fallback_reason": mask_fallback_reason,
             "config_path": metadata["config_path"], "checkpoint_path": metadata["checkpoint_path"],
             "split": int(row["split"]) if "split" in row.index else None,
@@ -236,12 +244,18 @@ def main():
         raise ValueError("Specify --ct_id, --ct_ids, or --sample_n > 0")
 
     print(f"Using {len(ids)} CT case(s), model={args.model_type}, fold={args.fold}")
+    failed = []
+    succeeded = 0
     for ct_id in ids:
         try:
             gradcam_single_case(ct_id, args, model, metadata, device)
+            succeeded += 1
         except Exception as exc:
             print(f"[Error] {ct_id}: {exc}")
-            raise
+            failed.append(str(ct_id))
+    print(f"Completed: {succeeded} succeeded, {len(failed)} failed")
+    if failed:
+        print(f"Failed cases: {', '.join(failed)}")
 
 
 if __name__ == "__main__":
