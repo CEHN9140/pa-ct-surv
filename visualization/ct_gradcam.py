@@ -41,22 +41,24 @@ def parse_args():
     parser.add_argument("--sample_split", choices=["train", "val"], default="val")
     parser.add_argument("--sample_seed", type=int, default=42)
     parser.add_argument("--case_file", default=None)
-    parser.add_argument("--target_layer", default="layer3.1.conv2")
+    parser.add_argument("--target_layer", default="layer4.1")
     parser.add_argument(
         "--slice_mode", choices=["tumor", "maxcam", "center", "fixed"], default="tumor"
     )
     parser.add_argument("--axial_slice", type=int, default=None)
     parser.add_argument("--allow_mask_fallback", action="store_true")
+    parser.add_argument("--alpha", type=float, default=0.90)
     return parser.parse_args()
 
 
 def find_target_layer(backbone, target_layer_name):
     modules = dict(backbone.named_modules())
     actual_name = target_layer_name
-    if target_layer_name == "layer3.1.conv2" and target_layer_name not in modules:
-        # ResNet10 has one block in layer3, so use its final convolution.
-        if "layer3.0.conv2" in modules:
-            actual_name = "layer3.0.conv2"
+    if target_layer_name in {"layer4.1", "layer3.1.conv2", "layer4.1.conv2"} and target_layer_name not in modules:
+        # ResNet10 has one block in each stage.
+        fallback_name = target_layer_name.replace(".1", ".0", 1)
+        if fallback_name in modules:
+            actual_name = fallback_name
     if actual_name not in modules:
         available = [
             name for name, module in backbone.named_modules()
@@ -66,8 +68,10 @@ def find_target_layer(backbone, target_layer_name):
             f"Target layer '{target_layer_name}' not found. Conv3d layers: {available}"
         )
     target = modules[actual_name]
-    if not isinstance(target, torch.nn.Conv3d):
-        raise ValueError(f"Target layer '{actual_name}' is not Conv3d")
+    if not isinstance(target, torch.nn.Conv3d) and not any(
+        isinstance(module, torch.nn.Conv3d) for module in target.modules()
+    ):
+        raise ValueError(f"Target layer '{actual_name}' must be a Conv3d or convolutional block")
     return target, actual_name
 
 
@@ -184,7 +188,7 @@ def gradcam_single_case(ct_id, args, model, metadata, device):
         cv2.applyColorMap((cam_slice * 255).astype(np.uint8), cv2.COLORMAP_JET),
         cv2.COLOR_BGR2RGB,
     )
-    alpha = (0.75 * np.clip(cam_slice, 0.0, 1.0))[..., None]
+    alpha = (np.clip(args.alpha, 0.0, 1.0) * np.clip(cam_slice, 0.0, 1.0))[..., None]
     overlay = (
         base_rgb.astype(np.float32) * (1.0 - alpha)
         + heatmap.astype(np.float32) * alpha

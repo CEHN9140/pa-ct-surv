@@ -553,7 +553,7 @@ def draw_heatmap_overlay(
     wsi_path,
     patch_size=256,
     downsample=32,
-    alpha=0.30,
+    alpha=0.60,
     alpha_mode="coverage",
     smooth_sigma=0.0,
     normalize_mode="positive",

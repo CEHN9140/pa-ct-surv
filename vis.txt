@@ -1,0 +1,53 @@
+单模态病理：
+python -m visualization.path_wsi_heatmap \
+  --model_type pathology \
+  --config results/pact_v4/pathology/roi64_abmil_dropout0.0_epochs30_coxbs64_lr1e-4_wd5e-4_seed42/run_config.yaml \
+  --checkpoint_root checkpoints/pact_v4/pathology/roi64_abmil_dropout0.0_epochs30_coxbs64_lr1e-4_wd5e-4_seed42 \
+  --case_file vis_seed42.txt \
+  --wsi_dir /home/gly001/cqj/data/lung_cancer/pathology/ \
+  --alpha 0.6 \
+  --output_root vis/pact_v4
+
+
+PACT 病理 Attention：
+python -m visualization.path_wsi_heatmap \
+  --model_type pact \
+  --config results/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42/run_config.yaml \
+  --checkpoint_root checkpoints/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42 \
+  --case_file vis_seed42.txt \
+  --wsi_dir /home/gly001/cqj/data/lung_cancer/pathology/ \
+  --alpha 0.6 \
+  --output_root vis/pact_v4
+
+
+PACT CT Grad-CAM：
+python -m visualization.ct_gradcam \
+  --model_type pact \
+  --config results/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42/run_config.yaml \
+  --checkpoint_root checkpoints/pact_v4/pact/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42 \
+  --case_file vis_seed42.txt \
+  --target_layer layer4.1 \
+  --alpha 0.6 \
+  --output_root vis/pact_v4
+
+
+单模态 CT：
+python -m visualization.ct_gradcam \
+  --model_type ct \
+  --config results/pact_v4/ct/roi64_resnet18_dropout0.0_epochs30_bs64_lr1e-4_blr1e-5_wd5e-4_seed42/run_config.yaml \
+  --checkpoint_root checkpoints/pact_v4/ct/roi64_resnet18_dropout0.0_epochs30_bs64_lr1e-4_blr1e-5_wd5e-4_seed42 \
+  --case_file vis_seed42.txt \
+  --target_layer layer4.1 \
+  --alpha 0.6 \
+  --output_root vis/pact_v4
+
+
+CT Student：
+python -m visualization.ct_gradcam \
+  --model_type ct_student \
+  --config results/pact_v4/ct_student/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42_resnet18_dropout0.5_normalized_mse_akd0.3_t2.0/run_config.yaml \
+  --checkpoint_root checkpoints/pact_v4/ct_student/roi64_abmil_resnet18_weighted_normnone_fusion_dropout0.0_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3_seed42_resnet18_dropout0.5_normalized_mse_akd0.3_t2.0 \
+  --case_file vis_seed42.txt \
+  --target_layer layer4.1 \
+  --alpha 0.6 \
+  --output_root vis/pact_v4

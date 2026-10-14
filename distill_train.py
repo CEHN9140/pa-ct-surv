@@ -162,6 +162,7 @@ def train_student(
         optimizer.zero_grad()
 
         losses, losses_cox, losses_kd = [], [], []
+        train_risks_np, train_times_np, train_events_np = [], [], []
         teacher_risks_epoch = []
         teacher_risk_set_entropies = []
 
@@ -174,6 +175,13 @@ def train_student(
             pa_list = [pa.to(device) for pa in pa_list]
 
             risk_s = student(ct)
+            train_risks_np.extend(
+                risk_s.detach().cpu().numpy().reshape(-1).tolist()
+            )
+            train_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
+            train_events_np.extend(
+                event.detach().cpu().numpy().reshape(-1).astype(int).tolist()
+            )
 
             # ── Teacher fused-risk forward ──
             if use_distill:
@@ -234,6 +242,12 @@ def train_student(
         avg_loss = float(np.mean(losses))
         avg_cox_loss = float(np.mean(losses_cox)) if losses_cox else 0.0
         avg_kd_loss = float(np.mean(losses_kd)) if losses_kd else 0.0
+        train_cindex, *_ = concordance_index_censored(
+            np.asarray(train_events_np, dtype=int).astype(bool),
+            np.asarray(train_times_np, dtype=np.float32),
+            np.asarray(train_risks_np, dtype=np.float32),
+        )
+        train_cindex = float(train_cindex)
         if teacher_risks_epoch:
             teacher_risk_std = float(
                 torch.cat(teacher_risks_epoch).std(unbiased=False).cpu()
@@ -262,6 +276,15 @@ def train_student(
         val_risks_arr = np.asarray(val_risks_np, dtype=np.float32)
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
         val_events_arr = np.asarray(val_events_np, dtype=int)
+        val_loss = float(
+            cox_loss(
+                torch.as_tensor(val_risks_arr, device=device),
+                torch.as_tensor(val_times_arr, device=device),
+                torch.as_tensor(val_events_arr, device=device),
+            )
+            .detach()
+            .cpu()
+        )
         val_cindex, *_ = concordance_index_censored(
             val_events_arr.astype(bool), val_times_arr, val_risks_arr
         )
@@ -271,7 +294,8 @@ def train_student(
             f"Epoch {epoch}/{args.num_epochs} | "
             f"Train Loss: {avg_loss:.4f} (Cox Loss: {avg_cox_loss:.4f}, "
             f"KD Loss: {avg_kd_loss:.4f}) | "
-            f"Val C-index: {val_cindex:.4f} | "
+            f"Train C-index: {train_cindex:.4f} | "
+            f"Val Loss: {val_loss:.4f} | Val C-index: {val_cindex:.4f} | "
             f"Teacher risk std: {teacher_risk_std:.4f} | "
             f"Teacher risk-set entropy: {teacher_risk_set_entropy:.4f}"
         )
@@ -524,15 +548,28 @@ def main():
 
         metrics_dir = Path(args.results_root) / f"fold_{fold}"
         metrics_dir.mkdir(parents=True, exist_ok=True)
-        _, fold_cindex, _, _, metrics = evaluate_survival(
+        train_cindex, fold_cindex, _, _, metrics = evaluate_survival(
             student,
             train_loader,
             val_loader,
             DEVICE,
             save_dir=metrics_dir,
         )
-        print(f"Fold {fold} eval C-index: {fold_cindex:.4f}")
-        fold_results.append({"fold": fold, "cindex": fold_cindex, **metrics})
+        gap = train_cindex - fold_cindex
+        print(
+            f"Fold {fold} | Train C-index: {train_cindex:.4f} | "
+            f"Val C-index: {fold_cindex:.4f} | Gap: {gap:.4f}"
+        )
+        fold_results.append(
+            {
+                "fold": fold,
+                "cindex": fold_cindex,
+                "train_cindex": train_cindex,
+                "val_cindex": fold_cindex,
+                "gap": gap,
+                **metrics,
+            }
+        )
 
     df = pd.DataFrame(fold_results)
     summary = {

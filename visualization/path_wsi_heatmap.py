@@ -49,7 +49,7 @@ def parse_args():
     )
     parser.add_argument("--patch_size", type=int, default=256)
     parser.add_argument("--downsample", type=float, default=32)
-    parser.add_argument("--alpha", type=float, default=0.30)
+    parser.add_argument("--alpha", type=float, default=0.60)
     parser.add_argument("--alpha_mode", choices=["attention", "coverage"], default="attention")
     parser.add_argument("--smooth_sigma", type=float, default=0.0)
     parser.add_argument("--normalize_mode", choices=["positive", "all"], default="positive")
