@@ -1,17 +1,6 @@
-"""
-Shared utilities for visualization scripts.
-
-Usage:
-    from visualization.vis_utils import (
-        ensure_dir, load_label_csv, load_ct_volume, load_path_feature,
-        load_ct_model, load_pa_model, load_pact_model,
-        compute_km_groups, collect_fold_cindex, set_plot_style, save_figure,
-        draw_heatmap_overlay, save_top_patches, find_file_by_slide_id,
-    )
-"""
+"""Shared strict model loading and rendering utilities for visualization."""
 
 import json
-import os
 from pathlib import Path
 
 import cv2
@@ -21,14 +10,6 @@ import openslide
 import pandas as pd
 import torch
 import yaml
-from final_utils import cv_fold_indices, locked_split_indices
-from lifelines import CoxPHFitter, KaplanMeierFitter
-from lifelines.statistics import logrank_test
-from PIL import Image
-
-# ============================================================
-# 1.1 Path & config tools
-# ============================================================
 
 
 def ensure_dir(path):
@@ -43,13 +24,6 @@ def load_yaml(path):
 def save_json(obj, path):
     with open(path, "w") as f:
         json.dump(obj, f, indent=2)
-
-
-def find_fold_checkpoint(checkpoint_root, fold):
-    ckpt = Path(checkpoint_root) / f"fold_{fold}" / "best_model.pth"
-    if not ckpt.exists():
-        raise FileNotFoundError(f"Checkpoint not found: {ckpt}")
-    return str(ckpt)
 
 
 def find_case_row(data_dir, case_id=None, slide_id=None, ct_id=None, roi_size=64):
@@ -73,18 +47,6 @@ def find_case_row(data_dir, case_id=None, slide_id=None, ct_id=None, roi_size=64
     return df.iloc[0]
 
 
-# ============================================================
-# 1.2 Data loading tools
-# ============================================================
-
-
-def load_label_csv(data_dir, roi_size=64):
-    label_file = Path(data_dir) / f"all_label_roi{roi_size}.csv"
-    if not label_file.exists():
-        raise FileNotFoundError(f"Label file not found: {label_file}")
-    return pd.read_csv(label_file)
-
-
 def load_ct_volume(ct_image_path):
     ct = np.load(ct_image_path).astype(np.float32)
     if ct.ndim == 3:
@@ -106,10 +68,6 @@ def load_ct_mask(ct_image_path):
     if not np.isin(mask, (0, 1)).all():
         raise ValueError(f"CT mask must be binary: {mask_path}")
     return mask.astype(np.uint8)
-
-
-def load_path_feature(pt_path):
-    return torch.load(pt_path, map_location="cpu", weights_only=True).float()
 
 
 def load_h5_coords(h5_path):
@@ -142,28 +100,6 @@ def validate_attention_weights(att_weights, n_patches):
     if not np.isclose(total, 1.0, atol=1e-4):
         raise ValueError(f"Attention weights must sum to 1; got {total:.8f}")
     return att.astype(np.float32)
-
-
-def find_h5_by_slide_id(h5_dir, slide_id):
-    h5_dir = Path(h5_dir)
-    exact = h5_dir / f"{slide_id}.h5"
-    if exact.exists():
-        return str(exact)
-    candidates = list(h5_dir.glob(f"*{slide_id}*.h5"))
-    if len(candidates) == 0:
-        raise FileNotFoundError(
-            f"No .h5 file found for slide_id={slide_id} in {h5_dir}"
-        )
-    if len(candidates) > 1:
-        print(
-            f"[Warning] Multiple h5 matches for {slide_id}: {[c.name for c in candidates]}"
-        )
-    return str(candidates[0])
-
-
-# ============================================================
-# 1.3 Model loading tools
-# ============================================================
 
 
 def _load_checkpoint_strict(ckpt_path, model, device):
@@ -234,7 +170,7 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
 
     if model_type == "pathology":
         pa_model = config.get("pa_model", "abmil")
-        if pa_model not in {"abmil", "abmil-topk", "abmil_randsample"}:
+        if pa_model not in {"abmil", "abmil-topk", "abmil_randsample", "gabmil", "gabmil-topk"}:
             raise ValueError(
                 f"Pathology attention visualization does not support pa_model={pa_model}"
             )
@@ -244,6 +180,8 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
             k=config.get("k"),
             abmil_dropout=float(config.get("dropout", 0.0)),
             attention_branches=int(config.get("attention_branches", 1)),
+            time_bins=(torch.load(ckpt_path, map_location="cpu", weights_only=True).get("time_bins")
+                       if config.get("survival_loss") == "nll" else None),
         )
     elif model_type == "pact":
         teacher = config.get("teacher") or {}
@@ -292,121 +230,7 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
     return model, metadata
 
 
-def load_ct_model(ckpt_path, pretrained_path=None, dropout=0.0, device=None):
-    """Backward-compatible strict CT loader using the current CT_Model API."""
-    from model.build import CT_Model
-
-    device = device or torch.device("cpu")
-    model = CT_Model(model_name="resnet18", pretrained_path=None, dropout=dropout)
-    _load_checkpoint_strict(ckpt_path, model, device)
-    return model.to(device).eval()
-
-
-def load_pa_model(ckpt_path, pa_model_name, k, device, implementation=None):
-    from model.build import Pa_Model
-
-    model = Pa_Model(model_name=pa_model_name, feature_dim=1024, k=k)
-    _load_checkpoint_strict(ckpt_path, model, device)
-    return model.to(device).eval()
-
-
-def load_pact_model(ckpt_path, pa_model_name, fusion_type, k, ct_dropout, device, implementation=None):
-    from model.build import Pa_CT_Model
-
-    model = Pa_CT_Model(
-        pa_model_name=pa_model_name,
-        ct_model_name="resnet18",
-        ct_pretrained_path=None,
-        pa_topk=k,
-        fusion_type=fusion_type,
-        fusion_dropout=0.0,
-        norm="none",
-    )
-    _load_checkpoint_strict(ckpt_path, model, device)
-    return model.to(device).eval()
-
-
-# ============================================================
-# 1.4 Survival analysis tools
-# ============================================================
-
-
-def compute_km_groups(train_df, val_df, event_col="dfs.status", time_col="dfs.month"):
-    cutoff = float(train_df["risk_score"].median())
-    high = val_df[val_df["risk_score"] >= cutoff]
-    low = val_df[val_df["risk_score"] < cutoff]
-    try:
-        lr_result = logrank_test(
-            high[time_col], low[time_col], high[event_col], low[event_col]
-        )
-        logrank_p = float(lr_result.p_value)
-    except Exception:
-        logrank_p = np.nan
-    try:
-        cph = CoxPHFitter()
-        df_hr = val_df[[time_col, event_col, "risk_group_binary"]].copy()
-        cph.fit(df_hr, duration_col=time_col, event_col=event_col)
-        row = cph.summary.loc["risk_group_binary"]
-        hr = float(np.exp(row["coef"]))
-        hr_lo = float(np.exp(row["coef lower 95%"]))
-        hr_hi = float(np.exp(row["coef upper 95%"]))
-    except Exception:
-        hr, hr_lo, hr_hi = np.nan, np.nan, np.nan
-    return cutoff, high, low, logrank_p, hr, hr_lo, hr_hi
-
-
-def collect_fold_cindex(result_root, seeds=(42, 123, 2024)):
-    rows = []
-    if "{seed}" in str(result_root):
-        for seed in seeds:
-            results_dir = Path(str(result_root).format(seed=seed)) / "results"
-            metrics_path = results_dir / "cv_fold_metrics.csv"
-            if metrics_path.exists():
-                df = pd.read_csv(metrics_path)
-                for _, r in df.iterrows():
-                    rows.append(
-                        {
-                            "seed": seed,
-                            "fold": int(r["fold"]),
-                            "cindex": float(r["cindex"]),
-                        }
-                    )
-    else:
-        for seed in seeds:
-            seed_dir = Path(result_root) / f"seed{seed}"
-            if not seed_dir.exists():
-                continue
-            metrics_path = seed_dir / "results" / "cv_fold_metrics.csv"
-            if metrics_path.exists():
-                df = pd.read_csv(metrics_path)
-                for _, r in df.iterrows():
-                    rows.append(
-                        {
-                            "seed": seed,
-                            "fold": int(r["fold"]),
-                            "cindex": float(r["cindex"]),
-                        }
-                    )
-                continue
-            for subdir in seed_dir.iterdir():
-                if not subdir.is_dir():
-                    continue
-                nested = subdir / "results" / "cv_fold_metrics.csv"
-                if nested.exists():
-                    df = pd.read_csv(nested)
-                    for _, r in df.iterrows():
-                        rows.append(
-                            {
-                                "seed": seed,
-                                "fold": int(r["fold"]),
-                                "cindex": float(r["cindex"]),
-                            }
-                        )
-                    break
-    return pd.DataFrame(rows)
-
-
-def get_split_ids(data_dir, fold, roi_size, sample_split="val", cv_seed=42):
+def get_split_ids(data_dir, fold, roi_size, sample_split="val"):
     label_file = Path(data_dir) / f"all_label_roi{roi_size}.csv"
     if not label_file.exists():
         raise FileNotFoundError(label_file)
@@ -444,11 +268,6 @@ def load_visualization_case_file(case_file, fold):
     return rows
 
 
-# ============================================================
-# 1.5 Plotting tools
-# ============================================================
-
-
 def set_plot_style():
     import matplotlib
     import matplotlib.pyplot as plt
@@ -472,21 +291,6 @@ def save_figure(fig, path):
     import matplotlib.pyplot as plt
 
     plt.close(fig)
-
-
-def normalize_array(x, method="minmax"):
-    x = np.asarray(x, dtype=np.float64)
-    if method == "minmax":
-        x_min, x_max = x.min(), x.max()
-        if x_max - x_min < 1e-8:
-            return np.zeros_like(x)
-        return (x - x_min) / (x_max - x_min)
-    raise ValueError(f"Unknown normalization method: {method}")
-
-
-# ============================================================
-# 1.6 WSI overlay heatmap tools (migrated from pa_ct/path_vis_utils.py)
-# ============================================================
 
 
 def _to_numpy_1d(x):

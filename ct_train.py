@@ -1,39 +1,16 @@
 import argparse
-import os
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import torch
-import yaml
 from sksurv.metrics import concordance_index_censored
-from torch.utils.data import DataLoader, Subset
 
 from cox_utils import cox_loss, evaluate_survival
-from dataset import CT_Dataset
-from final_utils import cv_fold_indices, locked_split_indices, seed_everything
+from dataset import CT_Dataset, build_dataloader, resolve_data_dir, cv_splits
+from utils import seed_everything, save_run_config, save_cv_results, build_ct_optimizer
 from model.build import CT_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-def build_ct_optimizer(model, lr, weight_decay, ct_backbone_lr=None):
-    effective_backbone_lr = lr if ct_backbone_lr is None else ct_backbone_lr
-    head_ids = {id(p) for p in model.ct.fc.parameters()}
-    backbone_params, head_params = [], []
-    for p in model.parameters():
-        if not p.requires_grad:
-            continue
-        if id(p) in head_ids:
-            head_params.append(p)
-        else:
-            backbone_params.append(p)
-    groups = []
-    if backbone_params:
-        groups.append({"params": backbone_params, "lr": effective_backbone_lr})
-    if head_params:
-        groups.append({"params": head_params, "lr": lr})
-    return torch.optim.Adam(groups, weight_decay=weight_decay)
 
 
 def train_ct(
@@ -49,6 +26,7 @@ def train_ct(
     best_cindex = -np.inf
     best_state = None
     wait = 0
+
     for epoch in range(1, args.num_epochs + 1):
         model.train()
         train_losses = []
@@ -128,27 +106,28 @@ def train_ct(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train CT survival model (5-fold CV).")
+    parser.add_argument("--data_dir", default=None,
+                        help="Directory containing all_label_roi*.csv with saved CV splits.")
     parser.add_argument("--ct_roi_size", type=int, default=96, choices=[64, 96, 128])
     parser.add_argument(
         "--ct_model", default="resnet18", choices=["resnet10", "resnet18"]
     )
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
-    # parser.add_argument("--ct_augment", action="store_true")
     parser.add_argument("--freeze_backbone", action="store_true")
     parser.add_argument("--dropout", type=float, default=0.5)
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
-    parser.add_argument("--num_epochs", type=int, default=50)
-    parser.add_argument("--lr", type=float, default=3e-4)
-    parser.add_argument("--ct_backbone_lr", type=float, default=None)
-    parser.add_argument("--weight_decay", type=float, default=5e-5)
-    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--num_epochs", type=int, default=30)
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--ct_backbone_lr", type=float, default=1e-5)
+    parser.add_argument("--weight_decay", type=float, default=5e-4)
+    parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument(
         "--seed",
         type=int,
-        default=42,
+        default=123,
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
@@ -157,57 +136,28 @@ def parse_args():
 
 def main():
     args = parse_args()
-    args.data_dir = str(Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}")
-    label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
-    if not label_file.is_file():
-        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
+    seed_everything(args.seed)
+    args.data_dir = resolve_data_dir(args.data_dir, args.ct_roi_size)
 
-    # _ct = "_aug" if args.ct_augment else "_noaug"
-    _pr = "_pretrain" if args.ct_pretrained_path else ""
+    pretrain_tag = "_pretrain" if args.ct_pretrained_path else ""
     backbone_lr = args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
     default_suffix = (
-        # f"ct-{args.ct_model}-roi{args.ct_roi_size}{_ct}{_pr}"
-        f"ct-{args.ct_model}-roi{args.ct_roi_size}{_pr}"
+        f"ct-{args.ct_model}-roi{args.ct_roi_size}{pretrain_tag}"
         f"-bs{args.batch_size}-lr{args.lr:g}-blr{backbone_lr:g}"
         f"-wd{args.weight_decay:g}-bnfreeze-seed{args.seed}"
     )
-    if args.checkpoint_root is None:
-        args.checkpoint_root = os.path.join(
-            "/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix
-        )
-    if args.results_root is None:
-        args.results_root = os.path.join(
-            "/home/gly001/cqj/pa_ct_surv", "results", default_suffix
-        )
-
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
-    # print(f"Model: {args.ct_model} | Augment: {args.ct_augment}")
     print(f"Model: {args.ct_model} | CT augmentation: disabled")
-    effective_backbone_lr = (
-        args.lr if args.ct_backbone_lr is None else args.ct_backbone_lr
-    )
     print(
-        f"LR: {args.lr:g} | Backbone LR: {effective_backbone_lr:g} | Loss: Cox PH"
+        f"LR: {args.lr:g} | Backbone LR: {backbone_lr:g} | Loss: Cox PH"
     )
     if args.ct_pretrained_path:
         print(f"Pretrained: {args.ct_pretrained_path}")
-    print(f"Checkpoints: {args.checkpoint_root}")
-    print(f"Results: {args.results_root}")
 
-    os.makedirs(args.checkpoint_root, exist_ok=True)
-    os.makedirs(args.results_root, exist_ok=True)
-    with open(os.path.join(args.results_root, "run_config.yaml"), "w") as f:
-        yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
+    save_run_config(args, "ct", default_suffix)
 
-    # dataset = CT_Dataset(
-    #     args.data_dir, roi_size=args.ct_roi_size, augment=args.ct_augment
-    # )
     dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size)
-    eval_dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size, augment=False)
     print(f"Loaded {len(dataset)} samples")
-
-    train_indices, test_indices = locked_split_indices(dataset.samples)
-    print(f"Locked split: train={len(train_indices)}, test={len(test_indices)}")
 
     model_kwargs = {
         "model_name": args.ct_model,
@@ -216,38 +166,20 @@ def main():
         "dropout": args.dropout,
     }
 
-    fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
-    print("Test set is not accessed during CV")
+    fold_splits = cv_splits(dataset.samples)
     fold_results = []
 
     for fold, (train_idx, val_idx) in enumerate(fold_splits):
         print(f"\n{'=' * 50}\nFold {fold + 1}/5\n{'=' * 50}")
         seed_everything(args.seed)
 
-        train_subset = Subset(dataset, train_idx)
-        # noaug_train_subset = Subset(eval_dataset, train_idx)
-        val_subset = Subset(eval_dataset, val_idx)
-
-        train_loader = DataLoader(
-            train_subset,
-            batch_size=args.batch_size,
-            shuffle=True,
-            num_workers=args.num_workers,
-            pin_memory=True,
+        train_loader = build_dataloader(
+            dataset, indices=train_idx, batch_size=args.batch_size, shuffle=True,
+            num_workers=args.num_workers, merge_tail=True, pin_memory=True,
         )
-        # noaug_train_loader = DataLoader(
-        #     noaug_train_subset,
-        #     batch_size=args.batch_size,
-        #     shuffle=False,
-        #     num_workers=args.num_workers,
-        #     pin_memory=True,
-        # )
-        val_loader = DataLoader(
-            val_subset,
-            batch_size=args.batch_size,
-            shuffle=False,
-            num_workers=args.num_workers,
-            pin_memory=True,
+        val_loader = build_dataloader(
+            dataset, indices=val_idx, batch_size=args.batch_size,
+            num_workers=args.num_workers, pin_memory=True,
         )
 
         model = CT_Model(**model_kwargs).to(DEVICE)
@@ -259,8 +191,6 @@ def main():
         )
         checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        metrics_dir = Path(args.results_root) / f"fold_{fold}"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
 
         if args.eval_only:
             ckpt_path = checkpoint_dir / "best_model.pth"
@@ -279,40 +209,18 @@ def main():
                 checkpoint_dir,
             )
 
-        train_cindex, val_cindex, _, _, metrics = evaluate_survival(
-            model,
-            train_loader,
-            val_loader,
-            DEVICE,
-            save_dir=metrics_dir,
+        metrics = evaluate_survival(
+            model, train_loader, val_loader, DEVICE,
+            save_dir=Path(args.results_root) / f"fold_{fold}",
         )
-        gap = train_cindex - val_cindex
         print(
-            f"Fold {fold} | Train C-index: {train_cindex:.4f} | "
-            f"Val C-index: {val_cindex:.4f} | Gap: {gap:.4f}"
+            f"Fold {fold} | Train Loss: {metrics['train_loss']:.4f} | "
+            f"Train C-index: {metrics['train_cindex']:.4f} | "
+            f"Val Loss: {metrics['val_loss']:.4f} | Val C-index: {metrics['val_cindex']:.4f}"
         )
-        fold_results.append(
-            {
-                "fold": fold,
-                "cindex": val_cindex,
-                "train_cindex": train_cindex,
-                "val_cindex": val_cindex,
-                "gap": gap,
-                **metrics,
-            }
-        )
+        fold_results.append({"fold": fold, **metrics})
 
-    df = pd.DataFrame(fold_results)
-    mean_row = {"fold": "mean"}
-    for column in df.columns:
-        if column != "fold":
-            mean_row[column] = pd.to_numeric(df[column], errors="coerce").mean()
-    results_df = pd.concat([df, pd.DataFrame([mean_row])], ignore_index=True)
-    results_dir = Path(args.results_root)
-    results_dir.mkdir(parents=True, exist_ok=True)
-    results_df.to_csv(results_dir / "fold_metrics.csv", index=False)
-    print(f"\n{'=' * 50}\n5-Fold CV Summary\n{'=' * 50}")
-    print(f"  C-index mean: {mean_row['cindex']:.4f}")
+    save_cv_results(fold_results, args.results_root)
 
 
 if __name__ == "__main__":

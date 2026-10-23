@@ -1,0 +1,282 @@
+Using Device: cuda
+PA model: gabmil_new | k: None | nll loss | ABMIL dropout: 0.25 | attention_branches: 1
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v5/pathology/roi64_gabmil_new_nll_bins12-24-36_dropout0.25_epochs30_lr3e-5_wd1e-5_schedmultistep_ms2-5-15-25_gamma0.1_seed42
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v5/pathology/roi64_gabmil_new_nll_bins12-24-36_dropout0.25_epochs30_lr3e-5_wd1e-5_schedmultistep_ms2-5-15-25_gamma0.1_seed42
+LR scheduler: multistep | milestones=2,5,15,25 | gamma=0.1
+Survival loss: nll | fixed time cut points (months)=[12.0, 24.0, 36.0]
+Loaded 703 samples
+Locked split: train=562, test=141
+Test set is not accessed during CV
+
+==================================================
+Fold 1/5
+==================================================
+Epoch 1/30 | Train NLL: 1.1542 | Train C-index: 0.5993 | Val NLL: 1.0205 | Val C-index: 0.7222
+Learning rate after epoch 1: 3e-05
+Epoch 2/30 | Train NLL: 1.0357 | Train C-index: 0.6506 | Val NLL: 0.9914 | Val C-index: 0.7318
+Learning rate after epoch 2: 3e-06
+Epoch 3/30 | Train NLL: 0.9771 | Train C-index: 0.7393 | Val NLL: 0.9852 | Val C-index: 0.7337
+Learning rate after epoch 3: 3e-06
+Epoch 4/30 | Train NLL: 0.9785 | Train C-index: 0.7314 | Val NLL: 0.9818 | Val C-index: 0.7359
+Learning rate after epoch 4: 3e-06
+Epoch 5/30 | Train NLL: 0.9580 | Train C-index: 0.7390 | Val NLL: 0.9814 | Val C-index: 0.7362
+Learning rate after epoch 5: 3e-07
+Epoch 6/30 | Train NLL: 0.9647 | Train C-index: 0.7353 | Val NLL: 0.9812 | Val C-index: 0.7359
+Learning rate after epoch 6: 3e-07
+Epoch 7/30 | Train NLL: 0.9731 | Train C-index: 0.7257 | Val NLL: 0.9811 | Val C-index: 0.7362
+Learning rate after epoch 7: 3e-07
+Epoch 8/30 | Train NLL: 0.9764 | Train C-index: 0.7290 | Val NLL: 0.9808 | Val C-index: 0.7365
+Learning rate after epoch 8: 3e-07
+Epoch 9/30 | Train NLL: 0.9596 | Train C-index: 0.7351 | Val NLL: 0.9808 | Val C-index: 0.7362
+Learning rate after epoch 9: 3e-07
+Epoch 10/30 | Train NLL: 0.9605 | Train C-index: 0.7305 | Val NLL: 0.9806 | Val C-index: 0.7365
+Learning rate after epoch 10: 3e-07
+Epoch 11/30 | Train NLL: 0.9611 | Train C-index: 0.7295 | Val NLL: 0.9805 | Val C-index: 0.7362
+Learning rate after epoch 11: 3e-07
+Epoch 12/30 | Train NLL: 0.9541 | Train C-index: 0.7439 | Val NLL: 0.9804 | Val C-index: 0.7365
+Learning rate after epoch 12: 3e-07
+Epoch 13/30 | Train NLL: 0.9657 | Train C-index: 0.7307 | Val NLL: 0.9800 | Val C-index: 0.7362
+Learning rate after epoch 13: 3e-07
+Epoch 14/30 | Train NLL: 0.9571 | Train C-index: 0.7324 | Val NLL: 0.9800 | Val C-index: 0.7362
+Learning rate after epoch 14: 3e-07
+Epoch 15/30 | Train NLL: 0.9592 | Train C-index: 0.7291 | Val NLL: 0.9797 | Val C-index: 0.7362
+Learning rate after epoch 15: 3e-08
+Epoch 16/30 | Train NLL: 0.9522 | Train C-index: 0.7362 | Val NLL: 0.9797 | Val C-index: 0.7362
+Learning rate after epoch 16: 3e-08
+Epoch 17/30 | Train NLL: 0.9493 | Train C-index: 0.7411 | Val NLL: 0.9797 | Val C-index: 0.7365
+Learning rate after epoch 17: 3e-08
+Epoch 18/30 | Train NLL: 0.9668 | Train C-index: 0.7276 | Val NLL: 0.9797 | Val C-index: 0.7365
+Learning rate after epoch 18: 3e-08
+Early stopping at epoch 18
+Fold 0 best C-index: 0.7365
+
+Extra survival metrics:
+cutoff_from_train_median: -3.272429
+n_test: 113
+n_high_risk: 48
+n_low_risk: 65
+n_event_test: 38
+logrank_stat: 20.126233
+logrank_p: 0.000007
+auc_36m: 0.735524
+auc_60m: 0.767253
+HR_high_vs_low: 4.395263
+HR_95CI_lower: 2.170904
+HR_95CI_upper: 8.898753
+cox_p: 0.000039
+Fold 0 | Train C-index: 0.7441 | Val C-index: 0.7365 | Gap: 0.0076
+
+==================================================
+Fold 2/5
+==================================================
+Epoch 1/30 | Train NLL: 1.1929 | Train C-index: 0.5509 | Val NLL: 1.0003 | Val C-index: 0.7422
+Learning rate after epoch 1: 3e-05
+Epoch 2/30 | Train NLL: 1.0411 | Train C-index: 0.6508 | Val NLL: 0.9686 | Val C-index: 0.7468
+Learning rate after epoch 2: 3e-06
+Epoch 3/30 | Train NLL: 1.0040 | Train C-index: 0.7158 | Val NLL: 0.9623 | Val C-index: 0.7481
+Learning rate after epoch 3: 3e-06
+Epoch 4/30 | Train NLL: 0.9822 | Train C-index: 0.7156 | Val NLL: 0.9585 | Val C-index: 0.7461
+Learning rate after epoch 4: 3e-06
+Epoch 5/30 | Train NLL: 0.9634 | Train C-index: 0.7327 | Val NLL: 0.9556 | Val C-index: 0.7468
+Learning rate after epoch 5: 3e-07
+Epoch 6/30 | Train NLL: 0.9679 | Train C-index: 0.7381 | Val NLL: 0.9553 | Val C-index: 0.7468
+Learning rate after epoch 6: 3e-07
+Epoch 7/30 | Train NLL: 0.9874 | Train C-index: 0.7287 | Val NLL: 0.9550 | Val C-index: 0.7471
+Learning rate after epoch 7: 3e-07
+Epoch 8/30 | Train NLL: 0.9740 | Train C-index: 0.7267 | Val NLL: 0.9546 | Val C-index: 0.7471
+Learning rate after epoch 8: 3e-07
+Epoch 9/30 | Train NLL: 0.9696 | Train C-index: 0.7428 | Val NLL: 0.9541 | Val C-index: 0.7471
+Learning rate after epoch 9: 3e-07
+Epoch 10/30 | Train NLL: 0.9641 | Train C-index: 0.7334 | Val NLL: 0.9538 | Val C-index: 0.7471
+Learning rate after epoch 10: 3e-07
+Epoch 11/30 | Train NLL: 0.9748 | Train C-index: 0.7268 | Val NLL: 0.9534 | Val C-index: 0.7471
+Learning rate after epoch 11: 3e-07
+Epoch 12/30 | Train NLL: 0.9803 | Train C-index: 0.7300 | Val NLL: 0.9532 | Val C-index: 0.7471
+Learning rate after epoch 12: 3e-07
+Epoch 13/30 | Train NLL: 0.9707 | Train C-index: 0.7314 | Val NLL: 0.9528 | Val C-index: 0.7474
+Learning rate after epoch 13: 3e-07
+Early stopping at epoch 13
+Fold 1 best C-index: 0.7481
+
+Extra survival metrics:
+cutoff_from_train_median: -3.186195
+n_test: 113
+n_high_risk: 53
+n_low_risk: 60
+n_event_test: 39
+logrank_stat: 22.207603
+logrank_p: 0.000002
+auc_36m: 0.773341
+auc_60m: 0.784322
+HR_high_vs_low: 5.767956
+HR_95CI_lower: 2.534447
+HR_95CI_upper: 13.126855
+cox_p: 0.000030
+Fold 1 | Train C-index: 0.7392 | Val C-index: 0.7481 | Gap: -0.0089
+
+==================================================
+Fold 3/5
+==================================================
+Epoch 1/30 | Train NLL: 1.1564 | Train C-index: 0.6093 | Val NLL: 1.0134 | Val C-index: 0.6878
+Learning rate after epoch 1: 3e-05
+Epoch 2/30 | Train NLL: 1.0205 | Train C-index: 0.6946 | Val NLL: 1.0473 | Val C-index: 0.6939
+Learning rate after epoch 2: 3e-06
+Epoch 3/30 | Train NLL: 0.9852 | Train C-index: 0.7387 | Val NLL: 0.9820 | Val C-index: 0.6932
+Learning rate after epoch 3: 3e-06
+Epoch 4/30 | Train NLL: 0.9779 | Train C-index: 0.7381 | Val NLL: 0.9814 | Val C-index: 0.6946
+Learning rate after epoch 4: 3e-06
+Epoch 5/30 | Train NLL: 0.9638 | Train C-index: 0.7399 | Val NLL: 0.9802 | Val C-index: 0.6949
+Learning rate after epoch 5: 3e-07
+Epoch 6/30 | Train NLL: 0.9692 | Train C-index: 0.7411 | Val NLL: 0.9806 | Val C-index: 0.6942
+Learning rate after epoch 6: 3e-07
+Epoch 7/30 | Train NLL: 0.9615 | Train C-index: 0.7455 | Val NLL: 0.9808 | Val C-index: 0.6949
+Learning rate after epoch 7: 3e-07
+Epoch 8/30 | Train NLL: 0.9687 | Train C-index: 0.7400 | Val NLL: 0.9813 | Val C-index: 0.6946
+Learning rate after epoch 8: 3e-07
+Epoch 9/30 | Train NLL: 0.9567 | Train C-index: 0.7498 | Val NLL: 0.9813 | Val C-index: 0.6946
+Learning rate after epoch 9: 3e-07
+Epoch 10/30 | Train NLL: 0.9583 | Train C-index: 0.7378 | Val NLL: 0.9814 | Val C-index: 0.6942
+Learning rate after epoch 10: 3e-07
+Epoch 11/30 | Train NLL: 0.9515 | Train C-index: 0.7497 | Val NLL: 0.9815 | Val C-index: 0.6946
+Learning rate after epoch 11: 3e-07
+Epoch 12/30 | Train NLL: 0.9514 | Train C-index: 0.7525 | Val NLL: 0.9813 | Val C-index: 0.6946
+Learning rate after epoch 12: 3e-07
+Epoch 13/30 | Train NLL: 0.9535 | Train C-index: 0.7522 | Val NLL: 0.9815 | Val C-index: 0.6949
+Learning rate after epoch 13: 3e-07
+Epoch 14/30 | Train NLL: 0.9562 | Train C-index: 0.7470 | Val NLL: 0.9815 | Val C-index: 0.6939
+Learning rate after epoch 14: 3e-07
+Epoch 15/30 | Train NLL: 0.9677 | Train C-index: 0.7424 | Val NLL: 0.9818 | Val C-index: 0.6939
+Learning rate after epoch 15: 3e-08
+Early stopping at epoch 15
+Fold 2 best C-index: 0.6949
+
+Extra survival metrics:
+cutoff_from_train_median: -3.318912
+n_test: 112
+n_high_risk: 63
+n_low_risk: 49
+n_event_test: 38
+logrank_stat: 17.952262
+logrank_p: 0.000023
+auc_36m: 0.731715
+auc_60m: 0.704131
+HR_high_vs_low: 6.015600
+HR_95CI_lower: 2.342224
+HR_95CI_upper: 15.450034
+cox_p: 0.000193
+Fold 2 | Train C-index: 0.7535 | Val C-index: 0.6949 | Gap: 0.0586
+
+==================================================
+Fold 4/5
+==================================================
+Epoch 1/30 | Train NLL: 1.1913 | Train C-index: 0.5414 | Val NLL: 1.0597 | Val C-index: 0.7091
+Learning rate after epoch 1: 3e-05
+Epoch 2/30 | Train NLL: 1.0065 | Train C-index: 0.7121 | Val NLL: 1.0202 | Val C-index: 0.7078
+Learning rate after epoch 2: 3e-06
+Epoch 3/30 | Train NLL: 0.9585 | Train C-index: 0.7377 | Val NLL: 1.0239 | Val C-index: 0.7094
+Learning rate after epoch 3: 3e-06
+Epoch 4/30 | Train NLL: 0.9545 | Train C-index: 0.7303 | Val NLL: 1.0212 | Val C-index: 0.7097
+Learning rate after epoch 4: 3e-06
+Epoch 5/30 | Train NLL: 0.9478 | Train C-index: 0.7358 | Val NLL: 1.0211 | Val C-index: 0.7107
+Learning rate after epoch 5: 3e-07
+Epoch 6/30 | Train NLL: 0.9588 | Train C-index: 0.7307 | Val NLL: 1.0205 | Val C-index: 0.7107
+Learning rate after epoch 6: 3e-07
+Epoch 7/30 | Train NLL: 0.9514 | Train C-index: 0.7290 | Val NLL: 1.0205 | Val C-index: 0.7114
+Learning rate after epoch 7: 3e-07
+Epoch 8/30 | Train NLL: 0.9493 | Train C-index: 0.7323 | Val NLL: 1.0205 | Val C-index: 0.7114
+Learning rate after epoch 8: 3e-07
+Epoch 9/30 | Train NLL: 0.9452 | Train C-index: 0.7405 | Val NLL: 1.0201 | Val C-index: 0.7117
+Learning rate after epoch 9: 3e-07
+Epoch 10/30 | Train NLL: 0.9474 | Train C-index: 0.7329 | Val NLL: 1.0209 | Val C-index: 0.7117
+Learning rate after epoch 10: 3e-07
+Epoch 11/30 | Train NLL: 0.9445 | Train C-index: 0.7346 | Val NLL: 1.0206 | Val C-index: 0.7117
+Learning rate after epoch 11: 3e-07
+Epoch 12/30 | Train NLL: 0.9459 | Train C-index: 0.7456 | Val NLL: 1.0203 | Val C-index: 0.7117
+Learning rate after epoch 12: 3e-07
+Epoch 13/30 | Train NLL: 0.9395 | Train C-index: 0.7375 | Val NLL: 1.0206 | Val C-index: 0.7117
+Learning rate after epoch 13: 3e-07
+Epoch 14/30 | Train NLL: 0.9436 | Train C-index: 0.7349 | Val NLL: 1.0205 | Val C-index: 0.7114
+Learning rate after epoch 14: 3e-07
+Epoch 15/30 | Train NLL: 0.9497 | Train C-index: 0.7358 | Val NLL: 1.0207 | Val C-index: 0.7114
+Learning rate after epoch 15: 3e-08
+Epoch 16/30 | Train NLL: 0.9415 | Train C-index: 0.7384 | Val NLL: 1.0207 | Val C-index: 0.7117
+Learning rate after epoch 16: 3e-08
+Epoch 17/30 | Train NLL: 0.9284 | Train C-index: 0.7513 | Val NLL: 1.0207 | Val C-index: 0.7117
+Learning rate after epoch 17: 3e-08
+Epoch 18/30 | Train NLL: 0.9481 | Train C-index: 0.7370 | Val NLL: 1.0206 | Val C-index: 0.7117
+Learning rate after epoch 18: 3e-08
+Epoch 19/30 | Train NLL: 0.9361 | Train C-index: 0.7406 | Val NLL: 1.0207 | Val C-index: 0.7117
+Learning rate after epoch 19: 3e-08
+Early stopping at epoch 19
+Fold 3 best C-index: 0.7117
+
+Extra survival metrics:
+cutoff_from_train_median: -3.282226
+n_test: 112
+n_high_risk: 44
+n_low_risk: 68
+n_event_test: 38
+logrank_stat: 8.427671
+logrank_p: 0.003696
+auc_36m: 0.747459
+auc_60m: 0.668193
+HR_high_vs_low: 2.533371
+HR_95CI_lower: 1.323517
+HR_95CI_upper: 4.849178
+cox_p: 0.005014
+Fold 3 | Train C-index: 0.7472 | Val C-index: 0.7117 | Gap: 0.0354
+
+==================================================
+Fold 5/5
+==================================================
+Epoch 1/30 | Train NLL: 1.1840 | Train C-index: 0.5921 | Val NLL: 1.0312 | Val C-index: 0.6471
+Learning rate after epoch 1: 3e-05
+Epoch 2/30 | Train NLL: 1.0098 | Train C-index: 0.7090 | Val NLL: 1.1714 | Val C-index: 0.6487
+Learning rate after epoch 2: 3e-06
+Epoch 3/30 | Train NLL: 0.9829 | Train C-index: 0.7396 | Val NLL: 1.0419 | Val C-index: 0.6474
+Learning rate after epoch 3: 3e-06
+Epoch 4/30 | Train NLL: 0.9442 | Train C-index: 0.7547 | Val NLL: 1.0333 | Val C-index: 0.6494
+Learning rate after epoch 4: 3e-06
+Epoch 5/30 | Train NLL: 0.9422 | Train C-index: 0.7503 | Val NLL: 1.0324 | Val C-index: 0.6481
+Learning rate after epoch 5: 3e-07
+Epoch 6/30 | Train NLL: 0.9484 | Train C-index: 0.7584 | Val NLL: 1.0325 | Val C-index: 0.6474
+Learning rate after epoch 6: 3e-07
+Epoch 7/30 | Train NLL: 0.9446 | Train C-index: 0.7555 | Val NLL: 1.0326 | Val C-index: 0.6474
+Learning rate after epoch 7: 3e-07
+Epoch 8/30 | Train NLL: 0.9484 | Train C-index: 0.7565 | Val NLL: 1.0328 | Val C-index: 0.6474
+Learning rate after epoch 8: 3e-07
+Epoch 9/30 | Train NLL: 0.9309 | Train C-index: 0.7632 | Val NLL: 1.0327 | Val C-index: 0.6474
+Learning rate after epoch 9: 3e-07
+Epoch 10/30 | Train NLL: 0.9551 | Train C-index: 0.7527 | Val NLL: 1.0328 | Val C-index: 0.6474
+Learning rate after epoch 10: 3e-07
+Epoch 11/30 | Train NLL: 0.9404 | Train C-index: 0.7556 | Val NLL: 1.0326 | Val C-index: 0.6477
+Learning rate after epoch 11: 3e-07
+Epoch 12/30 | Train NLL: 0.9505 | Train C-index: 0.7515 | Val NLL: 1.0327 | Val C-index: 0.6477
+Learning rate after epoch 12: 3e-07
+Epoch 13/30 | Train NLL: 0.9409 | Train C-index: 0.7547 | Val NLL: 1.0325 | Val C-index: 0.6474
+Learning rate after epoch 13: 3e-07
+Epoch 14/30 | Train NLL: 0.9355 | Train C-index: 0.7624 | Val NLL: 1.0325 | Val C-index: 0.6474
+Learning rate after epoch 14: 3e-07
+Early stopping at epoch 14
+Fold 4 best C-index: 0.6494
+
+Extra survival metrics:
+cutoff_from_train_median: -3.311154
+n_test: 112
+n_high_risk: 68
+n_low_risk: 44
+n_event_test: 38
+logrank_stat: 2.072437
+logrank_p: 0.149982
+auc_36m: 0.698678
+auc_60m: 0.641709
+HR_high_vs_low: 1.670283
+HR_95CI_lower: 0.822133
+HR_95CI_upper: 3.393424
+cox_p: 0.156065
+Fold 4 | Train C-index: 0.7629 | Val C-index: 0.6494 | Gap: 0.1135
+
+==================================================
+5-Fold CV Summary
+==================================================
+  C-index mean: 0.7081

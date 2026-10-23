@@ -4,33 +4,46 @@ import torch.nn.functional as F
 
 
 class ABMIL(nn.Module):
-    """Ilse-style attention MIL adapted to a Cox survival risk head."""
+    """Attention MIL with pre-pooling projection and a post-pooling MLP."""
 
     def __init__(
         self,
         in_dim=1024,
         hidden_dim=512,
         attention_dim=128,
+        post_hidden_dim=256,
         dropout=0.0,
         attention_branches=1,
+        n_bins=None,
     ):
         super().__init__()
         if not 0.0 <= dropout < 1.0:
             raise ValueError("dropout must be in [0, 1)")
         if attention_branches <= 0:
             raise ValueError("attention_branches must be positive")
+
         self.attention_branches = attention_branches
-        self.projector = nn.Sequential(
-            nn.Linear(in_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
+        if n_bins is not None and n_bins <= 0:
+            raise ValueError("n_bins must be positive when provided")
+        self.n_bins = n_bins
+        self.compression = nn.Sequential(
+            nn.Linear(in_dim, hidden_dim), nn.ReLU(), nn.Dropout(dropout)
         )
         self.attention = nn.Sequential(
             nn.Linear(hidden_dim, attention_dim),
             nn.Tanh(),
+            nn.Dropout(dropout),
             nn.Linear(attention_dim, attention_branches),
         )
-        self.risk_head = nn.Linear(hidden_dim * attention_branches, 1)
+        pooled_dim = hidden_dim * attention_branches
+        self.post_compression = nn.Sequential(
+            nn.Linear(pooled_dim, post_hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+        )
+        self.risk_head = nn.Linear(
+            post_hidden_dim, n_bins if n_bins is not None else 1
+        )
 
     def pool_attention(self, H, logits):
         weights = F.softmax(logits.transpose(1, 2), dim=2)
@@ -40,11 +53,18 @@ class ABMIL(nn.Module):
     def forward(self, x):
         if x.dim() == 2:
             x = x.unsqueeze(0)
-        H = self.projector(x)
+        H = self.compression(x)
         logits = self.attention(H)
         pooled, weights = self.pool_attention(H, logits)
-        out = self.risk_head(pooled)
-        return out.squeeze(-1), pooled, weights
+        pooled = self.post_compression(pooled)
+        output = self.risk_head(pooled)
+        if self.n_bins is None:
+            return output.squeeze(-1), pooled, weights
+
+        hazards = torch.sigmoid(output)
+        survival = torch.cumprod(1.0 - hazards, dim=1)
+        risk = -survival.sum(dim=1)
+        return risk, pooled, weights, hazards, survival
 
 
 class ABMIL_RandomSample(ABMIL):
@@ -62,6 +82,7 @@ class ABMIL_RandomSample(ABMIL):
         k=None,
         dropout=0.0,
         attention_branches=1,
+        n_bins=None,
     ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_RandomSample requires a positive k")
@@ -71,6 +92,7 @@ class ABMIL_RandomSample(ABMIL):
             attention_dim=attention_dim,
             dropout=dropout,
             attention_branches=attention_branches,
+            n_bins=n_bins,
         )
         self.k = int(k)
 
@@ -101,6 +123,7 @@ class ABMIL_TopK(ABMIL):
         k=None,
         dropout=0.0,
         attention_branches=1,
+        n_bins=None,
     ):
         if k is None or k <= 0:
             raise ValueError("ABMIL_TopK requires a positive k")
@@ -110,6 +133,7 @@ class ABMIL_TopK(ABMIL):
             attention_dim=attention_dim,
             dropout=dropout,
             attention_branches=attention_branches,
+            n_bins=n_bins,
         )
         self.k = k
 

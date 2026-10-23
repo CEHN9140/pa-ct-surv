@@ -1,16 +1,8 @@
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import torch
-from lifelines import CoxPHFitter, KaplanMeierFitter
-from lifelines.statistics import logrank_test
-from sksurv.metrics import concordance_index_censored, cumulative_dynamic_auc
-from sksurv.util import Surv
+from sksurv.metrics import concordance_index_censored
 
 
 def cox_loss(risk, time, event, eps=1e-8):
@@ -27,195 +19,66 @@ def cox_loss(risk, time, event, eps=1e-8):
     return loss / (event.float().sum() + eps)
 
 
-def evaluate_survival(
-    model,
-    train_loader,
-    val_loader,
-    device,
-    save_dir=None,
-    time_col="dfs.month",
-    event_col="dfs.status",
-    risk_col="risk_score",
-    eval_times=(36.0, 60.0),
-    include_hr=True,
-    km_title="Kaplan-Meier Curve: High-risk vs Low-risk",
-):
-    predictions = []
+def discrete_nll_loss(hazards, survival, disc_label, event, eps=1e-7):
+    """Discrete-time survival NLL with event=1 and censoring=0 labels."""
+    disc_label = disc_label.view(-1, 1).long()
+    event = event.view(-1, 1).float()
+    censoring = 1.0 - event
+    survival_padded = torch.cat(
+        [torch.ones_like(censoring), survival], dim=1
+    )
+    survival_before = torch.gather(survival_padded, 1, disc_label)
+    survival_through = torch.gather(survival_padded, 1, disc_label + 1)
+    event_hazard = torch.gather(hazards, 1, disc_label)
+    event_loss = -(
+        torch.log(survival_before.clamp_min(eps))
+        + torch.log(event_hazard.clamp_min(eps))
+    )
+    censor_loss = -torch.log(survival_through.clamp_min(eps))
+    return (event * event_loss + censoring * censor_loss).mean()
+
+
+def evaluate_survival(model, train_loader, val_loader, device, save_dir=None):
+    """Evaluate with dropout disabled; optionally export patient predictions."""
     model.eval()
+    metrics = {}
+    if save_dir is not None:
+        save_dir = Path(save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+    is_nll = getattr(model, "time_bins", None) is not None
     with torch.no_grad():
-        for loader in (train_loader, val_loader):
-            risks, times, events, case_ids = [], [], [], []
+        for split, loader in (("train", train_loader), ("val", val_loader)):
+            risks, times, events, nll_losses, case_ids = [], [], [], [], []
             for batch in loader:
                 if len(batch) == 4:
                     feat, event, time, case_id = batch
                     output = model(feat.to(device))
-                elif len(batch) == 5:
-                    ct, pa, event, time, case_id = batch
-                    ct = ct.to(device)
-                    if isinstance(pa, list):
-                        output = model(ct)
-                    else:
-                        output = model(ct, pa.to(device))
-                elif len(batch) == 6:
-                    ct, pa, event, time, case_id, _ = batch
-                    ct = ct.to(device)
-                    if isinstance(pa, list):
-                        output = model(ct)
-                    else:
-                        output = model(ct, pa.to(device))
                 else:
-                    raise ValueError(
-                        "Expected a 4-, 5-, or 6-field survival batch"
-                    )
-                risk = output[0] if isinstance(output, tuple) else output
-                risks.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
-                times.extend(time.detach().cpu().numpy().reshape(-1).tolist())
-                events.extend(
-                    event.detach().cpu().numpy().reshape(-1).astype(int).tolist()
-                )
+                    ct, pa, event, time, case_id = batch[:5]
+                    output = model(ct.to(device)) if isinstance(pa, list) else model(ct.to(device), pa.to(device))
                 case_ids.extend(case_id)
+                risk = output[0] if isinstance(output, tuple) else output
+                risks.append(risk.detach().cpu().reshape(-1))
+                times.append(time.detach().cpu().reshape(-1))
+                events.append(event.detach().cpu().reshape(-1))
+                if is_nll:
+                    hazards, survival = output[3:5]
+                    labels = torch.bucketize(time.to(device), model.time_bins).clamp(max=hazards.size(1) - 1)
+                    nll_losses.append(float(discrete_nll_loss(hazards, survival, labels, event.to(device))) * len(time))
+            risk, time, event = torch.cat(risks), torch.cat(times), torch.cat(events)
+            loss = sum(nll_losses) / len(time) if is_nll else float(cox_loss(
+                risk.to(device), time.to(device), event.to(device)
+            ))
+            cindex = concordance_index_censored(event.numpy().astype(bool), time.numpy(), risk.numpy())[0]
+            metrics.update({f"{split}_loss": loss, f"{split}_cindex": float(cindex)})
+            if save_dir is not None:
+                pd.DataFrame({"case_id": case_ids, "dfs.month": time.numpy(),
+                              "dfs.status": event.numpy(), "risk_score": risk.numpy()
+                              }).to_csv(save_dir / f"{split}_predictions.csv", index=False)
+    if save_dir is not None:
+        from visualization.survival_plots import analyze_fold, read_predictions
 
-            risks = np.asarray(risks, dtype=np.float32)
-            times = np.asarray(times, dtype=np.float32)
-            events = np.asarray(events, dtype=int)
-            cindex, *_ = concordance_index_censored(
-                events.astype(bool), times, risks
-            )
-            predictions.append(
-                (
-                    float(cindex),
-                    pd.DataFrame(
-                        {
-                            "case_id": case_ids,
-                            "dfs.month": times,
-                            "dfs.status": events,
-                            "risk_score": risks,
-                        }
-                    ),
-                )
-            )
-
-    (train_cindex, train_df), (val_cindex, val_df) = predictions
-
-    if save_dir is None:
-        return train_cindex, val_cindex, train_df, val_df
-
-    save_dir = Path(save_dir)
-    auc_stats = time_dependent_auc(
-        train_df, val_df, time_col, event_col, risk_col, eval_times
-    )
-    cutoff = float(train_df[risk_col].median())
-    val_df["risk_group_binary"] = (val_df[risk_col] >= cutoff).astype(int)
-    val_df["risk_group"] = np.where(
-        val_df["risk_group_binary"] == 1, "High risk", "Low risk"
-    )
-
-    metrics = {
-        "cutoff_from_train_median": cutoff,
-        "n_test": int(len(val_df)),
-        "n_high_risk": int((val_df["risk_group_binary"] == 1).sum()),
-        "n_low_risk": int((val_df["risk_group_binary"] == 0).sum()),
-        "n_event_test": int(val_df[event_col].sum()),
-        **plot_km_and_logrank(val_df, save_dir, time_col, event_col, km_title),
-        **auc_stats,
-    }
-    if include_hr:
-        metrics.update(cox_hr(val_df, time_col, event_col))
-
-    train_df.to_csv(save_dir / "train_predictions.csv", index=False)
-    val_df.to_csv(save_dir / "val_predictions.csv", index=False)
-
-    print("\nExtra survival metrics:")
-    for key, value in metrics.items():
-        print(f"{key}: {value:.6f}" if isinstance(value, float) else f"{key}: {value}")
-    return train_cindex, val_cindex, train_df, val_df, metrics
-
-
-def time_dependent_auc(train_df, test_df, time_col, event_col, risk_col, eval_times):
-    y_train = Surv.from_arrays(
-        train_df[event_col].astype(bool).values, train_df[time_col].values
-    )
-    y_test = Surv.from_arrays(
-        test_df[event_col].astype(bool).values, test_df[time_col].values
-    )
-    test_risk = test_df[risk_col].values.astype(float)
-
-    stats, valid_times = {}, []
-    max_train_time = train_df[time_col].max()
-    max_test_time = test_df[time_col].max()
-    for t in eval_times:
-        has_case = ((test_df[time_col] <= t) & (test_df[event_col] == 1)).any()
-        has_control = (test_df[time_col] > t).any()
-        if has_case and has_control and t < max_train_time and t < max_test_time:
-            valid_times.append(float(t))
-        else:
-            stats[f"auc_{int(t)}m"] = np.nan
-            print(f"[Warning] Skip {t:g}m AUC: case={has_case}, control={has_control}")
-
-    if not valid_times:
-        return stats
-
-    try:
-        aucs, _ = cumulative_dynamic_auc(
-            y_train, y_test, test_risk, np.asarray(valid_times)
-        )
-    except Exception as exc:
-        print(f"[Warning] Time-dependent AUC failed: {exc}")
-        for t in valid_times:
-            stats[f"auc_{int(t)}m"] = np.nan
-        return stats
-
-    stats.update({f"auc_{int(t)}m": float(auc) for t, auc in zip(valid_times, aucs)})
-    return stats
-
-
-def plot_km_and_logrank(test_df, save_dir, time_col, event_col, title):
-    high = test_df[test_df["risk_group_binary"] == 1]
-    low = test_df[test_df["risk_group_binary"] == 0]
-
-    fig, ax = plt.subplots(figsize=(6.5, 5.5))
-    for name, group in (("High risk", high), ("Low risk", low)):
-        if len(group):
-            KaplanMeierFitter().fit(
-                group[time_col], group[event_col], label=f"{name} (n={len(group)})"
-            ).plot_survival_function(ax=ax, ci_show=True)
-
-    logrank_p, logrank_stat = np.nan, np.nan
-    if len(high) and len(low):
-        result = logrank_test(
-            high[time_col], low[time_col], high[event_col], low[event_col]
-        )
-        logrank_p = float(result.p_value)
-        logrank_stat = float(result.test_statistic)
-        ax.text(0.05, 0.05, f"log-rank p = {logrank_p:.4g}", transform=ax.transAxes)
-
-    ax.set_title(title)
-    ax.set_xlabel("DFS time (months)")
-    ax.set_ylabel("Disease-free survival probability")
-    ax.grid(alpha=0.3)
-    fig.tight_layout()
-    fig.savefig(Path(save_dir) / "km_high_vs_low.png", dpi=300)
-    plt.close(fig)
-    return {"logrank_stat": logrank_stat, "logrank_p": logrank_p}
-
-
-def cox_hr(test_df, time_col="dfs.month", event_col="dfs.status"):
-    try:
-        df = test_df[[time_col, event_col, "risk_group_binary"]].copy()
-        cph = CoxPHFitter()
-        cph.fit(df, duration_col=time_col, event_col=event_col)
-        row = cph.summary.loc["risk_group_binary"]
-        return {
-            "HR_high_vs_low": float(np.exp(row["coef"])),
-            "HR_95CI_lower": float(np.exp(row["coef lower 95%"])),
-            "HR_95CI_upper": float(np.exp(row["coef upper 95%"])),
-            "cox_p": float(row["p"]),
-        }
-    except Exception as exc:
-        print(f"[Warning] Cox HR failed: {exc}")
-        return {
-            "HR_high_vs_low": np.nan,
-            "HR_95CI_lower": np.nan,
-            "HR_95CI_upper": np.nan,
-            "cox_p": np.nan,
-        }
+        extra = analyze_fold(read_predictions(save_dir / "train_predictions.csv"),
+                             read_predictions(save_dir / "val_predictions.csv"), save_dir)
+        metrics.update({key: value for key, value in extra.items() if key not in metrics})
+    return metrics

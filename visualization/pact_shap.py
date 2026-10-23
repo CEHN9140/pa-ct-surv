@@ -24,7 +24,7 @@ import pandas as pd
 import torch
 import yaml
 from dataset import Pa_CT_Dataset
-from final_utils import cv_fold_indices, locked_split_indices
+from dataset import cv_fold_indices, locked_split_indices
 from model.build import Pa_CT_Model
 
 
@@ -42,18 +42,20 @@ def fuse_risk(
         alpha = torch.sigmoid(model.risk_weight)
         return (alpha * ct_risk + (1 - alpha) * pa_risk).reshape(-1)
 
-    risk = model.fusion(ct_feature, pa_feature)
-    if model.fusion_type == "bilinear":
-        risk = model.fused_head(risk).squeeze(-1)
+    if model.fusion_requires_patches:
+        raise NotImplementedError("Global-feature Shapley analysis cannot explain patch/token fusion")
+    risk = model.fusion(model.ct_norm(ct_feature), model.pa_norm(pa_feature))
+    if getattr(model.fusion, "is_new_fusion", False):
+        risk = risk[0]
     return risk.reshape(-1)
 
 
 def load_model(config, checkpoint, device):
     pa_model_name = config["pa_model"]
     pa_topk = None
-    if pa_model_name.endswith("-topk"):
+    if pa_model_name.endswith("-topk") or pa_model_name == "abmil_randsample":
         if config.get("k") is None:
-            raise ValueError("Current PACT top-k model requires a numeric k")
+            raise ValueError("Current PACT pathology model requires a numeric k")
         pa_topk = int(config["k"])
 
     model = Pa_CT_Model(
@@ -61,6 +63,8 @@ def load_model(config, checkpoint, device):
         ct_model_name=config.get("ct_model", "resnet18"),
         pa_topk=pa_topk,
         fusion_type=config.get("fusion_type", "concat"),
+        fusion_dropout=float(config.get("fusion_dropout", 0.0)),
+        norm=config.get("norm", "none"),
         # The PACT checkpoint already contains the complete CT branch.
         ct_pretrained_path=None,
     )
@@ -69,6 +73,8 @@ def load_model(config, checkpoint, device):
     model.to(device).eval()
     for parameter in model.parameters():
         parameter.requires_grad = False
+    if model.fusion_requires_patches:
+        raise NotImplementedError("This Shapley entry supports global-feature fusion only")
     return model
 
 

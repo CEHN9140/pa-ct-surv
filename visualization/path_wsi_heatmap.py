@@ -9,9 +9,9 @@ _project_root = Path(__file__).resolve().parents[1]
 if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
-import numpy as np
 import torch
 
+from dataset import load_path_feature
 from visualization.vis_utils import (
     draw_heatmap_overlay,
     ensure_dir,
@@ -20,7 +20,6 @@ from visualization.vis_utils import (
     get_split_ids,
     load_visualization_case_file,
     load_h5_coords,
-    load_path_feature,
     load_visualization_model,
     save_json,
     save_top_patches,
@@ -63,7 +62,7 @@ def _attention_output(model_type, model, features, device):
         raise ValueError(f"Expected UNI features [N, 1024], got {tuple(features.shape)}")
     target = model.pa_branch if model_type == "pact" else model.mil
     with torch.no_grad():
-        risk, _pooled, attention = target(features.unsqueeze(0).to(device))
+        risk, _pooled, attention = target(features.unsqueeze(0).to(device))[:3]
     if attention.ndim == 3:
         if attention.shape[0] != 1 or attention.shape[2] != 1:
             raise ValueError(
@@ -99,7 +98,7 @@ def process_single_case(slide_id, args, model, metadata, device):
     row = find_case_row(data_dir, slide_id=slide_id, roi_size=roi_size)
     slide_id = str(row["pa_id"])
     features = load_path_feature(str(row["pa_path"]))
-    h5_path = str(row["h5_path"])
+    h5_path = str(row["coord_path"] if "coord_path" in row.index else row["h5_path"])
     coords = load_h5_coords(h5_path)
     if features.shape[0] != coords.shape[0]:
         raise ValueError(
@@ -128,6 +127,8 @@ def process_single_case(slide_id, args, model, metadata, device):
     save_json(
         {
             "model_type": args.model_type,
+            "attention_scope": "pathology_branch_only",
+            "risk_scope": "pathology_branch_only",
             "run_tag": metadata["run_tag"], "seed": metadata["seed"], "fold": args.fold,
             "slide_id": slide_id, "ct_id": str(row["ct_id"]), "risk": risk,
             "attention_sum": float(attention.sum()), "num_patches": int(len(attention)),

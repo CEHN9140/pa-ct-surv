@@ -1,117 +1,22 @@
 import argparse
-import os
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import torch
-import torch.nn.functional as F
 import yaml
 from sksurv.metrics import concordance_index_censored
-from torch.utils.data import DataLoader, Subset
 
-from cox_utils import (
-    cox_loss,
-    evaluate_survival,
-)
-from dataset import Path_Dataset
-from final_utils import (
-    cv_fold_indices,
-    locked_split_indices,
-    seed_everything,
-)
+from cox_utils import cox_loss, discrete_nll_loss, evaluate_survival
+from dataset import Path_Dataset, build_dataloader, cox_batch_sizes, resolve_data_dir, cv_splits
+from utils import seed_everything, save_run_config, save_cv_results
 from model.build import Pa_Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def attention_statistics(weights):
-    """Return attention concentration statistics for one WSI."""
-    weights = weights.detach().float().reshape(-1)
-    weights = weights / weights.sum().clamp_min(torch.finfo(weights.dtype).eps)
-    num_patches = int(weights.numel())
-    entropy = -(weights * weights.clamp_min(1e-12).log()).sum()
-    entropy_norm = entropy / np.log(num_patches) if num_patches > 1 else 0.0
-    effective_patch_num = 1.0 / (weights.square().sum().item())
-    return {
-        "num_patches": num_patches,
-        "max_attention": float(weights.max().item()),
-        "attention_entropy": float(entropy.item()),
-        "attention_entropy_norm": float(entropy_norm),
-        "effective_patch_num": float(effective_patch_num),
-        "effective_patch_ratio": float(effective_patch_num / num_patches),
-    }
-
-
-def collect_attention_stats(model, loader, device, split, epoch):
-    """Evaluate full WSIs and collect per-branch attention statistics."""
-    rows = []
-    model.eval()
-    with torch.no_grad():
-        for feat, _, _, case_id in loader:
-            output = model(feat.to(device, non_blocking=True))
-            if not isinstance(output, tuple) or len(output) < 3:
-                return pd.DataFrame()
-            branch_attentions = output[2]
-            if not torch.is_tensor(branch_attentions):
-                return pd.DataFrame()
-            for index in range(feat.size(0)):
-                case_weights = [
-                    branch_attentions[index, :, branch].unsqueeze(-1)
-                    for branch in range(branch_attentions.size(2))
-                ]
-                pairwise_cosines = []
-                pairwise_correlations = []
-                for left in range(len(case_weights)):
-                    for right in range(left + 1, len(case_weights)):
-                        left_weights = case_weights[left].reshape(-1)
-                        right_weights = case_weights[right].reshape(-1)
-                        pairwise_cosines.append(
-                            float(
-                                F.cosine_similarity(
-                                    left_weights,
-                                    right_weights,
-                                    dim=0,
-                                ).item()
-                            )
-                        )
-                        pairwise_correlations.append(
-                            float(
-                                F.cosine_similarity(
-                                    left_weights - left_weights.mean(),
-                                    right_weights - right_weights.mean(),
-                                    dim=0,
-                                ).item()
-                            )
-                        )
-                branch_cosine = (
-                    float(np.mean(pairwise_cosines)) if pairwise_cosines else np.nan
-                )
-                branch_correlation = (
-                    float(np.mean(pairwise_correlations))
-                    if pairwise_correlations
-                    else np.nan
-                )
-                for branch, weights in enumerate(case_weights):
-                    row = attention_statistics(weights)
-                    row.update(
-                        {
-                            "epoch": epoch,
-                            "split": split,
-                            "case_id": case_id[index],
-                            "branch": branch,
-                            "branch_cosine_mean": branch_cosine,
-                            "branch_correlation_mean": branch_correlation,
-                        }
-                    )
-                    rows.append(row)
-    return pd.DataFrame(rows)
-
-
 def train_path(
     model,
     train_loader,
-    train_stats_loader,
     val_loader,
     optimizer,
     args,
@@ -119,11 +24,14 @@ def train_path(
     fold,
     checkpoint_dir,
 ):
+    is_nll = args.survival_loss == "nll"
     best_cindex = -np.inf
     best_state = None
     best_epoch = None
     last_epoch = 0
-    cox_batch_size = getattr(args, "cox_batch_size", 64)
+    batch_sizes = ([1] * len(train_loader) if is_nll else
+                   cox_batch_sizes(len(train_loader), args.cox_batch_size))
+    batch_ends = set(np.cumsum(batch_sizes).tolist())
     wait = 0
 
     for epoch in range(1, args.num_epochs + 1):
@@ -133,32 +41,32 @@ def train_path(
         losses, risks, times, events = [], [], [], []
         all_risks, all_times, all_events = [], [], []
 
-        for batch in train_loader:
-            feat, event, time, case_id = batch
+        for patient_index, batch in enumerate(train_loader, start=1):
+            feat, event, time, _ = batch
             feat = feat.to(device, non_blocking=True)
             output = model(feat)
             risk = output[0] if isinstance(output, tuple) else output
             all_risks.append(risk.detach().cpu())
             all_times.append(time.detach().cpu())
             all_events.append(event.detach().cpu())
-            risks.append(risk)
-            times.append(time.to(device))
-            events.append(event.to(device))
+            if is_nll:
+                hazards, survival = output[3:5]
+                labels = torch.bucketize(time.to(device), model.time_bins).clamp(max=hazards.size(1) - 1)
+                loss = discrete_nll_loss(hazards, survival, labels, event.to(device))
+            else:
+                risks.append(risk)
+                times.append(time.to(device))
+                events.append(event.to(device))
 
-            if len(risks) >= cox_batch_size:
-                loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
+            if patient_index in batch_ends:
+                if not is_nll:
+                    loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
                 losses.append(float(loss.detach().cpu()))
                 risks, times, events = [], [], []
 
-        if risks:
-            loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
-            loss.backward()
-            optimizer.step()
-            optimizer.zero_grad()
-            losses.append(float(loss.detach().cpu()))
         avg_loss = float(np.mean(losses)) if losses else np.nan
         train_cindex, *_ = concordance_index_censored(
             torch.cat(all_events).numpy().astype(bool),
@@ -168,12 +76,16 @@ def train_path(
         train_cindex = float(train_cindex)
 
         model.eval()
-        val_risks_np, val_times_np, val_events_np = [], [], []
+        val_risks_np, val_times_np, val_events_np, val_losses = [], [], [], []
         with torch.no_grad():
             for batch in val_loader:
                 feat, event, time, _ = batch
                 output = model(feat.to(device, non_blocking=True))
                 risk = output[0] if isinstance(output, tuple) else output
+                if is_nll:
+                    hazards, survival = output[3:5]
+                    labels = torch.bucketize(time.to(device), model.time_bins).clamp(max=hazards.size(1) - 1)
+                    val_losses.append(float(discrete_nll_loss(hazards, survival, labels, event.to(device)).cpu()))
                 val_risks_np.extend(risk.detach().cpu().numpy().reshape(-1).tolist())
                 val_times_np.extend(time.detach().cpu().numpy().reshape(-1).tolist())
                 val_events_np.extend(
@@ -184,7 +96,7 @@ def train_path(
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
         val_events_arr = np.asarray(val_events_np, dtype=int)
 
-        val_loss = float(
+        val_loss = float(np.mean(val_losses)) if is_nll else float(
             cox_loss(
                 torch.as_tensor(val_risks_arr, device=device),
                 torch.as_tensor(val_times_arr, device=device),
@@ -198,51 +110,6 @@ def train_path(
             val_events_arr.astype(bool), val_times_arr, val_risks_arr
         )
         val_cindex = float(val_cindex)
-
-        if args.pa_model in {"abmil", "abmil_randsample"}:
-            attention_df = pd.concat(
-                [
-                    collect_attention_stats(
-                        model, train_stats_loader, device, "train", epoch
-                    ),
-                    collect_attention_stats(model, val_loader, device, "val", epoch),
-                ],
-                ignore_index=True,
-            )
-            if not attention_df.empty:
-                branch_summary = attention_df.groupby(["split", "branch"])[
-                    [
-                        "max_attention",
-                        "attention_entropy_norm",
-                        "effective_patch_num",
-                        "effective_patch_ratio",
-                    ]
-                ].mean()
-                for (split, branch), row in branch_summary.iterrows():
-                    print(
-                        f"{split} branch={int(branch)} attention: "
-                        f"max={row.max_attention:.4f}, "
-                        f"entropy={row.attention_entropy_norm:.4f}, "
-                        f"effective_patches={row.effective_patch_num:.1f}, "
-                        f"effective_ratio={row.effective_patch_ratio:.4f}"
-                    )
-                diversity = (
-                    attention_df.dropna(
-                        subset=[
-                            "branch_cosine_mean",
-                            "branch_correlation_mean",
-                        ]
-                    )
-                    .groupby("split")[["branch_cosine_mean", "branch_correlation_mean"]]
-                    .mean()
-                )
-                for split, row in diversity.iterrows():
-                    print(
-                        f"{split} branch cosine similarity: "
-                        f"{row.branch_cosine_mean:.4f} | "
-                        f"Pearson correlation: "
-                        f"{row.branch_correlation_mean:.4f}"
-                    )
 
         print(
             f"Epoch {epoch}/{args.num_epochs} | "
@@ -265,17 +132,13 @@ def train_path(
 
     # Save the parameters from the final completed epoch before restoring best.
     torch.save(model.state_dict(), checkpoint_dir / "last_model.pth")
-    with open(checkpoint_dir / "checkpoint_metadata.yaml", "w") as f:
-        yaml.safe_dump(
-            {
-                "fold": int(fold),
-                "best_epoch": int(best_epoch),
-                "last_epoch": int(last_epoch),
-                "best_val_cindex": float(best_cindex),
-            },
-            f,
-            sort_keys=True,
-        )
+    metadata = {"fold": int(fold), "best_epoch": int(best_epoch),
+                "last_epoch": int(last_epoch), "best_val_cindex": float(best_cindex)}
+    if is_nll:
+        metadata.update(survival_loss="discrete_nll", time_bins=model.time_bins.detach().cpu().tolist(),
+                        time_bins_source="training_fold_event_time_quartiles")
+    with open(checkpoint_dir / "checkpoint_metadata.yaml", "w") as handle:
+        yaml.safe_dump(metadata, handle, sort_keys=True)
     model.load_state_dict(best_state)
     print(f"Fold {fold} best C-index: {best_cindex:.4f}")
     return model
@@ -284,6 +147,10 @@ def train_path(
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Train pathology MIL survival model (5-fold CV)."
+    )
+    parser.add_argument(
+        "--data_dir", default=None,
+        help="Directory containing all_label_roi*.csv for the chosen pathology features.",
     )
     parser.add_argument("--ct_roi_size", type=int, default=96)
     parser.add_argument(
@@ -302,19 +169,25 @@ def parse_args():
     parser.add_argument(
         "--k",
         type=int,
-        default=None,
-        help="Patch count k; required for *-topk and abmil_randsample models.",
+        default=4096,
+        help="Patch count for *-topk and abmil_randsample; default 4096; ignored by other models.",
     )
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
-    parser.add_argument("--num_epochs", type=int, default=50)
+    parser.add_argument("--num_epochs", type=int, default=30)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--weight_decay", type=float, default=5e-4)
+    parser.add_argument(
+        "--survival_loss",
+        choices=["cox", "nll"],
+        default="cox",
+        help="Survival loss; NLL uses training-fold event-time quartiles.",
+    )
     parser.add_argument(
         "--dropout",
         type=float,
         default=0.0,
-        help="Dropout after the ABMIL projector ReLU; default 0 disables it.",
+        help="Dropout in pathology feature projections and aggregation; 0 disables it.",
     )
     parser.add_argument(
         "--attention_branches",
@@ -322,13 +195,13 @@ def parse_args():
         default=1,
         help="Number of independent ABMIL attention branches.",
     )
-    parser.add_argument("--cox_batch_size", type=int, default=32)
+    parser.add_argument("--cox_batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument(
         "--seed",
         type=int,
-        default=42,
+        default=123,
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
@@ -337,30 +210,19 @@ def parse_args():
 
 def main():
     args = parse_args()
-    args.data_dir = str(
-        Path("/home/gly001/cqj/pa_ct_surv/data") / f"seed_{args.seed}"
-    )
+    seed_everything(args.seed)
+    args.data_dir = resolve_data_dir(args.data_dir, args.ct_roi_size)
     label_file = Path(args.data_dir) / f"all_label_roi{args.ct_roi_size}.csv"
-    if not label_file.is_file():
-        raise FileNotFoundError(f"Dataset CSV not found: {label_file}")
     is_topk = args.pa_model.endswith("-topk")
     is_random_sample = args.pa_model == "abmil_randsample"
     if (is_topk or is_random_sample) and (args.k is None or args.k <= 0):
         raise ValueError(
             "--k must be a positive integer for *-topk and abmil_randsample models"
         )
-    if not is_topk and not is_random_sample and args.k is not None:
-        raise ValueError(
-            "--k is only valid for *-topk and abmil_randsample models"
-        )
+    if not is_topk and not is_random_sample:
+        args.k = None
     if not 0.0 <= args.dropout < 1.0:
         raise ValueError("--dropout must be in [0, 1)")
-    if args.dropout > 0 and args.pa_model not in {
-        "abmil",
-        "abmil-topk",
-        "abmil_randsample",
-    }:
-        raise ValueError("--dropout is currently supported only by ABMIL models")
     if args.attention_branches <= 0:
         raise ValueError("--attention_branches must be positive")
     if args.attention_branches != 1 and args.pa_model not in {
@@ -373,38 +235,31 @@ def main():
         )
     k_tag = f"k{args.k}" if (is_topk or is_random_sample) else "all"
     default_suffix = (
-        f"path-{args.pa_model}-{k_tag}_cox"
+        f"path-{args.pa_model}-{k_tag}_{args.survival_loss}"
         f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
         f"-seed{args.seed}"
     )
-    if args.checkpoint_root is None:
-        args.checkpoint_root = os.path.join(
-            "/home/gly001/cqj/pa_ct_surv", "checkpoints", default_suffix
-        )
-    if args.results_root is None:
-        args.results_root = os.path.join(
-            "/home/gly001/cqj/pa_ct_surv", "results", default_suffix
-        )
-
     print(f"Using Device: {DEVICE}")
+    print(f"Data: {label_file}")
     msg = f"PA model: {args.pa_model} | k: {args.k}"
-    msg += " | Cox PH loss"
-    msg += f" | ABMIL dropout: {args.dropout}"
+    msg += f" | {args.survival_loss} loss"
+    msg += f" | Pathology dropout: {args.dropout}"
     msg += f" | attention_branches: {args.attention_branches}"
     print(msg)
-    print(f"Checkpoints: {args.checkpoint_root}")
-    print(f"Results: {args.results_root}")
+    if args.survival_loss == "nll":
+        print("NLL cut points: training-fold event-time quartiles (25%, 50%, 75%)")
 
-    os.makedirs(args.checkpoint_root, exist_ok=True)
-    os.makedirs(args.results_root, exist_ok=True)
-    with open(os.path.join(args.results_root, "run_config.yaml"), "w") as f:
-        yaml.dump(vars(args), f, default_flow_style=False, allow_unicode=True)
+    excluded = []
+    if not is_topk and not is_random_sample:
+        excluded.append("k")
+    if args.pa_model not in {"abmil", "abmil-topk", "abmil_randsample"}:
+        excluded.append("attention_branches")
+    if args.survival_loss != "cox":
+        excluded.append("cox_batch_size")
+    save_run_config(args, "pathology", default_suffix, excluded)
 
     dataset = Path_Dataset(args.data_dir, roi_size=args.ct_roi_size)
     print(f"Loaded {len(dataset)} samples")
-
-    train_indices, test_indices = locked_split_indices(dataset.samples)
-    print(f"Locked split: train={len(train_indices)}, test={len(test_indices)}")
 
     model_kwargs = {
         "model_name": args.pa_model,
@@ -413,8 +268,7 @@ def main():
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
     }
-    fold_splits = [cv_fold_indices(dataset.samples, fold) for fold in range(5)]
-    print("Test set is not accessed during CV")
+    fold_splits = cv_splits(dataset.samples)
     fold_results = []
 
     for fold, (train_idx, val_idx) in enumerate(fold_splits):
@@ -423,101 +277,66 @@ def main():
 
         checkpoint_dir = Path(args.checkpoint_root) / f"fold_{fold}"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        metrics_dir = Path(args.results_root) / f"fold_{fold}"
-        metrics_dir.mkdir(parents=True, exist_ok=True)
 
-        train_loader = DataLoader(
-            Subset(dataset, train_idx),
+        train_loader = build_dataloader(
+            dataset, indices=train_idx,
             batch_size=1,
             shuffle=True,
             num_workers=args.num_workers,
             pin_memory=True,
         )
-        val_loader = DataLoader(
-            Subset(dataset, val_idx),
+        val_loader = build_dataloader(
+            dataset, indices=val_idx,
             batch_size=1,
             shuffle=False,
             num_workers=args.num_workers,
             pin_memory=True,
         )
-        train_stats_loader = None
-        if args.pa_model in {"abmil", "abmil_randsample"}:
-            train_stats_loader = DataLoader(
-                Subset(dataset, train_idx),
-                batch_size=1,
-                shuffle=False,
-                num_workers=args.num_workers,
-                pin_memory=True,
-            )
-
+        time_bins = None
+        if args.survival_loss == "nll":
+            if args.eval_only:
+                state = torch.load(checkpoint_dir / "best_model.pth", map_location="cpu", weights_only=True)
+                time_bins = state["time_bins"]
+            else:
+                train_samples = dataset.samples.iloc[train_idx]
+                event_times = train_samples.loc[train_samples["event"] == 1, "time"].to_numpy()
+                if len(event_times) == 0:
+                    raise ValueError(f"Fold {fold} has no training events for NLL time bins")
+                time_bins = np.unique(np.quantile(event_times, [0.25, 0.5, 0.75]).astype(np.float32))
+            print(f"Fold {fold} NLL cut points (months): {list(map(float, time_bins))}")
+        model_kwargs["time_bins"] = time_bins
         model = Pa_Model(**model_kwargs).to(DEVICE)
         optimizer = torch.optim.Adam(
             model.parameters(), lr=args.lr, weight_decay=args.weight_decay
         )
         if args.eval_only:
-            ckpt_path = checkpoint_dir / "best_model.pth"
-            model.load_state_dict(torch.load(ckpt_path, map_location=DEVICE))
-            train_cindex, val_cindex, _, _, metrics = evaluate_survival(
-                model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
+            model.load_state_dict(torch.load(
+                checkpoint_dir / "best_model.pth", map_location=DEVICE, weights_only=True
+            ))
+        else:
+            model = train_path(
+                model,
+                train_loader,
+                val_loader,
+                optimizer,
+                args,
+                DEVICE,
+                fold,
+                checkpoint_dir,
             )
-            gap = train_cindex - val_cindex
-            print(
-                f"Fold {fold} | Train C-index: {train_cindex:.4f} | "
-                f"Val C-index: {val_cindex:.4f} | Gap: {gap:.4f}"
-            )
-            fold_results.append(
-                {
-                    "fold": fold,
-                    "cindex": val_cindex,
-                    "train_cindex": train_cindex,
-                    "val_cindex": val_cindex,
-                    "gap": gap,
-                    **metrics,
-                }
-            )
-            continue
 
-        model = train_path(
-            model,
-            train_loader,
-            train_stats_loader,
-            val_loader,
-            optimizer,
-            args,
-            DEVICE,
-            fold,
-            checkpoint_dir,
+        metrics = evaluate_survival(
+            model, train_loader, val_loader, DEVICE,
+            save_dir=Path(args.results_root) / f"fold_{fold}",
         )
-        train_cindex, val_cindex, _, _, metrics = evaluate_survival(
-            model, train_loader, val_loader, DEVICE, save_dir=metrics_dir
-        )
-        gap = train_cindex - val_cindex
         print(
-            f"Fold {fold} | Train C-index: {train_cindex:.4f} | "
-            f"Val C-index: {val_cindex:.4f} | Gap: {gap:.4f}"
+            f"Fold {fold} | Train Loss: {metrics['train_loss']:.4f} | "
+            f"Train C-index: {metrics['train_cindex']:.4f} | "
+            f"Val Loss: {metrics['val_loss']:.4f} | Val C-index: {metrics['val_cindex']:.4f}"
         )
-        fold_results.append(
-            {
-                "fold": fold,
-                "cindex": val_cindex,
-                "train_cindex": train_cindex,
-                "val_cindex": val_cindex,
-                "gap": gap,
-                **metrics,
-            }
-        )
+        fold_results.append({"fold": fold, **metrics})
 
-    df = pd.DataFrame(fold_results)
-    mean_row = {"fold": "mean"}
-    for column in df.columns:
-        if column != "fold":
-            mean_row[column] = pd.to_numeric(df[column], errors="coerce").mean()
-    results_df = pd.concat([df, pd.DataFrame([mean_row])], ignore_index=True)
-    results_dir = Path(args.results_root)
-    results_dir.mkdir(parents=True, exist_ok=True)
-    results_df.to_csv(results_dir / "fold_metrics.csv", index=False)
-    print(f"\n{'=' * 50}\n5-Fold CV Summary\n{'=' * 50}")
-    print(f"  C-index mean: {mean_row['cindex']:.4f}")
+    save_cv_results(fold_results, args.results_root)
 
 
 if __name__ == "__main__":
