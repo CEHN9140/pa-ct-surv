@@ -1,11 +1,13 @@
 import argparse
+from functools import partial
 from pathlib import Path
 
 import numpy as np
 import torch
 from sksurv.metrics import concordance_index_censored
 
-from cox_utils import cox_loss, evaluate_survival
+from cox_utils import evaluate_survival
+from loss import survival_loss
 from dataset import CT_Dataset, build_dataloader, resolve_data_dir, cv_splits
 from utils import seed_everything, save_run_config, save_cv_results, build_ct_optimizer
 from model.build import CT_Model
@@ -26,6 +28,8 @@ def train_ct(
     best_cindex = -np.inf
     best_state = None
     wait = 0
+    criterion = partial(survival_loss, loss_type=getattr(args, "survival_loss", "cox"),
+                        rank_weight=getattr(args, "rank_weight", 1.0))
 
     for epoch in range(1, args.num_epochs + 1):
         model.train()
@@ -39,7 +43,7 @@ def train_ct(
             train_events_np.extend(
                 event.detach().cpu().numpy().reshape(-1).astype(int).tolist()
             )
-            loss = cox_loss(risk, time.to(device), event.to(device))
+            loss = criterion(risk, time.to(device), event.to(device))
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -69,7 +73,7 @@ def train_ct(
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
         val_events_arr = np.asarray(val_events_np, dtype=int)
         val_loss = float(
-            cox_loss(
+            criterion(
                 torch.as_tensor(val_risks_arr, device=device),
                 torch.as_tensor(val_times_arr, device=device),
                 torch.as_tensor(val_events_arr, device=device),
@@ -114,6 +118,8 @@ def parse_args():
     )
     parser.add_argument("--ct_pretrained_path", type=str, default=None)
     parser.add_argument("--freeze_backbone", action="store_true")
+    parser.add_argument("--l2_normalize", action="store_true",
+                        help="L2-normalize each patient's 512-D pooled CT feature before the risk head.")
     parser.add_argument("--dropout", type=float, default=0.5)
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
@@ -121,6 +127,9 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--ct_backbone_lr", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=5e-4)
+    parser.add_argument("--survival_loss", choices=["cox", "cox_rank"], default="cox")
+    parser.add_argument("--rank_weight", type=float, default=1.0,
+                        help="Pairwise ranking weight; used only by cox_rank.")
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--patience", type=int, default=10)
@@ -131,7 +140,10 @@ def parse_args():
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.survival_loss == "cox_rank" and (not np.isfinite(args.rank_weight) or args.rank_weight < 0):
+        parser.error("--rank_weight must be finite and nonnegative")
+    return args
 
 
 def main():
@@ -146,15 +158,23 @@ def main():
         f"-bs{args.batch_size}-lr{args.lr:g}-blr{backbone_lr:g}"
         f"-wd{args.weight_decay:g}-bnfreeze-seed{args.seed}"
     )
+    if args.survival_loss == "cox_rank":
+        default_suffix += f"-cox_rank-rankw{args.rank_weight:g}"
+    if args.l2_normalize:
+        default_suffix += "-l2"
     print(f"Using Device: {DEVICE} | ROI: {args.ct_roi_size}")
     print(f"Model: {args.ct_model} | CT augmentation: disabled")
+    print(f"Pooled CT feature L2: {args.l2_normalize}")
     print(
-        f"LR: {args.lr:g} | Backbone LR: {backbone_lr:g} | Loss: Cox PH"
+        f"LR: {args.lr:g} | Backbone LR: {backbone_lr:g} | Loss: {args.survival_loss}"
     )
+    if args.survival_loss == "cox_rank":
+        print(f"Ranking weight: {args.rank_weight:g}")
     if args.ct_pretrained_path:
         print(f"Pretrained: {args.ct_pretrained_path}")
 
-    save_run_config(args, "ct", default_suffix)
+    excluded = [] if args.survival_loss == "cox_rank" else ["rank_weight"]
+    save_run_config(args, "ct", default_suffix, excluded)
 
     dataset = CT_Dataset(args.data_dir, roi_size=args.ct_roi_size)
     print(f"Loaded {len(dataset)} samples")
@@ -164,6 +184,7 @@ def main():
         "pretrained_path": args.ct_pretrained_path,
         "freeze_backbone": args.freeze_backbone,
         "dropout": args.dropout,
+        "l2_normalize": args.l2_normalize,
     }
 
     fold_splits = cv_splits(dataset.samples)
@@ -212,6 +233,7 @@ def main():
         metrics = evaluate_survival(
             model, train_loader, val_loader, DEVICE,
             save_dir=Path(args.results_root) / f"fold_{fold}",
+            loss_type=args.survival_loss, rank_weight=args.rank_weight,
         )
         print(
             f"Fold {fold} | Train Loss: {metrics['train_loss']:.4f} | "

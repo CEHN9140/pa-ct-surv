@@ -11,7 +11,7 @@ if str(_project_root) not in sys.path:
 
 import torch
 
-from dataset import load_path_feature
+from dataset import load_ct_npy, load_path_feature
 from visualization.vis_utils import (
     draw_heatmap_overlay,
     ensure_dir,
@@ -57,12 +57,22 @@ def parse_args():
     return parser.parse_args()
 
 
-def _attention_output(model_type, model, features, device):
-    if features.ndim != 2 or features.shape[1] != 1024:
-        raise ValueError(f"Expected UNI features [N, 1024], got {tuple(features.shape)}")
-    target = model.pa_branch if model_type == "pact" else model.mil
+def _attention_output(model_type, model, features, device, ct_volume=None):
+    feature_dim = getattr(model, "pa_feature_dim", getattr(model, "feature_dim", 1024))
+    if features.ndim != 2 or features.shape[1] != feature_dim:
+        raise ValueError(f"Expected features [N, {feature_dim}], got {tuple(features.shape)}")
+    target = model.pa_branch if model_type == "pact" else model
+    crossattention = model_type == "pact" and model.fusion_type == "crossattention"
+    if crossattention and ct_volume is None:
+        raise ValueError("crossattention heatmaps require the same patient's CT volume")
+    if model_type == "pact" and model.pa_l2_normalize and not crossattention:
+        features = torch.nn.functional.normalize(features, p=2, dim=-1, eps=1e-12)
     with torch.no_grad():
-        risk, _pooled, attention = target(features.unsqueeze(0).to(device))[:3]
+        if crossattention:
+            output = model(ct_volume.to(device), features.unsqueeze(0).to(device))
+            risk, attention = output[0], output[6]
+        else:
+            risk, _pooled, attention = target(features.unsqueeze(0).to(device))[:3]
     if attention.ndim == 3:
         if attention.shape[0] != 1 or attention.shape[2] != 1:
             raise ValueError(
@@ -97,14 +107,18 @@ def process_single_case(slide_id, args, model, metadata, device):
     data_dir = args.data_dir or metadata["data_dir"]
     row = find_case_row(data_dir, slide_id=slide_id, roi_size=roi_size)
     slide_id = str(row["pa_id"])
-    features = load_path_feature(str(row["pa_path"]))
+    features = load_path_feature(str(row["pa_path"]),
+                                 getattr(model, "pa_feature_dim", getattr(model, "feature_dim", 1024)))
     h5_path = str(row["coord_path"] if "coord_path" in row.index else row["h5_path"])
     coords = load_h5_coords(h5_path)
     if features.shape[0] != coords.shape[0]:
         raise ValueError(
             f"Patch feature count ({features.shape[0]}) != H5 coordinate count ({coords.shape[0]})"
         )
-    risk, attention = _attention_output(args.model_type, model, features, device)
+    crossattention = args.model_type == "pact" and model.fusion_type == "crossattention"
+    ct_volume = (torch.from_numpy(load_ct_npy(str(row["ct_path"]), roi_size)).unsqueeze(0)
+                 if crossattention else None)
+    risk, attention = _attention_output(args.model_type, model, features, device, ct_volume)
     wsi_path = find_file_by_slide_id(slide_id, args.wsi_dir, args.wsi_exts)
     if wsi_path is None:
         raise FileNotFoundError(f"No WSI found for slide_id={slide_id} in {args.wsi_dir}")
@@ -127,8 +141,8 @@ def process_single_case(slide_id, args, model, metadata, device):
     save_json(
         {
             "model_type": args.model_type,
-            "attention_scope": "pathology_branch_only",
-            "risk_scope": "pathology_branch_only",
+            "attention_scope": "ct_guided_pathology" if crossattention else "pathology_branch_only",
+            "risk_scope": "fused" if crossattention else "pathology_branch_only",
             "run_tag": metadata["run_tag"], "seed": metadata["seed"], "fold": args.fold,
             "slide_id": slide_id, "ct_id": str(row["ct_id"]), "risk": risk,
             "attention_sum": float(attention.sum()), "num_patches": int(len(attention)),

@@ -1,4 +1,5 @@
 import argparse
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -6,7 +7,8 @@ import torch
 import yaml
 from sksurv.metrics import concordance_index_censored
 
-from cox_utils import cox_loss, discrete_nll_loss, evaluate_survival
+from cox_utils import discrete_nll_loss, evaluate_survival
+from loss import survival_loss
 from dataset import Path_Dataset, build_dataloader, cox_batch_sizes, resolve_data_dir, cv_splits
 from utils import seed_everything, save_run_config, save_cv_results
 from model.build import Pa_Model
@@ -23,8 +25,12 @@ def train_path(
     device,
     fold,
     checkpoint_dir,
+    criterion=None,
 ):
     is_nll = args.survival_loss == "nll"
+    if criterion is None:
+        criterion = partial(survival_loss, loss_type=args.survival_loss,
+                            rank_weight=getattr(args, "rank_weight", 1.0))
     best_cindex = -np.inf
     best_state = None
     best_epoch = None
@@ -60,7 +66,7 @@ def train_path(
 
             if patient_index in batch_ends:
                 if not is_nll:
-                    loss = cox_loss(torch.cat(risks), torch.cat(times), torch.cat(events))
+                    loss = criterion(torch.cat(risks), torch.cat(times), torch.cat(events))
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
@@ -97,7 +103,7 @@ def train_path(
         val_events_arr = np.asarray(val_events_np, dtype=int)
 
         val_loss = float(np.mean(val_losses)) if is_nll else float(
-            cox_loss(
+            criterion(
                 torch.as_tensor(val_risks_arr, device=device),
                 torch.as_tensor(val_times_arr, device=device),
                 torch.as_tensor(val_events_arr, device=device),
@@ -153,6 +159,9 @@ def parse_args():
         help="Directory containing all_label_roi*.csv for the chosen pathology features.",
     )
     parser.add_argument("--ct_roi_size", type=int, default=96)
+    parser.add_argument("--feature_dim", type=int, default=1024)
+    parser.add_argument("--l2_normalize", action="store_true",
+                        help="Apply per-patch L2 inside model.forward during training and evaluation.")
     parser.add_argument(
         "--pa_model",
         default="abmil",
@@ -179,10 +188,12 @@ def parse_args():
     parser.add_argument("--weight_decay", type=float, default=5e-4)
     parser.add_argument(
         "--survival_loss",
-        choices=["cox", "nll"],
+        choices=["cox", "nll", "cox_rank"],
         default="cox",
         help="Survival loss; NLL uses training-fold event-time quartiles.",
     )
+    parser.add_argument("--rank_weight", type=float, default=1.0,
+                        help="Pairwise ranking weight; used only by cox_rank.")
     parser.add_argument(
         "--dropout",
         type=float,
@@ -205,7 +216,12 @@ def parse_args():
         help="Seed for initialization and training randomness.",
     )
     parser.add_argument("--eval_only", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.feature_dim < 1:
+        parser.error('feature_dim must be positive')
+    if args.survival_loss == "cox_rank" and (not np.isfinite(args.rank_weight) or args.rank_weight < 0):
+        parser.error("--rank_weight must be finite and nonnegative")
+    return args
 
 
 def main():
@@ -238,7 +254,12 @@ def main():
         f"path-{args.pa_model}-{k_tag}_{args.survival_loss}"
         f"-roi{args.ct_roi_size}-attn{args.attention_branches}"
         f"-seed{args.seed}"
+        f"-dim{args.feature_dim}"
     )
+    if args.l2_normalize:
+        default_suffix += "-l2"
+    if args.survival_loss == "cox_rank":
+        default_suffix += f"-rankw{args.rank_weight:g}"
     print(f"Using Device: {DEVICE}")
     print(f"Data: {label_file}")
     msg = f"PA model: {args.pa_model} | k: {args.k}"
@@ -246,6 +267,9 @@ def main():
     msg += f" | Pathology dropout: {args.dropout}"
     msg += f" | attention_branches: {args.attention_branches}"
     print(msg)
+    print(f"Feature dimension: {args.feature_dim} | Per-patch L2: {args.l2_normalize}")
+    if args.survival_loss == "cox_rank":
+        print(f"Ranking weight: {args.rank_weight:g}")
     if args.survival_loss == "nll":
         print("NLL cut points: training-fold event-time quartiles (25%, 50%, 75%)")
 
@@ -254,16 +278,20 @@ def main():
         excluded.append("k")
     if args.pa_model not in {"abmil", "abmil-topk", "abmil_randsample"}:
         excluded.append("attention_branches")
-    if args.survival_loss != "cox":
+    if args.survival_loss == "nll":
         excluded.append("cox_batch_size")
+    if args.survival_loss != "cox_rank":
+        excluded.append("rank_weight")
     save_run_config(args, "pathology", default_suffix, excluded)
 
-    dataset = Path_Dataset(args.data_dir, roi_size=args.ct_roi_size)
+    dataset = Path_Dataset(args.data_dir, roi_size=args.ct_roi_size,
+                           feature_dim=args.feature_dim)
     print(f"Loaded {len(dataset)} samples")
 
     model_kwargs = {
         "model_name": args.pa_model,
-        "feature_dim": 1024,
+        "feature_dim": args.feature_dim,
+        "l2_normalize": args.l2_normalize,
         "k": args.k if (is_topk or is_random_sample) else None,
         "abmil_dropout": args.dropout,
         "attention_branches": args.attention_branches,
@@ -328,6 +356,7 @@ def main():
         metrics = evaluate_survival(
             model, train_loader, val_loader, DEVICE,
             save_dir=Path(args.results_root) / f"fold_{fold}",
+            loss_type=args.survival_loss, rank_weight=args.rank_weight,
         )
         print(
             f"Fold {fold} | Train Loss: {metrics['train_loss']:.4f} | "

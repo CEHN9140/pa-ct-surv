@@ -1,0 +1,235 @@
+Using Device: cuda | ROI: 64
+PA: abmil | CT: resnet18 | Fusion: weighted | Fusion dimensions: 256/256
+LR: 0.0001 | CT Backbone LR: 1e-05
+Dropout: 0.25 | Training seed: 123
+Loss: Fused Cox + 0.5*CT + 0.3*PA
+CT pretrained: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+Checkpoints: /home/gly001/cqj/pa_ct_surv/checkpoints/pact_v6/pact/trident_features_uni_v1_cv5_roi64_abmil_resnet18_weighted_dim256_dropout0.25_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3
+Results: /home/gly001/cqj/pa_ct_surv/results/pact_v6/pact/trident_features_uni_v1_cv5_roi64_abmil_resnet18_weighted_dim256_dropout0.25_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3
+Loaded 721 paired samples
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+
+==================================================
+Fold 1/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 6.6323 (Fused Cox: 3.6790, CT Cox: 3.7228, PA Cox: 3.6398) | Train C-index: 0.7050 | Val Loss: 4.4610 | Val C-index: 0.6595
+Epoch 2/30 | Train Loss: 6.5227 (Fused Cox: 3.6058, CT Cox: 3.7204, PA Cox: 3.5222) | Train C-index: 0.7338 | Val Loss: 4.4338 | Val C-index: 0.6693
+Epoch 3/30 | Train Loss: 6.3921 (Fused Cox: 3.5092, CT Cox: 3.7203, PA Cox: 3.4091) | Train C-index: 0.7525 | Val Loss: 4.4179 | Val C-index: 0.6774
+Epoch 4/30 | Train Loss: 6.2882 (Fused Cox: 3.4242, CT Cox: 3.7009, PA Cox: 3.3786) | Train C-index: 0.7518 | Val Loss: 4.4120 | Val C-index: 0.6858
+Epoch 5/30 | Train Loss: 6.1996 (Fused Cox: 3.3655, CT Cox: 3.6494, PA Cox: 3.3648) | Train C-index: 0.7531 | Val Loss: 4.4052 | Val C-index: 0.6883
+Epoch 6/30 | Train Loss: 6.0550 (Fused Cox: 3.2742, CT Cox: 3.6080, PA Cox: 3.2560) | Train C-index: 0.7716 | Val Loss: 4.4267 | Val C-index: 0.6926
+Epoch 7/30 | Train Loss: 6.0352 (Fused Cox: 3.2546, CT Cox: 3.5935, PA Cox: 3.2797) | Train C-index: 0.7818 | Val Loss: 4.3998 | Val C-index: 0.6850
+Epoch 8/30 | Train Loss: 5.9951 (Fused Cox: 3.2258, CT Cox: 3.6132, PA Cox: 3.2090) | Train C-index: 0.7929 | Val Loss: 4.4042 | Val C-index: 0.6930
+Epoch 9/30 | Train Loss: 5.9052 (Fused Cox: 3.1653, CT Cox: 3.5763, PA Cox: 3.1724) | Train C-index: 0.8063 | Val Loss: 4.4158 | Val C-index: 0.6961
+Epoch 10/30 | Train Loss: 5.8666 (Fused Cox: 3.1343, CT Cox: 3.5824, PA Cox: 3.1371) | Train C-index: 0.8079 | Val Loss: 4.4569 | Val C-index: 0.6976
+Epoch 11/30 | Train Loss: 5.8083 (Fused Cox: 3.0860, CT Cox: 3.5961, PA Cox: 3.0810) | Train C-index: 0.8213 | Val Loss: 4.4467 | Val C-index: 0.6928
+Epoch 12/30 | Train Loss: 5.7669 (Fused Cox: 3.0654, CT Cox: 3.5637, PA Cox: 3.0657) | Train C-index: 0.8264 | Val Loss: 4.4558 | Val C-index: 0.6957
+Epoch 13/30 | Train Loss: 5.6600 (Fused Cox: 2.9986, CT Cox: 3.5353, PA Cox: 2.9793) | Train C-index: 0.8372 | Val Loss: 4.4812 | Val C-index: 0.7005
+Epoch 14/30 | Train Loss: 5.6064 (Fused Cox: 2.9499, CT Cox: 3.5380, PA Cox: 2.9587) | Train C-index: 0.8406 | Val Loss: 4.5339 | Val C-index: 0.6961
+Epoch 15/30 | Train Loss: 5.5726 (Fused Cox: 2.9233, CT Cox: 3.5785, PA Cox: 2.8668) | Train C-index: 0.8561 | Val Loss: 4.5567 | Val C-index: 0.6994
+Epoch 16/30 | Train Loss: 5.5208 (Fused Cox: 2.8858, CT Cox: 3.5402, PA Cox: 2.8829) | Train C-index: 0.8574 | Val Loss: 4.5524 | Val C-index: 0.6957
+Epoch 17/30 | Train Loss: 5.3788 (Fused Cox: 2.7959, CT Cox: 3.5335, PA Cox: 2.7207) | Train C-index: 0.8691 | Val Loss: 4.6212 | Val C-index: 0.6891
+Epoch 18/30 | Train Loss: 5.3296 (Fused Cox: 2.7558, CT Cox: 3.5296, PA Cox: 2.6963) | Train C-index: 0.8765 | Val Loss: 4.7070 | Val C-index: 0.6871
+Epoch 19/30 | Train Loss: 5.2368 (Fused Cox: 2.6687, CT Cox: 3.5141, PA Cox: 2.7036) | Train C-index: 0.8821 | Val Loss: 4.7393 | Val C-index: 0.6933
+Epoch 20/30 | Train Loss: 5.1591 (Fused Cox: 2.6180, CT Cox: 3.5252, PA Cox: 2.5951) | Train C-index: 0.8941 | Val Loss: 4.7322 | Val C-index: 0.6790
+Epoch 21/30 | Train Loss: 5.0053 (Fused Cox: 2.5231, CT Cox: 3.5335, PA Cox: 2.3848) | Train C-index: 0.9044 | Val Loss: 4.8355 | Val C-index: 0.6869
+Epoch 22/30 | Train Loss: 4.9005 (Fused Cox: 2.4374, CT Cox: 3.4955, PA Cox: 2.3846) | Train C-index: 0.9104 | Val Loss: 5.0132 | Val C-index: 0.6794
+Epoch 23/30 | Train Loss: 4.8820 (Fused Cox: 2.4097, CT Cox: 3.4881, PA Cox: 2.4276) | Train C-index: 0.9161 | Val Loss: 5.1080 | Val C-index: 0.6704
+Early stopping at epoch 23
+Fold 0 best C-index: 0.7005
+
+Extra survival metrics:
+cutoff_from_train_median: 0.115495
+n_test: 145
+n_high_risk: 76
+n_low_risk: 69
+n_event_test: 51
+logrank_stat: 11.417885
+logrank_p: 0.000727
+auc_36m: 0.772474
+auc_60m: 0.738219
+HR_high_vs_low: 2.783960
+HR_95CI_lower: 1.499242
+HR_95CI_upper: 5.169569
+cox_p: 0.001185
+Fold 0 | Train Loss: 5.1242 | Train C-index: 0.8454 | Val Loss: 4.4812 | Val C-index: 0.7005
+
+==================================================
+Fold 2/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 6.6230 (Fused Cox: 3.6753, CT Cox: 3.7061, PA Cox: 3.6487) | Train C-index: 0.6749 | Val Loss: 4.5153 | Val C-index: 0.7507
+Epoch 2/30 | Train Loss: 6.5173 (Fused Cox: 3.6068, CT Cox: 3.6979, PA Cox: 3.5386) | Train C-index: 0.7206 | Val Loss: 4.4328 | Val C-index: 0.7550
+Epoch 3/30 | Train Loss: 6.4411 (Fused Cox: 3.5467, CT Cox: 3.7034, PA Cox: 3.4759) | Train C-index: 0.7243 | Val Loss: 4.3426 | Val C-index: 0.7510
+Epoch 4/30 | Train Loss: 6.3157 (Fused Cox: 3.4573, CT Cox: 3.6802, PA Cox: 3.3942) | Train C-index: 0.7428 | Val Loss: 4.2868 | Val C-index: 0.7516
+Epoch 5/30 | Train Loss: 6.2568 (Fused Cox: 3.4120, CT Cox: 3.6303, PA Cox: 3.4324) | Train C-index: 0.7447 | Val Loss: 4.2543 | Val C-index: 0.7525
+Epoch 6/30 | Train Loss: 6.1350 (Fused Cox: 3.3410, CT Cox: 3.5834, PA Cox: 3.3410) | Train C-index: 0.7607 | Val Loss: 4.2672 | Val C-index: 0.7495
+Epoch 7/30 | Train Loss: 6.1069 (Fused Cox: 3.3195, CT Cox: 3.6072, PA Cox: 3.2796) | Train C-index: 0.7669 | Val Loss: 4.2574 | Val C-index: 0.7471
+Epoch 8/30 | Train Loss: 6.0431 (Fused Cox: 3.2720, CT Cox: 3.5852, PA Cox: 3.2616) | Train C-index: 0.7839 | Val Loss: 4.2532 | Val C-index: 0.7459
+Epoch 9/30 | Train Loss: 5.9984 (Fused Cox: 3.2372, CT Cox: 3.5887, PA Cox: 3.2227) | Train C-index: 0.7951 | Val Loss: 4.2594 | Val C-index: 0.7410
+Epoch 10/30 | Train Loss: 5.9549 (Fused Cox: 3.2094, CT Cox: 3.5792, PA Cox: 3.1865) | Train C-index: 0.7978 | Val Loss: 4.2604 | Val C-index: 0.7416
+Epoch 11/30 | Train Loss: 5.9272 (Fused Cox: 3.1826, CT Cox: 3.5839, PA Cox: 3.1755) | Train C-index: 0.8037 | Val Loss: 4.2495 | Val C-index: 0.7433
+Epoch 12/30 | Train Loss: 5.8281 (Fused Cox: 3.1192, CT Cox: 3.5573, PA Cox: 3.1008) | Train C-index: 0.8116 | Val Loss: 4.2300 | Val C-index: 0.7495
+Early stopping at epoch 12
+Fold 1 best C-index: 0.7550
+
+Extra survival metrics:
+cutoff_from_train_median: -0.118504
+n_test: 144
+n_high_risk: 68
+n_low_risk: 76
+n_event_test: 50
+logrank_stat: 25.288683
+logrank_p: 0.000000
+auc_36m: 0.802098
+auc_60m: 0.780294
+HR_high_vs_low: 4.611486
+HR_95CI_lower: 2.399987
+HR_95CI_upper: 8.860796
+cox_p: 0.000004
+Fold 1 | Train Loss: 5.7512 | Train C-index: 0.7303 | Val Loss: 4.4328 | Val C-index: 0.7550
+
+==================================================
+Fold 3/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 6.6426 (Fused Cox: 3.6864, CT Cox: 3.7154, PA Cox: 3.6616) | Train C-index: 0.6523 | Val Loss: 4.4522 | Val C-index: 0.7645
+Epoch 2/30 | Train Loss: 6.5479 (Fused Cox: 3.6241, CT Cox: 3.7149, PA Cox: 3.5545) | Train C-index: 0.7152 | Val Loss: 4.3730 | Val C-index: 0.7633
+Epoch 3/30 | Train Loss: 6.4527 (Fused Cox: 3.5580, CT Cox: 3.6999, PA Cox: 3.4826) | Train C-index: 0.7159 | Val Loss: 4.2733 | Val C-index: 0.7662
+Epoch 4/30 | Train Loss: 6.4135 (Fused Cox: 3.5120, CT Cox: 3.7086, PA Cox: 3.4907) | Train C-index: 0.7217 | Val Loss: 4.1732 | Val C-index: 0.7765
+Epoch 5/30 | Train Loss: 6.3104 (Fused Cox: 3.4426, CT Cox: 3.6759, PA Cox: 3.4332) | Train C-index: 0.7425 | Val Loss: 4.1298 | Val C-index: 0.7857
+Epoch 6/30 | Train Loss: 6.2340 (Fused Cox: 3.3946, CT Cox: 3.6681, PA Cox: 3.3511) | Train C-index: 0.7505 | Val Loss: 4.1041 | Val C-index: 0.7915
+Epoch 7/30 | Train Loss: 6.2181 (Fused Cox: 3.3858, CT Cox: 3.6567, PA Cox: 3.3466) | Train C-index: 0.7598 | Val Loss: 4.0707 | Val C-index: 0.7993
+Epoch 8/30 | Train Loss: 6.1483 (Fused Cox: 3.3389, CT Cox: 3.6219, PA Cox: 3.3281) | Train C-index: 0.7632 | Val Loss: 4.0343 | Val C-index: 0.8038
+Epoch 9/30 | Train Loss: 6.1050 (Fused Cox: 3.3039, CT Cox: 3.6284, PA Cox: 3.2895) | Train C-index: 0.7797 | Val Loss: 4.0417 | Val C-index: 0.7976
+Epoch 10/30 | Train Loss: 6.0356 (Fused Cox: 3.2647, CT Cox: 3.6051, PA Cox: 3.2278) | Train C-index: 0.7872 | Val Loss: 4.0321 | Val C-index: 0.7984
+Epoch 11/30 | Train Loss: 6.0238 (Fused Cox: 3.2448, CT Cox: 3.6281, PA Cox: 3.2165) | Train C-index: 0.7945 | Val Loss: 4.0160 | Val C-index: 0.7958
+Epoch 12/30 | Train Loss: 5.9908 (Fused Cox: 3.2227, CT Cox: 3.6007, PA Cox: 3.2258) | Train C-index: 0.7997 | Val Loss: 4.0165 | Val C-index: 0.7949
+Epoch 13/30 | Train Loss: 5.8509 (Fused Cox: 3.1404, CT Cox: 3.5893, PA Cox: 3.0530) | Train C-index: 0.8075 | Val Loss: 4.0157 | Val C-index: 0.7960
+Epoch 14/30 | Train Loss: 5.8343 (Fused Cox: 3.1158, CT Cox: 3.5991, PA Cox: 3.0633) | Train C-index: 0.8162 | Val Loss: 4.0257 | Val C-index: 0.7865
+Epoch 15/30 | Train Loss: 5.7593 (Fused Cox: 3.0620, CT Cox: 3.5743, PA Cox: 3.0340) | Train C-index: 0.8324 | Val Loss: 4.0144 | Val C-index: 0.7882
+Epoch 16/30 | Train Loss: 5.5986 (Fused Cox: 2.9592, CT Cox: 3.5607, PA Cox: 2.8635) | Train C-index: 0.8457 | Val Loss: 4.0410 | Val C-index: 0.7802
+Epoch 17/30 | Train Loss: 5.6094 (Fused Cox: 2.9509, CT Cox: 3.5698, PA Cox: 2.9123) | Train C-index: 0.8518 | Val Loss: 4.0733 | Val C-index: 0.7748
+Epoch 18/30 | Train Loss: 5.4866 (Fused Cox: 2.8702, CT Cox: 3.5649, PA Cox: 2.7797) | Train C-index: 0.8614 | Val Loss: 4.0822 | Val C-index: 0.7762
+Early stopping at epoch 18
+Fold 2 best C-index: 0.8038
+
+Extra survival metrics:
+cutoff_from_train_median: -0.016335
+n_test: 144
+n_high_risk: 67
+n_low_risk: 77
+n_event_test: 50
+logrank_stat: 37.562955
+logrank_p: 0.000000
+auc_36m: 0.818331
+auc_60m: 0.832746
+HR_high_vs_low: 6.370974
+HR_95CI_lower: 3.242858
+HR_95CI_upper: 12.516522
+cox_p: 0.000000
+Fold 2 | Train Loss: 5.4853 | Train C-index: 0.7766 | Val Loss: 4.0343 | Val C-index: 0.8038
+
+==================================================
+Fold 4/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 6.6423 (Fused Cox: 3.6862, CT Cox: 3.7152, PA Cox: 3.6615) | Train C-index: 0.6463 | Val Loss: 4.4510 | Val C-index: 0.7718
+Epoch 2/30 | Train Loss: 6.5586 (Fused Cox: 3.6302, CT Cox: 3.7162, PA Cox: 3.5674) | Train C-index: 0.7069 | Val Loss: 4.3673 | Val C-index: 0.7702
+Epoch 3/30 | Train Loss: 6.4257 (Fused Cox: 3.5408, CT Cox: 3.6921, PA Cox: 3.4629) | Train C-index: 0.7220 | Val Loss: 4.2817 | Val C-index: 0.7697
+Epoch 4/30 | Train Loss: 6.3737 (Fused Cox: 3.4905, CT Cox: 3.7048, PA Cox: 3.4362) | Train C-index: 0.7356 | Val Loss: 4.2145 | Val C-index: 0.7680
+Epoch 5/30 | Train Loss: 6.2861 (Fused Cox: 3.4246, CT Cox: 3.6761, PA Cox: 3.4118) | Train C-index: 0.7402 | Val Loss: 4.1701 | Val C-index: 0.7738
+Epoch 6/30 | Train Loss: 6.2352 (Fused Cox: 3.3869, CT Cox: 3.6649, PA Cox: 3.3861) | Train C-index: 0.7546 | Val Loss: 4.1437 | Val C-index: 0.7774
+Epoch 7/30 | Train Loss: 6.2145 (Fused Cox: 3.3777, CT Cox: 3.6498, PA Cox: 3.3730) | Train C-index: 0.7631 | Val Loss: 4.1092 | Val C-index: 0.7884
+Epoch 8/30 | Train Loss: 6.1321 (Fused Cox: 3.3271, CT Cox: 3.6363, PA Cox: 3.2895) | Train C-index: 0.7782 | Val Loss: 4.1233 | Val C-index: 0.7827
+Epoch 9/30 | Train Loss: 6.0716 (Fused Cox: 3.2811, CT Cox: 3.6214, PA Cox: 3.2660) | Train C-index: 0.7880 | Val Loss: 4.1217 | Val C-index: 0.7805
+Epoch 10/30 | Train Loss: 5.9761 (Fused Cox: 3.2252, CT Cox: 3.5943, PA Cox: 3.1791) | Train C-index: 0.7984 | Val Loss: 4.0887 | Val C-index: 0.7867
+Epoch 11/30 | Train Loss: 5.9809 (Fused Cox: 3.2177, CT Cox: 3.6037, PA Cox: 3.2045) | Train C-index: 0.8000 | Val Loss: 4.0950 | Val C-index: 0.7862
+Epoch 12/30 | Train Loss: 5.8996 (Fused Cox: 3.1643, CT Cox: 3.5969, PA Cox: 3.1230) | Train C-index: 0.8109 | Val Loss: 4.0909 | Val C-index: 0.7850
+Epoch 13/30 | Train Loss: 5.9157 (Fused Cox: 3.1622, CT Cox: 3.6249, PA Cox: 3.1365) | Train C-index: 0.8163 | Val Loss: 4.0876 | Val C-index: 0.7846
+Epoch 14/30 | Train Loss: 5.8010 (Fused Cox: 3.0982, CT Cox: 3.5676, PA Cox: 3.0636) | Train C-index: 0.8234 | Val Loss: 4.1134 | Val C-index: 0.7759
+Epoch 15/30 | Train Loss: 5.6869 (Fused Cox: 3.0248, CT Cox: 3.5451, PA Cox: 2.9651) | Train C-index: 0.8388 | Val Loss: 4.0784 | Val C-index: 0.7877
+Epoch 16/30 | Train Loss: 5.6761 (Fused Cox: 3.0087, CT Cox: 3.5501, PA Cox: 2.9746) | Train C-index: 0.8385 | Val Loss: 4.1001 | Val C-index: 0.7799
+Epoch 17/30 | Train Loss: 5.6414 (Fused Cox: 2.9849, CT Cox: 3.5663, PA Cox: 2.9112) | Train C-index: 0.8503 | Val Loss: 4.1198 | Val C-index: 0.7723
+Early stopping at epoch 17
+Fold 3 best C-index: 0.7884
+
+Extra survival metrics:
+cutoff_from_train_median: 0.027194
+n_test: 144
+n_high_risk: 72
+n_low_risk: 72
+n_event_test: 50
+logrank_stat: 38.668031
+logrank_p: 0.000000
+auc_36m: 0.817786
+auc_60m: 0.801942
+HR_high_vs_low: 8.402701
+HR_95CI_lower: 3.768343
+HR_95CI_upper: 18.736456
+cox_p: 0.000000
+Fold 3 | Train Loss: 5.5017 | Train C-index: 0.7760 | Val Loss: 4.1092 | Val C-index: 0.7884
+
+==================================================
+Fold 5/5
+==================================================
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 6.6818 (Fused Cox: 3.7072, CT Cox: 3.7443, PA Cox: 3.6749) | Train C-index: 0.6562 | Val Loss: 4.4039 | Val C-index: 0.6543
+Epoch 2/30 | Train Loss: 6.5478 (Fused Cox: 3.6207, CT Cox: 3.7315, PA Cox: 3.5377) | Train C-index: 0.7435 | Val Loss: 4.3695 | Val C-index: 0.6564
+Epoch 3/30 | Train Loss: 6.4084 (Fused Cox: 3.5211, CT Cox: 3.7199, PA Cox: 3.4246) | Train C-index: 0.7491 | Val Loss: 4.3601 | Val C-index: 0.6537
+Epoch 4/30 | Train Loss: 6.3019 (Fused Cox: 3.4317, CT Cox: 3.7060, PA Cox: 3.3906) | Train C-index: 0.7543 | Val Loss: 4.3652 | Val C-index: 0.6535
+Epoch 5/30 | Train Loss: 6.2106 (Fused Cox: 3.3711, CT Cox: 3.6602, PA Cox: 3.3647) | Train C-index: 0.7688 | Val Loss: 4.3713 | Val C-index: 0.6639
+Epoch 6/30 | Train Loss: 6.1226 (Fused Cox: 3.3123, CT Cox: 3.6168, PA Cox: 3.3395) | Train C-index: 0.7753 | Val Loss: 4.3864 | Val C-index: 0.6685
+Epoch 7/30 | Train Loss: 6.0723 (Fused Cox: 3.2780, CT Cox: 3.6008, PA Cox: 3.3131) | Train C-index: 0.7877 | Val Loss: 4.3726 | Val C-index: 0.6785
+Epoch 8/30 | Train Loss: 6.0269 (Fused Cox: 3.2512, CT Cox: 3.6055, PA Cox: 3.2431) | Train C-index: 0.7956 | Val Loss: 4.3511 | Val C-index: 0.6856
+Epoch 9/30 | Train Loss: 5.9873 (Fused Cox: 3.2263, CT Cox: 3.6040, PA Cox: 3.1968) | Train C-index: 0.8034 | Val Loss: 4.3318 | Val C-index: 0.6929
+Epoch 10/30 | Train Loss: 5.9511 (Fused Cox: 3.2015, CT Cox: 3.5682, PA Cox: 3.2182) | Train C-index: 0.8110 | Val Loss: 4.3307 | Val C-index: 0.6929
+Epoch 11/30 | Train Loss: 5.8400 (Fused Cox: 3.1378, CT Cox: 3.5229, PA Cox: 3.1357) | Train C-index: 0.8140 | Val Loss: 4.3443 | Val C-index: 0.6962
+Epoch 12/30 | Train Loss: 5.8615 (Fused Cox: 3.1415, CT Cox: 3.5763, PA Cox: 3.1063) | Train C-index: 0.8273 | Val Loss: 4.3748 | Val C-index: 0.6916
+Epoch 13/30 | Train Loss: 5.8065 (Fused Cox: 3.1028, CT Cox: 3.5590, PA Cox: 3.0809) | Train C-index: 0.8317 | Val Loss: 4.3636 | Val C-index: 0.6995
+Epoch 14/30 | Train Loss: 5.6728 (Fused Cox: 3.0183, CT Cox: 3.5292, PA Cox: 2.9666) | Train C-index: 0.8385 | Val Loss: 4.3789 | Val C-index: 0.6981
+Epoch 15/30 | Train Loss: 5.6376 (Fused Cox: 2.9803, CT Cox: 3.5285, PA Cox: 2.9770) | Train C-index: 0.8447 | Val Loss: 4.4062 | Val C-index: 0.7079
+Epoch 16/30 | Train Loss: 5.5371 (Fused Cox: 2.9239, CT Cox: 3.4753, PA Cox: 2.9186) | Train C-index: 0.8515 | Val Loss: 4.3982 | Val C-index: 0.6987
+Epoch 17/30 | Train Loss: 5.5196 (Fused Cox: 2.9003, CT Cox: 3.5514, PA Cox: 2.8122) | Train C-index: 0.8580 | Val Loss: 4.3726 | Val C-index: 0.7043
+Epoch 18/30 | Train Loss: 5.4561 (Fused Cox: 2.8626, CT Cox: 3.4802, PA Cox: 2.8444) | Train C-index: 0.8580 | Val Loss: 4.4172 | Val C-index: 0.7085
+Epoch 19/30 | Train Loss: 5.3834 (Fused Cox: 2.8048, CT Cox: 3.4928, PA Cox: 2.7741) | Train C-index: 0.8679 | Val Loss: 4.4630 | Val C-index: 0.7048
+Epoch 20/30 | Train Loss: 5.2906 (Fused Cox: 2.7497, CT Cox: 3.4644, PA Cox: 2.6957) | Train C-index: 0.8785 | Val Loss: 4.5358 | Val C-index: 0.6987
+Epoch 21/30 | Train Loss: 5.1959 (Fused Cox: 2.6816, CT Cox: 3.4742, PA Cox: 2.5907) | Train C-index: 0.8830 | Val Loss: 4.5702 | Val C-index: 0.7056
+Epoch 22/30 | Train Loss: 5.1328 (Fused Cox: 2.6283, CT Cox: 3.4826, PA Cox: 2.5441) | Train C-index: 0.8910 | Val Loss: 4.5889 | Val C-index: 0.7002
+Epoch 23/30 | Train Loss: 5.0045 (Fused Cox: 2.5446, CT Cox: 3.4306, PA Cox: 2.4822) | Train C-index: 0.9009 | Val Loss: 4.6850 | Val C-index: 0.7006
+Epoch 24/30 | Train Loss: 4.8222 (Fused Cox: 2.4226, CT Cox: 3.4129, PA Cox: 2.3106) | Train C-index: 0.9128 | Val Loss: 4.8412 | Val C-index: 0.6922
+Epoch 25/30 | Train Loss: 4.7828 (Fused Cox: 2.3692, CT Cox: 3.4331, PA Cox: 2.3233) | Train C-index: 0.9160 | Val Loss: 4.9334 | Val C-index: 0.6887
+Epoch 26/30 | Train Loss: 4.6786 (Fused Cox: 2.2984, CT Cox: 3.4295, PA Cox: 2.2179) | Train C-index: 0.9203 | Val Loss: 5.0498 | Val C-index: 0.6879
+Epoch 27/30 | Train Loss: 4.6132 (Fused Cox: 2.2232, CT Cox: 3.4312, PA Cox: 2.2481) | Train C-index: 0.9251 | Val Loss: 4.8609 | Val C-index: 0.6912
+Epoch 28/30 | Train Loss: 4.5103 (Fused Cox: 2.1691, CT Cox: 3.4152, PA Cox: 2.1118) | Train C-index: 0.9376 | Val Loss: 5.2199 | Val C-index: 0.6937
+Early stopping at epoch 28
+Fold 4 best C-index: 0.7085
+
+Extra survival metrics:
+cutoff_from_train_median: 0.364939
+n_test: 144
+n_high_risk: 78
+n_low_risk: 66
+n_event_test: 50
+logrank_stat: 13.887753
+logrank_p: 0.000194
+auc_36m: 0.772431
+auc_60m: 0.721211
+HR_high_vs_low: 3.239304
+HR_95CI_lower: 1.686089
+HR_95CI_upper: 6.223333
+cox_p: 0.000419
+Fold 4 | Train Loss: 4.9456 | Train C-index: 0.8749 | Val Loss: 4.4172 | Val C-index: 0.7085
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.8007 ± 0.0584
+  Val C-index: 0.7513 ± 0.0463

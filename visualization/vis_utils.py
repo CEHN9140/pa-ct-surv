@@ -176,7 +176,8 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
             )
         model = Pa_Model(
             model_name=pa_model,
-            feature_dim=1024,
+            feature_dim=int(config.get("feature_dim", 1024)),
+            l2_normalize=bool(config.get("l2_normalize", False)),
             k=config.get("k"),
             abmil_dropout=float(config.get("dropout", 0.0)),
             attention_branches=int(config.get("attention_branches", 1)),
@@ -190,11 +191,18 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
         model = Pa_CT_Model(
             pa_model_name=pa_model,
             ct_model_name=ct_model,
+            feature_dim=int(config.get("fusion_dim", teacher.get("fusion_dim", 512))),
+            mmhid=int(config.get("fusion_hidden_dim", teacher.get("fusion_hidden_dim", 512))),
+            fusion_head_dim=config.get("fusion_head_dim", teacher.get("fusion_head_dim")),
             ct_pretrained_path=None,
             pa_topk=config.get("k", teacher.get("k")),
             fusion_type=config.get("fusion_type", teacher.get("fusion_type", "concat")),
             fusion_dropout=float(config.get("fusion_dropout", 0.0)),
-            norm=config.get("norm", "none"),
+            dropout=config.get("dropout", teacher.get("dropout")),
+            pa_feature_dim=int(config.get("pa_feature_dim", teacher.get("pa_feature_dim", 1024))),
+            pa_l2_normalize=bool(config.get("pa_l2_normalize", teacher.get("pa_l2_normalize", False))),
+            fusion_l2_normalize=bool(config.get("fusion_l2_normalize", teacher.get("fusion_l2_normalize", False))),
+            shared_ct_feature=bool(config.get("shared_ct_feature", teacher.get("shared_ct_feature", False))),
         )
     elif model_type == "ct":
         model = CT_Model(
@@ -202,6 +210,7 @@ def load_visualization_model(model_type, config_path, checkpoint_root, fold, dev
             pretrained_path=None,
             freeze_backbone=bool(config.get("freeze_backbone", False)),
             dropout=float(config.get("dropout", 0.0)),
+            l2_normalize=bool(config.get("l2_normalize", False)),
         )
     elif model_type == "ct_student":
         model = CT_Model(

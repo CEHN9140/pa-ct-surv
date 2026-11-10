@@ -4,19 +4,7 @@ import pandas as pd
 import torch
 from sksurv.metrics import concordance_index_censored
 
-
-def cox_loss(risk, time, event, eps=1e-8):
-    risk, time, event = risk.view(-1), time.view(-1), event.view(-1).bool()
-    if event.sum() == 0:
-        return risk.sum() * 0.0
-
-    loss = risk.new_tensor(0.0)
-    for t in torch.unique(time[event]):
-        event_mask = (time == t) & event
-        risk_set = time >= t
-        d_t = event_mask.float().sum()
-        loss -= risk[event_mask].sum() - d_t * torch.logsumexp(risk[risk_set], dim=0)
-    return loss / (event.float().sum() + eps)
+from loss import cox_loss, survival_loss
 
 
 def discrete_nll_loss(hazards, survival, disc_label, event, eps=1e-7):
@@ -38,7 +26,8 @@ def discrete_nll_loss(hazards, survival, disc_label, event, eps=1e-7):
     return (event * event_loss + censoring * censor_loss).mean()
 
 
-def evaluate_survival(model, train_loader, val_loader, device, save_dir=None):
+def evaluate_survival(model, train_loader, val_loader, device, save_dir=None,
+                      loss_type="cox", rank_weight=1.0):
     """Evaluate with dropout disabled; optionally export patient predictions."""
     model.eval()
     metrics = {}
@@ -46,6 +35,8 @@ def evaluate_survival(model, train_loader, val_loader, device, save_dir=None):
         save_dir = Path(save_dir)
         save_dir.mkdir(parents=True, exist_ok=True)
     is_nll = getattr(model, "time_bins", None) is not None
+    if (is_nll and loss_type == "cox_rank") or (not is_nll and loss_type == "nll"):
+        raise ValueError("The selected survival loss does not match the model output")
     with torch.no_grad():
         for split, loader in (("train", train_loader), ("val", val_loader)):
             risks, times, events, nll_losses, case_ids = [], [], [], [], []
@@ -66,8 +57,8 @@ def evaluate_survival(model, train_loader, val_loader, device, save_dir=None):
                     labels = torch.bucketize(time.to(device), model.time_bins).clamp(max=hazards.size(1) - 1)
                     nll_losses.append(float(discrete_nll_loss(hazards, survival, labels, event.to(device))) * len(time))
             risk, time, event = torch.cat(risks), torch.cat(times), torch.cat(events)
-            loss = sum(nll_losses) / len(time) if is_nll else float(cox_loss(
-                risk.to(device), time.to(device), event.to(device)
+            loss = sum(nll_losses) / len(time) if is_nll else float(survival_loss(
+                risk.to(device), time.to(device), event.to(device), loss_type, rank_weight
             ))
             cindex = concordance_index_censored(event.numpy().astype(bool), time.numpy(), risk.numpy())[0]
             metrics.update({f"{split}_loss": loss, f"{split}_cindex": float(cindex)})

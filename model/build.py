@@ -2,25 +2,7 @@ import torch
 import torch.nn as nn
 
 from model.abmil_cox import ABMIL, ABMIL_RandomSample, ABMIL_TopK
-from model.fusion import (
-    BilinearFusion,
-    BottleneckFusion,
-    CompactBilinearFusion,
-    ConcatFusion,
-    ContrastiveFusion,
-    CrossAttnFusion,
-    DCCAFusion,
-    FeatureProductFusion,
-    FeatureSumFusion,
-    FiLMPatchFusion,
-    GatedFusion,
-    GraphFusion,
-    LowRankFusion,
-    OptimalTransportFusion,
-    QueryFusion,
-    SharedPrivateFusion,
-    TokenCoAttentionFusion,
-)
+from model.fusion import BilinearFusion, ConcatFusion, CrossAttentionFusion, GatedFusion
 from model.gabmil_cox import GABMIL, GABMIL_TopK
 from model.meanpool_cox import MeanPool
 from model.resnet_cox import ResNetCox
@@ -38,9 +20,12 @@ class Pa_Model(nn.Module):
         abmil_dropout=0.0,
         attention_branches=1,
         time_bins=None,
+        l2_normalize=False,
     ):
         super().__init__()
         self.model_name = model_name
+        self.feature_dim = feature_dim
+        self.l2_normalize = l2_normalize
         uses_k = model_name.endswith("-topk") or model_name == "abmil_randsample"
         if uses_k and (k is None or k <= 0):
             raise ValueError(f"{model_name} requires a positive k")
@@ -80,6 +65,8 @@ class Pa_Model(nn.Module):
             raise ValueError(f"Unknown model_name: {model_name}")
 
     def forward(self, pa):
+        if self.l2_normalize:
+            pa = nn.functional.normalize(pa, p=2, dim=-1, eps=1e-12)
         return self.mil(pa)
 
 
@@ -93,6 +80,7 @@ class CT_Model(nn.Module):
         freeze_backbone=False,
         dropout=0.5,
         model_depth=None,
+        l2_normalize=False,
     ):
         super().__init__()
         self.model_name = model_name
@@ -109,6 +97,7 @@ class CT_Model(nn.Module):
             dropout=dropout,
             model_depth=model_depth,
             freeze_bn_stats=True,
+            l2_normalize=l2_normalize,
         )
         if freeze_backbone:
             for name, param in self.ct.named_parameters():
@@ -133,42 +122,56 @@ class Pa_CT_Model(nn.Module):
         self,
         pa_model_name="abmil",
         ct_model_name="resnet18",
-        feature_dim=512,
-        mmhid=512,
+        feature_dim=256,
+        mmhid=256,
         ct_pretrained_path=None,
         fusion_dropout=0.0,
         pa_topk=None,
         fusion_type="concat",
-        norm="none",
+        dropout=None,
+        fusion_head_dim=128,
+        pa_feature_dim=1024,
+        pa_l2_normalize=False,
+        fusion_l2_normalize=False,
+        shared_ct_feature=False,
     ):
         super().__init__()
+        self.pa_feature_dim = pa_feature_dim
+        self.pa_l2_normalize = pa_l2_normalize
+        self.fusion_l2_normalize = fusion_l2_normalize
+        self.shared_ct_feature = shared_ct_feature
+        if fusion_type not in {"concat", "weighted", "gated", "bilinear", "crossattention"}:
+            raise ValueError(f"Unknown fusion_type: {fusion_type}")
+        if fusion_type == "crossattention" and pa_model_name != "abmil":
+            raise ValueError("crossattention currently requires pa_model_name='abmil'")
+        # Legacy checkpoints only specified fusion_dropout; their branches used 0.
+        branch_dropout = 0.0 if dropout is None else dropout
+        if not 0.0 <= branch_dropout < 1.0:
+            raise ValueError("dropout must be in [0, 1)")
+        if dropout is not None:
+            fusion_dropout = dropout
         if not 0.0 <= fusion_dropout < 1.0:
             raise ValueError("fusion_dropout must be in [0, 1)")
-        if norm not in {"none", "layernorm"}:
-            raise ValueError("norm must be 'none' or 'layernorm'")
 
         # CT branch
-        depth_map = {"resnet10": 10, "resnet18": 18}
-        self.ct_backbone = ResNetCox(
-            in_channels=1,
+        self.ct_backbone = CT_Model(
+            model_name=ct_model_name,
             pretrained_path=ct_pretrained_path,
-            dropout=0.0,
-            model_depth=depth_map.get(ct_model_name, 18),
-            freeze_bn_stats=True,
-        )
+            dropout=branch_dropout,
+        ).ct
         self.ct_projector = (
             nn.Identity()
-            if self.ct_backbone.feature_dim == feature_dim
+            if (256 if shared_ct_feature else self.ct_backbone.feature_dim) == feature_dim
             else nn.Sequential(
-                nn.Linear(self.ct_backbone.feature_dim, feature_dim),
+                nn.Linear(256 if shared_ct_feature else self.ct_backbone.feature_dim, feature_dim),
                 nn.ReLU(inplace=True),
             )
         )
-        self.ct_norm = nn.LayerNorm(feature_dim) if norm == "layernorm" else nn.Identity()
 
         # All pathology encoders return a 256-dimensional patient feature.
         self.pa_branch = Pa_Model(
-            model_name=pa_model_name, k=pa_topk
+            model_name=pa_model_name, k=pa_topk, abmil_dropout=branch_dropout,
+            feature_dim=pa_feature_dim,
         ).mil
         pa_output_dim = 256
 
@@ -177,18 +180,16 @@ class Pa_CT_Model(nn.Module):
             if pa_output_dim == feature_dim
             else nn.Linear(pa_output_dim, feature_dim)
         )
-        self.pa_norm = nn.LayerNorm(feature_dim) if norm == "layernorm" else nn.Identity()
 
         # Fusion
         self.fusion_type = fusion_type
-        self.fusion_requires_patches = False
-        self.fusion_requires_spatial = False
         if fusion_type == "concat":
             self.fusion = ConcatFusion(
                 dim1=feature_dim,
                 dim2=feature_dim,
                 mmhid=mmhid,
                 dropout_rate=fusion_dropout,
+                head_hidden_dim=fusion_head_dim,
             )
         elif fusion_type == "bilinear":
             self.fusion = BilinearFusion(
@@ -203,96 +204,46 @@ class Pa_CT_Model(nn.Module):
                 dim2=feature_dim,
                 mmhid=mmhid,
                 dropout_rate=fusion_dropout,
-            )
-        elif fusion_type == "crossattn":
-            self.fusion = CrossAttnFusion(
-                dim=feature_dim,
-                mmhid=mmhid,
-                dropout_rate=fusion_dropout,
+                head_hidden_dim=fusion_head_dim,
             )
         elif fusion_type == "weighted":
             # Keep a uniform fusion-module interface for the training loop.
             self.fusion = nn.Identity()
             self.risk_weight = nn.Parameter(torch.tensor(0.0))
-        elif fusion_type == "feature_sum":
-            self.fusion = FeatureSumFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "feature_product":
-            self.fusion = FeatureProductFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "lowrank":
-            self.fusion = LowRankFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "compact_bilinear":
-            self.fusion = CompactBilinearFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "film_patch":
-            self.fusion = FiLMPatchFusion(feature_dim, 1024, dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = True
-        elif fusion_type == "token_coattn":
-            self.fusion = TokenCoAttentionFusion(self.ct_backbone.feature_dim, 1024,
-                                                 dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = self.fusion_requires_spatial = True
-        elif fusion_type == "bottleneck":
-            self.fusion = BottleneckFusion(self.ct_backbone.feature_dim, 1024,
-                                           dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = self.fusion_requires_spatial = True
-        elif fusion_type == "query_fusion":
-            self.fusion = QueryFusion(self.ct_backbone.feature_dim, 1024,
-                                      dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = self.fusion_requires_spatial = True
-        elif fusion_type == "graph_fusion":
-            self.fusion = GraphFusion(self.ct_backbone.feature_dim, 1024,
-                                      dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = self.fusion_requires_spatial = True
-        elif fusion_type == "ot_fusion":
-            self.fusion = OptimalTransportFusion(self.ct_backbone.feature_dim, 1024,
-                                                 dropout_rate=fusion_dropout)
-            self.fusion_requires_patches = self.fusion_requires_spatial = True
-        elif fusion_type == "shared_private":
-            self.fusion = SharedPrivateFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "contrastive":
-            self.fusion = ContrastiveFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        elif fusion_type == "dcca":
-            self.fusion = DCCAFusion(feature_dim, feature_dim, dropout_rate=fusion_dropout)
-        else:
-            raise ValueError(f"Unknown fusion_type: {fusion_type}")
+        elif fusion_type == "crossattention":
+            self.fusion = CrossAttentionFusion(
+                dim1=feature_dim, dim2=self.pa_branch.compression[0].out_features,
+                mmhid=mmhid, dropout_rate=fusion_dropout,
+                head_hidden_dim=fusion_head_dim, l2_normalize=fusion_l2_normalize,
+            )
 
     def forward(self, ct, pa):
-        spatial = None
-        if self.fusion_requires_spatial:
-            spatial = self.ct_backbone.extract_spatial_features(ct)
-            raw_ct_fea = self.ct_backbone.avgpool(spatial).flatten(1)
+        raw_ct_fea = self.ct_backbone.extract_features(ct)
+        if self.shared_ct_feature:
+            ct_hidden = self.ct_backbone.fc[:-1](raw_ct_fea)
+            risk_ct = self.ct_backbone.fc[-1](ct_hidden).squeeze(-1)
+            ct_fea = self.ct_projector(ct_hidden)
         else:
-            raw_ct_fea = self.ct_backbone.extract_features(ct)
-        risk_ct = self.ct_backbone.risk_forward(raw_ct_fea)
-        ct_fea = self.ct_projector(raw_ct_fea)
-        ct_fea_for_fusion = self.ct_norm(ct_fea)
+            risk_ct = self.ct_backbone.risk_forward(raw_ct_fea)
+            ct_fea = self.ct_projector(raw_ct_fea)
+        if self.pa_l2_normalize:
+            pa = nn.functional.normalize(pa, p=2, dim=-1, eps=1e-12)
+        if self.fusion_type == "crossattention":
+            risk_pa, pa_fea, pa_att, pa_patches = self.pa_branch(pa, return_patch_features=True)
+            risk_fused, pa_fea, pa_att = self.fusion(ct_fea, pa_patches)
+            if self.fusion_l2_normalize:
+                ct_fea = nn.functional.normalize(ct_fea, p=2, dim=-1, eps=1e-12)
+            # Here PA feature/attention are CT-conditioned, not auxiliary ABMIL output.
+            return risk_fused, risk_ct, risk_pa, None, ct_fea, pa_fea, pa_att
         risk_pa, pa_fea, pa_att = self.pa_branch(pa)
         pa_fea = self.pa_projector(pa_fea)
-        pa_fea_for_fusion = self.pa_norm(pa_fea)
-        auxiliary = None
-        if self.fusion_requires_patches:
-            if self.fusion_requires_spatial:
-                risk_fused, auxiliary = self.fusion(
-                    ct_fea_for_fusion, pa_fea_for_fusion,
-                    patches=pa.unsqueeze(0) if pa.dim() == 2 else pa,
-                    spatial=spatial,
-                )
-            else:
-                risk_fused, auxiliary = self.fusion(
-                    ct_fea_for_fusion, pa_fea_for_fusion,
-                    patches=pa.unsqueeze(0) if pa.dim() == 2 else pa,
-                )
-        elif self.fusion_type in {
-            "feature_sum", "feature_product", "lowrank", "compact_bilinear",
-            "shared_private", "contrastive", "dcca",
-        }:
-            risk_fused, auxiliary = self.fusion(ct_fea_for_fusion, pa_fea_for_fusion)
-        elif self.fusion_type == "weighted":
+        if self.fusion_l2_normalize:
+            ct_fea = nn.functional.normalize(ct_fea, p=2, dim=-1, eps=1e-12)
+            pa_fea = nn.functional.normalize(pa_fea, p=2, dim=-1, eps=1e-12)
+        if self.fusion_type == "weighted":
             alpha = torch.sigmoid(self.risk_weight)
             risk_fused = alpha * risk_ct + (1 - alpha) * risk_pa
         else:
-            risk_fused = self.fusion(ct_fea_for_fusion, pa_fea_for_fusion)
-        return risk_fused, risk_ct, risk_pa, auxiliary, ct_fea, pa_fea, pa_att
-
-    def fusion_auxiliary_loss(self, payloads):
-        if hasattr(self.fusion, "auxiliary_loss"):
-            return self.fusion.auxiliary_loss(payloads)
-        return next(self.parameters()).new_zeros(())
+            risk_fused = self.fusion(ct_fea, pa_fea)
+        # Keep feature positions stable for existing distillation and visualization.
+        return risk_fused, risk_ct, risk_pa, None, ct_fea, pa_fea, pa_att

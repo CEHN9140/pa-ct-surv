@@ -50,7 +50,7 @@ class ABMIL(nn.Module):
         pooled = torch.bmm(weights, H)
         return pooled.reshape(H.size(0), -1), weights.transpose(1, 2)
 
-    def forward(self, x):
+    def forward(self, x, return_patch_features=False):
         if x.dim() == 2:
             x = x.unsqueeze(0)
         H = self.compression(x)
@@ -59,6 +59,8 @@ class ABMIL(nn.Module):
         pooled = self.post_compression(pooled)
         output = self.risk_head(pooled)
         if self.n_bins is None:
+            if return_patch_features:
+                return output.squeeze(-1), pooled, weights, H
             return output.squeeze(-1), pooled, weights
 
         hazards = torch.sigmoid(output)

@@ -4,9 +4,10 @@ FEATURE_NAME=features_uni_v1
 DATA_DIR="${BASE}/data/${DATA_SOURCE}/${FEATURE_NAME}"
 
 STUDENT_MODEL=resnet18
+SURVIVAL_LOSS=cox  # cox, cox_rank
 STUDENT_PRETRAINED_PATH=${BASE}/model/ct_pretrain/resnet_18_23dataset.pth
 STUDENT_DROPOUT=0.0
-TEACHER_TAG="roi64_abmil_resnet18_weighted_normnone_nodropout_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3"
+TEACHER_TAG="${DATA_SOURCE}_${FEATURE_NAME}_cv5_roi64_abmil_resnet18_weighted_dim256_dropout0.25_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3"
 TEACHER_CKPT_ROOT="${BASE}/checkpoints/pact_v6/pact/${TEACHER_TAG}"
 
 DISTILL_MODE=mse
@@ -20,6 +21,9 @@ WEIGHT_DECAY=5e-4
 COX_BATCH_SIZE=64
 
 RUN_TAG="${TEACHER_TAG}_${STUDENT_MODEL}_dropout${STUDENT_DROPOUT}_${DISTILL_MODE}_akd${ALPHA_KD}_t${KD_TEMPERATURE}"
+if [[ "${SURVIVAL_LOSS}" == "cox_rank" ]]; then
+  RUN_TAG="${RUN_TAG}_cox_rank"
+fi
 CHECKPOINT_ROOT="${BASE}/checkpoints/pact_v6/ct_student/${RUN_TAG}"
 RESULTS_ROOT="${BASE}/results/pact_v6/ct_student/${RUN_TAG}"
 LOG_ROOT="${BASE}/logs/pact_v6/ct_student"
@@ -29,6 +33,7 @@ mkdir -p "${LOG_ROOT}"
 CUDA_VISIBLE_DEVICES=0 nohup /home/gly001/.conda/envs/UNI/bin/python distill_train.py \
   --data_dir "${DATA_DIR}" \
   --student_model "${STUDENT_MODEL}" \
+  --survival_loss "${SURVIVAL_LOSS}" \
   --student_pretrained_path "${STUDENT_PRETRAINED_PATH}" \
   --student_dropout "${STUDENT_DROPOUT}" \
   --teacher_ckpt_root "${TEACHER_CKPT_ROOT}" \

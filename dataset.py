@@ -26,8 +26,8 @@ def cv_splits(samples):
     return [cv_fold_indices(samples, fold) for fold in range(5)]
 
 
-def load_path_feature(feature_path):
-    """Read native CLAM PT or TRIDENT H5 as CPU float32 features [N, 1024]."""
+def load_path_feature(feature_path, feature_dim=1024):
+    """Read PT or H5 as nonempty CPU float32 patch features."""
     path = Path(feature_path)
     if path.suffix.lower() == '.pt':
         features = torch.load(path, map_location='cpu', weights_only=True)
@@ -42,8 +42,8 @@ def load_path_feature(feature_path):
             features = torch.from_numpy(np.asarray(file['features'], dtype=np.float32))
     else:
         raise ValueError(f'Expected pathology .pt or .h5 features: {path}')
-    if features.ndim != 2 or features.shape[0] == 0 or features.shape[1] != 1024:
-        raise ValueError(f'Expected nonempty features [N, 1024], got {tuple(features.shape)}: {path}')
+    if features.ndim != 2 or features.shape[0] == 0 or features.shape[1] != feature_dim:
+        raise ValueError(f'Expected nonempty features [N, {feature_dim}], got {tuple(features.shape)}: {path}')
     if not torch.isfinite(features).all():
         raise ValueError(f'Non-finite pathology features: {path}')
     return features.contiguous()
@@ -102,15 +102,17 @@ def read_samples(data_dir, roi_size, columns):
 
 
 class Path_Dataset(Dataset):
-    def __init__(self, data_dir, roi_size=64):
+    def __init__(self, data_dir, roi_size=64, feature_dim=1024):
         self.samples = read_samples(data_dir, roi_size, ['pa_id', 'pa_path', 'event', 'time'])
+        self.feature_dim = feature_dim
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
-        return (load_path_feature(row['pa_path']),
+        features = load_path_feature(row['pa_path'], self.feature_dim)
+        return (features,
                 torch.tensor(row['event'], dtype=torch.long),
                 torch.tensor(row['time'], dtype=torch.float32), row['pa_id'])
 
@@ -133,10 +135,11 @@ class CT_Dataset(Dataset):
 
 
 class Pa_CT_Dataset(Dataset):
-    def __init__(self, data_dir, roi_size=64, augment=False):
+    def __init__(self, data_dir, roi_size=64, augment=False, feature_dim=1024):
         if augment:
             raise ValueError('CT augmentation is currently disabled')
         self.roi_size = roi_size
+        self.feature_dim = feature_dim
         self.samples = read_samples(data_dir, roi_size,
                                     ['pa_id', 'pa_path', 'ct_id', 'ct_path', 'event', 'time'])
 
@@ -146,7 +149,7 @@ class Pa_CT_Dataset(Dataset):
     def __getitem__(self, idx):
         row = self.samples.iloc[idx]
         return (torch.from_numpy(load_ct_npy(row['ct_path'], self.roi_size)),
-                load_path_feature(row['pa_path']),
+                load_path_feature(row['pa_path'], self.feature_dim),
                 torch.tensor(row['event'], dtype=torch.long),
                 torch.tensor(row['time'], dtype=torch.float32),
                 f"{row['pa_id']}|{row['ct_id']}")

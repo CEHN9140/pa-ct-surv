@@ -42,11 +42,7 @@ def fuse_risk(
         alpha = torch.sigmoid(model.risk_weight)
         return (alpha * ct_risk + (1 - alpha) * pa_risk).reshape(-1)
 
-    if model.fusion_requires_patches:
-        raise NotImplementedError("Global-feature Shapley analysis cannot explain patch/token fusion")
-    risk = model.fusion(model.ct_norm(ct_feature), model.pa_norm(pa_feature))
-    if getattr(model.fusion, "is_new_fusion", False):
-        risk = risk[0]
+    risk = model.fusion(ct_feature, pa_feature)
     return risk.reshape(-1)
 
 
@@ -61,10 +57,13 @@ def load_model(config, checkpoint, device):
     model = Pa_CT_Model(
         pa_model_name=pa_model_name,
         ct_model_name=config.get("ct_model", "resnet18"),
+        feature_dim=int(config.get("fusion_dim", 512)),
+        mmhid=int(config.get("fusion_hidden_dim", 512)),
+        fusion_head_dim=config.get("fusion_head_dim"),
         pa_topk=pa_topk,
         fusion_type=config.get("fusion_type", "concat"),
         fusion_dropout=float(config.get("fusion_dropout", 0.0)),
-        norm=config.get("norm", "none"),
+        dropout=config.get("dropout"),
         # The PACT checkpoint already contains the complete CT branch.
         ct_pretrained_path=None,
     )
@@ -73,8 +72,6 @@ def load_model(config, checkpoint, device):
     model.to(device).eval()
     for parameter in model.parameters():
         parameter.requires_grad = False
-    if model.fusion_requires_patches:
-        raise NotImplementedError("This Shapley entry supports global-feature fusion only")
     return model
 
 

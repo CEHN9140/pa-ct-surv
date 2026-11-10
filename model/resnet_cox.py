@@ -75,6 +75,7 @@ class ResNetCox(nn.Module):
         dropout=0.5,
         model_depth=18,
         freeze_bn_stats=False,
+        l2_normalize=False,
     ):
         super().__init__()
         if model_depth not in self._DEPTH_CONFIGS:
@@ -87,6 +88,7 @@ class ResNetCox(nn.Module):
         self.model_depth = model_depth
         self.shortcut_type = config["shortcut"]
         self.freeze_bn_stats = freeze_bn_stats
+        self.l2_normalize = l2_normalize
         self.inplanes = 64
 
         self.conv1 = nn.Conv3d(
@@ -232,6 +234,8 @@ class ResNetCox(nn.Module):
         x = self.extract_spatial_features(x)
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
+        if self.l2_normalize:
+            x = F.normalize(x, p=2, dim=-1, eps=1e-12)
         return x
 
     def risk_forward(self, fea):

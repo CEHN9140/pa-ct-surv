@@ -10,7 +10,7 @@ except ModuleNotFoundError:
 
 
 class TransLayer(nn.Module):
-    def __init__(self, norm_layer=nn.LayerNorm, dim=512, dropout=0.0):
+    def __init__(self, norm_layer=nn.LayerNorm, dim=512, dropout=0.1):
         super().__init__()
         if NystromAttention is None:
             raise ImportError(
@@ -52,7 +52,7 @@ class PPEG(nn.Module):
 
 
 class TransMILCox(nn.Module):
-    """TransMIL aggregation with matched pre/post-pooling projections."""
+    """Official TransMIL encoder with a patient-level survival prediction head."""
 
     def __init__(self, in_dim=1024, dropout=0.0, n_bins=None):
         super().__init__()
@@ -61,16 +61,14 @@ class TransMILCox(nn.Module):
         if n_bins is not None and n_bins <= 0:
             raise ValueError("n_bins must be positive when provided")
         self.n_bins = n_bins
+        self.compression = nn.Sequential(nn.Linear(in_dim, 512), nn.ReLU())
         self.pos_layer = PPEG(dim=512)
-        self.compression = nn.Sequential(
-            nn.Linear(in_dim, 512), nn.ReLU(), nn.Dropout(dropout)
-        )
         self.cls_token = nn.Parameter(torch.randn(1, 1, 512))
         self.layer1 = TransLayer(dim=512, dropout=dropout)
         self.layer2 = TransLayer(dim=512, dropout=dropout)
         self.norm = nn.LayerNorm(512)
         self.post_compression = nn.Sequential(
-            nn.Linear(512, 256), nn.ReLU(), nn.Dropout(dropout)
+            nn.Linear(512, 256), nn.ReLU(), nn.Dropout(dropout),
         )
         self.risk_head = nn.Linear(256, n_bins if n_bins is not None else 1)
 
@@ -83,7 +81,7 @@ class TransMILCox(nn.Module):
         H = h.shape[1]
         _H = _W = math.ceil(math.sqrt(H))
         add_length = _H * _W - H
-        h = torch.cat([h, h[:, :add_length, :]], dim=1)  # [B, N, 512]
+        h = torch.cat([h, h[:, :add_length, :]], dim=1)
 
         # ---->cls_token
         B = h.shape[0]
@@ -91,13 +89,13 @@ class TransMILCox(nn.Module):
         h = torch.cat((cls_tokens, h), dim=1)
 
         # ---->Translayer x1
-        h = self.layer1(h)  # [B, N, 512]
+        h = self.layer1(h)
 
         # ---->PPEG
-        h = self.pos_layer(h, _H, _W)  # [B, N, 512]
+        h = self.pos_layer(h, _H, _W)
 
         # ---->Translayer x2
-        h = self.layer2(h)  # [B, N, 512]
+        h = self.layer2(h)
 
         # ---->cls_token
         h = self.norm(h)[:, 0]

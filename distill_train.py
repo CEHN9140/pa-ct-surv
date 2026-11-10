@@ -1,10 +1,11 @@
 """
 Knowledge Distillation: PACT Teacher → CT-Only Student (5-fold CV)
-    Survival risk distillation: Cox supervision + teacher fused-risk MSE.
+    Survival risk distillation: selected survival objective + teacher fused-risk KD.
 Batched CT forward + list-based PA teacher forward.
 """
 
 import argparse
+from functools import partial
 import os
 from pathlib import Path
 
@@ -13,10 +14,11 @@ import torch
 import yaml
 from sksurv.metrics import concordance_index_censored
 
-from cox_utils import cox_loss, evaluate_survival
+from cox_utils import evaluate_survival
 from dataset import CT_Student_Dataset, build_dataloader, resolve_data_dir, cv_splits
 from utils import seed_everything, save_run_config, save_cv_results, build_ct_optimizer
 from loss import (
+    survival_loss,
     mse_distill_loss,
     normalized_mse_distill_loss,
     risk_set_listwise_kd,
@@ -67,6 +69,9 @@ def load_frozen_teacher(ckpt_path, teacher_config, device):
     teacher = Pa_CT_Model(
         pa_model_name=pa_model_name,
         ct_model_name=teacher_config.get("ct_model", "resnet18"),
+        feature_dim=int(teacher_config.get("fusion_dim", 512)),
+        mmhid=int(teacher_config.get("fusion_hidden_dim", 512)),
+        fusion_head_dim=teacher_config.get("fusion_head_dim"),
         ct_pretrained_path=None,
         pa_topk=pa_topk,
         fusion_dropout=float(
@@ -75,7 +80,11 @@ def load_frozen_teacher(ckpt_path, teacher_config, device):
             )
         ),
         fusion_type=teacher_config.get("fusion_type", "concat"),
-        norm=teacher_config.get("norm", "none"),
+        dropout=teacher_config.get("dropout"),
+        pa_feature_dim=int(teacher_config.get("pa_feature_dim", 1024)),
+        pa_l2_normalize=bool(teacher_config.get("pa_l2_normalize", False)),
+        fusion_l2_normalize=bool(teacher_config.get("fusion_l2_normalize", False)),
+        shared_ct_feature=bool(teacher_config.get("shared_ct_feature", False)),
     ).to(device)
 
     state = torch.load(ckpt_path, map_location=device, weights_only=True)
@@ -105,6 +114,10 @@ def train_student(
     wait = 0
     alpha_kd = getattr(args, "alpha_kd", 0.3)
     use_distill = alpha_kd > 0
+    loss_type = getattr(args, "survival_loss", "cox")
+    criterion = partial(survival_loss, loss_type=loss_type,
+                        rank_weight=getattr(args, "rank_weight", 1.0))
+    loss_label = "Cox Loss" if loss_type == "cox" else "Cox+Rank Loss"
 
     for epoch in range(1, args.num_epochs + 1):
         student.train()
@@ -112,7 +125,7 @@ def train_student(
             teacher.eval()
         optimizer.zero_grad()
 
-        losses, losses_cox, losses_kd = [], [], []
+        losses, losses_survival, losses_kd = [], [], []
         train_risks_np, train_times_np, train_events_np = [], [], []
 
         for batch in train_loader:
@@ -144,7 +157,7 @@ def train_student(
             else:
                 risk_t = None
 
-            loss_c = cox_loss(risk_s, time, event)
+            loss_surv = criterion(risk_s, time, event)
             if risk_t is not None:
                 if args.distill_mode == "mse":
                     loss_kd = mse_distill_loss(risk_s, risk_t)
@@ -158,17 +171,17 @@ def train_student(
                         event,
                         temperature=args.kd_temperature,
                     )
-                loss = loss_c + alpha_kd * loss_kd
+                loss = loss_surv + alpha_kd * loss_kd
             else:
                 loss_kd = torch.tensor(0.0, device=device)
-                loss = loss_c
+                loss = loss_surv
 
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
 
             losses.append(float(loss.detach().cpu()))
-            losses_cox.append(float(loss_c.detach().cpu()))
+            losses_survival.append(float(loss_surv.detach().cpu()))
             losses_kd.append(float(loss_kd.detach().cpu()))
 
         avg_loss = float(np.mean(losses))
@@ -193,7 +206,7 @@ def train_student(
         val_times_arr = np.asarray(val_times_np, dtype=np.float32)
         val_events_arr = np.asarray(val_events_np, dtype=int)
         val_loss = float(
-            cox_loss(
+            criterion(
                 torch.as_tensor(val_risks_arr, device=device),
                 torch.as_tensor(val_times_arr, device=device),
                 torch.as_tensor(val_events_arr, device=device),
@@ -208,7 +221,7 @@ def train_student(
 
         print(
             f"Epoch {epoch}/{args.num_epochs} | Train Loss: {avg_loss:.4f} "
-            f"(Cox Loss: {np.mean(losses_cox):.4f}, KD Loss: {np.mean(losses_kd):.4f}) | "
+            f"({loss_label}: {np.mean(losses_survival):.4f}, KD Loss: {np.mean(losses_kd):.4f}) | "
             f"Train C-index: {train_cindex:.4f} | Val Loss: {val_loss:.4f} | "
             f"Val C-index: {val_cindex:.4f}"
         )
@@ -241,7 +254,7 @@ def parse_args():
                         help="Directory containing all_label_roi*.csv; folds must match the teacher.")
     parser.add_argument(
         "--teacher_ckpt_root",
-        default="/home/gly001/cqj/pa_ct_surv/checkpoints/pact_v6/pact/roi64_abmil_resnet18_weighted_normnone_nodropout_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3",
+        default="/home/gly001/cqj/pa_ct_surv/checkpoints/pact_v6/pact/trident_features_uni_v1_cv5_roi64_abmil_resnet18_weighted_dim256_dropout0.25_epochs30_coxbs64_lr1e-4_blr1e-5_wd5e-4_lct0.5_lpa0.3",
         help="Root dir containing fold_0/best_model.pth ... fold_4/best_model.pth",
     )
     parser.add_argument("--student_model", default="resnet18")
@@ -264,6 +277,9 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--ct_backbone_lr", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=5e-4)
+    parser.add_argument("--survival_loss", choices=["cox", "cox_rank"], default="cox")
+    parser.add_argument("--rank_weight", type=float, default=1.0,
+                        help="Pairwise ranking weight; used only by cox_rank.")
     parser.add_argument(
         "--cox_batch_size",
         type=int,
@@ -282,7 +298,10 @@ def parse_args():
     parser.add_argument("--checkpoint_root", default=None)
     parser.add_argument("--results_root", default=None)
     parser.add_argument("--eval_only", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.survival_loss == "cox_rank" and (not np.isfinite(args.rank_weight) or args.rank_weight < 0):
+        parser.error("--rank_weight must be finite and nonnegative")
+    return args
 
 
 def main():
@@ -295,7 +314,7 @@ def main():
     teacher_fusion = teacher_config.get("fusion_type", "concat")
     teacher_ct_model = teacher_config.get("ct_model", "resnet18")
     ct_roi_size = int(teacher_config["ct_roi_size"])
-    data_dir = resolve_data_dir(args.data_dir, ct_roi_size)
+    data_dir = resolve_data_dir(args.data_dir or teacher_config.get("data_dir"), ct_roi_size)
     if not 0.0 <= args.student_dropout < 1.0:
         raise ValueError("--student_dropout must be in [0, 1)")
     args.data_dir = data_dir
@@ -303,6 +322,8 @@ def main():
 
     k_tag = f"-k{teacher_k}" if is_teacher_topk else ""
     suffix = f"distill-{teacher_pa_model}{k_tag}-{teacher_fusion}-survrisk-{args.distill_mode}-akd{args.alpha_kd}-roi{ct_roi_size}"
+    if args.survival_loss == "cox_rank":
+        suffix += f"-cox_rank-rankw{args.rank_weight:g}"
     print(f"Teacher:   {args.teacher_ckpt_root}")
     print(f"Teacher config: {teacher_config_path}")
     print(f"Data:      {data_dir} | ROI: {ct_roi_size}")
@@ -311,8 +332,10 @@ def main():
         f"Fusion={teacher_fusion} | k={teacher_k}"
     )
     print(
-        f"Distill:   Cox + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | KD starts at epoch 1"
+        f"Distill:   {args.survival_loss} + alpha_kd*{args.distill_mode}(student_risk, teacher_fused_risk) | alpha_kd={args.alpha_kd} | KD starts at epoch 1"
     )
+    if args.survival_loss == "cox_rank":
+        print(f"Ranking weight: {args.rank_weight:g}")
     print(f"Student dropout: {args.student_dropout}")
     print(f"CT augmentation: disabled | cox_batch_size={args.cox_batch_size}")
     print(
@@ -323,11 +346,13 @@ def main():
                     "ct_model": teacher_ct_model, "ct_roi_size": ct_roi_size}
     if is_teacher_topk:
         teacher_info["k"] = teacher_k
-    save_run_config(args, "ct_student", suffix, extra={
+    excluded = [] if args.survival_loss == "cox_rank" else ["rank_weight"]
+    save_run_config(args, "ct_student", suffix, excluded, extra={
         "teacher_config_path": str(teacher_config_path), "teacher": teacher_info,
     })
 
-    train_dataset = CT_Student_Dataset(data_dir, roi_size=ct_roi_size)
+    train_dataset = CT_Student_Dataset(data_dir, roi_size=ct_roi_size,
+                                      feature_dim=int(teacher_config.get("pa_feature_dim", 1024)))
     print(f"Loaded {len(train_dataset)} paired samples")
 
     fold_splits = cv_splits(train_dataset.samples)
@@ -391,6 +416,7 @@ def main():
         metrics = evaluate_survival(
             student, train_loader, val_loader, DEVICE,
             save_dir=Path(args.results_root) / f"fold_{fold}",
+            loss_type=args.survival_loss, rank_weight=args.rank_weight,
         )
         print(
             f"Fold {fold} | Train Loss: {metrics['train_loss']:.4f} | "
