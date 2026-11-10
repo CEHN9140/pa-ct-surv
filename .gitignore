@@ -95,6 +95,12 @@ tests/10_pathology_learning_curve/*
 !tests/10_pathology_learning_curve/run.sh
 !tests/10_pathology_learning_curve/test_experiment.py
 !tests/10_pathology_learning_curve/README.md
+!tests/15_pathology_query_ct_tokens/
+# Publish experiment 15 code and aggregate outputs only.
+tests/15_pathology_query_ct_tokens/**/*.npz
+tests/15_pathology_query_ct_tokens/**/train_predictions.csv
+tests/15_pathology_query_ct_tokens/**/val_predictions.csv
+tests/15_pathology_query_ct_tokens/**/baseline_predictions.csv
 vis/
 
 # Python

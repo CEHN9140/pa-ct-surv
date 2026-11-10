@@ -1,0 +1,119 @@
+Fixed-checkpoint inference: 1 runs, 5 folds, 100 repeats; device=cuda
+
+Run: eagle_top25_virchow2_cls_paraw_fusionraw_roi64_paq25_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4
+Fold 0/4
+  Encoded 25/145 validation batches
+  Encoded 50/145 validation batches
+  Encoded 75/145 validation batches
+  Encoded 100/145 validation batches
+  Encoded 125/145 validation batches
+  Encoded 145/145 validation batches
+  Fold 0 paired C-index=0.7281; baseline parity passed
+  Fold 0 shuffle_ct: 20/100
+  Fold 0 shuffle_ct: 40/100
+  Fold 0 shuffle_ct: 60/100
+  Fold 0 shuffle_ct: 80/100
+  Fold 0 shuffle_ct: 100/100
+  Fold 0 shuffle_query: 20/100
+  Fold 0 shuffle_query: 40/100
+  Fold 0 shuffle_query: 60/100
+  Fold 0 shuffle_query: 80/100
+  Fold 0 shuffle_query: 100/100
+               cindex_mean  cindex_std  drop_cindex_mean
+condition                                               
+paired            0.728103         NaN          0.000000
+shuffle_ct        0.723219         NaN          0.004883
+shuffle_query     0.728169         NaN         -0.000066
+Fold 1/4
+  Encoded 25/144 validation batches
+  Encoded 50/144 validation batches
+  Encoded 75/144 validation batches
+  Encoded 100/144 validation batches
+  Encoded 125/144 validation batches
+  Encoded 144/144 validation batches
+  Fold 1 paired C-index=0.7590; baseline parity passed
+  Fold 1 shuffle_ct: 20/100
+  Fold 1 shuffle_ct: 40/100
+  Fold 1 shuffle_ct: 60/100
+  Fold 1 shuffle_ct: 80/100
+  Fold 1 shuffle_ct: 100/100
+  Fold 1 shuffle_query: 20/100
+  Fold 1 shuffle_query: 40/100
+  Fold 1 shuffle_query: 60/100
+  Fold 1 shuffle_query: 80/100
+  Fold 1 shuffle_query: 100/100
+               cindex_mean  cindex_std  drop_cindex_mean
+condition                                               
+paired            0.743534    0.021824          0.000000
+shuffle_ct        0.739860    0.023534          0.003674
+shuffle_query     0.743562    0.021770         -0.000028
+Fold 2/4
+  Encoded 25/144 validation batches
+  Encoded 50/144 validation batches
+  Encoded 75/144 validation batches
+  Encoded 100/144 validation batches
+  Encoded 125/144 validation batches
+  Encoded 144/144 validation batches
+  Fold 2 paired C-index=0.8214; baseline parity passed
+  Fold 2 shuffle_ct: 20/100
+  Fold 2 shuffle_ct: 40/100
+  Fold 2 shuffle_ct: 60/100
+  Fold 2 shuffle_ct: 80/100
+  Fold 2 shuffle_ct: 100/100
+  Fold 2 shuffle_query: 20/100
+  Fold 2 shuffle_query: 40/100
+  Fold 2 shuffle_query: 60/100
+  Fold 2 shuffle_query: 80/100
+  Fold 2 shuffle_query: 100/100
+               cindex_mean  cindex_std  drop_cindex_mean
+condition                                               
+paired            0.769473    0.047504          0.000000
+shuffle_ct        0.766245    0.048635          0.003229
+shuffle_query     0.769490    0.047473         -0.000016
+Fold 3/4
+  Encoded 25/144 validation batches
+  Encoded 50/144 validation batches
+  Encoded 75/144 validation batches
+  Encoded 100/144 validation batches
+  Encoded 125/144 validation batches
+  Encoded 144/144 validation batches
+  Fold 3 paired C-index=0.7718; baseline parity passed
+  Fold 3 shuffle_ct: 20/100
+  Fold 3 shuffle_ct: 40/100
+  Fold 3 shuffle_ct: 60/100
+  Fold 3 shuffle_ct: 80/100
+  Fold 3 shuffle_ct: 100/100
+  Fold 3 shuffle_query: 20/100
+  Fold 3 shuffle_query: 40/100
+  Fold 3 shuffle_query: 60/100
+  Fold 3 shuffle_query: 80/100
+  Fold 3 shuffle_query: 100/100
+               cindex_mean  cindex_std  drop_cindex_mean
+condition                                               
+paired            0.770043    0.038804          0.000000
+shuffle_ct        0.767276    0.039764          0.002767
+shuffle_query     0.770054    0.038778         -0.000011
+Fold 4/4
+  Encoded 25/144 validation batches
+  Encoded 50/144 validation batches
+  Encoded 75/144 validation batches
+  Encoded 100/144 validation batches
+  Encoded 125/144 validation batches
+  Encoded 144/144 validation batches
+  Fold 4 paired C-index=0.7116; baseline parity passed
+  Fold 4 shuffle_ct: 20/100
+  Fold 4 shuffle_ct: 40/100
+  Fold 4 shuffle_ct: 60/100
+  Fold 4 shuffle_ct: 80/100
+  Fold 4 shuffle_ct: 100/100
+  Fold 4 shuffle_query: 20/100
+  Fold 4 shuffle_query: 40/100
+  Fold 4 shuffle_query: 60/100
+  Fold 4 shuffle_query: 80/100
+  Fold 4 shuffle_query: 100/100
+               cindex_mean  cindex_std  drop_cindex_mean
+condition                                               
+paired            0.758362    0.042563          0.000000
+shuffle_ct        0.755332    0.043580          0.003030
+shuffle_query     0.758349    0.042577          0.000013
+Completed all inference checks: tests/15_pathology_query_ct_tokens/inference_checks_no_l2
