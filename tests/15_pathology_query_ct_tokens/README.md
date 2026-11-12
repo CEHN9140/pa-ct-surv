@@ -4,6 +4,81 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## High-dimensional CT increment and conditional Shape experiment
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_feature_increment.sh
+```
+
+This diagnostic reuses the completed nested-risk source cohort/checkpoints,
+not the old outer-validation-selected baselines. All candidates share the same
+pathology risk predictions and freely calibrate their pathology slope:
+
+- M0: one-variable pathology-risk Cox calibration.
+- M1: two-variable pathology/CT-risk Cox calibration (both slopes learned).
+- M2_public: pathology risk plus public-pretrained CT layer4 global512 features.
+- M2_finetuned: pathology risk plus the existing fold-restricted DFS CT global512.
+
+M2 standardizes CT features, fits PCA16/32, standardizes PC scores and fits
+Breslow Cox with ridge .01/.1/1/10/100/1000 on CT terms only. The pathology
+slope is unpenalized consistently in every candidate. All transforms and grid
+choices use inner training data only; selection uses mean within-inner-fold
+C-index. Public extraction is outcome independent. For fine-tuned features,
+one inner encoder supplies both calibration-training and calibration-validation
+vectors; a single final outer encoder supplies final training/validation
+vectors. Features from different encoders are never pooled into one PCA fit.
+
+For clean M2 inner selection, generate pathology OOF risks AGAIN within each
+calibration-training subset (two subfolds, separate fit/stopping/OOF sets), so
+calibration-validation patients do not leak indirectly into the risk feature
+generator. This is30 additional small pathology fits; no CT encoder retraining.
+The final head uses existing honest outer-training OOF pathology risks, with
+the source outer pathology predictions shared across all M0/M1/M2 comparisons.
+Record1-epoch source refits as a stability limitation instead of changing the
+pathology baseline only for a new candidate.
+
+Predeclared conditional second stage: if neither M2 source has positive mean
+delta, lower paired-bootstrap bound>0 and>=4/5 positive folds versus BOTH M0
+and M1, automatically run Shape and volume probes. Shape uses the original
+binary NIfTI masks in physical units: voxel volume, maximum3D diameter and
+sphericity. M3 adds log-volume; M4 adds all three Shape measures with inner
+ridge selection. Probes predict log-volume from512-D public/fine-tuned CT
+features using inner standardization/Ridge selection on all512 dimensions
+(no PCA for the volume probe), reporting outer log/raw-volume R2
+and MAE. Shape is annotation-derived: positive incremental value would not by
+itself prove the encoder can recover identical information from CT pixels.
+No intensity/texture feature search or formal teacher modification is performed.
+
+Log: `logs/feature_increment.log`. Results: `results/feature_increment/`:
+each model has fold predictions, serialized Cox heads, transform/sample-count
+provenance, selected parameters, KM/HR and five-fold mean/sample-SD metrics.
+M2 comparisons and `stage_decision.json` record the predeclared gate; source
+pathology epochs are in `source_pathology_stability.json`. If triggered, Shape
+and volume outputs appear in that same result root. Stage1 metrics are saved
+before Stage2. Caches stay local. Checkpoints under `checkpoints/feature_increment/`
+are only the additional PA cross-fitting models. Existing source artifacts
+are read-only. The default run uses both CT sources and all five outer folds;
+partial folds/one-epoch options are only for integration verification.
+
+These remain exploratory internal-CV comparisons. Bootstrap is conditional on
+fitted models and does not include retraining/previous configuration selection.
+A negative PCA16/32 linear probe does not exclude all higher-dimensional or
+nonlinear complementary information. See `feature_increment_plan.md`.
+
+Verification:58 experiment15 unit tests pass. A real ROI64 outer-fold0
+integration completes six new one-epoch PA cross-fits and all four M0/M1/M2
+outputs. Head reload reproduces145 validation predictions; source encoders,
+512-D caches, nested split roles and training-only transformation counts are
+audited. Three original masks pass physical-unit Shape extraction; a separate
+synthetic integration tests M3/M4, KM/HR and the full-dimensional volume probe.
+No /tmp smoke checkpoint or prediction is reused by the full experiment.
+The complete diagnostic has been launched with nohup; CUDA feature extraction
+and additional PA cross-fitting have started. Conditional Shape/probe execution
+is decided only after the two M2 sources finish their outer comparisons.
+
+Official API references: [Cox ridge and per-feature penalties](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.linear_model.CoxPHSurvivalAnalysis.html),
+[mask-derived PyRadiomics Shape definitions](https://pyradiomics.readthedocs.io/en/latest/features.html#module-radiomics.shape).
+
 ## Nested risk-increment diagnostic
 
 ```bash

@@ -1,0 +1,40 @@
+batch_size: 32
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/feature_increment
+cohort_sha256: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+cox_batch_size: 32
+ct_backbone_lr: 1.0e-05
+ct_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+ct_sources:
+- public
+- finetuned
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+device: cuda
+dropout: 0.25
+fusion_type: ct_feature_increment_diagnostic
+lr: 0.0001
+mask_dir: /home/gly001/cqj/data/lung_cancer/ct/mask
+num_epochs: 30
+num_workers: 8
+outer_folds:
+- 0
+- 1
+- 2
+- 3
+- 4
+patience: 10
+pca_dims:
+- 16
+- 32
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment
+ridge_grid:
+- 0.01
+- 0.1
+- 1.0
+- 10.0
+- 100.0
+- 1000.0
+seed: 123
+source_config_sha256: 2936a1d59c36619c6068615bc8273dc823bbdcc70ee531316bbdcc7b1f51198c
+source_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment
+stop_fraction: 0.15
+weight_decay: 0.0005

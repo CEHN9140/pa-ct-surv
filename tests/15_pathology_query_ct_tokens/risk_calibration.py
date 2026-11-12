@@ -66,9 +66,10 @@ def fit_alpha(pathology, ct, time, event):
                 source='standardized inner OOF predictions only', coefficient_constraint='unrestricted real')
 
 
-def paired_comparison(predictions, repeats=2000, seed=123):
+def paired_comparison(predictions, repeats=2000, seed=123, reference_columns=None):
     """Paired patient bootstrap of the mean outer-fold C-index difference."""
-    contrasts = {key: [] for key in ('pathology', 'ct')}
+    references = reference_columns or {'pathology': 'raw_pathology_risk', 'ct': 'raw_ct_risk'}
+    contrasts = {key: [] for key in references}
     observed = {key: [] for key in contrasts}
     for fold, frame in enumerate(predictions):
         t, e = frame['dfs.month'].to_numpy(), frame['dfs.status'].to_numpy().astype(bool)
@@ -78,7 +79,7 @@ def paired_comparison(predictions, repeats=2000, seed=123):
         if not len(i):
             raise ValueError('No comparable outer-validation pairs')
         scores = {}
-        for name in ('raw_pathology_risk', 'raw_ct_risk', 'risk_score'):
+        for name in [*references.values(), 'risk_score']:
             risk = frame[name].to_numpy()
             delta = risk[i] - risk[j]
             scores[name] = np.where(abs(delta) <= 1e-8, .5, (delta > 0).astype(float))
@@ -87,7 +88,7 @@ def paired_comparison(predictions, repeats=2000, seed=123):
         counts = np.stack([np.bincount(draw, minlength=len(t)) for draw in draws]).astype(float)
         denominator = np.einsum('bi,bi->b', counts @ comparable.astype(float), counts)
         for key in contrasts:
-            difference = scores['risk_score'] - scores['raw_' + key + '_risk']
+            difference = scores['risk_score'] - scores[references[key]]
             matrix = np.zeros_like(comparable, dtype=float)
             matrix[i, j] = difference
             numerator = np.einsum('bi,bi->b', counts @ matrix, counts)

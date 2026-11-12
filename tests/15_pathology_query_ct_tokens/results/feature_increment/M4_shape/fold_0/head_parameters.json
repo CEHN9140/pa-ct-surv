@@ -1,0 +1,85 @@
+{
+  "selection": {
+    "dim": null,
+    "ridge": 10.0,
+    "inner_mean_cindex": 0.7375578141297007,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.7659390533823212,
+          0.7272626071468329,
+          0.7127233351380617
+        ],
+        "failures": [],
+        "mean_cindex": 0.735308331889072
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.7659390533823212,
+          0.727485249916509,
+          0.7127233351380617
+        ],
+        "failures": [],
+        "mean_cindex": 0.7353825461456306
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.765290685109142,
+          0.7285984637648892,
+          0.7126150514347591
+        ],
+        "failures": [],
+        "mean_cindex": 0.7355014001029301
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7672357899286795,
+          0.7326060336190582,
+          0.7128316188413644
+        ],
+        "failures": [],
+        "mean_cindex": 0.7375578141297007
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.7630213961530149,
+          0.7360569965490371,
+          0.7128316188413644
+        ],
+        "failures": [],
+        "mean_cindex": 0.7373033371811388
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.7526475037821483,
+          0.7356117110096849,
+          0.7080671358960476
+        ],
+        "failures": [],
+        "mean_cindex": 0.732108783562627
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "coefficients": [
+    0.6099414409584354,
+    0.04314707727531114,
+    0.08533270865822284,
+    -0.20052761031762475
+  ],
+  "pathology_scaler_fit_n": 576,
+  "ct_scaler_fit_n": 576,
+  "final_training_source": "outer-training OOF pathology risk; outer-training CT representation only"
+}

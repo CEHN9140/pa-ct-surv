@@ -1,0 +1,47 @@
+{
+  "shape_triggered": true,
+  "criterion": "positive delta, paired lower>0, >=4/5 positive folds versus both M0/M1",
+  "comparisons": {
+    "M2_public": {
+      "fusion_minus_M0": {
+        "delta_cindex": -0.005334495834487303,
+        "lower": -0.015564479466238958,
+        "upper": 0.004939406514506008,
+        "valid_repeats": 2000
+      },
+      "fusion_minus_M1": {
+        "delta_cindex": -0.00964363106991748,
+        "lower": -0.019088124175384337,
+        "upper": -0.0008900412107413689,
+        "valid_repeats": 2000
+      },
+      "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty.",
+      "positive_folds": {
+        "M0": 2,
+        "M1": 1
+      },
+      "stable_increment": false
+    },
+    "M2_finetuned": {
+      "fusion_minus_M0": {
+        "delta_cindex": -0.004714400271181236,
+        "lower": -0.013205828503119665,
+        "upper": 0.0035439664613592294,
+        "valid_repeats": 2000
+      },
+      "fusion_minus_M1": {
+        "delta_cindex": -0.009023535506611412,
+        "lower": -0.019417053172052702,
+        "upper": 0.0007462492445446056,
+        "valid_repeats": 2000
+      },
+      "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty.",
+      "positive_folds": {
+        "M0": 0,
+        "M1": 1
+      },
+      "stable_increment": false
+    }
+  },
+  "partial_run": false
+}
