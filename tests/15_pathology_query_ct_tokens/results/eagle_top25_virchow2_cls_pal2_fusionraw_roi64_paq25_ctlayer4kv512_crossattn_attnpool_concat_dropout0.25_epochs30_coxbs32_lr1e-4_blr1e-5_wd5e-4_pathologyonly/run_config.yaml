@@ -1,0 +1,35 @@
+alignment_weight: 0.0
+all_patch_queries: false
+attention_score: not used; zero CT fusion slot
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/eagle_top25_virchow2_cls_pal2_fusionraw_roi64_paq25_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4_pathologyonly
+cox_batch_size: 32
+ct_bn_adapt: false
+ct_bn_stats: not used
+ct_input_normalization: not used
+ct_model: resnet18
+ct_roi_size: 64
+ct_token_grid: []
+ct_token_source: disabled
+ct_zscore: false
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+dropout: 0.25
+fusion_control: pathology_only
+fusion_l2_normalize: false
+fusion_type: path_query_ct_layer4
+lambda_ct: 0.0
+lambda_pa: 0.0
+lr: 0.0001
+num_epochs: 30
+num_workers: 8
+pa_feature_dim: 1280
+pa_l2_normalize: true
+pa_model: abmil
+pa_query_tokens: 0
+patience: 10
+positional_encoding: false
+qk_norm: false
+query_aggregation: not used
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/eagle_top25_virchow2_cls_pal2_fusionraw_roi64_paq25_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4_pathologyonly
+seed: 123
+survival_loss: cox
+weight_decay: 0.0005

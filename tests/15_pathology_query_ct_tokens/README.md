@@ -4,6 +4,332 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Nested risk-increment diagnostic
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_risk_increment.sh
+```
+
+This is an independently trained unimodal-risk comparison, **not** a formal
+teacher or student. It consumes no existing downstream-trained checkpoint.
+The objective is `z_pathology + alpha * z_CT`, with one unrestricted scalar
+alpha fitted by the existing event-averaged Breslow Cox loss. Positive and
+negative alpha are both allowed; no validation-based alpha grid is used.
+
+Keep the original 721 paired patients and five outer splits. Within each outer
+training set, create three event-stratified inner OOF folds. For each inner
+model, split the remaining patients into fit/stop sets (85/15), train only on
+fit, and early-stop only on stop. Its inner OOF patients participate in neither
+training, stopping nor risk-scaler fitting. Fit each risk mean/population SD on
+fit-patient eval predictions, apply to OOF predictions, and learn alpha on the
+complete outer-training OOF table. Select each modality's outer training length
+by the median inner best epoch (rounded down). Initialize NEW outer models,
+refit all outer-training patients for those fixed epochs, fit risk scalers only
+on their outer-training predictions, then evaluate the outer validation set.
+There is no outer early stopping, coefficient selection or scaler fitting.
+
+Pathology uses Top25 1280-D features, per-patch L2 and ABMIL; CT uses ROI64,
+public MedicalNet ResNet18, no pooled-feature L2 and fixed BN statistics with
+trainable encoder parameters. Common settings: dropout .25, Cox32 (PA forward
+accumulation, CT true batch32), tail merging, Adam lr1e-4/backbone1e-5,
+wd5e-4, max30 inner epochs/patience10 and seed123 reset per independent fit.
+Default total: 40 model fits, followed by scalar-risk calibration/evaluation.
+
+Outputs:
+- Log: `logs/nested_risk_increment.log`.
+- Results: `results/nested_risk_increment/`, including `run_config.yaml`,
+  `outer_splits.csv`, `alphas.csv`, `paired_comparison.json`, and completion marker.
+- `results/nested_risk_increment/fold_i/`: split roles, standardized/raw OOF
+  predictions and calibration YAML containing scaler/alpha/epoch provenance.
+- `results/nested_risk_increment/{pathology,ct,late_fusion}/fold_i/`: train/val
+  predictions and KM plots; each model's five-fold `metrics.csv` contains
+  mean/sample-SD C-index/AUC alongside per-fold HR and other survival metrics.
+- `checkpoints/nested_risk_increment/fold_i/`: independent inner and outer
+  modality checkpoints, training histories and checkpoint-selection metadata.
+
+The primary comparison is fusion versus the **newly retrained pathology model
+under this same nested protocol**, not against the historically selected
+0.7528 checkpoint. Outer train performance is in-sample. Conditional paired
+patient bootstrap does not include retraining or past configuration-selection
+uncertainty; this remains internal CV, not external validation. Failure of
+scalar-risk fusion would not exclude complementary higher-dimensional CT
+features. Existing teacher-only diagnostic discovery excludes this run type.
+The launcher refuses to overwrite existing outputs. Default is all five outer
+folds; partial `--outer_folds` is for verification and never prints a five-fold
+summary. The implementation plan is in `risk_increment_plan.md`.
+Verification: all 50 experiment-15 unit tests pass. A real ROI64 outer-fold0
+smoke with two inner folds/one epoch completes all six fresh fits, OOF alpha
+calibration and survival outputs. Strict checkpoint reload, disjoint roles,
+fit-only risk scalers, unchanged BN, no outer early stopping and paired-metric
+parity were audited. Smoke checkpoints remain in /tmp and are never reused.
+The full40-fit diagnostic has completed. New-protocol pathology Val C-index
+is0.738983 and scalar fusion0.739929 (delta+0.000947; conditional bootstrap
+interval[−0.001803,+0.003962]). Detailed results, alpha values, protocol limits
+and audits are in [`results/nested_risk_increment/report.md`](results/nested_risk_increment/report.md).
+
+## Matched pathology-only and uniform-CT controls
+
+These independently initialized ablations compare against the completed original
+standard Top25 cross-attention run, not against the QKNorm or CT-Z-score variants.
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_pathology_only.sh
+bash tests/15_pathology_query_ct_tokens/run_uniform_ct.sh
+```
+
+- A (`_pathologyonly`): the original ABMIL patient route and the exact original
+  concat risk head, with a constant zero CT slot. Construct modules in the
+  original order, then remove the CT encoder and unused query/attention modules,
+  preserving identical retained PA/head initialization. No CT forward, CT
+  parameters or CT gradients remain. This is a pathology ablation, not a
+  frozen-encoder multimodal teacher. The zero diagnostic CT risk is only an
+  interface placeholder; its logged auxiliary loss is not a CT-model metric.
+- B (`_uniformct`): each patient retains their own paired CT. After the same CT
+  projection, compute the original internal Value projection, spatial mean and
+  attention output projection: `out_proj(mean(V, dim=CT_positions))`. Broadcast
+  this vector to 25 outputs and retain the original query pooling and concat
+  head. Spatial attention weights are fixed to `1/512`; pathology queries do
+  not select CT positions. Both active branches jointly train with fused Cox.
+  The pooled identical query outputs make query-pool weighting functionally
+  redundant; it is retained to match the reference computation.
+
+Both use the same 721-patient ROI64 paired CSV and five saved folds, Top25
+1280-D features, pathology patch L2, no fusion L2, no alignment/auxiliary losses,
+no QKNorm, original [0,1] CT inputs, fixed BN statistics, dropout .25, Cox32
+with merged tail, Adam lr1e-4/backbone lr1e-5, wd5e-4, 30 epochs/patience10 and
+seed123 reset per fold. Initial shared weights match exactly; removing a route
+changes subsequent RNG consumption, so identical dropout masks/patient shuffles
+across epochs are not claimed. No project-trained unimodal weights are loaded.
+Separate nohup logs, results and checkpoints use the two suffixes and refuse
+overwrites. The default model, original runs and main project files are retained.
+
+Compare B versus A for incremental prediction from this CT representation, and
+C versus B for the benefit of learned spatial attention. Failure of both B/C
+to improve A would not establish biological redundancy of the raw modalities.
+Use fold-matched comparisons; this remains exploratory internal CV.
+
+Verification: all 43 local unittest tests pass. Real ROI64 32-patient Cox
+updates pass for both controls, including CT/PA/Value gradients for B, absent
+Q/K score gradients, fixed BN, strict checkpoint reload and cached/full risk
+parity. Both full five-fold nohup jobs started on CUDA, loaded all 721 paired
+patients and completed their first epoch with saved checkpoints. Saved configs
+and cohort hashes match the reference; artifacts use the two suffixes above.
+Both controls have now completed all five folds. Selected-checkpoint metrics,
+paired uncertainty, per-fold stability, ranking corrections and checkpoint
+audits are recorded in [`fusion_controls_analysis/report.md`](fusion_controls_analysis/report.md).
+The original standard-attention query/output diversity audit, including all
+721 validation patients and the exact final fusion route, is recorded in
+[`interaction_output_audit/report.md`](interaction_output_audit/report.md).
+
+## Standard attention + CT Z-score
+
+Run: `bash tests/15_pathology_query_ct_tokens/run_ctzscore_standard.sh`.
+This independent nohup run uses suffix `_ctzscore`, without `_qknorm`.
+It keeps the original native PyTorch single-head cross-attention:
+`softmax(internal_Q @ internal_K.T / sqrt(256)) @ internal_V`, followed by
+the existing output projection. There is no Q/K L2, cosine attention or
+learnable score scale. This is the original cross-attention component,
+not an added full Transformer encoder/decoder stack.
+
+Relative to the completed original Top25/L2/fused-Cox teacher, only CT input
+changes: per-patient whole-ROI population Z-score with denominator floor 1e-6,
+inside the local model before the encoder, identically in train/eval/inference.
+Raw CT NPY files stay unchanged. BN running statistics remain fixed; CT and
+pathology parameters jointly train from public CT/new pathology initialization.
+The same cohort, folds, seed123, ROI64, Top25, pathology patch L2, Cox32,
+dropout .25, lr1e-4/backbone1e-5, wd5e-4, epochs30 and patience10 are retained.
+Existing QKNorm and original standard-attention runs are preserved.
+
+Verification: 35 local tests pass, including manual standard scaled-QK parity,
+native MHA type/checkpoint keys, identical predictions to a baseline given
+manually standardized CT, and CLI acceptance without `--qk_norm`. A real ROI64
+GPU smoke passes fused-Cox backward, both-branch gradients, fixed-BN audit,
+strict checkpoint reload and cached prediction parity. The local inference
+runner reconstructs the CT transform from config; original-only score
+diagnostics exclude this changed input condition.
+The standard-attention Z-score run is complete. Its selected-checkpoint metrics,
+per-fold stability and full-validation read-only inference controls are recorded
+in [`standard_ctzscore_analysis/report.md`](standard_ctzscore_analysis/report.md).
+
+CT adaptation implementation plan (approved independent QKNorm controls):
+- [x] Test per-case whole-ROI population Z-score, constant-input safety,
+  batch independence, unchanged raw input, and identical train/eval handling.
+- [x] Test fixed BN versus train-updated BN, no validation updates, trainable
+  branches, strict reload and cached inference for both controls.
+- [x] Implement local model/config flags and distinct launchers, keeping the
+  existing QKNorm baseline, CSV, raw CT files and main training code unchanged.
+- [x] Verify unit tests and real ROI64 GPU train/eval/checkpoint smoke checks.
+- [x] Launch both five-fold runs in separate nohup sessions; verify saved
+  configurations, actual GPU PIDs, startup logs and early checkpoints.
+
+## Independent CT adaptation controls
+
+Both controls use the completed Top25 QKNorm teacher as reference. They retain
+the same ROI64 CSV, five saved splits, public CT pretraining, fresh pathology
+and fusion initialization, patch L2, fused Cox only, Cox32 with tail merging,
+dropout .25, lr 1e-4/backbone lr 1e-5, wd 5e-4, 30 epochs, patience 10 and
+seed 123 reset at each fold. Teacher branches remain jointly trainable.
+
+- B: `bash tests/15_pathology_query_ct_tokens/run_ctzscore.sh` launches the
+  `_qknorm_ctzscore` run. Normalize each patient's entire CT ROI using its own
+  mean and population standard deviation, with denominator clamped to 1e-6.
+  This happens inside the local model before the CT encoder, identically in
+  training, validation and checkpoint inference. No cohort statistics, labels
+  or other patients enter the transform. Constant inputs become zero. Raw CT
+  NPY files retain [0,1] range and are never modified. BN statistics remain fixed.
+- C: `bash tests/15_pathology_query_ct_tokens/run_ctbnadapt.sh` launches the
+  `_qknorm_ctbnadapt` run. Keep original [0,1] CT inputs, set the local backbone's
+  `freeze_bn_stats=False`, and use ordinary BN3d training updates (existing
+  momentum .1). Retain initial public running statistics, then update them
+  only in model.train(); model.eval() uses the learned running statistics
+  without updating them. BN affine parameters remain trainable as before.
+
+The CT command-line flags are mutually exclusive and require Top25,
+patch L2 and fused-only loss; the B/C launchers explicitly enable QKNorm.
+No combined fourth condition is launched.
+Neither flag adds checkpoint parameters. The local inference runner reconstructs
+both behaviors from run_config.yaml, including correctly preserving BN buffers
+when evaluating C. The main dataset loader and all other training files are
+unchanged. Cox32 is a risk-set size; CT forwards remain one patient at a time,
+so it does not make BN's patient batch size 32.
+
+Verification: 33 local tests pass. Both controls pass real ROI64 GPU smoke
+checks through the main trainer/evaluator, nonzero finite CT/pathology/QKV/scale
+gradients, strict checkpoint reload and cached-inference parity. B had zero
+BN-stat updates; C had exactly two for the two training forwards, and none
+during validation/evaluation/cache inference. Temporary smoke outputs were
+removed. Launchers use separate nohup logs/checkpoints/results and refuse to
+overwrite existing runs.
+
+Both independent runs were launched concurrently on GPU0 on 2026-11-11:
+B PID 601244 and C PID 601247. Saved configurations, 721-patient cohort loading,
+first-epoch logs and fold_0 checkpoints were verified. B preserves the public
+BN running buffers; C checkpoints contain training-updated BN statistics.
+Both five-fold runs are complete. Their selected-checkpoint metrics, training
+stability, exact BN-update audit and read-only validation interventions are
+summarized in [`ct_adaptation_analysis/report.md`](ct_adaptation_analysis/report.md).
+
+QKNorm implementation plan (approved Top25 control):
+- [x] Test the internal Q/K cosine formula, unchanged projected Value/output,
+  scale invariance, zero-input safety, trainable scale and fused-Cox gradients.
+- [x] Add optional local single-head QKNorm attention, retaining existing
+  Q/K/V/output parameter names and default model behavior. Initialize the
+  learnable scalar with log2(512^2-512); remove sqrt(d) scaling in this mode.
+- [x] Connect run configuration, distinct run tag/launcher and checkpoint
+  inference; exclude QKNorm runs from original-only score diagnosis.
+- [x] Verify all local tests and a real-patient GPU training/evaluation smoke.
+- [x] Launch the separate five-fold Top25/L2/fused-Cox run in the background;
+  verify its process, GPU, configuration and loaded cohort; preserve older runs.
+
+## QKNorm Top25 control
+
+Run: `bash tests/15_pathology_query_ct_tokens/run_qknorm.sh`. The launcher uses
+nohup and saves a separate run with suffix `_qknorm` under logs/, results/ and
+checkpoints/. It uses the original 25 pathology queries, not all-query bags.
+
+Only the attention score changes. After the internal Q/K/V linear projections,
+normalize Q and K per token along the 256-D head dimension. Compute
+`softmax(scale * normalize(Q) @ normalize(K).T) @ V`, then retain the original
+output projection, query pooling and concat head. V is not normalized; no
+sqrt(256) divisor remains in this mode. Attention dropout remains zero.
+`scale` is a trainable scalar initialized to `log2(512^2-512)=17.997179`, adapting
+the QKNorm paper's sequence-length initialization to the fixed 512 CT positions.
+Reference: https://aclanthology.org/2020.findings-emnlp.379/ (Eqs. 3 and 5).
+This uses its scoring mechanism, not its full translation architecture.
+
+The original MHA projection initialization and checkpoint names remain intact;
+QKNorm adds only `fusion.coattn.scale`. Original runs still use PyTorch's
+unmodified scaled dot-product MHA. QKNorm checkpoints must be instantiated with
+`qk_norm=True`; the local inference-check runner reads this from run_config.yaml.
+The original-only score diagnostic explicitly excludes this different scoring
+mode rather than applying its scaled-dot-product formulas to it.
+
+All other settings follow the Top25 L2/fused-Cox baseline: same CSV/folds,
+patch L2, no fusion-input L2, ROI64, Cox32 with tail merging, dropout .25,
+lr 1e-4/backbone lr 1e-5, Adam wd 5e-4 (including the new scalar), 30 epochs,
+patience 10 and seed 123. Public CT pretraining and newly initialized trainable
+pathology/fusion modules are used for each fold. No downstream unimodal weights,
+alignment loss or auxiliary survival loss are introduced.
+
+Verification: all 26 local tests pass. A temporary real ROI64 four-patient GPU
+smoke passed the main trainer/evaluator, nonzero finite QKV/scale/CT/pathology
+gradients, a scale update, strict checkpoint reload and cached-inference parity.
+It does not establish a performance improvement; that requires the new CV run
+and subsequent query-shuffle/uniform-attention comparisons.
+
+The five-fold GPU run was launched on 2026-11-11 (PID 449682), with configuration,
+721 paired patients, the first training epochs and fold_0 checkpoint verified.
+All five folds are now complete. Selected-checkpoint results and fixed-model
+validation inference (entropy, uniform attention, 100 query/CT derangements per
+fold) are recorded in [`qknorm_analysis/report.md`](qknorm_analysis/report.md).
+
+All-patch Query implementation checklist (approved scope):
+- [x] Verify every cohort slide's full features/coordinates against its Top25
+  selected_indices, preserving labels, row order and saved CV assignments.
+- [x] Put the exact Top25 first, followed by all remaining source rows once.
+  Pool only the first 25 for the direct pathology patient feature; use the full
+  compressed sequence for queries. Share trainable modules, without freezing.
+- [x] Retain per-patient forwards and existing Cox32, evaluation and output
+  interfaces; adapt cached inference for variable-length query sequences.
+- [x] Add a separate all-query/fused-Cox launcher with pathology patch L2 on,
+  other settings unchanged; no new alignment or auxiliary loss.
+- [x] Verify tests, all 721 input mappings and real-case train/eval; do not
+  launch training or push this change automatically.
+
+## All-patch Query control
+
+Run: `bash tests/15_pathology_query_ct_tokens/run_all_queries.sh` (nohup
+background). This is a separate run, identified by `paqall`. Original Top25,
+raw-feature and PAMT-alignment runs are preserved. The implementation has been
+verified; the user has now completed all five folds. Results and subsequent
+fixed-checkpoint inference checks are summarized in
+[`all_query_analysis/report.md`](all_query_analysis/report.md).
+
+Input CSV/folds remain `data/eagle/top25/all_label_roi64.csv`. Full features
+come from `/home/gly001/cqj/data/lung_cancer/pathology/virchow/virchow2/`.
+These are all available Virchow2-CLS patches from the same STAMP grid as the
+original EAGLE Top25, not UNI or a different TRIDENT patch grid. They include
+all saved valid patches, not every possible pixel region of the WSI.
+
+`AllPatchQueryDataset` verifies each original Top25's `selected_indices`,
+features, coordinates and source metadata against the full H5 before training.
+It orders the exact Top25 first, in their original ranking order, followed by
+every remaining source row once. CSV labels, patient pairing and fold
+assignments stay unchanged; no separate label/split CSV is generated.
+
+The full input [1,N,1280] is L2-normalized per patch, then compressed by the
+shared 1280→512 projection. Only its first 25 rows enter the original ABMIL
+attention/patient pathway (512→256). All N compressed rows become 256-D
+Queries. CT layer4 still provides 512 spatial Key/Value tokens of 256 dimensions.
+Cross-attention produces [1,N,256], attention-pools over N to 256, then concatenates
+the direct Top25 pathology patient feature and predicts fused risk using the
+existing 512→256→128→1 head. Attention outputs have shapes [1,N,512] and [1,N,1].
+There is no padding or truncation; patients are forwarded separately and the
+existing Cox32 groups merge any tail. Loss remains fused Cox only, with no
+alignment or auxiliary branch loss. Patch L2, public MedicalNet initialization,
+joint trainable branches, dropout, optimizer and stopping settings match the
+original L2/no-alignment control. No project-trained unimodal checkpoint is used.
+
+The run saves `query_data_audit.yaml` alongside `run_config.yaml` and the
+existing per-fold outputs. Cached CT/query permutation inference also supports
+variable N, retaining the recipient's direct Top25 patient feature.
+
+Verification on 2026-11-11:
+- All 721 paired patients pass exact Top25 feature/coordinate correspondence;
+  271,635 query patches total, min 67, median 375, mean 376.7476, max 755.
+  Dataframe and five saved CV splits match the original loader exactly.
+- All 22 experiment unit tests pass, including gradient propagation to extra
+  queries and both branches, original behavior for N=25, and variable-length
+  cached inference parity.
+- Four real ROI64 patients (two training, two validation; N=449/436/469/419)
+  pass a temporary one-update GPU smoke check through the main trainer and
+  evaluator, strict checkpoint reload, direct Top25 branch parity, 512 CT keys,
+  cached prediction parity and CT/query swaps. Temporary outputs were removed.
+  This smoke check verifies execution, not predictive performance or full
+  Cox32 memory usage.
+
+## Original Top25 architecture
+
 Architecture for ROI64:
 - EAGLE Top25 Virchow2 CLS [B,25,1280] → per-patch L2 → existing ABMIL
   compression [B,25,512]. The existing ABMIL path still produces a 256-D patient

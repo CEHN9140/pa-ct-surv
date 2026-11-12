@@ -1,0 +1,107 @@
+{
+  "run": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/eagle_top25_virchow2_cls_pal2_fusionraw_roi64_paqall_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4",
+  "scope": "all five saved validation folds, 721 patients; fixed checkpoint inference only",
+  "query_permutations": 20,
+  "folds": [
+    {
+      "fold": 0,
+      "n": 145,
+      "cindex": 0.7261604194989318,
+      "attention_normalized_entropy_mean": 0.9999996117500112,
+      "attention_normalized_entropy_min": 0.9999991982115477,
+      "uniform_attention_cindex": 0.7263546319673723,
+      "uniform_cindex_drop": -0.0001942124684404245,
+      "uniform_risk_rmse": 0.00031240424141287804,
+      "shuffle_query_cindex_mean": 0.7262186832394639,
+      "shuffle_query_cindex_std": 9.131138978083271e-05,
+      "shuffle_query_cindex_drop": -5.826374053208294e-05,
+      "shuffle_query_risk_rmse_mean": 0.00015436562534887344
+    },
+    {
+      "fold": 1,
+      "n": 144,
+      "cindex": 0.7304643261608154,
+      "attention_normalized_entropy_mean": 0.9999989407382652,
+      "attention_normalized_entropy_min": 0.9999986510701678,
+      "uniform_attention_cindex": 0.7302755756889392,
+      "uniform_cindex_drop": 0.00018875047187616456,
+      "uniform_risk_rmse": 0.00048056934610940516,
+      "shuffle_query_cindex_mean": 0.7304265760664401,
+      "shuffle_query_cindex_std": 7.746155923632101e-05,
+      "shuffle_query_cindex_drop": 3.775009437523291e-05,
+      "shuffle_query_risk_rmse_mean": 4.3816391735163054e-05
+    },
+    {
+      "fold": 2,
+      "n": 144,
+      "cindex": 0.8158971361776739,
+      "attention_normalized_entropy_mean": 0.9999996233484603,
+      "attention_normalized_entropy_min": 0.999999484405558,
+      "uniform_attention_cindex": 0.8160919540229885,
+      "uniform_cindex_drop": -0.00019481784531460988,
+      "uniform_risk_rmse": 0.00019165407866239548,
+      "shuffle_query_cindex_mean": 0.8158971361776738,
+      "shuffle_query_cindex_std": 1.1390647892519134e-16,
+      "shuffle_query_cindex_drop": 1.1102230246251565e-16,
+      "shuffle_query_risk_rmse_mean": 2.3490475632570452e-05
+    },
+    {
+      "fold": 3,
+      "n": 144,
+      "cindex": 0.7740284360189573,
+      "attention_normalized_entropy_mean": 0.9999999653586458,
+      "attention_normalized_entropy_min": 0.9999999566185097,
+      "uniform_attention_cindex": 0.7740284360189573,
+      "uniform_cindex_drop": 0.0,
+      "uniform_risk_rmse": 0.00015778075612615794,
+      "shuffle_query_cindex_mean": 0.7740284360189573,
+      "shuffle_query_cindex_std": 0.0,
+      "shuffle_query_cindex_drop": 0.0,
+      "shuffle_query_risk_rmse_mean": 1.4069494500290603e-05
+    },
+    {
+      "fold": 4,
+      "n": 144,
+      "cindex": 0.7153878231859884,
+      "attention_normalized_entropy_mean": 0.9999998778169419,
+      "attention_normalized_entropy_min": 0.9999998530803996,
+      "uniform_attention_cindex": 0.7153878231859884,
+      "uniform_cindex_drop": 0.0,
+      "uniform_risk_rmse": 0.00022761206491850317,
+      "shuffle_query_cindex_mean": 0.7153878231859884,
+      "shuffle_query_cindex_std": 0.0,
+      "shuffle_query_cindex_drop": 0.0,
+      "shuffle_query_risk_rmse_mean": 4.5830932094759195e-06
+    }
+  ],
+  "mean": {
+    "fold": 2.0,
+    "n": 144.2,
+    "cindex": 0.7523876282084734,
+    "attention_normalized_entropy_mean": 0.999999603802465,
+    "attention_normalized_entropy_min": 0.9999994286772367,
+    "uniform_attention_cindex": 0.7524276841768491,
+    "uniform_cindex_drop": -4.0055968375773966e-05,
+    "uniform_risk_rmse": 0.00027400409744586794,
+    "shuffle_query_cindex_mean": 0.7523917309377047,
+    "shuffle_query_cindex_std": 3.375458980345353e-05,
+    "shuffle_query_cindex_drop": -4.1027292313478014e-06,
+    "shuffle_query_risk_rmse_mean": 4.8065016085274695e-05
+  },
+  "method": {
+    "seed": 123,
+    "entropy": "mean over queries of -sum(a*ln(a))/ln(512); patient means averaged within fold, then across folds",
+    "uniform_control": "Replace MHA output with out_proj(mean(V)) at every query, retaining V/out projections, CT and direct Top25 pathology",
+    "query_shuffle": "20 seeded derangements within each validation fold; swap query bags only, preserve recipient CT and direct pathology patient feature",
+    "model_updates": false,
+    "prediction_parity": "Full model and cached fusion both match saved validation predictions, rtol=1e-4, atol=2e-5"
+  },
+  "checkpoint_sha256": {
+    "0": "4fe595c19853be750c412c4a71c5f83ed44f5dbd4e50f432441ab061ebb5da7f",
+    "1": "0cb250a2fc6434d53995f7acc40a3f153d706b72920b72ea75dd10ba8b8becc1",
+    "2": "857466703ee597c077441866da3d2d59aa4d893a01747d52080856d54213ff75",
+    "3": "5014076803c68e25711a38df09f461b85c7be83b8782f9f09e29ce3b16b0a0d9",
+    "4": "4bb4648a61df390551bd54532f1b5e5206912fb31f2bc952d744830e12a502d1"
+  },
+  "run_config_sha256": "ce6ae54438eb68b756231c153809f159d2b69ecd125294cb204ed0f643baa1fa"
+}

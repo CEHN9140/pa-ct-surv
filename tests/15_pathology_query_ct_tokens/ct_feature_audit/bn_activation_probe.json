@@ -1,0 +1,93 @@
+{
+  "scope": "fold0, 16 randomly sampled training + 16 validation patients; public initialization vs existing unimodal/teacher checkpoints; eval/inference only",
+  "limitations": "Per-volume/channel observed variation is compared to stored pooled pretraining running variation; a difference is not itself evidence that normalization is incorrect. No BN recalibration or model updates. Raw feature magnitude is not a quality measure.",
+  "models": [
+    {
+      "model": "public_init",
+      "patients": 32,
+      "bn": {
+        "bn1": {
+          "mean_shift_in_running_sd": 0.5051456450322928,
+          "observed_sd_over_running_sd": 0.09118157804772845,
+          "negative_bn_output_fraction": 0.37212641537189484
+        },
+        "layer2.1.bn2": {
+          "mean_shift_in_running_sd": 0.3611139057794305,
+          "observed_sd_over_running_sd": 0.4751586386355972,
+          "negative_bn_output_fraction": 0.4565577507019043
+        },
+        "layer3.1.bn2": {
+          "mean_shift_in_running_sd": 0.2986169628334546,
+          "observed_sd_over_running_sd": 0.7228462638667348,
+          "negative_bn_output_fraction": 0.5107097625732422
+        },
+        "layer4.1.bn2": {
+          "mean_shift_in_running_sd": 0.3072120126952863,
+          "observed_sd_over_running_sd": 0.08111062908324529,
+          "negative_bn_output_fraction": 0.5516331195831299
+        }
+      },
+      "spatial_mean_pairwise_cosine": 0.7946889841905715,
+      "spatial_zero_fraction": 0.3492316007614136,
+      "global_feature_patient_sd_mean": 0.03152538085042131
+    },
+    {
+      "model": "unimodal_best",
+      "patients": 32,
+      "bn": {
+        "bn1": {
+          "mean_shift_in_running_sd": 0.5027238940376533,
+          "observed_sd_over_running_sd": 0.09012544817842066,
+          "negative_bn_output_fraction": 0.37244653701782227
+        },
+        "layer2.1.bn2": {
+          "mean_shift_in_running_sd": 0.33528180559391163,
+          "observed_sd_over_running_sd": 0.5872487444228398,
+          "negative_bn_output_fraction": 0.43300819396972656
+        },
+        "layer3.1.bn2": {
+          "mean_shift_in_running_sd": 0.8314694548041965,
+          "observed_sd_over_running_sd": 0.9928796027507325,
+          "negative_bn_output_fraction": 0.4112889766693115
+        },
+        "layer4.1.bn2": {
+          "mean_shift_in_running_sd": 0.2856869011901577,
+          "observed_sd_over_running_sd": 0.08873707096422127,
+          "negative_bn_output_fraction": 0.5314725637435913
+        }
+      },
+      "spatial_mean_pairwise_cosine": 0.7981197297819519,
+      "spatial_zero_fraction": 0.30671215057373047,
+      "global_feature_patient_sd_mean": 0.40579614809102604
+    },
+    {
+      "model": "qknorm_teacher_best",
+      "patients": 32,
+      "bn": {
+        "bn1": {
+          "mean_shift_in_running_sd": 0.503714679858862,
+          "observed_sd_over_running_sd": 0.09052926727130148,
+          "negative_bn_output_fraction": 0.37211713194847107
+        },
+        "layer2.1.bn2": {
+          "mean_shift_in_running_sd": 0.3134820419903382,
+          "observed_sd_over_running_sd": 0.5086775955871096,
+          "negative_bn_output_fraction": 0.42863988876342773
+        },
+        "layer3.1.bn2": {
+          "mean_shift_in_running_sd": 0.28120738717269916,
+          "observed_sd_over_running_sd": 0.6096614685452757,
+          "negative_bn_output_fraction": 0.5372300148010254
+        },
+        "layer4.1.bn2": {
+          "mean_shift_in_running_sd": 0.3049732478594037,
+          "observed_sd_over_running_sd": 0.08202784267729682,
+          "negative_bn_output_fraction": 0.5639297962188721
+        }
+      },
+      "spatial_mean_pairwise_cosine": 0.7373003009573486,
+      "spatial_zero_fraction": 0.36667191982269287,
+      "global_feature_patient_sd_mean": 0.05226479754517641
+    }
+  ]
+}

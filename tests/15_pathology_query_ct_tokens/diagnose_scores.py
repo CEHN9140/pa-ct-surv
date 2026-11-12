@@ -70,14 +70,23 @@ def main():
     parser.add_argument('--device', choices=['cuda', 'cpu'], default='cuda')
     args = parser.parse_args()
     candidates = [p.parent for p in (here / 'results').glob('*/run_config.yaml')
-                  if not yaml.safe_load(p.read_text()).get('alignment_weight', 0)
-                  and yaml.safe_load(p.read_text()).get('pa_l2_normalize', True)]
+                  if yaml.safe_load(p.read_text()).get('fusion_type') == 'path_query_ct_layer4'
+                  and not yaml.safe_load(p.read_text()).get('alignment_weight', 0)
+                  and yaml.safe_load(p.read_text()).get('pa_l2_normalize', True)
+                  and not yaml.safe_load(p.read_text()).get('qk_norm', False)
+                  and not yaml.safe_load(p.read_text()).get('ct_zscore', False)
+                  and not yaml.safe_load(p.read_text()).get('ct_bn_adapt', False)
+                  and yaml.safe_load(p.read_text()).get('fusion_control', 'crossattention') == 'crossattention'
+                  and not yaml.safe_load(p.read_text()).get('all_patch_queries', False)]
     if args.run_dir is None and len(candidates) != 1:
         raise ValueError('Specify the original no-alignment run explicitly')
     run = Path(args.run_dir) if args.run_dir else candidates[0]
     config = yaml.safe_load((run / 'run_config.yaml').read_text())
     if (config.get('alignment_weight', 0) or config['lambda_ct'] or config['lambda_pa']
-            or not config.get('pa_l2_normalize', True)):
+            or not config.get('pa_l2_normalize', True) or config.get('all_patch_queries', False)
+            or config.get('qk_norm', False) or config.get('ct_zscore', False)
+            or config.get('fusion_control', 'crossattention') != 'crossattention'
+            or config.get('ct_bn_adapt', False)):
         raise ValueError('Only the original fused-Cox test15 run is supported')
     device = torch.device(args.device)
     if device.type == 'cuda' and not torch.cuda.is_available():

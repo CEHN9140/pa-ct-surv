@@ -17,6 +17,7 @@ from sksurv.metrics import concordance_index_censored, cumulative_dynamic_auc
 from sksurv.util import Surv
 
 from dataset import Pa_CT_Dataset, build_dataloader, cv_fold_indices
+from all_query_dataset import AllPatchQueryDataset
 from path_query_ct import PathQueryCTModel
 from utils import seed_everything
 from visualization.survival_plots import read_predictions
@@ -62,8 +63,13 @@ def cache_fusion_inputs(model, loader, device):
         handle.remove()
     if len(captured) != len(loader):
         raise ValueError('Expected exactly one fusion call per model forward')
-    features = {key: torch.cat([batch[i] for batch in captured])
-                for i, key in enumerate(['pa_patches', 'ct_tokens', 'pa_patient'])}
+    features = {}
+    for i, key in enumerate(['pa_patches', 'ct_tokens', 'pa_patient']):
+        values = [batch[i] for batch in captured]
+        if key == 'pa_patches' and any(x.shape[1:] != values[0].shape[1:] for x in values):
+            features[key] = [sample for value in values for sample in value]
+        else:
+            features[key] = torch.cat(values)
     features.update(risk=torch.cat(risks), case_id=case_ids)
     return features
 
@@ -72,6 +78,14 @@ def cache_fusion_inputs(model, loader, device):
 def permuted_risks(fusion, features, ct_order, query_order, device, batch_size):
     """Only query patches/CT tokens move; direct patient pathology stays fixed."""
     risks = []
+    if isinstance(features['pa_patches'], list):
+        # Variable-length bags stay separate; no padding participates in attention.
+        for i, (ct_idx, query_idx) in enumerate(zip(ct_order, query_order)):
+            patches = features['pa_patches'][int(query_idx)][None].to(device)
+            ct = features['ct_tokens'][int(ct_idx):int(ct_idx)+1].to(device)
+            patient = features['pa_patient'][i:i+1].to(device)
+            risks.append(fusion(patches, ct, patient)[0].cpu().reshape(-1))
+        return torch.cat(risks).numpy()
     for start in range(0, len(ct_order), batch_size):
         end = start + batch_size
         patches = features['pa_patches'][query_order[start:end]].to(device)
@@ -128,7 +142,12 @@ def run_fold(run, config, dataset, fold, args, destination, device):
     checkpoint = Path(config['checkpoint_root']) / f'fold_{fold}/best_model.pth'
     checkpoint_sha = digest(checkpoint)
     model = PathQueryCTModel(dropout=config['dropout'],
-                             pa_l2_normalize=config.get('pa_l2_normalize', True)).to(device)
+                             pa_l2_normalize=config.get('pa_l2_normalize', True),
+                             all_patch_queries=config.get('all_patch_queries', False),
+                             qk_norm=config.get('qk_norm', False),
+                             ct_zscore=config.get('ct_zscore', False),
+                             ct_bn_adapt=config.get('ct_bn_adapt', False),
+                             fusion_control=config.get('fusion_control', 'crossattention')).to(device)
     model.load_state_dict(torch.load(checkpoint, map_location=device, weights_only=True), strict=True)
     model.eval().requires_grad_(False)
     loader = build_dataloader(dataset, indices=val_indices, num_workers=args.num_workers,
@@ -137,11 +156,13 @@ def run_fold(run, config, dataset, fold, args, destination, device):
     order = np.argsort(features['case_id'])
     ids = np.asarray(features.pop('case_id'))[order]
     np.testing.assert_array_equal(ids, val.case_id)
-    features = {key: value[order] for key, value in features.items()}
-    if tuple(features['ct_tokens'].shape[1:]) != (512, 512):
+    features = {key: [value[int(i)] for i in order] if isinstance(value, list) else value[order]
+                for key, value in features.items()}
+    ct_count = 0 if config.get('fusion_control') == 'pathology_only' else 512
+    if tuple(features['ct_tokens'].shape[1:]) != (ct_count, 512):
         raise ValueError('Expected ROI64 layer4 CT tokens [N,512,512]')
     for key, value in features.items():
-        if not torch.isfinite(value).all():
+        if any(not torch.isfinite(x).all() for x in (value if isinstance(value, list) else [value])):
             raise ValueError(f'Nonfinite {key}')
     full_risk = features['risk'].numpy()
     np.testing.assert_allclose(full_risk, val.risk_score, rtol=1e-4, atol=2e-5,
@@ -206,7 +227,8 @@ def main():
     device = torch.device(args.device)
     seed_everything(args.seed)
     runs = [Path(p).resolve() for p in args.run_dirs] if args.run_dirs else [
-        p.parent for p in sorted((here / 'results').glob('*/run_config.yaml'))]
+        p.parent for p in sorted((here / 'results').glob('*/run_config.yaml'))
+        if yaml.safe_load(p.read_text()).get('fusion_type') == 'path_query_ct_layer4']
     if not runs or len(set(runs)) != len(runs):
         raise ValueError('No runs or duplicate run directories')
     configurations = [yaml.safe_load((p / 'run_config.yaml').read_text()) for p in runs]
@@ -236,7 +258,9 @@ def main():
         output = destination / run.name
         output.mkdir()
         print(f'\nRun: {run.name}', flush=True)
-        dataset = Pa_CT_Dataset(config['data_dir'], roi_size=64, feature_dim=1280)
+        dataset = (AllPatchQueryDataset(config['data_dir'], config['all_feature_dir'])
+                   if config.get('all_patch_queries', False)
+                   else Pa_CT_Dataset(config['data_dir'], roi_size=64, feature_dim=1280))
         records = []
         for fold in range(5):
             print(f'Fold {fold}/4', flush=True)

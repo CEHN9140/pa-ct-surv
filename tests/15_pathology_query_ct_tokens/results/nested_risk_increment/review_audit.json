@@ -1,0 +1,89 @@
+{
+  "patients": 721,
+  "events": 251,
+  "independent_fits": 40,
+  "folds": [
+    {
+      "fold": 0,
+      "alpha": 0.058186139236222435,
+      "delta_ci": 0.0056321615847737426,
+      "corrects": 45,
+      "breaks": 16,
+      "pairs": 5149,
+      "rho_fused_path": 0.997787749960636,
+      "rho_path_ct": 0.6338056998897811,
+      "oof_cox_gain": 0.0016068445583137247,
+      "epochs": {
+        "ct": 25,
+        "pathology": 1
+      }
+    },
+    {
+      "fold": 1,
+      "alpha": -0.027208977309566378,
+      "delta_ci": -0.0016987542468856172,
+      "corrects": 14,
+      "breaks": 23,
+      "pairs": 5298,
+      "rho_fused_path": 0.9992725665139459,
+      "rho_path_ct": 0.6280604453018246,
+      "oof_cox_gain": 0.0003637974498778007,
+      "epochs": {
+        "ct": 25,
+        "pathology": 14
+      }
+    },
+    {
+      "fold": 2,
+      "alpha": -0.021750538288734102,
+      "delta_ci": -0.0005844535359438924,
+      "corrects": 4,
+      "breaks": 7,
+      "pairs": 5133,
+      "rho_fused_path": 0.9995739892291617,
+      "rho_path_ct": 0.7002491761112452,
+      "oof_cox_gain": 0.0002489897481696701,
+      "epochs": {
+        "ct": 23,
+        "pathology": 1
+      }
+    },
+    {
+      "fold": 3,
+      "alpha": 0.006358561213909021,
+      "delta_ci": 0.0007582938388625592,
+      "corrects": 4,
+      "breaks": 0,
+      "pairs": 5275,
+      "rho_fused_path": 0.9999397154569569,
+      "rho_path_ct": 0.6118680170404309,
+      "oof_cox_gain": 1.6148087544465284e-05,
+      "epochs": {
+        "ct": 27,
+        "pathology": 14
+      }
+    },
+    {
+      "fold": 4,
+      "alpha": 0.12229314550756562,
+      "delta_ci": 0.0006255212677231026,
+      "corrects": 77,
+      "breaks": 74,
+      "pairs": 4796,
+      "rho_fused_path": 0.9943131581062615,
+      "rho_path_ct": 0.625914315569488,
+      "oof_cox_gain": 0.005740127693927732,
+      "epochs": {
+        "ct": 27,
+        "pathology": 23
+      }
+    }
+  ],
+  "summary": {
+    "corrects": 144,
+    "breaks": 120,
+    "mean_fused_path_rho": 0.9981774358533924,
+    "mean_path_ct_rho": 0.6399795307825539
+  },
+  "safeguards": "All 40 fit metadata and 5 outer completions checked; all OOF roles disjoint; alpha reproduced; outer histories have no validation; raw/scaled/fused risks reconstructed; all C-index/AUC/KM cutoff exports verified."
+}

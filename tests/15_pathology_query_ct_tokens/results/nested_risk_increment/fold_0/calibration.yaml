@@ -1,0 +1,91 @@
+alpha: 0.058186139236222435
+coefficient_constraint: unrestricted real
+epoch_rule: floor(median(inner-selected epochs)); fresh outer refit; no outer stopping
+fitted_cox: 5.678063961404857
+gradient: -5.169721511988357e-09
+inner_models:
+- best_inner_stop_cindex: 0.7841463414634147
+  epochs_completed: 24
+  inner_fold: 0
+  modality: pathology
+  scaler:
+    mean: -0.08205617856851384
+    n_fit: 326
+    scale: 0.7130322223856506
+    std: 0.7130322223856506
+  selected_epoch: 14
+  selection: inner_stop_cindex
+- best_inner_stop_cindex: 0.5829268292682926
+  epochs_completed: 13
+  inner_fold: 0
+  modality: ct
+  scaler:
+    mean: 0.0690185520340877
+    n_fit: 326
+    scale: 0.030836647974092798
+    std: 0.030836647974092798
+  selected_epoch: 3
+  selection: inner_stop_cindex
+- best_inner_stop_cindex: 0.7627118644067796
+  epochs_completed: 11
+  inner_fold: 1
+  modality: pathology
+  scaler:
+    mean: -0.04337618157176152
+    n_fit: 326
+    scale: 0.007729488008559006
+    std: 0.007729488008559006
+  selected_epoch: 1
+  selection: inner_stop_cindex
+- best_inner_stop_cindex: 0.7028248587570621
+  epochs_completed: 30
+  inner_fold: 1
+  modality: ct
+  scaler:
+    mean: 1.1763367205001185
+    n_fit: 326
+    scale: 0.826023898560417
+    std: 0.826023898560417
+  selected_epoch: 28
+  selection: inner_stop_cindex
+- best_inner_stop_cindex: 0.7818181818181819
+  epochs_completed: 11
+  inner_fold: 2
+  modality: pathology
+  scaler:
+    mean: -0.04613301817304883
+    n_fit: 326
+    scale: 0.010108031109526978
+    std: 0.010108031109526978
+  selected_epoch: 1
+  selection: inner_stop_cindex
+- best_inner_stop_cindex: 0.7784090909090909
+  epochs_completed: 30
+  inner_fold: 2
+  modality: ct
+  scaler:
+    mean: 0.8774624958297272
+    n_fit: 326
+    scale: 0.9054638330477618
+    std: 0.9054638330477618
+  selected_epoch: 25
+  selection: inner_stop_cindex
+iterations: 3
+optimizer_message: Optimization terminated successfully.
+optimizer_success: true
+outer_scalers:
+  ct:
+    mean: 0.5292390781875534
+    n_fit: 576
+    scale: 0.6946725550956044
+    std: 0.6946725550956044
+  pathology:
+    mean: -0.045637037608280986
+    n_fit: 576
+    scale: 0.019154339777243977
+    std: 0.019154339777243977
+pathology_only_cox: 5.679670805963171
+selected_epochs:
+  ct: 25
+  pathology: 1
+source: standardized inner OOF predictions only

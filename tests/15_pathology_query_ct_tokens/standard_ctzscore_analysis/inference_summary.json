@@ -1,0 +1,120 @@
+{
+  "run": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/eagle_top25_virchow2_cls_pal2_fusionraw_roi64_paq25_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4_ctzscore",
+  "folds": [
+    {
+      "fold": 0,
+      "n": 145,
+      "cindex": 0.7399495047582054,
+      "entropy": 0.9999893159734856,
+      "uniform_ct_cindex": 0.7399495047582054,
+      "shuffle_query_cindex": 0.739807729656244,
+      "shuffle_ct_cindex": 0.6344630025247621,
+      "shuffle_query_std": 0.0003773348089128788,
+      "shuffle_ct_std": 0.03515684469251183,
+      "shared_ct_cindex": 0.7119181718132971,
+      "shared_ct_values": [
+        0.7115944843658963,
+        0.7121771217712177,
+        0.7119829093027772
+      ],
+      "checkpoint_sha256": "ca06436aa0441ef346de3684dbb8b65f7d19143440ca0801d9e5f2e4d7f7ec76"
+    },
+    {
+      "fold": 1,
+      "n": 144,
+      "cindex": 0.7421668554171386,
+      "entropy": 0.999992520818526,
+      "uniform_ct_cindex": 0.7423556058890147,
+      "shuffle_query_cindex": 0.7418573046432617,
+      "shuffle_ct_cindex": 0.6585938089845226,
+      "shuffle_query_std": 0.00039748660110476564,
+      "shuffle_ct_std": 0.025110726422370524,
+      "shared_ct_cindex": 0.7046684283377375,
+      "shared_ct_values": [
+        0.7055492638731596,
+        0.7040392600981502,
+        0.7044167610419027
+      ],
+      "checkpoint_sha256": "307d70a23f0d3b74f33e483d3a89b564edf7c51b563da17190960d0bf015b400"
+    },
+    {
+      "fold": 2,
+      "n": 144,
+      "cindex": 0.8034287940775375,
+      "entropy": 0.9999953026777979,
+      "uniform_ct_cindex": 0.8034287940775375,
+      "shuffle_query_cindex": 0.803313851548802,
+      "shuffle_ct_cindex": 0.7271712448860315,
+      "shuffle_query_std": 0.00016403962191842295,
+      "shuffle_ct_std": 0.026390452144170806,
+      "shared_ct_cindex": 0.7971946230274694,
+      "shared_ct_values": [
+        0.7977790765634132,
+        0.7966101694915254,
+        0.7971946230274694
+      ],
+      "checkpoint_sha256": "980d369e1b79d9736ccff3d9a591631b5316abfa5d2d0f5fecc9ea11e0f7371b"
+    },
+    {
+      "fold": 3,
+      "n": 144,
+      "cindex": 0.7818009478672986,
+      "entropy": 0.9999979747597424,
+      "uniform_ct_cindex": 0.7818009478672986,
+      "shuffle_query_cindex": 0.781838862559242,
+      "shuffle_ct_cindex": 0.7406502369668249,
+      "shuffle_query_std": 0.00016166878965352381,
+      "shuffle_ct_std": 0.01603250038445523,
+      "shared_ct_cindex": 0.7683412322274882,
+      "shared_ct_values": [
+        0.7683412322274882,
+        0.7687203791469195,
+        0.7679620853080569
+      ],
+      "checkpoint_sha256": "153ae5013f22cee743428011ab5998080f760367f9d6240d83c74279111f4379"
+    },
+    {
+      "fold": 4,
+      "n": 144,
+      "cindex": 0.7101751459549625,
+      "entropy": 0.9999964129572676,
+      "uniform_ct_cindex": 0.7101751459549625,
+      "shuffle_query_cindex": 0.7101417848206839,
+      "shuffle_ct_cindex": 0.6904316096747287,
+      "shuffle_query_std": 0.00016425887036440902,
+      "shuffle_ct_std": 0.02271370818283859,
+      "shared_ct_cindex": 0.7255351681957186,
+      "shared_ct_values": [
+        0.72581317764804,
+        0.72581317764804,
+        0.7249791492910759
+      ],
+      "checkpoint_sha256": "ec9acda89f4530d0798ddbe7eca9d5dad69460d4e6617f952264137b14778e74"
+    }
+  ],
+  "mean": {
+    "fold": 2.0,
+    "n": 144.2,
+    "cindex": 0.7555042496150285,
+    "entropy": 0.9999943054373638,
+    "uniform_ct_cindex": 0.7555419997094037,
+    "shuffle_query_cindex": 0.7553919066456467,
+    "shuffle_ct_cindex": 0.690261980607374,
+    "shuffle_query_std": 0.00025295773839080005,
+    "shuffle_ct_std": 0.025080846365269395,
+    "shared_ct_cindex": 0.7415315247203422
+  },
+  "methods": {
+    "scope": "all 721 validation patients across five saved folds, checkpoint inference only; no parameter or BN-buffer updates",
+    "permutation_repeats_per_fold_per_condition": 100,
+    "permutation_seed": 123,
+    "permutation_scope": "within-fold derangements; query swap retains recipient CT/direct pathology; CT swap retains recipient query/direct pathology",
+    "shared_ct": "three predetermined training CT anchors per fold, RNG SeedSequence([123,fold,991]); each anchor shared by all validation patients in a separate pass, then average the 3 C-indices",
+    "anchor_processing": "full model pathway including the same per-ROI CT Z-score; all BN buffers audited unchanged",
+    "uniform_attention": "retain V/out projections and direct pathology; replace coattention output by out_proj(mean(internal V)) at every query",
+    "prediction_parity": "both full and cached fusion risks match saved predictions, rtol=1e-4, atol=2e-5",
+    "bn_inference_audit": "all buffers exactly unchanged across validation, shuffles and anchor encoding",
+    "limitations": "single-seed internal CV and fixed-model input interventions; not evidence of anatomical alignment or proven incremental clinical utility",
+    "model": "standard native PyTorch cross-attention; no Q/K normalization or learned scale; CT per-ROI Z-score; fixed BN"
+  }
+}

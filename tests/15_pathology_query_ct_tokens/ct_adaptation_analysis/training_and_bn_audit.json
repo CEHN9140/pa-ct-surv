@@ -1,0 +1,273 @@
+{
+  "curves": {
+    "A QKNorm baseline": [
+      {
+        "fold": 0,
+        "best_epoch": 10,
+        "stop_epoch": 20,
+        "first_val": 0.6745,
+        "best_val": 0.7192,
+        "last_val": 0.7003,
+        "mean_abs_val_step": 0.012336842105263155,
+        "last_ten_val_range": 0.03379999999999994
+      },
+      {
+        "fold": 1,
+        "best_epoch": 4,
+        "stop_epoch": 14,
+        "first_val": 0.715,
+        "best_val": 0.7393,
+        "last_val": 0.729,
+        "mean_abs_val_step": 0.00801538461538462,
+        "last_ten_val_range": 0.019000000000000017
+      },
+      {
+        "fold": 2,
+        "best_epoch": 8,
+        "stop_epoch": 18,
+        "first_val": 0.7588,
+        "best_val": 0.8085,
+        "last_val": 0.766,
+        "mean_abs_val_step": 0.007364705882352947,
+        "last_ten_val_range": 0.029100000000000015
+      },
+      {
+        "fold": 3,
+        "best_epoch": 17,
+        "stop_epoch": 27,
+        "first_val": 0.7393,
+        "best_val": 0.7882,
+        "last_val": 0.7545,
+        "mean_abs_val_step": 0.013284615384615386,
+        "last_ten_val_range": 0.04730000000000001
+      },
+      {
+        "fold": 4,
+        "best_epoch": 12,
+        "stop_epoch": 22,
+        "first_val": 0.6307,
+        "best_val": 0.7066,
+        "last_val": 0.6781,
+        "mean_abs_val_step": 0.012723809523809523,
+        "last_ten_val_range": 0.0655
+      }
+    ],
+    "B CT Z-score + fixed BN": [
+      {
+        "fold": 0,
+        "best_epoch": 2,
+        "stop_epoch": 12,
+        "first_val": 0.7365,
+        "best_val": 0.7514,
+        "last_val": 0.6986,
+        "mean_abs_val_step": 0.018427272727272695,
+        "last_ten_val_range": 0.05669999999999997
+      },
+      {
+        "fold": 1,
+        "best_epoch": 4,
+        "stop_epoch": 14,
+        "first_val": 0.7108,
+        "best_val": 0.7403,
+        "last_val": 0.7261,
+        "mean_abs_val_step": 0.008130769230769198,
+        "last_ten_val_range": 0.027899999999999925
+      },
+      {
+        "fold": 2,
+        "best_epoch": 8,
+        "stop_epoch": 18,
+        "first_val": 0.7814,
+        "best_val": 0.8019,
+        "last_val": 0.7368,
+        "mean_abs_val_step": 0.01148235294117646,
+        "last_ten_val_range": 0.05569999999999997
+      },
+      {
+        "fold": 3,
+        "best_epoch": 11,
+        "stop_epoch": 21,
+        "first_val": 0.7481,
+        "best_val": 0.7968,
+        "last_val": 0.7427,
+        "mean_abs_val_step": 0.01566999999999999,
+        "last_ten_val_range": 0.05809999999999993
+      },
+      {
+        "fold": 4,
+        "best_epoch": 9,
+        "stop_epoch": 19,
+        "first_val": 0.6466,
+        "best_val": 0.7068,
+        "last_val": 0.6401,
+        "mean_abs_val_step": 0.01363888888888888,
+        "last_ten_val_range": 0.05820000000000003
+      }
+    ],
+    "C original CT + BN updates": [
+      {
+        "fold": 0,
+        "best_epoch": 3,
+        "stop_epoch": 13,
+        "first_val": 0.6261,
+        "best_val": 0.7211,
+        "last_val": 0.6572,
+        "mean_abs_val_step": 0.021191666666666654,
+        "last_ten_val_range": 0.05279999999999996
+      },
+      {
+        "fold": 1,
+        "best_epoch": 7,
+        "stop_epoch": 17,
+        "first_val": 0.6759,
+        "best_val": 0.7167,
+        "last_val": 0.6804,
+        "mean_abs_val_step": 0.017106249999999996,
+        "last_ten_val_range": 0.03759999999999997
+      },
+      {
+        "fold": 2,
+        "best_epoch": 6,
+        "stop_epoch": 16,
+        "first_val": 0.7434,
+        "best_val": 0.7945,
+        "last_val": 0.7481,
+        "mean_abs_val_step": 0.03543333333333332,
+        "last_ten_val_range": 0.1411
+      },
+      {
+        "fold": 3,
+        "best_epoch": 3,
+        "stop_epoch": 13,
+        "first_val": 0.7027,
+        "best_val": 0.7545,
+        "last_val": 0.7143,
+        "mean_abs_val_step": 0.02213333333333332,
+        "last_ten_val_range": 0.09799999999999998
+      },
+      {
+        "fold": 4,
+        "best_epoch": 9,
+        "stop_epoch": 19,
+        "first_val": 0.6478,
+        "best_val": 0.6806,
+        "last_val": 0.6391,
+        "mean_abs_val_step": 0.01571666666666667,
+        "last_ten_val_range": 0.05359999999999998
+      }
+    ]
+  },
+  "bn": {
+    "A QKNorm baseline": [
+      {
+        "fold": 0,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 1,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 2,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 3,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 4,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      }
+    ],
+    "B CT Z-score + fixed BN": [
+      {
+        "fold": 0,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 1,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 2,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 3,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      },
+      {
+        "fold": 4,
+        "bn_buffers_equal_public": 34,
+        "total_bn_buffers": 34,
+        "training_forwards": 0,
+        "expected_training_forwards": 0
+      }
+    ],
+    "C original CT + BN updates": [
+      {
+        "fold": 0,
+        "bn_buffers_equal_public": 0,
+        "total_bn_buffers": 34,
+        "training_forwards": 1728,
+        "expected_training_forwards": 1728
+      },
+      {
+        "fold": 1,
+        "bn_buffers_equal_public": 0,
+        "total_bn_buffers": 34,
+        "training_forwards": 4039,
+        "expected_training_forwards": 4039
+      },
+      {
+        "fold": 2,
+        "bn_buffers_equal_public": 0,
+        "total_bn_buffers": 34,
+        "training_forwards": 3462,
+        "expected_training_forwards": 3462
+      },
+      {
+        "fold": 3,
+        "bn_buffers_equal_public": 0,
+        "total_bn_buffers": 34,
+        "training_forwards": 1731,
+        "expected_training_forwards": 1731
+      },
+      {
+        "fold": 4,
+        "bn_buffers_equal_public": 0,
+        "total_bn_buffers": 34,
+        "training_forwards": 5193,
+        "expected_training_forwards": 5193
+      }
+    ]
+  }
+}

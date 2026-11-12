@@ -1,0 +1,72 @@
+{
+  "run": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/eagle_top25_virchow2_cls_pal2_fusionraw_roi64_paq25_ctlayer4kv512_crossattn_attnpool_concat_dropout0.25_epochs30_coxbs32_lr1e-4_blr1e-5_wd5e-4_qknorm",
+  "scope": "all 721 held-out validation patients across saved five folds; fixed-checkpoint inference only",
+  "method": "Per fold, select 3 distinct training CTs using default_rng(SeedSequence([123,fold,991])); separately replace every validation patient CT token bag with each one fixed training CT bag. Preserve recipient pathology query and direct ABMIL feature. Average the 3 anchor C-indices; no outcome-based anchor selection.",
+  "folds": [
+    {
+      "fold": 0,
+      "n": 145,
+      "cindex": 0.7191687706350748,
+      "shared_ct_cindex_mean": 0.7178092833559915,
+      "shared_ct_cindex_values": [
+        0.7178092833559915,
+        0.7185861332297534,
+        0.7170324334822296
+      ]
+    },
+    {
+      "fold": 1,
+      "n": 144,
+      "cindex": 0.7393355983389959,
+      "shared_ct_cindex_mean": 0.7107084434377753,
+      "shared_ct_cindex_values": [
+        0.7102680256700642,
+        0.7106455266138165,
+        0.711211778029445
+      ]
+    },
+    {
+      "fold": 2,
+      "n": 144,
+      "cindex": 0.808494058055718,
+      "shared_ct_cindex_mean": 0.7979738944087278,
+      "shared_ct_cindex_values": [
+        0.7977790765634132,
+        0.797389440872784,
+        0.7987531657899863
+      ]
+    },
+    {
+      "fold": 3,
+      "n": 144,
+      "cindex": 0.7882464454976303,
+      "shared_ct_cindex_mean": 0.7854660347551343,
+      "shared_ct_cindex_values": [
+        0.7852132701421801,
+        0.785781990521327,
+        0.7854028436018957
+      ]
+    },
+    {
+      "fold": 4,
+      "n": 144,
+      "cindex": 0.7066305254378649,
+      "shared_ct_cindex_mean": 0.7100361412288018,
+      "shared_ct_cindex_values": [
+        0.7116346955796498,
+        0.7066305254378649,
+        0.7118432026688908
+      ]
+    }
+  ],
+  "normal_mean_cindex": 0.7523750795930567,
+  "shared_ct_mean_cindex": 0.7443987594372861,
+  "drop": 0.007976320155770655,
+  "checkpoint_sha256": {
+    "0": "49af43c718a18f98691e122953d42e310c67fbc8384521fa2f87eddbe9b978ea",
+    "1": "9276565d4e771065a324af2dd9d7690efbe6f50e61d0c20cfd37e2b79ff8879b",
+    "2": "da5c07c36975a3f61fe54533e6059d6f67f4e9f8125869ab9e8e6360c85a0d60",
+    "3": "6eb2e4d076402729cafdd1031ab2f8ac519333937cbb37250b479b96f3737908",
+    "4": "0a70eaf0285577dd9297c64198c61c3d3cb67601ecfc80f212759b2815e0ed72"
+  }
+}
