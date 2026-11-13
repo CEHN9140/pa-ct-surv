@@ -4,6 +4,38 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Shape-adjusted First-order and MedicalNet probes
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_phenotype_followup.sh
+```
+
+New cache-only diagnostic, not a teacher: PA+Shape+FirstOrder versus existing
+PA+Shape and PA risk, with unchanged nested Cox/ridge and paired-bootstrap
+evaluation. Separately, linear Ridge probes recover log-volume, maximum3D
+diameter, sphericity and the6 tumor First-order targets from512-D layer4 GAP.
+Public and DFS-finetuned encoders are compared using existing cached vectors.
+Inner tuning uses each corresponding inner encoder (whose FIT/STOP exclude
+HELD/outer patients); final probes use the outer encoder. Never mix differently
+trained encoders' feature bases. Scaling is train-only, each target selects its
+ridge by inner MSE, and reports outer R2/MAE/RMSE plus train-mean baselines.
+No DFS label is used by the probe, though the finetuned encoders previously used
+the appropriate training-fold DFS labels. Mask-derived targets are supervision
+only; inference uses CT features alone. No stage3 predicted-phenotype Cox is run.
+
+Results: `results/phenotype_followup/`; log: `logs/phenotype_followup.log`.
+Uses the same isolated NumPy1.26.4 runtime described below. No cache rebuild,
+GPU, encoder updates or new neural checkpoints. Missing/mismatched cached
+sources stop the run. See `phenotype_followup_plan.md` for exact scope.
+
+Completed both requested diagnostics. All90 tests and completion checks passed;
+all145 source hashes unchanged. PA+Shape+FirstOrder Val0.7527+/-0.0387,
+versus Shape Δ+0.0007[-0.0063,+0.0079],2/5 folds positive. Public/finetuned
+linear R2: log-volume0.7735/0.7684, diameter0.7101/0.6866, mean density
+0.7918/0.8035; complete9-target results and MAE/RMSE are in `report.md`,
+`probe_summary.csv`, `probe_fold_metrics.csv`. Shape-adjusted prognosis changes
+are in `prognosis_fold_comparisons.csv`. No stage3 or teacher training launched.
+
 ## Predefined CT phenotypes: experiment1 only
 
 ```bash

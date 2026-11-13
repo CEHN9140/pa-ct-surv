@@ -1,0 +1,62 @@
+{
+  "fusion_minus_PA": {
+    "delta_cindex": 0.013683356219224502,
+    "lower": 0.0018838389168093698,
+    "upper": 0.026774291447392514,
+    "valid_repeats": 2000
+  },
+  "fusion_minus_PA_Shape": {
+    "delta_cindex": 0.000708523052337075,
+    "lower": -0.006335209262213241,
+    "upper": 0.00785272511376374,
+    "valid_repeats": 2000
+  },
+  "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty.",
+  "positive_folds": {
+    "PA": 4,
+    "PA_Shape": 2
+  },
+  "exploratory_signal_vs_shape": false,
+  "folds": [
+    {
+      "fold": 0,
+      "pa": 0.7094581472130511,
+      "pa_shape": 0.7426684793163721,
+      "pa_shape_firstorder": 0.7413089920372888,
+      "delta_vs_pa": 0.03185084482423772,
+      "delta_vs_shape": -0.0013594872790833046
+    },
+    {
+      "fold": 1,
+      "pa": 0.7204605511513779,
+      "pa_shape": 0.7431106077765195,
+      "pa_shape_firstorder": 0.733295583238958,
+      "delta_vs_pa": 0.01283503208758019,
+      "delta_vs_shape": -0.009815024537561445
+    },
+    {
+      "fold": 2,
+      "pa": 0.7821936489382427,
+      "pa_shape": 0.7818040132476135,
+      "pa_shape_firstorder": 0.784141827391389,
+      "delta_vs_pa": 0.0019481784531463209,
+      "delta_vs_shape": 0.0023378141437755406
+    },
+    {
+      "fold": 3,
+      "pa": 0.7713744075829384,
+      "pa_shape": 0.785781990521327,
+      "pa_shape_firstorder": 0.7996208530805687,
+      "delta_vs_pa": 0.028246445497630335,
+      "delta_vs_shape": 0.013838862559241716
+    },
+    {
+      "fold": 4,
+      "pa": 0.7114261884904087,
+      "pa_shape": 0.7064220183486238,
+      "pa_shape_firstorder": 0.7049624687239366,
+      "delta_vs_pa": -0.006463719766472087,
+      "delta_vs_shape": -0.0014595496246871953
+    }
+  ]
+}

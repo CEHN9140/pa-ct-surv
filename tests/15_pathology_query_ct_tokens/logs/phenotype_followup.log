@@ -1,0 +1,98 @@
+Audited721 patients,21 CT feature caches and15 isolated CT/PA inner contexts; no extraction or neural fits.
+
+Extra survival metrics:
+cutoff_from_train_median: -0.075272
+n_test: 145
+n_high_risk: 79
+n_low_risk: 66
+n_event_test: 51
+logrank_stat: 15.110108
+logrank_p: 0.000101
+auc_36m: 0.794276
+auc_60m: 0.761668
+HR_high_vs_low: 3.371334
+HR_95CI_lower: 1.759874
+HR_95CI_upper: 6.458356
+cox_p: 0.000248
+pa_shape_firstorder fold0 | Train=0.7549 | Val=0.7413 | Val Cox NLL=4.3155
+
+Extra survival metrics:
+cutoff_from_train_median: 0.008474
+n_test: 144
+n_high_risk: 68
+n_low_risk: 76
+n_event_test: 50
+logrank_stat: 30.751180
+logrank_p: 0.000000
+auc_36m: 0.754356
+auc_60m: 0.726284
+HR_high_vs_low: 5.447921
+HR_95CI_lower: 2.783205
+HR_95CI_upper: 10.663908
+cox_p: 0.000001
+pa_shape_firstorder fold1 | Train=0.7896 | Val=0.7333 | Val Cox NLL=4.2533
+
+Extra survival metrics:
+cutoff_from_train_median: 0.004156
+n_test: 144
+n_high_risk: 69
+n_low_risk: 75
+n_event_test: 50
+logrank_stat: 42.259231
+logrank_p: 0.000000
+auc_36m: 0.802706
+auc_60m: 0.815632
+HR_high_vs_low: 7.757964
+HR_95CI_lower: 3.754372
+HR_95CI_upper: 16.030912
+cox_p: 0.000000
+pa_shape_firstorder fold2 | Train=0.7409 | Val=0.7841 | Val Cox NLL=4.1677
+
+Extra survival metrics:
+cutoff_from_train_median: -0.013711
+n_test: 144
+n_high_risk: 67
+n_low_risk: 77
+n_event_test: 50
+logrank_stat: 35.860957
+logrank_p: 0.000000
+auc_36m: 0.832787
+auc_60m: 0.826197
+HR_high_vs_low: 6.406625
+HR_95CI_lower: 3.191394
+HR_95CI_upper: 12.861101
+cox_p: 0.000000
+pa_shape_firstorder fold3 | Train=0.7669 | Val=0.7996 | Val Cox NLL=4.1155
+
+Extra survival metrics:
+cutoff_from_train_median: -0.061435
+n_test: 144
+n_high_risk: 75
+n_low_risk: 69
+n_event_test: 50
+logrank_stat: 13.506732
+logrank_p: 0.000238
+auc_36m: 0.786395
+auc_60m: 0.698903
+HR_high_vs_low: 3.104305
+HR_95CI_lower: 1.643488
+HR_95CI_upper: 5.863568
+cox_p: 0.000481
+pa_shape_firstorder fold4 | Train=0.8191 | Val=0.7050 | Val Cox NLL=4.2762
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.7743 ± 0.0308
+  Val C-index: 0.7527 ± 0.0387
+Probe public fold0: log_volume_mm3 R2=0.782, diameter_mm R2=0.715, sphericity R2=0.145, tumor_mean R2=0.818, tumor_std R2=0.556, tumor_p10 R2=0.692, tumor_median R2=0.819, tumor_p90 R2=0.620, tumor_entropy R2=0.622
+Probe public fold1: log_volume_mm3 R2=0.746, diameter_mm R2=0.708, sphericity R2=0.355, tumor_mean R2=0.776, tumor_std R2=0.544, tumor_p10 R2=0.710, tumor_median R2=0.761, tumor_p90 R2=0.581, tumor_entropy R2=0.640
+Probe public fold2: log_volume_mm3 R2=0.754, diameter_mm R2=0.702, sphericity R2=0.398, tumor_mean R2=0.803, tumor_std R2=0.601, tumor_p10 R2=0.746, tumor_median R2=0.785, tumor_p90 R2=0.652, tumor_entropy R2=0.708
+Probe public fold3: log_volume_mm3 R2=0.760, diameter_mm R2=0.691, sphericity R2=0.310, tumor_mean R2=0.751, tumor_std R2=0.366, tumor_p10 R2=0.589, tumor_median R2=0.744, tumor_p90 R2=0.563, tumor_entropy R2=0.522
+Probe public fold4: log_volume_mm3 R2=0.825, diameter_mm R2=0.735, sphericity R2=0.270, tumor_mean R2=0.812, tumor_std R2=0.460, tumor_p10 R2=0.642, tumor_median R2=0.838, tumor_p90 R2=0.598, tumor_entropy R2=0.616
+Probe finetuned fold0: log_volume_mm3 R2=0.751, diameter_mm R2=0.655, sphericity R2=0.224, tumor_mean R2=0.818, tumor_std R2=0.536, tumor_p10 R2=0.684, tumor_median R2=0.810, tumor_p90 R2=0.666, tumor_entropy R2=0.541
+Probe finetuned fold1: log_volume_mm3 R2=0.766, diameter_mm R2=0.730, sphericity R2=0.327, tumor_mean R2=0.779, tumor_std R2=0.478, tumor_p10 R2=0.725, tumor_median R2=0.776, tumor_p90 R2=0.498, tumor_entropy R2=0.654
+Probe finetuned fold2: log_volume_mm3 R2=0.748, diameter_mm R2=0.707, sphericity R2=0.329, tumor_mean R2=0.838, tumor_std R2=0.522, tumor_p10 R2=0.667, tumor_median R2=0.814, tumor_p90 R2=0.697, tumor_entropy R2=0.654
+Probe finetuned fold3: log_volume_mm3 R2=0.788, diameter_mm R2=0.646, sphericity R2=0.314, tumor_mean R2=0.766, tumor_std R2=0.431, tumor_p10 R2=0.595, tumor_median R2=0.752, tumor_p90 R2=0.611, tumor_entropy R2=0.560
+Probe finetuned fold4: log_volume_mm3 R2=0.789, diameter_mm R2=0.696, sphericity R2=0.253, tumor_mean R2=0.817, tumor_std R2=0.477, tumor_p10 R2=0.681, tumor_median R2=0.829, tumor_p90 R2=0.666, tumor_entropy R2=0.659
+Shape+First-order and MedicalNet probes complete; stage3 and teacher training were not started.
