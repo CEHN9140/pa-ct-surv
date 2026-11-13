@@ -1,0 +1,111 @@
+{
+  "group": "Peritumoral",
+  "conditional": true,
+  "columns": [
+    "peri5_mean",
+    "peri5_std",
+    "peri5_p10",
+    "peri5_median",
+    "peri5_p90",
+    "peri5_entropy",
+    "peri5_glcm_contrast",
+    "peri5_glcm_idm",
+    "peri5_glcm_correlation",
+    "peri5_glrlm_sre",
+    "peri5_glrlm_lre",
+    "peri5_glrlm_glnu_normalized"
+  ],
+  "selection": {
+    "dim": null,
+    "ridge": 100.0,
+    "inner_mean_cindex": 0.7102459043155177,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.7045553145336225,
+          0.6707500537287772,
+          0.7459872039510608
+        ],
+        "failures": [],
+        "mean_cindex": 0.7070975240711536
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.7072668112798265,
+          0.6707500537287772,
+          0.7459872039510608
+        ],
+        "failures": [],
+        "mean_cindex": 0.7080013563198881
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.7082429501084598,
+          0.6734364925854287,
+          0.7465484341676956
+        ],
+        "failures": [],
+        "mean_cindex": 0.7094092922871947
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7040130151843818,
+          0.6753707285622179,
+          0.7511505219441015
+        ],
+        "failures": [],
+        "mean_cindex": 0.7101780885635671
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.6998915401301519,
+          0.6765527616591447,
+          0.7542934111572567
+        ],
+        "failures": [],
+        "mean_cindex": 0.7102459043155177
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.6919739696312365,
+          0.6753707285622179,
+          0.7477831406442923
+        ],
+        "failures": [],
+        "mean_cindex": 0.7050426129459155
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "coefficients": [
+    0.49084833563670416,
+    0.04686902133873856,
+    -0.012139952295642315,
+    -0.007203485772781181,
+    0.09508729826780714,
+    -0.037943103767206304,
+    0.03964200699762833,
+    -0.05311864357025158,
+    -0.01168540855986592,
+    0.0037341279566348467,
+    0.058261171265947466,
+    -0.0625802834632026,
+    -0.07859964909205726
+  ],
+  "n_fit": 577,
+  "pathology_penalty": 0.0,
+  "ct_penalty": 100.0,
+  "transform_fit": "outer training only; hyperparameters via honest inner calibration"
+}

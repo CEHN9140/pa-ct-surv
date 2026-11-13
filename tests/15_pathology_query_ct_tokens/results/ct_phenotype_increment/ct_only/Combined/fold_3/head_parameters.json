@@ -1,0 +1,133 @@
+{
+  "group": "Combined",
+  "conditional": false,
+  "columns": [
+    "log_volume_mm3",
+    "diameter_mm",
+    "sphericity",
+    "tumor_mean",
+    "tumor_std",
+    "tumor_p10",
+    "tumor_median",
+    "tumor_p90",
+    "tumor_entropy",
+    "tumor_glcm_contrast",
+    "tumor_glcm_idm",
+    "tumor_glcm_correlation",
+    "tumor_glrlm_sre",
+    "tumor_glrlm_lre",
+    "tumor_glrlm_glnu_normalized",
+    "peri5_mean",
+    "peri5_std",
+    "peri5_p10",
+    "peri5_median",
+    "peri5_p90",
+    "peri5_entropy",
+    "peri5_glcm_contrast",
+    "peri5_glcm_idm",
+    "peri5_glcm_correlation",
+    "peri5_glrlm_sre",
+    "peri5_glrlm_lre",
+    "peri5_glrlm_glnu_normalized"
+  ],
+  "selection": {
+    "ridge": 100.0,
+    "inner_mean_cindex": 0.7200800369565337,
+    "candidates": [
+      {
+        "ridge": 0.01,
+        "scores": [
+          0.6848265588423069,
+          0.6774798631799624,
+          0.6790876242095755
+        ],
+        "failures": [],
+        "mean_cindex": 0.6804646820772816
+      },
+      {
+        "ridge": 0.1,
+        "scores": [
+          0.6912108959353054,
+          0.6782522343594836,
+          0.6807813911472448
+        ],
+        "failures": [],
+        "mean_cindex": 0.6834148404806779
+      },
+      {
+        "ridge": 1.0,
+        "scores": [
+          0.7078101723771015,
+          0.6871896722939425,
+          0.6897018970189702
+        ],
+        "failures": [],
+        "mean_cindex": 0.694900580563338
+      },
+      {
+        "ridge": 10.0,
+        "scores": [
+          0.7338795488401788,
+          0.6857552686748317,
+          0.7023486901535682
+        ],
+        "failures": [],
+        "mean_cindex": 0.7073278358895263
+      },
+      {
+        "ridge": 100.0,
+        "scores": [
+          0.7520749095552245,
+          0.6825554452168157,
+          0.725609756097561
+        ],
+        "failures": [],
+        "mean_cindex": 0.7200800369565337
+      },
+      {
+        "ridge": 1000.0,
+        "scores": [
+          0.7428176207703767,
+          0.6674390378461877,
+          0.7183830171635049
+        ],
+        "failures": [],
+        "mean_cindex": 0.7095465585933565
+      }
+    ],
+    "selection": "mean inner C-index; exact tie favors stronger ridge"
+  },
+  "coefficients": [
+    0.08137150094699595,
+    0.10796005067417788,
+    -0.09099630536565931,
+    0.11163032415361805,
+    0.04113247358536215,
+    0.06101424931299024,
+    0.14028046816713002,
+    0.06554615342997164,
+    -0.058728962884208986,
+    0.06407627388449057,
+    0.07134666125193108,
+    0.023684530825198183,
+    -0.03863887446313491,
+    0.04781332411305959,
+    0.013234991276804981,
+    -0.026852324142015466,
+    -0.029698617772924797,
+    -0.030621470152710245,
+    -0.03024733782945416,
+    -0.0505165037406782,
+    0.016715853143936133,
+    -0.05740101270032939,
+    -0.014187031472571858,
+    -0.0206018651968452,
+    0.048015287874813614,
+    -0.06643294676136913,
+    -0.04512972775169282
+  ],
+  "n_fit": 577,
+  "pathology_penalty": null,
+  "ct_penalty": 100.0,
+  "transform_fit": "outer training only; hyperparameters via honest inner calibration"
+}

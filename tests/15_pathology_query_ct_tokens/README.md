@@ -4,6 +4,43 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Predefined CT phenotypes: experiment1 only
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_ct_phenotype_increment.sh
+```
+
+This CPU-only diagnostic reuses completed nested PA OOF caches and the721-case
+outer folds. It never trains a neural model or starts experiment2. Groups are
+Shape3, FirstOrder6, Texture6, Peritumoral12 and Combined27. Original-image
+PyRadiomics features use binWidth25 and only the saved ROI64 intensities;
+peritumoral coverage excludes padding. All groups require mask localization.
+See `ct_phenotype_increment_plan.md` for the fixed feature/validation protocol.
+Combined versus Shape is the added-bundle comparison; individual groups versus
+Shape are replacement comparisons. Source Shape predictions must reproduce.
+
+Outputs: `results/ct_phenotype_increment/{report.md,phenotype_summary.csv}`,
+per-fold predictions/KM/HR/AUC/NLL and paired comparisons. Dedicated log:
+`logs/ct_phenotype_increment.log`. Existing outputs cannot be overwritten.
+
+Runtime setup (already performed locally): the original UNI installation has
+mixed NumPy1/2 native extensions, incompatible with PyRadiomics. An isolated
+venv pins NumPy1.26.4 while reusing installed dependencies; UNI is unchanged.
+
+```bash
+/home/gly001/.conda/envs/UNI/bin/python -m venv --system-site-packages tests/15_pathology_query_ct_tokens/.phenotype_runtime
+tests/15_pathology_query_ct_tokens/.phenotype_runtime/bin/python -m pip install --no-deps numpy==1.26.4
+```
+
+Completed all721 extractions and55 model-fold evaluations.85 unit tests passed;
+`completion_review.json` verifies saved heads, tuning choices, predictions,
+C-index/NLL, finite AUCs, KM files and unchanged source hashes. PA reference
+Val0.7390+/-0.0350; Shape0.7520+/-0.0327; FirstOrder0.7488+/-0.0402;
+Texture0.7379+/-0.0339; Peritumoral0.7407+/-0.0390; Combined0.7491+/-0.0414.
+Combined-Shape delta-0.0029 with conditional paired95% interval[-0.0107,0.0054].
+New intensity/texture groups did not establish an improvement over Shape.
+No MedicalNet probe or teacher training was automatically started.
+
 ## CT-only layer3/layer4 representation comparison
 
 ```bash

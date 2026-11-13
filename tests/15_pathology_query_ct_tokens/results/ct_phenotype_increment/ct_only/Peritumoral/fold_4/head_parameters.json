@@ -1,0 +1,103 @@
+{
+  "group": "Peritumoral",
+  "conditional": false,
+  "columns": [
+    "peri5_mean",
+    "peri5_std",
+    "peri5_p10",
+    "peri5_median",
+    "peri5_p90",
+    "peri5_entropy",
+    "peri5_glcm_contrast",
+    "peri5_glcm_idm",
+    "peri5_glcm_correlation",
+    "peri5_glrlm_sre",
+    "peri5_glrlm_lre",
+    "peri5_glrlm_glnu_normalized"
+  ],
+  "selection": {
+    "ridge": 1.0,
+    "inner_mean_cindex": 0.6986916660822614,
+    "candidates": [
+      {
+        "ridge": 0.01,
+        "scores": [
+          0.6857807871349979,
+          0.7087529047250194,
+          0.6799276672694394
+        ],
+        "failures": [],
+        "mean_cindex": 0.6914871197098189
+      },
+      {
+        "ridge": 0.1,
+        "scores": [
+          0.6869445619974609,
+          0.7118512780790085,
+          0.6808850122327412
+        ],
+        "failures": [],
+        "mean_cindex": 0.6932269507697368
+      },
+      {
+        "ridge": 1.0,
+        "scores": [
+          0.689060516292848,
+          0.7234701781564679,
+          0.6835443037974683
+        ],
+        "failures": [],
+        "mean_cindex": 0.6986916660822614
+      },
+      {
+        "ridge": 10.0,
+        "scores": [
+          0.6831358442657639,
+          0.733207922983291,
+          0.671949792575258
+        ],
+        "failures": [],
+        "mean_cindex": 0.6960978532747709
+      },
+      {
+        "ridge": 100.0,
+        "scores": [
+          0.6759415996614473,
+          0.7209250857585482,
+          0.6407828954366557
+        ],
+        "failures": [],
+        "mean_cindex": 0.6792165269522171
+      },
+      {
+        "ridge": 1000.0,
+        "scores": [
+          0.6846170122725349,
+          0.7125152152262919,
+          0.6267418359748963
+        ],
+        "failures": [],
+        "mean_cindex": 0.6746246878245744
+      }
+    ],
+    "selection": "mean inner C-index; exact tie favors stronger ridge"
+  },
+  "coefficients": [
+    0.31061265228882573,
+    -0.36279815336939325,
+    -0.07186001455024878,
+    -0.13801827217535315,
+    -0.5527276077791072,
+    0.6967125150159368,
+    0.09514759158504475,
+    1.1333261330578852,
+    0.13977038392374938,
+    0.3308741785160041,
+    -0.4366736770307802,
+    -0.8877004604882797
+  ],
+  "n_fit": 577,
+  "pathology_penalty": null,
+  "ct_penalty": 1.0,
+  "transform_fit": "outer training only; hyperparameters via honest inner calibration"
+}

@@ -1,0 +1,91 @@
+{
+  "group": "Texture",
+  "conditional": false,
+  "columns": [
+    "tumor_glcm_contrast",
+    "tumor_glcm_idm",
+    "tumor_glcm_correlation",
+    "tumor_glrlm_sre",
+    "tumor_glrlm_lre",
+    "tumor_glrlm_glnu_normalized"
+  ],
+  "selection": {
+    "ridge": 1.0,
+    "inner_mean_cindex": 0.6796114728520681,
+    "candidates": [
+      {
+        "ridge": 0.01,
+        "scores": [
+          0.6827548806941431,
+          0.6519449817322158,
+          0.691435626894152
+        ],
+        "failures": [],
+        "mean_cindex": 0.6753784964401702
+      },
+      {
+        "ridge": 0.1,
+        "scores": [
+          0.6825379609544469,
+          0.6542015903718031,
+          0.6927825794140756
+        ],
+        "failures": [],
+        "mean_cindex": 0.6765073769134419
+      },
+      {
+        "ridge": 1.0,
+        "scores": [
+          0.6850325379609544,
+          0.6598968407479046,
+          0.6939050398473454
+        ],
+        "failures": [],
+        "mean_cindex": 0.6796114728520681
+      },
+      {
+        "ridge": 10.0,
+        "scores": [
+          0.6840563991323211,
+          0.6583924349881797,
+          0.691547872937479
+        ],
+        "failures": [],
+        "mean_cindex": 0.6779989023526599
+      },
+      {
+        "ridge": 100.0,
+        "scores": [
+          0.6669197396963124,
+          0.6231463571889104,
+          0.703782691660119
+        ],
+        "failures": [],
+        "mean_cindex": 0.6646162628484472
+      },
+      {
+        "ridge": 1000.0,
+        "scores": [
+          0.6400216919739696,
+          0.6048785729636793,
+          0.7183746772926254
+        ],
+        "failures": [],
+        "mean_cindex": 0.6544249807434248
+      }
+    ],
+    "selection": "mean inner C-index; exact tie favors stronger ridge"
+  },
+  "coefficients": [
+    0.4059305752991733,
+    1.3463014701861387,
+    0.05393219394998118,
+    0.5939312658496002,
+    -0.21344020842360195,
+    0.18340414730830026
+  ],
+  "n_fit": 577,
+  "pathology_penalty": null,
+  "ct_penalty": 1.0,
+  "transform_fit": "outer training only; hyperparameters via honest inner calibration"
+}
