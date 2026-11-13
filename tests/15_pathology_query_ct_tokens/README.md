@@ -4,6 +4,62 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Residual teacher: jointly trained pathology and CT
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_residual_teacher.sh
+```
+
+Runs only the two user-requested penalties0 and0.01. The new ABMIL branch uses
+the original25 Virchow2-CLS1280-D patches, patch L2 and dropout0.25. CT loads
+only the configured PUBLIC MedicalNet ResNet18 weights; layer4 global512 ->
+Linear512,128 -> ReLU -> Linear128,1 gives the scalar correction dc. The last
+CT layer is zero-initialized. Risk is rp+dc, without sigmoid. Both branches
+train jointly; BN statistics stay fixed and BN affine parameters are trainable.
+No project-trained unimodal checkpoint initializes either branch. Zero final
+CT weights give zero CT-encoder gradient on the first update; after the output
+weights change, encoder gradients flow normally (verified in a two-step test).
+
+Objective: `Cox(rp+dc) +0.3*Cox(rp) +lambda_r*mean(dc**2)`. No CT-only Cox.
+The CT correction head follows the requested512->128->1 structure without an
+additional dropout layer; ABMIL dropout remains0.25. Patient forwards accumulate
+into32-person Cox risk sets; the final tail merges into the preceding set.
+Other settings: ROI64, PA/head LR1e-4, backbone LR1e-5, Adam wd5e-4, seed123,
+max30 epochs, patience10 inside outer training only.
+
+Uses the nested-risk diagnostic's same721 patients and five outer splits.
+It reads only source roles/predictions/config for evaluation provenance, never
+the source's downstream-trained weights. Each penalty has three fresh inner
+teachers with separate fit/early-stop/held roles. Select lambda by mean held
+C-index; exact ties favor0.01. Before any outer evaluation, save the selected
+lambda and each candidate's median inner-best epoch. Reinitialize and refit
+each fixed candidate on all outer-training patients for its fixed epoch count.
+This is40 fits in total:30 inner +10 outer, not just two ordinary5-fold runs.
+
+Outputs: `results/residual_teacher/residual_r0/`, `residual_r0p01/` for fixed
+secondary comparisons and `inner_selected/` for the primary procedure chosen
+entirely inside training. The primary reuses selected candidate predictions,
+not another training run. Checkpoints remain under their actual candidate
+names. Each outer fold has prediction tables with rp/dc, KM/HR/IPCW AUC36/60,
+loss components and `pair_changes.json`: strict errors corrected/broken and
+all ranking gains/losses including ties. Corrections are compared both with
+the joint model's rp alone and the independently trained nested pathology
+baseline. Neither comparison by itself proves causal complementary information.
+Training histories log online train C-index/loss components; final metrics use
+whole-train/whole-val eval predictions. Final `train_loss`/`val_loss` are the
+total objective; `*_fused_cox` preserves the unweighted prediction loss.
+
+Log: `logs/residual_teacher.log`. Historical Concat/Cross-Attention used outer
+validation stopping, so their results are descriptive references only. This
+run does not retrain those controls and cannot establish a strict superiority
+claim over them. Full results are exploratory internal CV. All existing main
+training and previous experiment outputs remain unchanged.
+
+Verified: real ROI64 smoke with66 fit patients,8 inner stop and8 inner held
+patients consumes Cox groups32+34, updates PA and CT weights, keeps all BN
+buffers unchanged and reproduces predictions exactly after checkpoint reload.
+The smoke uses only /tmp outputs and is never reused by the complete run.
+
 ## High-dimensional CT increment and conditional Shape experiment
 
 ```bash
@@ -65,16 +121,28 @@ fitted models and does not include retraining/previous configuration selection.
 A negative PCA16/32 linear probe does not exclude all higher-dimensional or
 nonlinear complementary information. See `feature_increment_plan.md`.
 
-Verification:58 experiment15 unit tests pass. A real ROI64 outer-fold0
+Verification:59 experiment15 unit tests pass, including a regression check for
+double-precision SVD volume probes with rank-deficient float32 input caches.
+A real ROI64 outer-fold0
 integration completes six new one-epoch PA cross-fits and all four M0/M1/M2
 outputs. Head reload reproduces145 validation predictions; source encoders,
 512-D caches, nested split roles and training-only transformation counts are
 audited. Three original masks pass physical-unit Shape extraction; a separate
 synthetic integration tests M3/M4, KM/HR and the full-dimensional volume probe.
 No /tmp smoke checkpoint or prediction is reused by the full experiment.
-The complete diagnostic has been launched with nohup; CUDA feature extraction
-and additional PA cross-fitting have started. Conditional Shape/probe execution
-is decided only after the two M2 sources finish their outer comparisons.
+The full five-fold diagnostic is complete, including the conditional Shape
+stage. See `results/feature_increment/report.md` and `review_audit.json`.
+All30 serialized survival heads reproduce their saved train/validation risks
+and C-index/AUC/KM-group HR statistics. Source/cohort/encoder hashes and nested
+patient-role isolation were checked. Original float32 Ridge volume probes
+produced ill-conditioning warnings; `shape_increment.volume_probe` now uses
+float64 plus SVD. Only those10 probes were recomputed from cached features,
+under `results/feature_increment/volume_probe_numeric_review/`; original outputs
+and all survival predictions remain unchanged. Use that review's metrics for
+volume decoding. Its maximum per-fold change in log-volume R2 is below0.00026.
+Shape has exploratory incremental value relative to M0, but fails the
+predeclared stability criterion versus both references. This diagnostic does
+not change the formal jointly trained teacher/CT-student design.
 
 Official API references: [Cox ridge and per-feature penalties](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.linear_model.CoxPHSurvivalAnalysis.html),
 [mask-derived PyRadiomics Shape definitions](https://pyradiomics.readthedocs.io/en/latest/features.html#module-radiomics.shape).

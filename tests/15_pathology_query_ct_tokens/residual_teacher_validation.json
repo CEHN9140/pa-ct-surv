@@ -1,0 +1,51 @@
+{
+  "real_training_patients": 66,
+  "inner_stop_patients": 8,
+  "inner_held_patients": 8,
+  "cox_group_sizes": [
+    32,
+    34
+  ],
+  "ct_conv_max_update": 2.002716064453125e-05,
+  "pa_projection_max_update": 0.00020013190805912018,
+  "bn_buffers_unchanged": true,
+  "checkpoint_reload_predictions_exact": true,
+  "gpu_peak_gib": 1.9588584899902344,
+  "elapsed_seconds": 6.752674937000847,
+  "validation_correction_std": 0.00016322669669790055,
+  "not_reused_for_full_training": true,
+  "source_role_audit": "All721 original PA/CT pairs; source inner roles disjoint from outer validation, held OOF covers outer training once.",
+  "source_mask_or_preprocessing_changes": false,
+  "scope": "Two residual penalties0/0.01 only; no concat/crossattention retraining.",
+  "initialization": "new pathology branch plus public MedicalNet; no project downstream unimodal weights",
+  "code_sha256": {
+    "residual_teacher.py": "7d9a5db194a3b031f8ae35c34f034f778b615f2d77593f1464d12e076d624035",
+    "residual_train.py": "65e3156efad6c1caaa37cdf710db19781ad20852019ae30e3a30f38fa0206b2e",
+    "run_residual_teacher.sh": "7e7fc1e47b0bc106e97ac0638609905671f490ab96231757ff64849480f77f06",
+    "test_residual_teacher.py": "f2fa22017311b1e197ea32ff88e4994e7fdab86294d84eacd24f00fe1b533d4b"
+  },
+  "independent_read_only_review": "No blocking or important issues; architecture, optimizer, BN, role isolation, model selection and no-unimodal initialization verified.",
+  "tests": {
+    "experiment15_total": 67,
+    "passed": 67,
+    "failed": 0
+  },
+  "full_run_startup": {
+    "pid": 548763,
+    "background": "nohup + setsid; PPID1 verified after launching shell exit",
+    "device": "cuda",
+    "gpu": "NVIDIA RTX6000 Ada",
+    "completed_first_inner_epochs": 5,
+    "first_inner_train": 326,
+    "first_inner_stop": 58,
+    "first_inner_held": 192,
+    "all_outer_folds_requested": true,
+    "correction_weights": [
+      0.0,
+      0.01
+    ],
+    "lambda_pa": 0.3,
+    "log": "tests/15_pathology_query_ct_tokens/logs/residual_teacher.log",
+    "verified_at_utc": "2026-11-12T14:33:56.293344+00:00"
+  }
+}

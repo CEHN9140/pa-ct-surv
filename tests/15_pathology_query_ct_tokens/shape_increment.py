@@ -40,14 +40,18 @@ def volume_probe(contexts, train_x, train_log_volume, val_x, val_log_volume,
             for context in contexts:
                 if set(context['train_ids']) & set(context['val_ids']):
                     raise ValueError('Volume-probe train/validation overlap')
-                transform = ct_pipeline(dim).fit(context['train_ct'])
-                model = Ridge(alpha=ridge).fit(transform.transform(context['train_ct']), context['train_volume'])
-                prediction = model.predict(transform.transform(context['val_ct']))
+                train_ct = np.asarray(context['train_ct'], dtype=np.float64)
+                val_ct = np.asarray(context['val_ct'], dtype=np.float64)
+                transform = ct_pipeline(dim).fit(train_ct)
+                model = Ridge(alpha=ridge, solver='svd').fit(transform.transform(train_ct), context['train_volume'])
+                prediction = model.predict(transform.transform(val_ct))
                 errors.append(float(mean_squared_error(context['val_volume'], prediction)))
             candidates.append(dict(dim=dim, ridge=float(ridge), mean_inner_mse=float(np.mean(errors))))
     best = min(candidates, key=lambda r: (r['mean_inner_mse'], -r['ridge'], r['dim'] or 0))
+    train_x = np.asarray(train_x, dtype=np.float64)
+    val_x = np.asarray(val_x, dtype=np.float64)
     transform = ct_pipeline(best['dim']).fit(train_x)
-    model = Ridge(alpha=best['ridge']).fit(transform.transform(train_x), train_log_volume)
+    model = Ridge(alpha=best['ridge'], solver='svd').fit(transform.transform(train_x), train_log_volume)
     prediction = model.predict(transform.transform(val_x))
     raw_truth, raw_prediction = np.exp(val_log_volume), np.exp(prediction)
     if not np.isfinite(raw_prediction).all():

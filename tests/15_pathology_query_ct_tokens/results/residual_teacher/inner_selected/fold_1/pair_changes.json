@@ -1,0 +1,30 @@
+{
+  "within_teacher": {
+    "comparable_pairs": 5298,
+    "corrected_pairs": 156,
+    "broken_pairs": 92,
+    "improved_pairs": 156,
+    "worsened_pairs": 92,
+    "unchanged_pairs": 5050,
+    "reference_cindex": 0.7202718006795017,
+    "teacher_cindex": 0.7323518308795772,
+    "delta_cindex": 0.0120800302000755,
+    "note": "Corrections/breaks exclude ties; improved/worsened include half-credit tie transitions."
+  },
+  "versus_independent_pathology_baseline": {
+    "comparable_pairs": 5298,
+    "corrected_pairs": 167,
+    "broken_pairs": 104,
+    "improved_pairs": 167,
+    "worsened_pairs": 104,
+    "unchanged_pairs": 5027,
+    "reference_cindex": 0.7204605511513779,
+    "teacher_cindex": 0.7323518308795772,
+    "delta_cindex": 0.01189127972819932,
+    "note": "Corrections/breaks exclude ties; improved/worsened include half-credit tie transitions."
+  },
+  "ct_correction_mean": 0.01396863859715975,
+  "ct_correction_std": 0.18978099025684014,
+  "ct_correction_rms": 0.19029436966743107,
+  "caveat": "Within-teacher risk subtraction is an inference ablation; independent model differences also include PA training changes."
+}

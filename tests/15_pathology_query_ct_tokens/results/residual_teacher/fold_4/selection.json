@@ -1,0 +1,57 @@
+{
+  "primary": {
+    "name": "residual_r0p01",
+    "lambda_r": 0.01,
+    "mean_inner_cindex": 0.7515759793555289,
+    "epochs": 21
+  },
+  "per_candidate_epochs": {
+    "residual_r0": 18,
+    "residual_r0p01": 21
+  },
+  "inner_models": [
+    {
+      "name": "residual_r0",
+      "lambda_r": 0.0,
+      "inner_fold": 0,
+      "held_cindex": 0.7507405840033855,
+      "selected_epoch": 18
+    },
+    {
+      "name": "residual_r0",
+      "lambda_r": 0.0,
+      "inner_fold": 1,
+      "held_cindex": 0.7382981077791303,
+      "selected_epoch": 1
+    },
+    {
+      "name": "residual_r0",
+      "lambda_r": 0.0,
+      "inner_fold": 2,
+      "held_cindex": 0.7476864163386874,
+      "selected_epoch": 20
+    },
+    {
+      "name": "residual_r0p01",
+      "lambda_r": 0.01,
+      "inner_fold": 0,
+      "held_cindex": 0.7655522640710961,
+      "selected_epoch": 30
+    },
+    {
+      "name": "residual_r0p01",
+      "lambda_r": 0.01,
+      "inner_fold": 1,
+      "held_cindex": 0.7382981077791303,
+      "selected_epoch": 1
+    },
+    {
+      "name": "residual_r0p01",
+      "lambda_r": 0.01,
+      "inner_fold": 2,
+      "held_cindex": 0.7508775662163599,
+      "selected_epoch": 21
+    }
+  ],
+  "policy": "Select using inner held C-index; tie favors stronger penalty. Epoch=floor median inner-stop best. Saved before all outer refits/predictions; outer metrics never choose lambda/epoch."
+}

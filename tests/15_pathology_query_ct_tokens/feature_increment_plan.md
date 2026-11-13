@@ -95,8 +95,17 @@ Official APIs checked: scikit-survival CoxPHSurvivalAnalysis supports per-featur
 ridge penalties and Breslow ties; PyRadiomics shape features are mask-derived,
 use physical spacing and pad the mask for surface calculations.
 
-Full run launched with `run_feature_increment.sh`. CUDA startup,721 paired
-patients, both CT sources, PCA16/32, six ridge values, all five outer folds,
-reused source pathology epochs and first new PA checkpoint/epoch updates were
-verified. The full diagnostic is running; conditional Shape has not yet been
-decided. Existing source runs and main-project files remain unchanged.
+Full run completed: all721 patients, five outer folds, both M2 sources and
+conditional M3/M4 Shape stage. Completion review reproduces all30 serialized
+heads' saved train/validation predictions and C-index/AUC/group HR metrics;
+checks source/cohort/encoder hashes, training-only transforms and disjoint
+nested patient roles. All59 unit tests pass. The only numeric correction is
+the auxiliary volume probe: float32 automatic Ridge solving generated39
+ill-conditioning warnings, so it now uses float64/SVD. All10 probes were
+recomputed using saved CT features without neural retraining; reviewed outputs
+are separate and original outputs/survival predictions remain unchanged.
+Log-volume R2 changes by at most0.00026 per fold. See
+`results/feature_increment/report.md`, `review_audit.json` and
+`volume_probe_numeric_review/`. Neither M2 nor Shape meets the predeclared
+stable-increment criterion against both M0/M1. Existing source runs and
+main-project files remain unchanged.

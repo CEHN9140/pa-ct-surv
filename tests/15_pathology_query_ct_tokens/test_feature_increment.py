@@ -108,6 +108,18 @@ class FeatureIncrementTests(unittest.TestCase):
         self.assertGreater(result['r2_log_volume'],.99)
         self.assertEqual(len(result['prediction']),30)
 
+    def test_volume_probe_uses_stable_double_precision_for_float32_features(self):
+        rng=np.random.default_rng(123)
+        x=rng.normal(size=(48,64)).astype(np.float32)
+        x[:,32:]=x[:,:32]
+        y=2*x[:,0]+.1*rng.normal(size=48)
+        context=dict(train_ct=x[:32],val_ct=x[32:],train_volume=y[:32],val_volume=y[32:],
+                     train_ids=np.arange(32),val_ids=np.arange(32,48))
+        result=volume_probe([context],x[:32],y[:32],x[32:],y[32:],penalties=[.01])
+        self.assertEqual(result['model'].coef_.dtype,np.dtype('float64'))
+        self.assertEqual(result['model'].solver,'svd')
+        self.assertTrue(np.isfinite(result['prediction']).all())
+
 
 if __name__=='__main__':
     torch.set_num_threads(2)
