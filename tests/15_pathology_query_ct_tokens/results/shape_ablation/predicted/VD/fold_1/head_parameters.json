@@ -1,0 +1,91 @@
+{
+  "source": "predicted",
+  "group": "VD",
+  "columns": [
+    "log_volume_mm3",
+    "diameter_mm"
+  ],
+  "selection": {
+    "dim": null,
+    "ridge": 100.0,
+    "inner_mean_cindex": 0.7476939422747705,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.7335986233598624,
+          0.7109891340875995,
+          0.7937950138504155
+        ],
+        "failures": [],
+        "mean_cindex": 0.7461275904326259
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.7338137233813723,
+          0.7112131735185393,
+          0.793573407202216
+        ],
+        "failures": [],
+        "mean_cindex": 0.7462001013673758
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.7345665734566573,
+          0.7132295283969978,
+          0.7934626038781163
+        ],
+        "failures": [],
+        "mean_cindex": 0.7470862352439238
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7343514734351474,
+          0.7147978044135768,
+          0.7912465373961218
+        ],
+        "failures": [],
+        "mean_cindex": 0.7467986050816154
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.7346741234674123,
+          0.7181583958776745,
+          0.7902493074792244
+        ],
+        "failures": [],
+        "mean_cindex": 0.7476939422747705
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.7290815229081523,
+          0.7178223367312647,
+          0.7898060941828254
+        ],
+        "failures": [],
+        "mean_cindex": 0.7455699846074141
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "coefficients": [
+    0.7526473513613506,
+    0.0588140279614539,
+    0.02243631068634849
+  ],
+  "pathology_penalty": 0.0,
+  "ct_penalty": 100.0,
+  "fitting_inputs": "true Shape or saved nested OOF Shape; PA OOF",
+  "probe_fits": 0
+}

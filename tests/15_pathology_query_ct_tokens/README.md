@@ -4,6 +4,37 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Stage1 Shape subset ablation (no auxiliary training)
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_shape_ablation.sh
+```
+
+Seven unique subsets V,D,S,VD,VS,DS,VDS: V is log-volume,D maximum3D diameter,
+S sphericity. VD already is leave-S-out. Compare both true and saved public-
+predicted Shape, retaining721 patients/251 events/original folds and strict PA
+OOF risks. No neural network or Probe is fitted; only subset-specific Ridge-Cox
+heads, with penalties selected in the original inner calibration contexts.
+Predicted fitting covariates are the existing nested OOF tables. Saved full
+Probes produce descriptive train metrics/cutoffs only. Full VDS risks and ridge
+must reproduce old references for all5 folds in both true/predicted branches.
+
+Outputs: `results/shape_ablation/` with summary,fold metrics,conditional additions,
+paired Bootstrap,descriptive correlations,individual metrics/KM and report;
+dedicated `logs/shape_ablation.log`. Conditional additions compare VDS-DS,
+VDS-VS,VDS-VD,VD-V,VD-D, each with its own inner-selected ridge. These are
+whole-pipeline predictive comparisons,not causal importance. Intervals are
+nominal/unadjusted for multiple comparisons and conditional on existing models.
+No final feature subset is selected automatically; CT-only Shape supervision,
+teacher changes and student training are not started. Source results stay read-
+only; see `shape_ablation_plan.md` for scope and verification.
+
+Completed14 subset pipelines x5 folds.97 tests passed;70 saved Cox heads,
+140 AUC values,all paired comparisons and source hashes checked. True S added
+to VD yields ΔC+0.0056[+0.0004,+0.0110],4/5 folds; predicted S yields-0.0018
+[-0.0067,+0.0036],2/5 folds. This is nominal,exploratory evidence only; no
+auxiliary target was selected automatically and stage2 was not started.
+
 ## Cross-fitted public MedicalNet predicted Shape -> DFS
 
 ```bash

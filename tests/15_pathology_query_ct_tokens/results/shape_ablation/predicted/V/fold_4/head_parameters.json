@@ -1,0 +1,89 @@
+{
+  "source": "predicted",
+  "group": "V",
+  "columns": [
+    "log_volume_mm3"
+  ],
+  "selection": {
+    "dim": null,
+    "ridge": 1.0,
+    "inner_mean_cindex": 0.7650332360778728,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.774016081252645,
+          0.7546752240787872,
+          0.7659823423040102
+        ],
+        "failures": [],
+        "mean_cindex": 0.7648912158784809
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.774016081252645,
+          0.7547858802700012,
+          0.7660887139665993
+        ],
+        "failures": [],
+        "mean_cindex": 0.7649635584964152
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.7739102835378756,
+          0.7546752240787872,
+          0.7665142006169556
+        ],
+        "failures": [],
+        "mean_cindex": 0.7650332360778728
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7741218789674144,
+          0.7523514440632953,
+          0.7659823423040102
+        ],
+        "failures": [],
+        "mean_cindex": 0.7641518884449067
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.7723233178163351,
+          0.7508022573863008,
+          0.7665142006169556
+        ],
+        "failures": [],
+        "mean_cindex": 0.7632132586065307
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.7684088023698689,
+          0.7392940135000553,
+          0.7564088926709924
+        ],
+        "failures": [],
+        "mean_cindex": 0.7547039028469721
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "coefficients": [
+    0.7357208454276111,
+    0.2178041044308171
+  ],
+  "pathology_penalty": 0.0,
+  "ct_penalty": 1.0,
+  "fitting_inputs": "true Shape or saved nested OOF Shape; PA OOF",
+  "probe_fits": 0
+}

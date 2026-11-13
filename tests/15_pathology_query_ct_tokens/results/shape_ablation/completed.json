@@ -1,0 +1,124 @@
+{
+  "patients": 721,
+  "events": 251,
+  "groups": [
+    "V",
+    "D",
+    "S",
+    "VD",
+    "VS",
+    "DS",
+    "VDS"
+  ],
+  "sources": [
+    "true",
+    "predicted"
+  ],
+  "model_fold_outputs": 70,
+  "full_reference_parity": [
+    {
+      "source": "true",
+      "fold": 0,
+      "ridge": 10.0,
+      "max_abs_errors": {
+        "train": 6.661338147750939e-16,
+        "val": 6.661338147750939e-16
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "true",
+      "fold": 1,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 2.635054063837572e-09,
+        "val": 2.887227457115671e-09
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "true",
+      "fold": 2,
+      "ridge": 0.01,
+      "max_abs_errors": {
+        "train": 1.3322676295501878e-15,
+        "val": 1.1102230246251565e-15
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "true",
+      "fold": 3,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 6.661338147750939e-16,
+        "val": 4.440892098500626e-16
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "true",
+      "fold": 4,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 8.881784197001252e-16,
+        "val": 6.661338147750939e-16
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "predicted",
+      "fold": 0,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 1.9984014443252818e-15,
+        "val": 1.9984014443252818e-15
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "predicted",
+      "fold": 1,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 1.7763568394002505e-15,
+        "val": 1.5543122344752192e-15
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "predicted",
+      "fold": 2,
+      "ridge": 0.1,
+      "max_abs_errors": {
+        "train": 7.993605777301127e-15,
+        "val": 8.548717289613705e-15
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "predicted",
+      "fold": 3,
+      "ridge": 10.0,
+      "max_abs_errors": {
+        "train": 2.1649348980190553e-15,
+        "val": 1.9984014443252818e-15
+      },
+      "pair_order_identical": true
+    },
+    {
+      "source": "predicted",
+      "fold": 4,
+      "ridge": 100.0,
+      "max_abs_errors": {
+        "train": 8.881784197001252e-16,
+        "val": 7.771561172376096e-16
+      },
+      "pair_order_identical": true
+    }
+  ],
+  "neural_fits": 0,
+  "probe_fits": 0,
+  "auxiliary_training": false,
+  "source_hashes_unchanged": true
+}

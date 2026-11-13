@@ -1,0 +1,93 @@
+{
+  "source": "true",
+  "group": "VDS",
+  "columns": [
+    "log_volume_mm3",
+    "diameter_mm",
+    "sphericity"
+  ],
+  "selection": {
+    "dim": null,
+    "ridge": 0.01,
+    "inner_mean_cindex": 0.7257157342518467,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.7225596529284165,
+          0.6752632710079518,
+          0.7793242788191717
+        ],
+        "failures": [],
+        "mean_cindex": 0.7257157342518467
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.7224511930585683,
+          0.6751558134536858,
+          0.7789875406891907
+        ],
+        "failures": [],
+        "mean_cindex": 0.7255315157338149
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.7223427331887202,
+          0.6763378465506125,
+          0.777977326299248
+        ],
+        "failures": [],
+        "mean_cindex": 0.7255526353461935
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7244034707158351,
+          0.6753707285622179,
+          0.7764058816926703
+        ],
+        "failures": [],
+        "mean_cindex": 0.7253933603235745
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.718763557483731,
+          0.6769825918762089,
+          0.769446627006398
+        ],
+        "failures": [],
+        "mean_cindex": 0.7217309254554459
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.6940347071583514,
+          0.6710724263915754,
+          0.7453137276910989
+        ],
+        "failures": [],
+        "mean_cindex": 0.7034736204136752
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "coefficients": [
+    0.4496235496173132,
+    -0.15723606524657918,
+    0.3546076485984321,
+    -0.17368205463001593
+  ],
+  "pathology_penalty": 0.0,
+  "ct_penalty": 0.01,
+  "fitting_inputs": "true Shape or saved nested OOF Shape; PA OOF",
+  "probe_fits": 0
+}
