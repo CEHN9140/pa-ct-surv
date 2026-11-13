@@ -1,0 +1,228 @@
+{
+  "all15fold_checks_passed": true,
+  "patients": 721,
+  "events": 251,
+  "source_cohort_config_public_weights_and_reference_metrics_unchanged": true,
+  "checks": [
+    {
+      "model": "layer4",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer4",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer4",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer4",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer4",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer3",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer3",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer3",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer3",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer3",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer34",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer34",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer34",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer34",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    },
+    {
+      "model": "layer34",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "metrics_predictions_labels_verified": true
+    }
+  ],
+  "summaries": {
+    "layer4": {
+      "train_cindex": {
+        "mean": 0.7436018442256909,
+        "std": 0.01348433260514397
+      },
+      "val_cindex": {
+        "mean": 0.7040750153067645,
+        "std": 0.056998092229465905
+      },
+      "auc_36m": {
+        "mean": 0.7249629443919157,
+        "std": 0.05221361543075962
+      },
+      "auc_60m": {
+        "mean": 0.7153266309427473,
+        "std": 0.08946180110175794
+      },
+      "gap": {
+        "mean": 0.03952682891892643,
+        "std": 0.06978201866659622
+      }
+    },
+    "layer3": {
+      "train_cindex": {
+        "mean": 0.7389622001641312,
+        "std": 0.020495493917807896
+      },
+      "val_cindex": {
+        "mean": 0.7023325445215907,
+        "std": 0.053852587639730116
+      },
+      "auc_36m": {
+        "mean": 0.7277841703704936,
+        "std": 0.05001149151787117
+      },
+      "auc_60m": {
+        "mean": 0.7121396657031538,
+        "std": 0.09186501169102784
+      },
+      "gap": {
+        "mean": 0.036629655642540504,
+        "std": 0.07195381950584272
+      }
+    },
+    "layer34": {
+      "train_cindex": {
+        "mean": 0.736215301237207,
+        "std": 0.025605153281151514
+      },
+      "val_cindex": {
+        "mean": 0.7022361222416995,
+        "std": 0.04711575576307503
+      },
+      "auc_36m": {
+        "mean": 0.7258474790733913,
+        "std": 0.04355484929990176
+      },
+      "auc_60m": {
+        "mean": 0.7168645646591629,
+        "std": 0.07966216901148368
+      },
+      "gap": {
+        "mean": 0.0339791789955074,
+        "std": 0.07000925306879774
+      }
+    }
+  },
+  "comparisons": {
+    "layer3": {
+      "delta_cindex": -0.0017424707851737998,
+      "positive_folds": 1,
+      "per_fold_delta": {
+        "0": -0.008933773548261748,
+        "1": -0.00962627406568517,
+        "2": -0.009546074420416883,
+        "3": 0.022938388625592387,
+        "4": -0.0035446205170975853
+      },
+      "auc36_delta": 0.0028212259785779237,
+      "auc60_delta": -0.0031869652395934978,
+      "bootstrap": {
+        "fusion_minus_layer4": {
+          "delta_cindex": -0.0017424707851738067,
+          "lower": -0.012572609787869822,
+          "upper": 0.008090959142237236,
+          "valid_repeats": 2000
+        },
+        "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty."
+      }
+    },
+    "layer34": {
+      "delta_cindex": -0.0018388930650649281,
+      "positive_folds": 2,
+      "per_fold_delta": {
+        "0": -0.006603223926976098,
+        "1": 0.0035862589656474597,
+        "2": -0.03019676602376775,
+        "3": 0.026729857819905223,
+        "4": -0.0027105921601334737
+      },
+      "auc36_delta": 0.0008845346814756461,
+      "auc60_delta": 0.0015379337164156404,
+      "bootstrap": {
+        "fusion_minus_layer4": {
+          "delta_cindex": -0.0018388930650649411,
+          "lower": -0.011066237098231537,
+          "upper": 0.007476469565203207,
+          "valid_repeats": 2000
+        },
+        "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty."
+      }
+    }
+  },
+  "note": "All contrasts are exploratory fixed-model patient-paired bootstrap; no equivalence test and no conditional increment claim."
+}

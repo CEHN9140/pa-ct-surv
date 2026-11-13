@@ -1,0 +1,221 @@
+{
+  "all_checks_passed": true,
+  "cohort_patients": 721,
+  "source_config_and_cohort_hashes_unchanged": true,
+  "checks": [
+    {
+      "model": "teacher",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "protocol_matched",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "protocol_matched",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "protocol_matched",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "protocol_matched",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "protocol_matched",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher_epoch_matched",
+      "fold": 0,
+      "n_train": 576,
+      "n_val": 145,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher_epoch_matched",
+      "fold": 1,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher_epoch_matched",
+      "fold": 2,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher_epoch_matched",
+      "fold": 3,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    },
+    {
+      "model": "teacher_epoch_matched",
+      "fold": 4,
+      "n_train": 577,
+      "n_val": 144,
+      "prediction_labels_metrics_verified": true
+    }
+  ],
+  "summary": {
+    "teacher": {
+      "train_cindex": {
+        "mean": 0.7652717022039062,
+        "std": 0.04385869620882237
+      },
+      "val_cindex": {
+        "mean": 0.7419336244239154,
+        "std": 0.04581455227519665
+      },
+      "auc_36m": {
+        "mean": 0.7806038797761026,
+        "std": 0.043304264114420545
+      },
+      "auc_60m": {
+        "mean": 0.7598712297934194,
+        "std": 0.0655916919476317
+      },
+      "gap": {
+        "mean": 0.02333807777999055,
+        "std": 0.07304856809606795
+      }
+    },
+    "protocol_matched": {
+      "train_cindex": {
+        "mean": 0.7797511095283011,
+        "std": 0.04154188581535131
+      },
+      "val_cindex": {
+        "mean": 0.7417955028983354,
+        "std": 0.0380202065894002
+      },
+      "auc_36m": {
+        "mean": 0.7839098883381449,
+        "std": 0.02563217174337063
+      },
+      "auc_60m": {
+        "mean": 0.7652232488176679,
+        "std": 0.05477772613782181
+      },
+      "gap": {
+        "mean": 0.037955606629965555,
+        "std": 0.07730235082810925
+      }
+    },
+    "teacher_epoch_matched": {
+      "train_cindex": {
+        "mean": 0.7602689360366094,
+        "std": 0.04277458732034314
+      },
+      "val_cindex": {
+        "mean": 0.740408469152655,
+        "std": 0.04088975321212735
+      },
+      "auc_36m": {
+        "mean": 0.7799220376211581,
+        "std": 0.0324615340207407
+      },
+      "auc_60m": {
+        "mean": 0.7594061234207358,
+        "std": 0.05908376200004764
+      },
+      "gap": {
+        "mean": 0.019860466883954375,
+        "std": 0.07437913189193358
+      }
+    }
+  },
+  "comparisons": {
+    "protocol_matched": {
+      "mean_delta": 0.0001381215255800372,
+      "positive_folds": 3,
+      "corrected_pairs": 1364,
+      "broken_pairs": 1362,
+      "net_strict_corrections": 2,
+      "comparable_pairs": 25651,
+      "auc36_delta": -0.0033060085620423285,
+      "auc60_delta": -0.005352019024248533,
+      "bootstrap": {
+        "fusion_minus_matched_pathology": {
+          "delta_cindex": 0.00013812152558004588,
+          "lower": -0.016235878320137453,
+          "upper": 0.016229635189837107,
+          "valid_repeats": 2000
+        },
+        "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty."
+      }
+    },
+    "teacher_epoch_matched": {
+      "mean_delta": 0.0015251552712605588,
+      "positive_folds": 4,
+      "corrected_pairs": 797,
+      "broken_pairs": 758,
+      "net_strict_corrections": 39,
+      "comparable_pairs": 25651,
+      "auc36_delta": 0.0006818421549444897,
+      "auc60_delta": 0.0004651063726835991,
+      "bootstrap": {
+        "fusion_minus_matched_pathology": {
+          "delta_cindex": 0.0015251552712605449,
+          "lower": -0.009192068759960844,
+          "upper": 0.012443906310018085,
+          "valid_repeats": 2000
+        },
+        "method": "Paired patients resampled within each outer fold; mean of fold differences. Conditional on trained models; does not include retraining/configuration-selection uncertainty."
+      }
+    }
+  },
+  "caveat": "Patient-paired bootstrap conditional on fitted models, not including retraining/configuration-selection uncertainty."
+}

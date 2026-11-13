@@ -1,0 +1,97 @@
+{
+  "feature_source": "layer34",
+  "selected_epoch": 21,
+  "inner_models": [
+    {
+      "inner_fold": 0,
+      "held_cindex": 0.6564852656485266,
+      "scaler": {
+        "mean": -0.2031863410242953,
+        "std": 0.6616579557598382,
+        "scale": 0.6616579557598382,
+        "n_fit": 326
+      },
+      "selected_epoch": 24,
+      "epochs_completed": 30,
+      "selection": "inner_stop_cindex",
+      "best_inner_stop_cindex": 0.7128712871287128,
+      "feature_source": "layer34",
+      "feature_dim": 768,
+      "backbone_initialization": "public MedicalNet only; no project downstream checkpoint",
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        38
+      ],
+      "trainable_parameters": 33183297
+    },
+    {
+      "inner_fold": 1,
+      "held_cindex": 0.6504984877338411,
+      "scaler": {
+        "mean": 0.3557946061329569,
+        "std": 0.6936422735150551,
+        "scale": 0.6936422735150551,
+        "n_fit": 327
+      },
+      "selected_epoch": 17,
+      "epochs_completed": 27,
+      "selection": "inner_stop_cindex",
+      "best_inner_stop_cindex": 0.7503030303030302,
+      "feature_source": "layer34",
+      "feature_dim": 768,
+      "backbone_initialization": "public MedicalNet only; no project downstream checkpoint",
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "trainable_parameters": 33183297
+    },
+    {
+      "inner_fold": 2,
+      "held_cindex": 0.7059279778393351,
+      "scaler": {
+        "mean": -0.10737941781021883,
+        "std": 0.5123154260902536,
+        "scale": 0.5123154260902536,
+        "n_fit": 327
+      },
+      "selected_epoch": 21,
+      "epochs_completed": 30,
+      "selection": "inner_stop_cindex",
+      "best_inner_stop_cindex": 0.7287299630086314,
+      "feature_source": "layer34",
+      "feature_dim": 768,
+      "backbone_initialization": "public MedicalNet only; no project downstream checkpoint",
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "trainable_parameters": 33183297
+    }
+  ],
+  "policy": "floor median three inner-stop best epochs; fresh public initialization on all outer training; outer validation is never used for checkpoint, layer or hyperparameter selection"
+}

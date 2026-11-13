@@ -1,0 +1,32 @@
+{
+  "unit_tests": {
+    "passed": 75,
+    "failed": 0
+  },
+  "synthetic_physical_grid_tests": 4,
+  "real_full_volume_spotchecks": {
+    "cases": 2,
+    "includes_native_1mm_and_anisotropic": true,
+    "max_saved_roi_error": 0.0,
+    "memory_only_no_source_writes": true
+  },
+  "all_case_reconstruction": {
+    "patients": 721,
+    "failed": 0,
+    "mask_different_voxels": 0,
+    "all_tumors_retained": true,
+    "ct_rounding_tolerance_hu": 1.001
+  },
+  "independent_review": "No blocking or important implementation issues; upstream clipping is an inference, not established provenance.",
+  "source_sha_scope": [
+    "cohort_csv",
+    "preprocessing_script",
+    "preprocessing_log"
+  ],
+  "training_started": false,
+  "pending_information": "Upstream NIfTI generation/DICOM or unwindowed CT provenance for repeated315 upper bound.",
+  "code_sha256": {
+    "ct_input_audit.py": "f630bfcdb1a239d7e4b587fffdc7a330bdbd20765c34c3c995f444d3764a8404",
+    "test_ct_input_audit.py": "25518b5a8031b359c28fdce38414d08d8f6d4775390c53e34fc622b6b0d57fcb"
+  }
+}

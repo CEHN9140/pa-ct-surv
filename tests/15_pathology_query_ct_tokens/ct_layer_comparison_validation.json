@@ -1,0 +1,65 @@
+{
+  "layer4_baseline_inference_max_error": 2.220446049250313e-16,
+  "new_sources": [
+    {
+      "feature_source": "layer3",
+      "dimension": 256,
+      "fit": 66,
+      "stop": 8,
+      "held": 8,
+      "cox_risk_sets": [
+        32,
+        34
+      ],
+      "public_only_initialization": true,
+      "conv1_max_update": 2.002716064453125e-05,
+      "bn_buffers_unchanged": true,
+      "checkpoint_prediction_reload_exact": true,
+      "trainable_parameters": 8275521,
+      "peak_gpu_gib": 1.277400016784668
+    },
+    {
+      "feature_source": "layer34",
+      "dimension": 768,
+      "fit": 66,
+      "stop": 8,
+      "held": 8,
+      "cox_risk_sets": [
+        32,
+        34
+      ],
+      "public_only_initialization": true,
+      "conv1_max_update": 2.002716064453125e-05,
+      "bn_buffers_unchanged": true,
+      "checkpoint_prediction_reload_exact": true,
+      "trainable_parameters": 33183297,
+      "peak_gpu_gib": 1.8737540245056152
+    }
+  ],
+  "smoke_outputs_not_reused_for_full_training": true,
+  "unit_tests": {
+    "passed": 78,
+    "failed": 0
+  },
+  "independent_read_only_review": "No blocking or important issues",
+  "startup": {
+    "layer3": {
+      "pid": 1065936,
+      "ppid": 1,
+      "cuda_verified": true,
+      "inner_epochs_and_checkpoint_verified": true
+    },
+    "layer34": {
+      "pid": 1065937,
+      "ppid": 1,
+      "cuda_verified": true,
+      "inner_epochs_and_checkpoint_verified": true
+    }
+  },
+  "code_sha256": {
+    "ct_layer_model.py": "a1d558e1bb8cd69a41a69a032b79a2259995571226bee63039d54a6772143f99",
+    "ct_layer_train.py": "05b4e4c43eb049c4b5adc59ba220202106a964a03231e66d3eba5361f52a10ed",
+    "run_ct_layer_comparison.sh": "778dbea4848bd52ed7d148c4babb896fa82c74743697a919281e88753f9a596b",
+    "test_ct_layer_model.py": "966c43eb9c5ce21d9f2b5b77af4a916d1b912f01e0eedbe18acaadb242e4dab3"
+  }
+}

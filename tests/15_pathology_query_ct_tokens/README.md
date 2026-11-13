@@ -4,6 +4,88 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## CT-only layer3/layer4 representation comparison
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_ct_layer_comparison.sh
+```
+
+User confirmed the NIfTI files were provided directly by clinicians and upstream
+processing is unknown. Retain these fixed inputs and the existing721-patient
+folds, documenting that limitation; no intensity reversal or new resampling.
+A is the completed strict nested CT baseline at `results/nested_risk_increment/ct`:
+Layer4 GAP512 -> hidden256 ->1. The launcher starts two new jobs in parallel:
+- B `layer3`: Layer3 GAP256 -> hidden256 ->1, unused layer4 removed.
+- C `layer34`: concatenate Layer3 GAP256 and Layer4 GAP512 ->768 -> hidden256 ->1.
+
+Same public MedicalNet initialization,721 patients/251 events, source five
+outer folds and three saved inner fit/stop/held roles, true CT batch32+tail,
+Cox, dropout.25, Adam headLR1e-4/backbone1e-5/wd5e-4, seed123, max30/patience10,
+fixed BN statistics, no feature L2 or augmentation. New-head construction keeps
+the baseline's subsequent CPU RNG state. Common public weights are identical;
+head-input-width and retained-layer parameter-count differences are recorded.
+No project-trained A/teacher/student checkpoint initializes B/C.
+
+Each new job performs20 fits (3inner+1fresh outer refit per fold). STOP selects
+epochs; median epoch is saved before the outer refit. Outer validation never
+selects checkpoint or representation. Honest OOF CT risks/scalers are saved;
+scalers fit inner FIT risks only. Eval-mode whole-train/whole-val C-index,
+Cox/AUC36/60/KM/HR and B-A/C-A patient-paired Bootstrap are reported. Any later
+conditional increment selection stays inside training; no new teacher or
+conditional-Cox fit is automatically launched from these partial results.
+
+Logs: `logs/ct_layer3.log`, `logs/ct_layer34.log`. Results/checkpoints:
+`results/ct_layer_comparison/{layer3,layer34}/` and corresponding checkpoint
+branches. CUDA startup/inner epochs/checkpoints verified for PIDs1065936/1065937.
+Main models/data/source experiment outputs remain unchanged.
+
+Verification:78 tests pass. A's weights/forward/RNG match the original model;
+32 actual source A checkpoint predictions match saved risks to CSV precision.
+Real B/C ROI64 smoke uses32+34 risk sets, updates stem weights, keeps BN buffers
+unchanged and reproduces predictions exactly after checkpoint reload. Smoke
+artifacts remain in/tmp and are never reused for the complete runs.
+Both B/C jobs have now completed all five folds. See
+`results/ct_layer_comparison/report.md` and `completion_review.json`.
+All15 fold prediction/label/metric checks passed. Val C-index:
+A0.7041+/-0.0570, B0.7023+/-0.0539, C0.7022+/-0.0471. B-A/C-A conditional
+paired intervals span zero; no overall improvement was established. No new
+conditional increment or teacher run was launched from these results.
+
+## CT input audit before layer3/layer4 representation comparisons
+
+```bash
+python tests/15_pathology_query_ct_tokens/ct_input_audit.py
+```
+
+Full audit is complete; default output already exists and is protected from
+overwrite. See `results/ct_input_audit/report.md` and `summary.json`. All721
+CT/Mask/ROI mappings passed, masks reconstruct exactly, all tumors are fully
+retained, and independent physical-grid CT reconstruction differs by at most
+about1HU from integer-interpolation roundoff. Two full-volume spot reconstructions
+match stored ROI values exactly.5mm/10mm peritumoral shells are fully covered
+in666/582 cases. Original cohort/script/preprocessing-log hashes are unchanged;
+this is not a full-file SHA256 audit of every NIfTI/NPY. No raw files were written
+and the destructive top-level `process_ct.py` was never imported or executed.
+
+Important upstream uncertainty:719 original input NIfTI files have maximum315,
+714 also have minimum-1023, and720 have1mm spacing. Four inspected examples
+show an upper intensity plateau. This suggests possible upstream clipping or
+transformation, without establishing its exact source, original HU calibration
+or original acquisition resolution. Scanner/reconstruction DICOM metadata are
+absent from all721 inspected files. The current script's upper clip400 does
+not explain a315 platform already present in its inputs. `acquired_*` fields
+refer to available CURRENT NIfTI support, not verified original DICOM FOV.
+
+ROI96/128 contain789/799 patients and change fold labels for542/556 of the721
+shared cases. Their historical metrics are not controlled ROI-size comparisons.
+No CSVs were rewritten. User subsequently confirmed clinician-provided input;
+the unknown upstream limitation is documented and B/C training has now started
+with those fixed inputs. A reuses the completed matched baseline. All75 audit-
+stage experiment15 tests passed, including
+four synthetic physical-grid/support/shell checks; independent review found
+no blocking or important audit implementation issue. Patient-level tables stay
+local via `.gitignore`.
+
 ## Residual follow-up: epoch audit and matched PA-only controls
 
 Read-only completed-history audit:
@@ -56,6 +138,13 @@ weights and post-construction RNG match exactly; a real66-case ROI64 smoke
 uses Cox32+34, updates PA parameters with CT absent, exports/reloads identical
 predictions and records zero correction. All smoke artifacts stay in /tmp.
 Full control startup has been verified on CUDA, PID951823, first inner epoch.
+The complete five-fold control run has now finished. See
+`results/residual_pathology_control/report.md` and `completion_review.json`.
+All15 fold prediction/label/metric checks passed. Protocol-matched PA-only:
+Val0.7418+/-0.0380; same-epoch PA-only:0.7404+/-0.0409; fixed inner-selected
+teacher:0.7419+/-0.0458. Teacher deltas0.00014 and0.00153 both have conditional
+paired-bootstrap intervals spanning zero. Same-epoch gains occur in4/5 folds
+but Fold0 declines. No new teacher/fusion training was launched after review.
 
 ## Residual teacher: jointly trained pathology and CT
 

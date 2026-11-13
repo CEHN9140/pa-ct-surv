@@ -1,0 +1,176 @@
+{
+  "patients": 721,
+  "events": 251,
+  "failed_cases": 0,
+  "exact_ct_reconstructions": 53,
+  "masks_with_any_voxel_difference": 0,
+  "all_tumors_retained": true,
+  "tumor_touches_roi_face": 9,
+  "minimum_margin_below5mm": 55,
+  "minimum_margin_below10mm": 138,
+  "complete_shell5_cases": 666,
+  "complete_shell10_cases": 582,
+  "original_file_geometry_mismatches": 1,
+  "scanner_metadata_available": {
+    "scanner_manufacturer": 0,
+    "scanner_model": 0,
+    "kvp": 0,
+    "slice_thickness": 0,
+    "reconstruction_kernel": 0,
+    "tube_current": 0
+  },
+  "intensity_quantiles": "Global raw quantiles use deterministic regular sampling<=200000 voxels; ROI/tumor/shell exact.",
+  "caveat": "Current NIfTI spacing does not establish original acquisition resolution or original DICOM HU calibration.",
+  "physical_roi_edge_extent_mm": [
+    64.0,
+    64.0,
+    64.0
+  ],
+  "statistics": {
+    "tumor_fraction": {
+      "min": 0.0008697509765625,
+      "p25": 0.013813018798828125,
+      "median": 0.029613494873046875,
+      "p75": 0.06478500366210938,
+      "max": 0.3181648254394531,
+      "mean": 0.049205848810246186
+    },
+    "minimum_margin_mm": {
+      "min": 0.0,
+      "p25": 11.0,
+      "median": 16.0,
+      "p75": 20.0,
+      "max": 28.0,
+      "mean": 15.374479889042997
+    },
+    "shell5_coverage": {
+      "min": 0.9230127029858565,
+      "p25": 1.0,
+      "median": 1.0,
+      "p75": 1.0,
+      "max": 1.0,
+      "mean": 0.9985807735949508
+    },
+    "shell10_coverage": {
+      "min": 0.7787730187579301,
+      "p25": 1.0,
+      "median": 1.0,
+      "p75": 1.0,
+      "max": 1.0,
+      "mean": 0.9903291535585821
+    },
+    "acquired_roi_fraction": {
+      "min": 0.828125,
+      "p25": 1.0,
+      "median": 1.0,
+      "p75": 1.0,
+      "max": 1.0,
+      "mean": 0.9985913661581137
+    },
+    "tumor_hu_std": {
+      "min": 40.6522793981062,
+      "p25": 223.32655966129013,
+      "median": 270.21862000443224,
+      "p75": 302.66036795452465,
+      "max": 390.41150154833525,
+      "mean": 257.10054623011837
+    },
+    "tumor_hu_below_window": {
+      "min": 0.0,
+      "p25": 0.0,
+      "median": 0.0,
+      "p75": 0.0,
+      "max": 0.04915254237288136,
+      "mean": 0.0002226472657283755
+    },
+    "tumor_hu_above_window": {
+      "min": 0.0,
+      "p25": 0.0,
+      "median": 0.0,
+      "p75": 0.0,
+      "max": 0.0,
+      "mean": 0.0
+    },
+    "roi_max_absolute_error": {
+      "min": 0.0,
+      "p25": 0.0007143020629882812,
+      "median": 0.0007143020629882812,
+      "p75": 0.0007143020629882812,
+      "max": 0.0007143020629882812,
+      "mean": 0.0006617943390728531
+    }
+  },
+  "roi_comparisons": [
+    {
+      "roi_size": 64,
+      "patients": 721,
+      "common_with_roi64": 721,
+      "common_fold_mismatches": 0,
+      "common_event_mismatches": 0,
+      "common_time_mismatches": 0
+    },
+    {
+      "roi_size": 96,
+      "patients": 789,
+      "common_with_roi64": 721,
+      "common_fold_mismatches": 542,
+      "common_event_mismatches": 0,
+      "common_time_mismatches": 0
+    },
+    {
+      "roi_size": 128,
+      "patients": 799,
+      "common_with_roi64": 721,
+      "common_fold_mismatches": 556,
+      "common_event_mismatches": 0,
+      "common_time_mismatches": 0
+    }
+  ],
+  "elapsed_seconds": 178.80286427900137,
+  "available_fov_definition": "acquired_* fields refer to current available NIfTI image support, not original DICOM acquisition FOV.",
+  "intensity_boundary_followup": {
+    "global_max_315_cases": 719,
+    "both_min_minus1023_max315_cases": 714,
+    "sampled_p99_at315_cases": 680,
+    "input_isotropic_1mm_cases": 720,
+    "available_roi_padding_cases": 11,
+    "shell10_additional_available_fov_loss_cases": 1,
+    "inference": "Repeated shared intensity bounds and upper plateau suggest upstream clipping/transformation; exact provenance/HU calibration not established.",
+    "current_preprocess_upper_bound": 400,
+    "source_bounds_exist_before_current_preprocess": true,
+    "four_example_probes": [
+      {
+        "cohort_row": 0,
+        "deterministic_sample_unique_values": 1339,
+        "fraction_at315": 0.009448616015668496,
+        "fraction_at_minus1023": 0.00023651211951975954,
+        "nifti_scale_slope": "1",
+        "nifti_scale_intercept": "0"
+      },
+      {
+        "cohort_row": 100,
+        "deterministic_sample_unique_values": 1339,
+        "fraction_at315": 0.012102694791376599,
+        "fraction_at_minus1023": 0.002394801750796816,
+        "nifti_scale_slope": "1",
+        "nifti_scale_intercept": "0"
+      },
+      {
+        "cohort_row": 200,
+        "deterministic_sample_unique_values": 1339,
+        "fraction_at315": 0.02891042958252637,
+        "fraction_at_minus1023": 0.0012801527420274255,
+        "nifti_scale_slope": "1",
+        "nifti_scale_intercept": "0"
+      },
+      {
+        "cohort_row": 500,
+        "deterministic_sample_unique_values": 1339,
+        "fraction_at315": 0.01605747416552355,
+        "fraction_at_minus1023": 0.010014609967992683,
+        "nifti_scale_slope": "1",
+        "nifti_scale_intercept": "0"
+      }
+    ]
+  }
+}

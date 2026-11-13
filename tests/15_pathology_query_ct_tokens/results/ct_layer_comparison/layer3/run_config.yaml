@@ -1,0 +1,37 @@
+batch_size: 32
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/ct_layer_comparison/layer3
+cohort_sha256: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+ct_augmentation: false
+ct_backbone_lr: 1.0e-05
+ct_bn_stats: fixed_public_statistics
+ct_pooled_l2: false
+ct_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+device: cuda
+dropout: 0.25
+feature_dim: 256
+feature_source: layer3
+fusion_type: ct_layer_representation_diagnostic
+head_hidden_dim: 256
+input_audit: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/ct_input_audit
+input_provenance: Physician-provided NIfTI; unknown upstream transformations/acquisition
+  retained as fixed input per user.
+lr: 0.0001
+num_epochs: 30
+num_workers: 8
+outer_folds:
+- 0
+- 1
+- 2
+- 3
+- 4
+patience: 10
+public_pretrained_sha256: 61224f9317fcce873366deb3703183e92cc47325b726b69691b33536244e10f4
+reference_layer4_metrics_sha256: 2101fff00702f2ceddbc9ec950d42b0472f864b90e87ff23e5a631417a2d2a7b
+reference_layer4_results: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/ct_layer_comparison/layer3
+seed: 123
+source_config_sha256: 2936a1d59c36619c6068615bc8273dc823bbdcc70ee531316bbdcc7b1f51198c
+source_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment
+survival_loss: cox
+weight_decay: 0.0005
