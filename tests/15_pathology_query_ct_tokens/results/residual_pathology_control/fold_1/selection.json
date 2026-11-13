@@ -1,0 +1,31 @@
+{
+  "epochs": {
+    "protocol_matched": 14,
+    "teacher_epoch_matched": 17
+  },
+  "inner_models": [
+    {
+      "inner_fold": 0,
+      "selected_epoch": 14,
+      "held_cindex": 0.7251021725102172
+    },
+    {
+      "inner_fold": 1,
+      "selected_epoch": 30,
+      "held_cindex": 0.7183824353086143
+    },
+    {
+      "inner_fold": 2,
+      "selected_epoch": 1,
+      "held_cindex": 0.788365650969529
+    }
+  ],
+  "teacher_inner_selection": {
+    "name": "residual_r0p01",
+    "lambda_r": 0.01,
+    "mean_inner_cindex": 0.7391280477424007,
+    "epochs": 17
+  },
+  "source_teacher_checkpoint": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/residual_teacher/residual_r0p01/fold_1/outer/best_model.pth",
+  "policy": "Schedules fixed from inner stop or original inner-selected teacher before any outer control predictions; never load a teacher/unimodal checkpoint into the control."
+}

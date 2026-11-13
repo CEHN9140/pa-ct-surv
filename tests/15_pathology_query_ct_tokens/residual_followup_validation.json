@@ -1,0 +1,37 @@
+{
+  "real_fit": 66,
+  "inner_stop": 8,
+  "inner_held": 8,
+  "cox_groups": [
+    32,
+    34
+  ],
+  "public_teacher_initial_pa_and_rng_exact": true,
+  "ct_modules_removed": true,
+  "ct_correction_identically_zero": true,
+  "pa_max_weight_update": 0.00020013190805912018,
+  "checkpoint_reload_predictions_exact": true,
+  "objective": "1.3*Cox",
+  "exports_neutral_reference_only": true,
+  "not_reused_by_complete_run": true,
+  "unit_tests": {
+    "passed": 71,
+    "failed": 0
+  },
+  "read_only_review": "No blocking or important issues",
+  "code_sha256": {
+    "residual_train.py": "00b1b735ff890a945ef9783a34f83731c11c315d671e13cc20e9028db5e52454",
+    "residual_pathology_control.py": "6a827c36bd32fadebb6e0214e0b731b670c1833a58012c3305bd9e599d0713d5",
+    "diagnose_residual_epochs.py": "23badf9d30912f4e45268c415458990f666fabbbc01b21b918bd5323751a1e41",
+    "test_residual_followup.py": "f5aa6f0d94ffb91a01a087744296f87acf7c86fe57dd5b41728efa3b76d90138",
+    "run_residual_pathology_control.sh": "a2e4328d3fc5f59cc951ff26bc894ea76a267ef23b9a79e8900460b5207ae32c"
+  },
+  "full_run_startup": {
+    "pid": 951823,
+    "ppid": 1,
+    "device": "cuda",
+    "first_inner_epoch_verified": true,
+    "log": "tests/15_pathology_query_ct_tokens/logs/residual_pathology_control.log",
+    "verified_at_utc": "2026-11-13T04:50:40.364344+00:00"
+  }
+}

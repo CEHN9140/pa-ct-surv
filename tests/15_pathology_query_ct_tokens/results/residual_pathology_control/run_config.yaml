@@ -1,0 +1,30 @@
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/residual_pathology_control
+cohort_sha256: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+cox_batch_size: 32
+ct_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+device: cuda
+dropout: 0.25
+fusion_type: matched_pathology_control
+initialization: teacher-matched new PA weights and RNG; CT removed before optimization;
+  no downstream checkpoint
+lambda_pa: 0.3
+lr: 0.0001
+num_epochs: 30
+num_workers: 8
+objective: (1+lambda_pa)*Cox(pathology); CT absent
+outer_folds:
+- 0
+- 1
+- 2
+- 3
+- 4
+pathology_patch_l2: true
+patience: 10
+public_ct_loading_role: initialization RNG parity only; CT modules then removed
+public_pretrained_sha256: 61224f9317fcce873366deb3703183e92cc47325b726b69691b33536244e10f4
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/residual_pathology_control
+seed: 123
+teacher_config_sha256: 45e5fe084b44d2f46ae0136742c7611087b1218d47911ccb54c6d14cf7e879f1
+teacher_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/residual_teacher
+weight_decay: 0.0005

@@ -4,6 +4,59 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Residual follow-up: epoch audit and matched PA-only controls
+
+Read-only completed-history audit:
+
+```bash
+python tests/15_pathology_query_ct_tokens/diagnose_residual_epochs.py
+```
+
+Outputs `results/residual_followup/epoch_diagnosis/`: original and complete-
+window trailing3-mean epoch choices, inner training trajectories, stop sample/
+event/pair counts, within-teacher ranking changes and relative correction SD.
+The existing audit is complete; it refuses to overwrite. `report.md` records
+that Fold0/3 medians2/1 are correctly implemented, not a rounding/early-stop
+bug. Alternative primary candidate medians are3/27/10/3/22, but no performance
+claim is possible without new fits/checkpoints. No completed teacher was changed.
+
+Matched PA-only controls:
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_residual_pathology_control.sh
+```
+
+Same Top25/patch L2/ABMIL/dropout,721 patients, three saved inner roles, five
+outer splits, seeds, Cox groups and optimizer settings as ResidualTeacher.
+The constructor first reproduces the residual teacher's public/new module
+initialization, then removes all CT modules before optimizer construction.
+This preserves PA weights AND the RNG state for subsequent shuffle/dropout;
+public CT-loading messages concern that construction only. There is no CT
+forward, frozen encoder, teacher warm-start or trained unimodal weight loading.
+Objective remains `Cox(rp)+0.3*Cox(rp)=1.3*Cox(rp)`, preserving the auxiliary
+loss scale and its interaction with Adam weight decay.
+
+Two fixed evaluation procedures share15 fresh inner PA fits:
+- `protocol_matched`: independently choose best inner-stop epochs, use their
+  median and freshly refit outer training.
+- `teacher_epoch_matched`: freshly refit using the original teacher's INNER-
+  selected epoch schedule2/17/9/1/21, to match the optimization budget. Reuse
+  a PA refit when both schedules coincide. No outer score selects either rule.
+
+Results/checkpoints/log use separate `residual_pathology_control` roots.
+Every fold saves both schedules before predicting outer controls, and reports
+teacher-minus-control paired patient Bootstrap, corrected/broken rankings,
+C-index/AUC36/60 and KM/HR. Existing teacher results remain read-only. These
+are exploratory comparisons, not an independent confirmation or pure causal
+CT effect. Standard inner protocol and equal final epoch budget answer
+different questions; both are reported instead of picking the better outer one.
+
+Verification:71 experiment15 unit tests pass. Actual public-initialization PA
+weights and post-construction RNG match exactly; a real66-case ROI64 smoke
+uses Cox32+34, updates PA parameters with CT absent, exports/reloads identical
+predictions and records zero correction. All smoke artifacts stay in /tmp.
+Full control startup has been verified on CUDA, PID951823, first inner epoch.
+
 ## Residual teacher: jointly trained pathology and CT
 
 ```bash

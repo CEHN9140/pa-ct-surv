@@ -72,11 +72,12 @@ def frame_objective(frame,args,penalty):
     return {key:float(value) for key,value in residual_objective(r,d,p,t,e,args.lambda_pa,penalty).items()}
 
 
-def fit_teacher(dataset,fit,stop,args,device,checkpoint,penalty,fixed_epochs=None):
+def fit_teacher(dataset,fit,stop,args,device,checkpoint,penalty,fixed_epochs=None,
+                model_factory=ResidualTeacher):
     if (stop is None)==(fixed_epochs is None):
         raise ValueError('Use inner stopping OR fixed-epoch outer refitting')
     seed_everything(args.seed)
-    model=ResidualTeacher(ct_pretrained_path=args.ct_pretrained_path,dropout=args.dropout).to(device)
+    model=model_factory(ct_pretrained_path=args.ct_pretrained_path,dropout=args.dropout).to(device)
     optimizer=build_pact_optimizer(model,args.lr,args.weight_decay,args.ct_backbone_lr)
     if not all(p.requires_grad for p in model.parameters()):raise ValueError('Both branches must remain trainable')
     checkpoint=Path(checkpoint);checkpoint.mkdir(parents=True,exist_ok=True)
@@ -128,7 +129,8 @@ def fit_teacher(dataset,fit,stop,args,device,checkpoint,penalty,fixed_epochs=Non
         selection='fixed_from_inner_median' if stop is None else 'inner_stop_cindex',
         n_fit=len(fit),n_stop=0 if stop is None else len(stop),
         cox_group_sizes=cox_batch_sizes(len(train),args.cox_batch_size),
-        initialization='new ABMIL + public MedicalNet; zero final CT correction layer; no downstream checkpoint')
+        initialization=getattr(model,'initialization_description',
+            'new ABMIL + public MedicalNet; zero final CT correction layer; no downstream checkpoint'))
     (checkpoint/'checkpoint_metadata.yaml').write_text(yaml.safe_dump(metadata))
     return model,metadata
 
