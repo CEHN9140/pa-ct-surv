@@ -4,6 +4,43 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## Cross-fitted public MedicalNet predicted Shape -> DFS
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_predicted_shape_increment.sh
+```
+
+Public-pretrained stage3 only, with existing fixed512-D CT vectors. Cox fits
+honest PA OOF risk plus predicted Shape OOF; each patient's Shape prediction
+excludes that patient's target from BOTH Probe fitting and alpha tuning.
+The15 inner Cox contexts use saved PA two-way sub-OOF partitions, outer final
+fits use the original three inner partitions. Within EACH Probe fitting part,
+target-wise Ridge selection uses KFold3 MSE. No Mask/Shape label is used by
+validation inference. Training inference metrics/KM cutoffs are descriptive;
+explicit cross-fitted Cox fitting covariates are separately saved for audit.
+
+Compare PA, true Shape, predicted Shape, and the existing public512 PCA+ridge
+conditional model under the original721-case folds. The true Shape result is
+a mask-assisted reference, not a theoretical bound. Predicted Shape receives
+training-mask supervision, which differs from DFS-only direct512 learning.
+No conclusion about head failure follows merely from decoding or performance.
+
+Results: `results/predicted_shape_increment/`; log:
+`logs/predicted_shape_increment.log`. Uses existing isolated phenotype runtime;
+no network fitting, GPU, feature extraction or main-flow changes. DFS-finetuned
+stage3 is deferred because fully nested isolation needs deeper CT model fits,
+not just reusing the existing standalone Probe predictions. See
+`predicted_shape_plan.md` for partitions and interpretation boundaries.
+
+Completed: PA+predictedShape Val0.7439+/-0.0349; ΔPA+0.0049 with conditional
+paired95% interval[-0.0049,+0.0161],4/5 positive folds. TrueShape reference
+0.7520+/-0.0327; direct5120.7336+/-0.0246. All93 unit tests and completion
+audit passed:20 contexts,65 Probe fit roles,195 tuning partitions; all45 OOF
+Probe predictions and5 Cox heads reconstructed. See `report.md`, `summary.csv`,
+`fold_comparisons.csv` and `completion_review.json` in the result root.
+CT vectors still use the existing mask-localized ROI64; absence of additional
+Mask/Shape at the Probe input does not remove upstream localization needs.
+
 ## Shape-adjusted First-order and MedicalNet probes
 
 ```bash

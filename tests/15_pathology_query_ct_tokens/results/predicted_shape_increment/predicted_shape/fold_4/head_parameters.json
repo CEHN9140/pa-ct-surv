@@ -1,0 +1,90 @@
+{
+  "selection": {
+    "dim": null,
+    "ridge": 100.0,
+    "inner_mean_cindex": 0.7649573741950734,
+    "candidates": [
+      {
+        "dim": null,
+        "ridge": 0.01,
+        "scores": [
+          0.7731696995344901,
+          0.7521301316808675,
+          0.7668333156047229
+        ],
+        "failures": [],
+        "mean_cindex": 0.7640443822733601
+      },
+      {
+        "dim": null,
+        "ridge": 0.1,
+        "scores": [
+          0.7731696995344901,
+          0.7519088192984398,
+          0.7668333156047229
+        ],
+        "failures": [],
+        "mean_cindex": 0.7639706114792176
+      },
+      {
+        "dim": null,
+        "ridge": 1.0,
+        "scores": [
+          0.7732754972492594,
+          0.753789974549076,
+          0.7663014572917775
+        ],
+        "failures": [],
+        "mean_cindex": 0.7644556430300377
+      },
+      {
+        "dim": null,
+        "ridge": 10.0,
+        "scores": [
+          0.7751798561151079,
+          0.7517981631072258,
+          0.7650249973407084
+        ],
+        "failures": [],
+        "mean_cindex": 0.7640010055210139
+      },
+      {
+        "dim": null,
+        "ridge": 100.0,
+        "scores": [
+          0.7734870926787981,
+          0.7542325993139316,
+          0.7671524305924902
+        ],
+        "failures": [],
+        "mean_cindex": 0.7649573741950734
+      },
+      {
+        "dim": null,
+        "ridge": 1000.0,
+        "scores": [
+          0.7701015658061786,
+          0.7438309173398252,
+          0.7575789809594724
+        ],
+        "failures": [],
+        "mean_cindex": 0.7571704880351587
+      }
+    ],
+    "selection": "mean inner C-index; exact ties favor stronger ridge, then fewer PCs"
+  },
+  "columns": [
+    "log_volume_mm3",
+    "diameter_mm",
+    "sphericity"
+  ],
+  "coefficients": [
+    0.7717870904980172,
+    0.07501084351845277,
+    0.021206664417333793,
+    -0.07201556946472931
+  ],
+  "pathology_penalty": 0.0,
+  "ct_penalty": 100.0,
+  "fitting_inputs": "PA OOF plus nested predicted Shape OOF; saved in cache/fold_i/outer"
+}
