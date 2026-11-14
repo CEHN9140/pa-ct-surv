@@ -213,3 +213,22 @@ bash tests/16_ct_radiomics/run_teacher_controls.sh
 日志分别为`logs/teacher_concat.log`、`logs/teacher_pa_only.log`；结果分别为
 `teacher_results/concat/`、`teacher_results/pa_only/`；权重在同名
 `teacher_checkpoints/`子目录。两组各包含15次内层及5次外层拟合。
+
+### 三组对照及推理诊断已完成
+
+| 模型 | Train C-index | Val C-index | 36月AUC | 60月AUC |
+|---|---:|---:|---:|---:|
+| 匹配PA-only | 0.7914±0.0291 | 0.7288±0.0555 | 0.7738±0.0405 | 0.7433±0.0754 |
+| PA+Radiomics Concat | 0.7888±0.0235 | 0.7478±0.0491 | 0.7930±0.0301 | 0.7615±0.0664 |
+| PA+Radiomics Cross-Attention | 0.8017±0.0426 | 0.7476±0.0456 | 0.7862±0.0343 | 0.7677±0.0478 |
+
+2000次折内患者配对Bootstrap：Concat−PA-only为+0.0190，名义95%区间
+[+0.0009,+0.0377]；Cross-Attention−Concat为−0.0002，区间
+[−0.0123,+0.0120]。区间只针对已训练模型，未覆盖重新训练、此前探索及多重比较。
+100次折内完整CT向量错配后，Concat/Cross-Attention的五折平均C-index分别为
+0.6279/0.6211，支持预测依赖正确配对CT；该扰动下降不等于CT的独立增益。
+匹配PA-only本身低于历史原v7病理，故不据此宣称超过原病理流程。
+
+结果与方法说明见`teacher_results/comparison/report.md`，该目录仅包含不含
+患者ID的汇总及重复扰动指标。验证包含60个训练折次、15个最终模型重载；
+本次分析没有新增神经网络训练，也未拟合风险级Late Fusion。

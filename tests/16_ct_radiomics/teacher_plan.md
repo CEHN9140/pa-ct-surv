@@ -107,5 +107,10 @@ Follow-up verification complete:19 tests pass (12 teacher/control,7 original
 Radiomics); real20 FIT/10 STOP GPU smoke passes for each control including
 selected-checkpoint reload and8+12 tail sizes. Five old Cross-Attention outer
 models still reproduce metrics. Read-only review found no important defects.
-Both full controls are now running in separate setsid/nohup sessions; each has
-real epoch output. See teacher_controls_validation.json for launch metadata.
+Both full controls have now completed all20fits each. See
+teacher_controls_validation.json for launch and completion metadata.
+Post-training inference audit verified60fits/15outer-model reloads across all
+three modes, computed2000 paired-patient bootstrap replicates and100CT
+whole-vector permutations per fold for each teacher. Aggregate results are in
+teacher_results/comparison; no risk-level fusion or new neural training in
+these diagnostics.

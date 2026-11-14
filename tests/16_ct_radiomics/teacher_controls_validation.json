@@ -39,19 +39,43 @@
   "initialization": "New learned modules only; no trained unimodal checkpoints",
   "head_matching": "Same hidden widths/LN/dropout; native first-layer input512 for fusion,256 for PA-only",
   "scientific_training_started": true,
-  "scientific_training_completed": false,
-  "full_control_training_completed": false,
-  "training_status": "running",
+  "scientific_training_completed": true,
+  "full_control_training_completed": true,
+  "training_status": "completed",
   "launch_verified_at_utc": "2026-11-14T09:17:11.236697+00:00",
-  "running_pids": {
-    "concat": 2162328,
-    "pa_only": 2162329
-  },
   "launch_method": "setsid + nohup; independent sessions verified alive with GPU use",
   "source_sha256": {
     "teacher_data.py": "456b06e56aedbb576375bb08b88dadb09b57bdd582eeac88a3995e5faf37fea0",
     "teacher_model.py": "e362f56c8cb478d055b89508b582f1be062f9b2db1c6fcd2009801ebe8565815",
     "teacher_train.py": "e731fc4291882482f54e6bfabe2c49ba3999d9ff12e93197ba082ce81a98fffb",
     "run_teacher_controls.sh": "ba20d6b198e5bdf93ac7d6919c601a97808eaefd7d756c4ebd96e7f441b7058c"
+  },
+  "completion_verified_at_utc": "2026-11-14T10:39:37.001970+00:00",
+  "completed_runs": [
+    "concat",
+    "pa_only"
+  ],
+  "completion_records": {
+    "concat": {
+      "patients": 721,
+      "events": 251,
+      "outer_folds": 5,
+      "neural_fits": 20,
+      "source_hashes_unchanged": true,
+      "outer_validation_used_for_selection": false
+    },
+    "pa_only": {
+      "patients": 721,
+      "events": 251,
+      "outer_folds": 5,
+      "neural_fits": 20,
+      "source_hashes_unchanged": true,
+      "outer_validation_used_for_selection": false
+    }
+  },
+  "results_audit": "teacher_results/comparison/validation.json",
+  "launch_pids": {
+    "concat": 2162328,
+    "pa_only": 2162329
   }
 }
