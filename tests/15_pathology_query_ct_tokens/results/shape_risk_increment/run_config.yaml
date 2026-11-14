@@ -1,0 +1,31 @@
+audit_only: false
+auxiliary_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/ct_shape_aux/allshape
+batch_size: 32
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/shape_risk_increment
+cohort_sha256: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+cox_batch_size: 32
+cox_ridge: 1.0
+ct_backbone_lr: 1.0e-05
+ct_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+device: cuda
+dropout: 0.25
+feature_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment
+fusion_type: fixed_shape_risk_increment_diagnostic
+lr: 0.0001
+mode: 'A: fixed lambda, fixed Cox penalty; no evaluation of automatic lambda selection'
+num_epochs: 30
+num_workers: 8
+patience: 10
+public_pretrained_sha256: 61224f9317fcce873366deb3703183e92cc47325b726b69691b33536244e10f4
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/shape_risk_increment
+seed: 123
+shape_columns:
+- log_volume_mm3
+- diameter_mm
+- sphericity
+shape_weight: 0.2
+source_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment
+survival_loss: cox
+teacher_student_unchanged: true
+weight_decay: 0.0005

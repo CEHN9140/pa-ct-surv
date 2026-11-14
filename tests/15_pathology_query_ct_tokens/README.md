@@ -980,3 +980,41 @@ the backbone; all remaining modules are newly initialized. No project-trained
 unimodal weights, alignment or auxiliary survival losses are used.
 
 Verification: three unit tests passed, including both attention axes and pooling gradients. Real ROI64/Top25 inputs produced exactly [1,25,512] cross-attention and [1,25,1] pooling probabilities. A four-patient CPU smoke loaded MedicalNet, completed fused-only Cox backward/update, restored the best checkpoint strictly, and evaluated finite train/validation metrics. Temporary smoke outputs were removed.
+
+## Fixed-Shape CT risk conditional increment (scheme A)
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_shape_risk_increment.sh
+```
+
+Diagnostic only: unchanged721 patients/251 events, original outer5/inner3 roles,
+PA OOF/final risks reused. M0=calibrated PA; M1=PA+original CT; M2=PA+ALL-Shape
+CT with **fixed lambda0.2**. Cox uses two free standardized-risk slopes, fixed
+CT ridge1.0 and unpenalized PA slope. No Cox or lambda selection is performed.
+This evaluates a fixed setting after prior same-cohort exploration, **not** the
+previous auto-lambda C strategy with Val C-index0.7136.
+
+Fifteen inner checkpoints are used for inference only: each OOF patient is
+excluded from both FIT and STOP. Inner risk scaling uses FIT eval predictions;
+outer scaling uses outer-training eval predictions. Fusion scalers/coefficients
+use OOF covariates exclusively. Fixed-C outer epochs are26/16/9/27/28, from
+the fixed candidate's STOP epochs, ignoring HELD scores. Existing outer0/3 are
+reused only when weight, epoch, population and scalers match; outer1/2/4 train
+fresh from PUBLIC MedicalNet for16/9/28 epochs. No project-trained unimodal
+checkpoint initializes training; no PA/teacher/student model is trained.
+
+Results: `results/shape_risk_increment/`, including M0/M1/M2 fold predictions,
+KM, C-index, Cox NLL, AUC36/60, head parameters, three paired Bootstrap
+contrasts, per-fold changes and report. CT-only fixed-C C-index is recorded
+separately. Logs: `logs/shape_risk_increment.log`. New CT checkpoints are in
+`checkpoints/shape_risk_increment/`; source outputs are never overwritten.
+Bootstrap intervals condition on fitted models and exclude retraining/prior
+exploration uncertainty. A null scalar-risk result does not exclude useful
+high-dimensional CT information. See `shape_risk_increment_plan.md`.
+
+Read-only source audit:
+
+```bash
+tests/15_pathology_query_ct_tokens/.phenotype_runtime/bin/python \
+  tests/15_pathology_query_ct_tokens/shape_risk_increment.py --audit_only
+```

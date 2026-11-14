@@ -1,0 +1,28 @@
+{
+  "comparisons": {
+    "M1_minus_M0": {
+      "delta_cindex": 0.004312921961335254,
+      "lower": -0.004603693313278378,
+      "upper": 0.013909355535079493,
+      "valid_repeats": 2000,
+      "positive_folds": 3
+    },
+    "M2_minus_M0": {
+      "delta_cindex": 0.011091857860574065,
+      "lower": 0.0014400494215869822,
+      "upper": 0.02092705795355924,
+      "valid_repeats": 2000,
+      "positive_folds": 4
+    },
+    "M2_minus_M1": {
+      "delta_cindex": 0.006778935899238811,
+      "lower": 0.0012657759823488047,
+      "upper": 0.012014257488811119,
+      "valid_repeats": 2000,
+      "positive_folds": 5
+    }
+  },
+  "repeats": 2000,
+  "method": "paired patients resampled within each fixed outer fold; mean fold differences",
+  "limitation": "conditional on trained models; excludes retraining, tuning and earlier exploration uncertainty"
+}

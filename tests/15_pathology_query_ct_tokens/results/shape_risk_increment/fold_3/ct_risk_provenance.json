@@ -1,0 +1,41 @@
+{
+  "weight": 0.2,
+  "inner_STOP_epochs": [
+    22,
+    27,
+    29
+  ],
+  "epochs": 27,
+  "policy": "fixed lambda; floor median fixed-candidate STOP epochs; HELD scores ignored",
+  "reuse_outer": true,
+  "source_checkpoint_root": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/ct_shape_aux/allshape/fold_3",
+  "inner_fit_scalers": [
+    {
+      "mean": 0.08729122126863503,
+      "std": 0.5340125249206191,
+      "scale": 0.5340125249206191,
+      "n_fit": 326
+    },
+    {
+      "mean": -0.5479333278233013,
+      "std": 0.735841394654638,
+      "scale": 0.735841394654638,
+      "n_fit": 327
+    },
+    {
+      "mean": 0.11005582950869718,
+      "std": 0.9825079400835182,
+      "scale": 0.9825079400835182,
+      "n_fit": 327
+    }
+  ],
+  "outer_train_scaler": {
+    "mean": -0.2653609235920101,
+    "std": 0.8571324183617226,
+    "scale": 0.8571324183617226,
+    "n_fit": 577
+  },
+  "final_checkpoint": "/home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/ct_shape_aux/allshape/fold_3/outer/best_model.pth",
+  "final_checkpoint_sha256": "7adefc7d31ab73d9a0daae7fd8ad52189924a352f90e883510954d9adef42edb",
+  "oof_policy": "HELD patients excluded from both FIT and STOP; fixed weight, no HELD lambda selection"
+}

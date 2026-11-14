@@ -1,0 +1,45 @@
+{
+  "unit_tests_passed": 6,
+  "source_audit_passed": true,
+  "patients": 721,
+  "events": 251,
+  "inner_checkpoint_role_metadata_audits": 15,
+  "fixed_shape_lambda": 0.2,
+  "fixed_ct_cox_ridge": 1.0,
+  "outer_epochs": [
+    26,
+    16,
+    9,
+    27,
+    28
+  ],
+  "reused_outer_folds": [
+    0,
+    3
+  ],
+  "new_public_only_outer_folds": [
+    1,
+    2,
+    4
+  ],
+  "code_review": "No blocking leakage/comparator/initialization issue; direct PA/A covariate hashes and modality-risk parity added after review.",
+  "head_smoke": {
+    "patients": 145,
+    "heads": 3,
+    "same_CT_M1_M2_exact": true,
+    "M0_source_risk_parity": true,
+    "evaluation_and_KM": true
+  },
+  "GPU_smoke": {
+    "real_GPU_patients": 34,
+    "source_inner_checkpoint_loaded_strictly": true,
+    "held_risk_parity": true,
+    "held_batch_size": 32,
+    "max_held_risk_difference": 0.0,
+    "eval_buffers_unchanged": true,
+    "FIT_scaler_prediction_finite": true,
+    "max_allocated_MiB": 714.1357421875
+  },
+  "head_smoke_scope": "Identical CT covariates intentionally test M1=M2; not the new Shape increment result",
+  "formal_teacher_student_changed": false
+}

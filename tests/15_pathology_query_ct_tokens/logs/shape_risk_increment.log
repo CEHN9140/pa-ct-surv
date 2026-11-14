@@ -1,0 +1,363 @@
+Fixed-Shape conditional risk diagnostic: auditing source roles, predictions and checkpoints...
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Audited721 cases,Shape labels,A risks/epochs and20 baseline feature caches; only PUBLIC initialization for new fits.
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Fixed-Shape audit: 15 honest inner checkpoints; outer epochs=[26, 16, 9, 27, 28]; new outer fits=3
+Checkpoints: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/shape_risk_increment
+Results: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/shape_risk_increment
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer0 Inner0: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=192
+Outer0 Inner1: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=192
+Outer0 Inner2: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=192
+Outer0: reuse existing fixed-lambda outer checkpoint/predictions, epochs=26
+
+Extra survival metrics:
+cutoff_from_train_median: -0.215552
+n_test: 145
+n_high_risk: 76
+n_low_risk: 69
+n_event_test: 51
+logrank_stat: 17.559140
+logrank_p: 0.000028
+auc_36m: 0.753102
+auc_60m: 0.731387
+HR_high_vs_low: 3.653658
+HR_95CI_lower: 1.910212
+HR_95CI_upper: 6.988343
+cox_p: 0.000090
+M0 Outer0: Train=0.7369 | Val=0.7095 | Val Cox NLL=4.3605
+
+Extra survival metrics:
+cutoff_from_train_median: -0.149127
+n_test: 145
+n_high_risk: 77
+n_low_risk: 68
+n_event_test: 51
+logrank_stat: 20.955529
+logrank_p: 0.000005
+auc_36m: 0.772508
+auc_60m: 0.756183
+HR_high_vs_low: 4.418762
+HR_95CI_lower: 2.206646
+HR_95CI_upper: 8.848478
+cox_p: 0.000027
+M1 Outer0: Train=0.7560 | Val=0.7299 | Val Cox NLL=4.3205
+
+Extra survival metrics:
+cutoff_from_train_median: -0.127811
+n_test: 145
+n_high_risk: 79
+n_low_risk: 66
+n_event_test: 51
+logrank_stat: 18.478517
+logrank_p: 0.000017
+auc_36m: 0.781056
+auc_60m: 0.761562
+HR_high_vs_low: 4.092383
+HR_95CI_lower: 2.042551
+HR_95CI_upper: 8.199357
+cox_p: 0.000071
+M2 Outer0: Train=0.7582 | Val=0.7361 | Val Cox NLL=4.3015
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer1 Inner0: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=193
+Outer1 Inner1: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer1 Inner2: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer1: fresh PUBLIC initialization; lambda=0.2; fixed epochs=16
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/16 | Train Loss: 3.2013 | Train C-index: 0.5481 | Train Cox: 3.0008 | Train Shape MSE: 1.0025
+Epoch 2/16 | Train Loss: 3.1944 | Train C-index: 0.5513 | Train Cox: 2.9990 | Train Shape MSE: 0.9770
+Epoch 3/16 | Train Loss: 3.2151 | Train C-index: 0.6117 | Train Cox: 3.0311 | Train Shape MSE: 0.9202
+Epoch 4/16 | Train Loss: 3.1422 | Train C-index: 0.6355 | Train Cox: 2.9827 | Train Shape MSE: 0.7976
+Epoch 5/16 | Train Loss: 3.0780 | Train C-index: 0.6390 | Train Cox: 2.9171 | Train Shape MSE: 0.8048
+Epoch 6/16 | Train Loss: 3.0652 | Train C-index: 0.6509 | Train Cox: 2.9141 | Train Shape MSE: 0.7555
+Epoch 7/16 | Train Loss: 3.0500 | Train C-index: 0.6618 | Train Cox: 2.9046 | Train Shape MSE: 0.7268
+Epoch 8/16 | Train Loss: 3.0281 | Train C-index: 0.6820 | Train Cox: 2.8854 | Train Shape MSE: 0.7135
+Epoch 9/16 | Train Loss: 2.9826 | Train C-index: 0.6816 | Train Cox: 2.8515 | Train Shape MSE: 0.6555
+Epoch 10/16 | Train Loss: 2.9762 | Train C-index: 0.7022 | Train Cox: 2.8483 | Train Shape MSE: 0.6392
+Epoch 11/16 | Train Loss: 2.9662 | Train C-index: 0.7010 | Train Cox: 2.8442 | Train Shape MSE: 0.6099
+Epoch 12/16 | Train Loss: 2.9532 | Train C-index: 0.6993 | Train Cox: 2.8340 | Train Shape MSE: 0.5961
+Epoch 13/16 | Train Loss: 2.9146 | Train C-index: 0.7017 | Train Cox: 2.7913 | Train Shape MSE: 0.6166
+Epoch 14/16 | Train Loss: 2.9354 | Train C-index: 0.7076 | Train Cox: 2.8127 | Train Shape MSE: 0.6135
+Epoch 15/16 | Train Loss: 2.9457 | Train C-index: 0.7085 | Train Cox: 2.8349 | Train Shape MSE: 0.5541
+Epoch 16/16 | Train Loss: 2.8944 | Train C-index: 0.7153 | Train Cox: 2.7857 | Train Shape MSE: 0.5432
+
+Extra survival metrics:
+cutoff_from_train_median: 0.042016
+n_test: 144
+n_high_risk: 67
+n_low_risk: 77
+n_event_test: 50
+logrank_stat: 28.313957
+logrank_p: 0.000000
+auc_36m: 0.737511
+auc_60m: 0.713149
+HR_high_vs_low: 4.939716
+HR_95CI_lower: 2.575207
+HR_95CI_upper: 9.475272
+cox_p: 0.000002
+M0 Outer1: Train=0.7865 | Val=0.7205 | Val Cox NLL=4.2921
+
+Extra survival metrics:
+cutoff_from_train_median: 0.002300
+n_test: 144
+n_high_risk: 68
+n_low_risk: 76
+n_event_test: 50
+logrank_stat: 26.650915
+logrank_p: 0.000000
+auc_36m: 0.742056
+auc_60m: 0.717712
+HR_high_vs_low: 4.742815
+HR_95CI_lower: 2.473055
+HR_95CI_upper: 9.095753
+cox_p: 0.000003
+M1 Outer1: Train=0.7920 | Val=0.7244 | Val Cox NLL=4.2741
+
+Extra survival metrics:
+cutoff_from_train_median: 0.013444
+n_test: 144
+n_high_risk: 68
+n_low_risk: 76
+n_event_test: 50
+logrank_stat: 26.293919
+logrank_p: 0.000000
+auc_36m: 0.746687
+auc_60m: 0.721703
+HR_high_vs_low: 4.702625
+HR_95CI_lower: 2.451880
+HR_95CI_upper: 9.019480
+cox_p: 0.000003
+M2 Outer1: Train=0.7925 | Val=0.7276 | Val Cox NLL=4.2598
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer2 Inner0: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=193
+Outer2 Inner1: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer2 Inner2: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer2: fresh PUBLIC initialization; lambda=0.2; fixed epochs=9
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/9 | Train Loss: 3.2341 | Train C-index: 0.5292 | Train Cox: 3.0337 | Train Shape MSE: 1.0021
+Epoch 2/9 | Train Loss: 3.2336 | Train C-index: 0.5053 | Train Cox: 3.0404 | Train Shape MSE: 0.9661
+Epoch 3/9 | Train Loss: 3.2008 | Train C-index: 0.6024 | Train Cox: 3.0245 | Train Shape MSE: 0.8815
+Epoch 4/9 | Train Loss: 3.1723 | Train C-index: 0.6396 | Train Cox: 3.0211 | Train Shape MSE: 0.7559
+Epoch 5/9 | Train Loss: 3.0748 | Train C-index: 0.6367 | Train Cox: 2.9274 | Train Shape MSE: 0.7372
+Epoch 6/9 | Train Loss: 3.0629 | Train C-index: 0.6606 | Train Cox: 2.9232 | Train Shape MSE: 0.6985
+Epoch 7/9 | Train Loss: 3.0217 | Train C-index: 0.6558 | Train Cox: 2.8871 | Train Shape MSE: 0.6728
+Epoch 8/9 | Train Loss: 2.9952 | Train C-index: 0.6833 | Train Cox: 2.8707 | Train Shape MSE: 0.6226
+Epoch 9/9 | Train Loss: 2.9802 | Train C-index: 0.6808 | Train Cox: 2.8589 | Train Shape MSE: 0.6065
+
+Extra survival metrics:
+cutoff_from_train_median: -0.142081
+n_test: 144
+n_high_risk: 70
+n_low_risk: 74
+n_event_test: 50
+logrank_stat: 46.047408
+logrank_p: 0.000000
+auc_36m: 0.784475
+auc_60m: 0.839087
+HR_high_vs_low: 9.625473
+HR_95CI_lower: 4.391494
+HR_95CI_upper: 21.097542
+cox_p: 0.000000
+M0 Outer2: Train=0.7059 | Val=0.7822 | Val Cox NLL=4.1650
+
+Extra survival metrics:
+cutoff_from_train_median: -0.122134
+n_test: 144
+n_high_risk: 72
+n_low_risk: 72
+n_event_test: 50
+logrank_stat: 45.999622
+logrank_p: 0.000000
+auc_36m: 0.799055
+auc_60m: 0.849828
+HR_high_vs_low: 10.106748
+HR_95CI_lower: 4.485759
+HR_95CI_upper: 22.771252
+cox_p: 0.000000
+M1 Outer2: Train=0.7267 | Val=0.7912 | Val Cox NLL=4.1248
+
+Extra survival metrics:
+cutoff_from_train_median: -0.102752
+n_test: 144
+n_high_risk: 66
+n_low_risk: 78
+n_event_test: 50
+logrank_stat: 40.580431
+logrank_p: 0.000000
+auc_36m: 0.805185
+auc_60m: 0.853140
+HR_high_vs_low: 6.863298
+HR_95CI_lower: 3.476742
+HR_95CI_upper: 13.548564
+cox_p: 0.000000
+M2 Outer2: Train=0.7246 | Val=0.7939 | Val Cox NLL=4.1137
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer3 Inner0: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=193
+Outer3 Inner1: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer3 Inner2: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer3: reuse existing fixed-lambda outer checkpoint/predictions, epochs=27
+
+Extra survival metrics:
+cutoff_from_train_median: -0.037848
+n_test: 144
+n_high_risk: 72
+n_low_risk: 72
+n_event_test: 50
+logrank_stat: 35.052541
+logrank_p: 0.000000
+auc_36m: 0.795344
+auc_60m: 0.779373
+HR_high_vs_low: 7.149658
+HR_95CI_lower: 3.346578
+HR_95CI_upper: 15.274594
+cox_p: 0.000000
+M0 Outer3: Train=0.7692 | Val=0.7714 | Val Cox NLL=4.1961
+
+Extra survival metrics:
+cutoff_from_train_median: -0.079571
+n_test: 144
+n_high_risk: 69
+n_low_risk: 75
+n_event_test: 50
+logrank_stat: 18.497276
+logrank_p: 0.000017
+auc_36m: 0.782700
+auc_60m: 0.788932
+HR_high_vs_low: 3.576446
+HR_95CI_lower: 1.923826
+HR_95CI_upper: 6.648714
+cox_p: 0.000056
+M1 Outer3: Train=0.7904 | Val=0.7638 | Val Cox NLL=4.2019
+
+Extra survival metrics:
+cutoff_from_train_median: -0.037504
+n_test: 144
+n_high_risk: 68
+n_low_risk: 76
+n_event_test: 50
+logrank_stat: 22.822117
+logrank_p: 0.000002
+auc_36m: 0.804566
+auc_60m: 0.803031
+HR_high_vs_low: 4.157768
+HR_95CI_lower: 2.205292
+HR_95CI_upper: 7.838889
+cox_p: 0.000011
+M2 Outer3: Train=0.7836 | Val=0.7820 | Val Cox NLL=4.1688
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer4 Inner0: inference only, fixed lambda=0.2; FIT=326, STOP=58, OOF=193
+Outer4 Inner1: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer4 Inner2: inference only, fixed lambda=0.2; FIT=327, STOP=58, OOF=192
+Outer4: fresh PUBLIC initialization; lambda=0.2; fixed epochs=28
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/28 | Train Loss: 3.2716 | Train C-index: 0.5351 | Train Cox: 3.0720 | Train Shape MSE: 0.9981
+Epoch 2/28 | Train Loss: 3.2575 | Train C-index: 0.5414 | Train Cox: 3.0656 | Train Shape MSE: 0.9598
+Epoch 3/28 | Train Loss: 3.2136 | Train C-index: 0.6005 | Train Cox: 3.0415 | Train Shape MSE: 0.8603
+Epoch 4/28 | Train Loss: 3.1228 | Train C-index: 0.6511 | Train Cox: 2.9685 | Train Shape MSE: 0.7717
+Epoch 5/28 | Train Loss: 3.0826 | Train C-index: 0.6654 | Train Cox: 2.9315 | Train Shape MSE: 0.7552
+Epoch 6/28 | Train Loss: 3.1016 | Train C-index: 0.6641 | Train Cox: 2.9369 | Train Shape MSE: 0.8233
+Epoch 7/28 | Train Loss: 3.0307 | Train C-index: 0.6848 | Train Cox: 2.8803 | Train Shape MSE: 0.7522
+Epoch 8/28 | Train Loss: 3.0248 | Train C-index: 0.6915 | Train Cox: 2.8853 | Train Shape MSE: 0.6973
+Epoch 9/28 | Train Loss: 2.9618 | Train C-index: 0.7072 | Train Cox: 2.8318 | Train Shape MSE: 0.6502
+Epoch 10/28 | Train Loss: 2.9622 | Train C-index: 0.7077 | Train Cox: 2.8359 | Train Shape MSE: 0.6314
+Epoch 11/28 | Train Loss: 2.9329 | Train C-index: 0.7203 | Train Cox: 2.8096 | Train Shape MSE: 0.6161
+Epoch 12/28 | Train Loss: 2.9152 | Train C-index: 0.7192 | Train Cox: 2.7988 | Train Shape MSE: 0.5819
+Epoch 13/28 | Train Loss: 2.9249 | Train C-index: 0.7224 | Train Cox: 2.8087 | Train Shape MSE: 0.5811
+Epoch 14/28 | Train Loss: 2.9146 | Train C-index: 0.7224 | Train Cox: 2.7808 | Train Shape MSE: 0.6689
+Epoch 15/28 | Train Loss: 2.9045 | Train C-index: 0.7251 | Train Cox: 2.7815 | Train Shape MSE: 0.6150
+Epoch 16/28 | Train Loss: 2.8957 | Train C-index: 0.7099 | Train Cox: 2.7717 | Train Shape MSE: 0.6202
+Epoch 17/28 | Train Loss: 2.9400 | Train C-index: 0.6780 | Train Cox: 2.8000 | Train Shape MSE: 0.6999
+Epoch 18/28 | Train Loss: 2.8450 | Train C-index: 0.7431 | Train Cox: 2.7244 | Train Shape MSE: 0.6031
+Epoch 19/28 | Train Loss: 2.8522 | Train C-index: 0.7303 | Train Cox: 2.7325 | Train Shape MSE: 0.5989
+Epoch 20/28 | Train Loss: 2.8432 | Train C-index: 0.7405 | Train Cox: 2.7243 | Train Shape MSE: 0.5945
+Epoch 21/28 | Train Loss: 2.8619 | Train C-index: 0.7465 | Train Cox: 2.7549 | Train Shape MSE: 0.5354
+Epoch 22/28 | Train Loss: 2.8679 | Train C-index: 0.7197 | Train Cox: 2.7402 | Train Shape MSE: 0.6384
+Epoch 23/28 | Train Loss: 2.8598 | Train C-index: 0.7423 | Train Cox: 2.7479 | Train Shape MSE: 0.5597
+Epoch 24/28 | Train Loss: 2.8408 | Train C-index: 0.7499 | Train Cox: 2.7371 | Train Shape MSE: 0.5184
+Epoch 25/28 | Train Loss: 2.9060 | Train C-index: 0.7287 | Train Cox: 2.7916 | Train Shape MSE: 0.5723
+Epoch 26/28 | Train Loss: 2.9062 | Train C-index: 0.7338 | Train Cox: 2.7924 | Train Shape MSE: 0.5693
+Epoch 27/28 | Train Loss: 2.8472 | Train C-index: 0.7463 | Train Cox: 2.7349 | Train Shape MSE: 0.5620
+Epoch 28/28 | Train Loss: 2.8286 | Train C-index: 0.7483 | Train Cox: 2.7299 | Train Shape MSE: 0.4933
+
+Extra survival metrics:
+cutoff_from_train_median: -0.004108
+n_test: 144
+n_high_risk: 70
+n_low_risk: 74
+n_event_test: 50
+logrank_stat: 16.730151
+logrank_p: 0.000043
+auc_36m: 0.801786
+auc_60m: 0.722487
+HR_high_vs_low: 3.386914
+HR_95CI_lower: 1.821687
+HR_95CI_upper: 6.297016
+cox_p: 0.000116
+M0 Outer4: Train=0.8200 | Val=0.7114 | Val Cox NLL=4.2501
+
+Extra survival metrics:
+cutoff_from_train_median: -0.100882
+n_test: 144
+n_high_risk: 73
+n_low_risk: 71
+n_event_test: 50
+logrank_stat: 15.373102
+logrank_p: 0.000088
+auc_36m: 0.791782
+auc_60m: 0.703761
+HR_high_vs_low: 3.327789
+HR_95CI_lower: 1.761614
+HR_95CI_upper: 6.286381
+cox_p: 0.000212
+M1 Outer4: Train=0.8251 | Val=0.7073 | Val Cox NLL=4.3020
+
+Extra survival metrics:
+cutoff_from_train_median: -0.068045
+n_test: 144
+n_high_risk: 73
+n_low_risk: 71
+n_event_test: 50
+logrank_stat: 19.054060
+logrank_p: 0.000013
+auc_36m: 0.794332
+auc_60m: 0.715610
+HR_high_vs_low: 3.871536
+HR_95CI_lower: 2.014926
+HR_95CI_upper: 7.438878
+cox_p: 0.000049
+M2 Outer4: Train=0.8254 | Val=0.7108 | Val Cox NLL=4.2730
+
+M0
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.7637 ± 0.0441
+  Val C-index: 0.7390 ± 0.0350
+
+M1
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.7780 ± 0.0377
+  Val C-index: 0.7433 ± 0.0337
+
+M2
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.7769 ± 0.0378
+  Val C-index: 0.7501 ± 0.0360
+Fixed-Shape conditional risk increment complete; report.md saved.
