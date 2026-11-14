@@ -1,6 +1,6 @@
 # 实验16：单模态CT Radiomics基线
 
-仅做独立比较基线，不读取病理特征、不使用神经网络或Checkpoint，不改动
+原`train.py`仅做独立比较基线，不读取病理特征、不使用神经网络或Checkpoint，不改动
 主流程、其他实验和原始数据。此实验不替代正式的病理–CT教师与CT学生方法。
 
 ## 固定方案
@@ -106,3 +106,68 @@ tests/16_ct_radiomics/.runtime/bin/python -m pytest -q tests/16_ct_radiomics/tes
 `metrics.csv`、各折筛选/系数/调参表与KM图。
 `.runtime/`、日志、模型、患者级特征/预测、提取QC和源文件清单均保留本地，
 由本目录`.gitignore`白名单控制，不随提交上传。原始CT、Mask及标签表也不发布。
+
+## 新增：病理Query / CT Radiomics Key–Value教师
+
+独立入口`teacher_train.py`，复用721例原始五折和完整107项提取缓存。
+原来的CT-only Ridge-Cox结果不变，也不加载它的模型或筛选器。
+病理与CT的可学习模块均重新初始化并联合训练，不加载项目单模态权重。
+
+Radiomics按以下7类组织：Shape、First-order、GLCM、GLRLM、GLSZM、GLDM、NGTDM。
+每次实际训练FIT患者内重新去常数、高相关去冗余及Z-score，然后逐类独立
+`Linear(保留维度,256) → ReLU → Dropout`。它们是**特征类别token**，不是
+CT空间位置；某类被筛空时用Attention mask屏蔽，不生成有效的空组token。
+
+数据通路（省略Batch维）：
+
+| 路径 | 维度与操作 |
+|---|---|
+| 病理输入 | EAGLE Top25 Virchow2-CLS，25×1280；每个patch做L2 |
+| 共享病理投影 | 1280→512，ReLU、Dropout，得到25×512 |
+| Query | 512→256，ReLU、Dropout，得到25×256 |
+| CT Key/Value输入 | 7组分别编码，得到7×256；之后MHA内部再做Q/K/V线性映射 |
+| Cross-Attention | 标准单头softmax(QKᵀ/√256)V，输出25×256 |
+| 交互表示 | 可学习Attention pooling，25×256→256 |
+| 独立病理表示 | 原ABMIL Attention pooling，25×512→512→256 |
+| 风险预测 | Concat为512→256→128→1；隐藏层LayerNorm、ReLU、Dropout |
+
+投影、ABMIL、交互池化和风险头的Dropout统一0.25；MHA的**权重Dropout为0**，
+沿用test15标准Attention设置。无QKNorm、无额外融合入口L2、无辅助分支Cox。
+只优化融合风险的Cox损失；Adam lr=1e-4、weight_decay=5e-4、Python seed=123。
+患者前向batch=1，32名患者联合计算一次Cox，尾部并入前一个风险集，不丢样本。
+可选`--fusion_type concat`是同一套协议下的无Cross-Attention对照：有效CT类别
+token均值与ABMIL表示拼接。默认仅运行`crossattention`。
+
+验证使用原外层5折，每个外层训练集再做事件分层3折。在每个内层，剩余患者
+按85% FIT/15% STOP划分；另有独立HELD，此教师选轮流程不使用其标签或预测。
+过滤和标准化只拟合FIT，STOP C-index选最佳轮数，patience=10、最多30轮。
+取3个内层最佳轮数中位数，在全部外层训练患者上重新拟合预处理并从新初始化
+训练固定轮数，最后评价外层验证一次。每种融合共15次内层、5次外层拟合。
+该协议与历史使用外层早停的教师不同，历史均值只能作参考，不能直接归因于融合改进。
+
+启动后台训练（本脚本自行nohup，不要重复包一层）：
+
+```bash
+bash tests/16_ct_radiomics/run_teacher.sh
+tail -f tests/16_ct_radiomics/logs/teacher_crossattention.log
+```
+
+仅审计病例、原始特征、所有内外层筛选分组，不训练：
+
+```bash
+tests/16_ct_radiomics/.runtime/bin/python tests/16_ct_radiomics/teacher_train.py --device cpu --audit_only
+```
+
+输出分开保存在：
+
+- `teacher_results/crossattention/metrics.csv`：逐折指标、均值±样本标准差；
+  每折Train/Val评估、36/60月IPCW AUC、HR、KM、筛选明细和固定轮数记录。
+- `teacher_checkpoints/crossattention/fold_*/`：内层与外层权重、过滤器、标准化、
+  类别布局、训练历史、患者划分和元数据。`teacher_train.load_teacher`可重载外层目录。
+- 逐轮Train指标来自训练模式的在线风险；最终表中Train/Val均为保存模型在
+  `eval()`下重新评估；最终Cox NLL使用各自完整患者风险集，按事件数平均。
+
+本教师使用从完整肿瘤CT及Mask提取的Radiomics，与64³深度CT输入的覆盖范围不同；
+Attention是类别权重，不能解释为CT空间定位。推理仍依赖相同Radiomics提取及Mask。
+此处尚未实现学生的Radiomics教师特征适配或蒸馏，不能据此宣称CT-only学生已完成。
+教师大文件、患者级表和日志仍被Git忽略。新功能核查记录见`teacher_validation.json`。
