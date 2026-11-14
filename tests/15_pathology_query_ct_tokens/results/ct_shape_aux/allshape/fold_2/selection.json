@@ -1,0 +1,298 @@
+{
+  "weight": 0.05,
+  "mean_held_cindex": 0.6682802588553575,
+  "epochs": 21,
+  "candidates": [
+    {
+      "weight": 0.0,
+      "mean_held_cindex": 0.6626221265845457,
+      "epochs": 23
+    },
+    {
+      "weight": 0.05,
+      "mean_held_cindex": 0.6682802588553575,
+      "epochs": 21
+    },
+    {
+      "weight": 0.2,
+      "mean_held_cindex": 0.6681591938118414,
+      "epochs": 9
+    }
+  ],
+  "selection": "mean3 inner HELD C-index; exact tie prefers smaller lambda; epochs=floor median chosen-candidate STOP epochs; no outer selection",
+  "inner_models": [
+    {
+      "weight": 0.0,
+      "inner_fold": 0,
+      "held_cindex": 0.66529284164859,
+      "selected_epoch": 23,
+      "reuse": "matched A control"
+    },
+    {
+      "weight": 0.0,
+      "inner_fold": 1,
+      "held_cindex": 0.6604341285192349,
+      "selected_epoch": 29,
+      "reuse": "matched A control"
+    },
+    {
+      "weight": 0.0,
+      "inner_fold": 2,
+      "held_cindex": 0.6621394095858121,
+      "selected_epoch": 2,
+      "reuse": "matched A control"
+    },
+    {
+      "weight": 0.05,
+      "selected_epoch": 26,
+      "epochs_completed": 30,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.899778366088867,
+          36.6806526184082,
+          0.7499608993530273
+        ],
+        "std": [
+          1.0861082077026367,
+          14.279280662536621,
+          0.09699265658855438
+        ],
+        "n_fit": 326,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "54cb1a592734e9e9ca82c94b002c13a70794721ca0e60ac6c7280a62e5eb9f3b"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        38
+      ],
+      "best_STOP_cindex": 0.7178571428571429,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 0,
+      "held_cindex": 0.6739696312364425
+    },
+    {
+      "weight": 0.05,
+      "selected_epoch": 21,
+      "epochs_completed": 30,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.953200340270996,
+          37.15871047973633,
+          0.7521570324897766
+        ],
+        "std": [
+          1.1193979978561401,
+          14.966891288757324,
+          0.09347528219223022
+        ],
+        "n_fit": 327,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "cb2de7e61179eeb14a2a9f44f9d521ff376e21692f9401ce09b3cf945cbe3dd8"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "best_STOP_cindex": 0.7007786429365962,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 1,
+      "held_cindex": 0.6732215774768966
+    },
+    {
+      "weight": 0.05,
+      "selected_epoch": 2,
+      "epochs_completed": 12,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.861738204956055,
+          36.07283020019531,
+          0.7518454194068909
+        ],
+        "std": [
+          1.1114331483840942,
+          14.286873817443848,
+          0.09207234531641006
+        ],
+        "n_fit": 327,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "d5c43e1d633ca08f0e1b73d8bbf609991bc48c672d75dae411ba653b9764d8ce"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "best_STOP_cindex": 0.706601466992665,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 2,
+      "held_cindex": 0.6576495678527332
+    },
+    {
+      "weight": 0.2,
+      "selected_epoch": 24,
+      "epochs_completed": 30,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.899778366088867,
+          36.6806526184082,
+          0.7499608993530273
+        ],
+        "std": [
+          1.0861082077026367,
+          14.279280662536621,
+          0.09699265658855438
+        ],
+        "n_fit": 326,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "54cb1a592734e9e9ca82c94b002c13a70794721ca0e60ac6c7280a62e5eb9f3b"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        38
+      ],
+      "best_STOP_cindex": 0.725,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 0,
+      "held_cindex": 0.6832971800433839
+    },
+    {
+      "weight": 0.2,
+      "selected_epoch": 9,
+      "epochs_completed": 19,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.953200340270996,
+          37.15871047973633,
+          0.7521570324897766
+        ],
+        "std": [
+          1.1193979978561401,
+          14.966891288757324,
+          0.09347528219223022
+        ],
+        "n_fit": 327,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "cb2de7e61179eeb14a2a9f44f9d521ff376e21692f9401ce09b3cf945cbe3dd8"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "best_STOP_cindex": 0.664071190211346,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 1,
+      "held_cindex": 0.6463571889103804
+    },
+    {
+      "weight": 0.2,
+      "selected_epoch": 6,
+      "epochs_completed": 16,
+      "scaler": {
+        "columns": [
+          "log_volume_mm3",
+          "diameter_mm",
+          "sphericity"
+        ],
+        "mean": [
+          8.861738204956055,
+          36.07283020019531,
+          0.7518454194068909
+        ],
+        "std": [
+          1.1114331483840942,
+          14.286873817443848,
+          0.09207234531641006
+        ],
+        "n_fit": 327,
+        "ddof": 0,
+        "fit_ct_ids_sha256": "d5c43e1d633ca08f0e1b73d8bbf609991bc48c672d75dae411ba653b9764d8ce"
+      },
+      "training_risk_set_sizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        39
+      ],
+      "best_STOP_cindex": 0.7041564792176039,
+      "initialization": "PUBLIC MedicalNet + fresh original risk head; no downstream warm-start",
+      "selection": "STOP C-index only",
+      "inner_fold": 2,
+      "held_cindex": 0.67482321248176
+    }
+  ]
+}

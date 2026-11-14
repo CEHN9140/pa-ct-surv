@@ -1,0 +1,185 @@
+batch_size: 32
+bn: fixed running stats; affine trainable
+checkpoint_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/ct_shape_aux/sphericity
+cohort_sha256: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+cox_batch_size: 32
+ct_backbone_lr: 1.0e-05
+ct_pretrained_path: /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+data_dir: /home/gly001/cqj/pa_ct_surv/data/eagle/top25
+device: cuda
+dropout: 0.25
+feature_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment
+fusion_type: ct_shape_auxiliary_diagnostic
+lambda_grid:
+- 0.0
+- 0.05
+- 0.2
+lr: 0.0001
+mse_reduction: mean patients and targets; C per-target coefficient=lambda/3
+num_epochs: 30
+num_workers: 8
+patience: 10
+public_pretrained_sha256: 61224f9317fcce873366deb3703183e92cc47325b726b69691b33536244e10f4
+results_root: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/ct_shape_aux/sphericity
+roi_size: 64
+seed: 123
+shape_columns:
+- sphericity
+source_hashes:
+  /home/gly001/cqj/pa_ct_surv/data/eagle/top25/all_label_roi64.csv: f5c44a5951a79f99bb356ada3f40dfdaf13073274bb0fcf69beb05586d90d67d
+  /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth: 61224f9317fcce873366deb3703183e92cc47325b726b69691b33536244e10f4
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_0/inner_0/ct/best_model.pth
+  : f08cef2e30d7035bab51ce34d94a9d8a69ea069ee7655d7e3b56e9e04e0c6d5c
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_0/inner_1/ct/best_model.pth
+  : 36ae911b37c641aa1d7512db595590764bc6ea79751dbbd4b5ccba3b2e9f523f
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_0/inner_2/ct/best_model.pth
+  : e52640c58a5a7c198884e89cbb395b4d9ba135949e673aff20dbe0e9eb6f00c0
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_0/outer/ct/best_model.pth
+  : a3d5161d0505e882670b87b6bf3c58fc42adef20f164f4739be789aea632d7c2
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_1/inner_0/ct/best_model.pth
+  : 30bce84b2a6b7e5bf3181a4793a841f67f975e70063c623b7f8f2a0a88a2ecaa
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_1/inner_1/ct/best_model.pth
+  : fcf06f81fed9c2466c84f4df2466f398e2914263ad312e94692b6df33bb81fa0
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_1/inner_2/ct/best_model.pth
+  : 0ebaf7466076bf89f7bf816de7369cf4872c241d7c30a79779e155dcf6068d52
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_1/outer/ct/best_model.pth
+  : 5b1f94ed4bb23c5fb592461ed04f08ee1faaf5a7056d16a14210d09b19ca3c0b
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_2/inner_0/ct/best_model.pth
+  : 1352c906d2295d75e6478b4185ccc0703b6f6088fa5f41b0856c99a6a32af332
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_2/inner_1/ct/best_model.pth
+  : 8c369e8b057cfb094e6cd73f5ecef354b08a7c1d808dd159d9ad14495d479723
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_2/inner_2/ct/best_model.pth
+  : 5a842cc10f871f5e8a4cfbf95264a8c053ed65a1b82152608104eb393218cde2
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_2/outer/ct/best_model.pth
+  : fba89d4dccd4f817c33b5008764b80e6a8be2b5da4451e8a2af892f9826049ab
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_3/inner_0/ct/best_model.pth
+  : 45cf6dd78550c0a064c7c2e11fee0f340ccc263605dbb7f9c5dd1484e12e4f6f
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_3/inner_1/ct/best_model.pth
+  : 71aea4e5ce76e72b7f599f50c5424e7776c3339f1d150c899859ebae8ad44ab4
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_3/inner_2/ct/best_model.pth
+  : fd4e991c5ac60d49f4b1054b020782eb67146d22f4df99d193369584d651796e
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_3/outer/ct/best_model.pth
+  : 0e86a058634d031b753f11af9642af56c052a75e0691e379435adc32c5bbf59c
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_4/inner_0/ct/best_model.pth
+  : 93b4b68a78086dbf63027d68916525cb106ee295b28fd57fe14832bca9011391
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_4/inner_1/ct/best_model.pth
+  : 22fab4cd4ed3cc970ea5d182697d1410e044a3ec1213375008d6a3b073f2963b
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_4/inner_2/ct/best_model.pth
+  : f40a7db71ed85a2fb92c9e5737be034f8d52e7187951921abe5398478987d028
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/nested_risk_increment/fold_4/outer/ct/best_model.pth
+  : 2bcd8231c042555d4806cd7705dca3b2f6cdc90578d10034514fff7c38365aec
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_0.json
+  : 24fad091696a9575a2d9250fd6c3eb7bdbd9332c71a2bb78fb427416911a0da6
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_0.npz
+  : 34b52d54992d41453b24f896f0a0ab32156870827e979b65beb3432778ca4830
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_1.json
+  : 8d2f88715e50bdb080d737d90652020b31ef19eafeebd762db67192b375e5fca
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_1.npz
+  : c00addc7026ba56394dd6c5cf220f683d28f0b20066e93df7a018100b47ce508
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_2.json
+  : 13bffc525f06edfa1bee53213b302085b58378c492307cc1c7c26165e780cc33
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/inner_2.npz
+  : 016b43dc14e769bcc83d114d5988239509990709e3f9261c6fd0cb3eb7b42ef0
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/outer.json: 4aa8cb73cf6f927d104fe8db0da2a558ccf0b428165f1084c04169227790229b
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_0/outer.npz: dd2a679a163a9e05cc6f03d57642882f6715a90a4074ceb0fac4c0496066710d
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_0.json
+  : 7cc6ef153ae8d91a2525c45fcd9d5a4c4886bd12a38b0178c2a5bcc921a19112
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_0.npz
+  : 3cc2b6322af2a8477e123f91d39065d7478474a8f137341bde3a74221bad129d
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_1.json
+  : d032618be09d475a09226105df505c1a849a9ff228edace6c8494ae81d83b29b
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_1.npz
+  : 9edc4d3f71ba825f6de3c8c49625b033bba478a828fe230a721425a2691ad6da
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_2.json
+  : 7482de729defd9b76686615f2b1e09774269515237c1964ccf2e6feb278442e7
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/inner_2.npz
+  : c8ee2bcbf85efb720e437cebcd2be4c42489f64710f08956a2cb28b0a67728fc
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/outer.json: c7d87805d901c7b7b9ca9e63c60cc70711de9559fdd2cfdb3be072f4b1a18b2a
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_1/outer.npz: 9f474e9c35c810160450105eeb4beba1106718cd71d56f4a35fef516bb2b012b
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_0.json
+  : 33a029c49c10d832aa144f2b98c46dcee0a31f64d3c1e6b600bd031bc29c0814
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_0.npz
+  : a515107ee7487082d35d9e897ba30a3871784d4671f09f1607414ec5ccde94b7
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_1.json
+  : 155b0c964cb663f177aa6817eea811f5c9cd53a62db8dc4db4a4634c510b10de
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_1.npz
+  : 6e5c0bc86ee4d2d9106c05ea74dce7881250b57b591324af0524484100cea6bb
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_2.json
+  : 191afc9e9fc84ed26840d1d2728d68dc671b4d47ca0acdf159e7c0d44c7655ad
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/inner_2.npz
+  : b491b9eca8214a2db434f0b05b54f5a47961e6654c98e0624a0180569698df71
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/outer.json: 6d8c503e67285a5fdc34293dda8396dc297ce683c8b66f5a053c767f9ab821b3
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_2/outer.npz: 75500ed5437a1785b6a2d641b9d5b24e41b7072e1729bd375133b0c4f288eeb3
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_0.json
+  : cd5c02e306b30c6c36a37b1be2789cbe1ac376139f4f30f68c0fdd84ee1f985b
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_0.npz
+  : eaf4e08e0a30049bccd9041d403d07aba29f43d509d14818f62b749618380991
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_1.json
+  : bf018a45bfcda913e57dcc0c0c8587bc90ecc4c6f8535e92618d6c84a238ece2
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_1.npz
+  : a753419575824e2926ca1d142794ecdefbba1449cb7367b73c64e3b165048d5e
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_2.json
+  : 0b46957069d2f9b086cd49cdfc287c87d5d0285f5f9dd55ae734ad24956306cf
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/inner_2.npz
+  : ae8b083b3e920a660baaf53d40ab9b5ef28a0ca6f8ca7ba77c24d028ce448bda
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/outer.json: eea48624f8f1182c57405492e4e327548f84b45356221eb5f31ec3f91147dbee
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_3/outer.npz: 87fa3da6098709b10da3612e0e815cde91aad82461401057d74d4e5db5171e40
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_0.json
+  : 92ab962ca90fa9cc0e86a1c5de073526796bbbd2fb72b3ea6ae4a6d9705c12bd
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_0.npz
+  : fe50ddf58b3833e683a126da14a2346f15e505a137c461a887dbf474f6c4db18
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_1.json
+  : 1f021bc6d45c7c8e88cdad06f303a660c869cfa70ee85bc0c2cad01fe44744c5
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_1.npz
+  : 8a53283244cdd572225f7d4cdb160f3a49f4aa89744766308bc7244ec129ec98
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_2.json
+  : e7752cbee4c24d06ee1eb987b610a8c02275f777577b8b34da0cadfeffb38e3d
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/inner_2.npz
+  : f41ac20e9cdc2aa7167efe9c61f89c9d3b6d1fe09f095c04964604ab3f524bcb
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/outer.json: a12d34d8e6a32d472ce673d7457b106895419f2a40e893979d6ce3620765181b
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/finetuned/fold_4/outer.npz: 568024eb1c0efe3f393e2e0fb0ebe4a32ad3d4165dd3c3bb752ed3beaa441ab9
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/cache/shape_features.csv: 66bb46be0a1b9662737c3c213946435f6adcfb596bcc9f0a60d1e647ce3fada2
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/feature_increment/run_config.yaml: a8cd826dd9b69384d7fc5c9a051b6612f3bde4c9d4033169fa5743dd47499ccc
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/completed.json: 8d594ea81a32ce0040cbe57614fc021ec4d40f6cb41a4dd0205fc6c9237b4a9a
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_0/train_predictions.csv
+  : 96bdadc98f7f51bec1c51cfc40d5b925d4a0e2f551565c6f72149fa80873b619
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_0/val_predictions.csv: 8b45cee35b9e3270c5844f39b8fc1124522c56c99f7ed31e69d7c0b26d547414
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_1/train_predictions.csv
+  : 71288193a320525155f27ee0367dd7237bca2edbbb46f2bfba9438361042abe6
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_1/val_predictions.csv: 6681b863640499eb2509969e6e865e002a06de69461dd719da4eba5bf0262511
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_2/train_predictions.csv
+  : 579493dcf3ed179a09ac4de8e0bedddeb83f5589328fd1c24e3aaae4645f12f5
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_2/val_predictions.csv: 25993df86146126a31b665da6c0788be90cd1503729aceab281a077b5f421b20
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_3/train_predictions.csv
+  : 32bbe558cc108ffb69145978fbac08f57e4a572802578f627e1b3422f26dcab6
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_3/val_predictions.csv: 8da2dcdf035a62718037d185428de7180d2ccdee0a0c2f0a40da59cf2df107ca
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_4/train_predictions.csv
+  : 9fa3d1ae63e90d05ebe3747726ac6e119860664ca3afe436ff5eeba910e23a44
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/fold_4/val_predictions.csv: b9d661bd29b003cb5941c968ac2d619becb5bf4eefcc4ad0d6f6628685d13684
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/ct/metrics.csv: 2101fff00702f2ceddbc9ec950d42b0472f864b90e87ff23e5a631417a2d2a7b
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_0/calibration.yaml: 2b4297ace1768a6ab5fda4692a63cf97adc8198e8fdc882214efe44af8d40d77
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_0/inner_oof_predictions.csv
+  : a4509aca86cf3237547fc0d528e3cb2c6ddd4d987b4087bdd8aaf98610a9f498
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_0/inner_split_roles.csv: 91b0e2612639054f42e616173fb8306f3bc0363607c86d9e97ab5a64a4377c57
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_1/calibration.yaml: 843626a717ddd93ddc01044aa8582438df50fa338c96491e9e310375f055adef
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_1/inner_oof_predictions.csv
+  : b40e1c0b6ab6ddb79ad5847401726c0279a6b4bb6442497f8d936c68f42ee4f9
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_1/inner_split_roles.csv: 8b1cc0b959b0d1681b55c88f29cebc458e42f28caa5cc254225c288b34945537
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_2/calibration.yaml: af0cd4963ef2feac4298ded1cd393f9deaa93e3c567ad811f48ee4dee3711720
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_2/inner_oof_predictions.csv
+  : fef3703e8b45c7fc85fd39c5e7c2a39cbddebbc0c6c53adf5584c2ed4b3bd1e8
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_2/inner_split_roles.csv: 35432dd6f5853d05bfd4f43d48b21ae9e9bf6928e88d01467564681ce4ac4eeb
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_3/calibration.yaml: 3ecda279702b851d67a18f6efe63bef47532eaa88f6a33262278aa3cbb170042
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_3/inner_oof_predictions.csv
+  : cde09dd0e4e7bfda494092bff7c2852bd59e9a4563dc012e33ed99d44032fcab
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_3/inner_split_roles.csv: 7bc2ca53f5ddd8c40f6afee2ac826429f57ea5e2cdad165c6fb100156aacb0dd
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_4/calibration.yaml: a7967598394ca666a2e585ea10aa73a6b77d1df95fbd6fb5e1793f4952d14f88
+  ? /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_4/inner_oof_predictions.csv
+  : ad4769cb6137ff6d56de239ba50fa48da4ee3755775e6c6ce137db1b0d0d5aa7
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/fold_4/inner_split_roles.csv: bef5c0c3d77da555380724286785ba48e170cf126dcfee4e28c9801da7ee1649
+  /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment/run_config.yaml: 2936a1d59c36619c6068615bc8273dc823bbdcc70ee531316bbdcc7b1f51198c
+source_run: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/nested_risk_increment
+survival_loss: cox
+target: sphericity
+teacher_student_unchanged: true
+weight_decay: 0.0005

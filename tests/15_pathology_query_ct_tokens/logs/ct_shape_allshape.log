@@ -1,0 +1,1159 @@
+CT Shape auxiliary diagnostic: allshape; auditing sources...
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Audited721 cases,Shape labels,A risks/epochs and20 baseline feature caches; only PUBLIC initialization for new fits.
+Checkpoints: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/checkpoints/ct_shape_aux/allshape
+Results: /home/gly001/cqj/pa_ct_surv/tests/15_pathology_query_ct_tokens/results/ct_shape_aux/allshape
+Device=cuda | batch=32+tail | headLR=0.0001/backboneLR=1e-05 | lambdas=[0.0, 0.05, 0.2]
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+
+allshape | Outer0 | lambda0.05 | Inner0 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1197 | Train C-index: 0.4713 | Train Cox: 3.0696 | Train Shape MSE: 1.0014 | Val Loss: 3.6772 | Val C-index: 0.5707 | Val Cox: 3.6260 | Val Shape MSE: 1.0228
+Epoch 2/30 | Train Loss: 3.1447 | Train C-index: 0.5475 | Train Cox: 3.0951 | Train Shape MSE: 0.9915 | Val Loss: 3.6755 | Val C-index: 0.5768 | Val Cox: 3.6247 | Val Shape MSE: 1.0158
+Epoch 3/30 | Train Loss: 3.1240 | Train C-index: 0.5784 | Train Cox: 3.0745 | Train Shape MSE: 0.9905 | Val Loss: 3.6728 | Val C-index: 0.5841 | Val Cox: 3.6225 | Val Shape MSE: 1.0043
+Epoch 4/30 | Train Loss: 3.1040 | Train C-index: 0.6073 | Train Cox: 3.0548 | Train Shape MSE: 0.9851 | Val Loss: 3.6654 | Val C-index: 0.5793 | Val Cox: 3.6167 | Val Shape MSE: 0.9756
+Epoch 5/30 | Train Loss: 3.0947 | Train C-index: 0.6111 | Train Cox: 3.0479 | Train Shape MSE: 0.9348 | Val Loss: 3.6475 | Val C-index: 0.5841 | Val Cox: 3.6032 | Val Shape MSE: 0.8865
+Epoch 6/30 | Train Loss: 3.0430 | Train C-index: 0.6487 | Train Cox: 3.0001 | Train Shape MSE: 0.8568 | Val Loss: 3.6261 | Val C-index: 0.5744 | Val Cox: 3.5871 | Val Shape MSE: 0.7798
+Epoch 7/30 | Train Loss: 3.0176 | Train C-index: 0.6394 | Train Cox: 2.9762 | Train Shape MSE: 0.8281 | Val Loss: 3.6460 | Val C-index: 0.5659 | Val Cox: 3.6032 | Val Shape MSE: 0.8569
+Epoch 8/30 | Train Loss: 2.9722 | Train C-index: 0.6444 | Train Cox: 2.9303 | Train Shape MSE: 0.8369 | Val Loss: 3.6384 | Val C-index: 0.5683 | Val Cox: 3.5992 | Val Shape MSE: 0.7831
+Epoch 9/30 | Train Loss: 3.0087 | Train C-index: 0.6537 | Train Cox: 2.9678 | Train Shape MSE: 0.8179 | Val Loss: 3.6432 | Val C-index: 0.5524 | Val Cox: 3.6034 | Val Shape MSE: 0.7962
+Epoch 10/30 | Train Loss: 2.9751 | Train C-index: 0.6648 | Train Cox: 2.9351 | Train Shape MSE: 0.8000 | Val Loss: 3.6435 | Val C-index: 0.5646 | Val Cox: 3.6058 | Val Shape MSE: 0.7528
+Epoch 11/30 | Train Loss: 2.9460 | Train C-index: 0.6563 | Train Cox: 2.9051 | Train Shape MSE: 0.8179 | Val Loss: 3.6629 | Val C-index: 0.5720 | Val Cox: 3.6230 | Val Shape MSE: 0.7989
+Epoch 12/30 | Train Loss: 2.9396 | Train C-index: 0.6786 | Train Cox: 2.8997 | Train Shape MSE: 0.7979 | Val Loss: 3.6919 | Val C-index: 0.5439 | Val Cox: 3.6521 | Val Shape MSE: 0.7965
+Epoch 13/30 | Train Loss: 2.9677 | Train C-index: 0.6606 | Train Cox: 2.9289 | Train Shape MSE: 0.7774 | Val Loss: 3.6556 | Val C-index: 0.5451 | Val Cox: 3.6129 | Val Shape MSE: 0.8546
+Early stopping at epoch13
+
+allshape | Outer0 | lambda0.05 | Inner1 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1241 | Train C-index: 0.5200 | Train Cox: 3.0736 | Train Shape MSE: 1.0100 | Val Loss: 3.8399 | Val C-index: 0.5932 | Val Cox: 3.7926 | Val Shape MSE: 0.9461
+Epoch 2/30 | Train Loss: 3.1268 | Train C-index: 0.5525 | Train Cox: 3.0769 | Train Shape MSE: 0.9983 | Val Loss: 3.8375 | Val C-index: 0.5966 | Val Cox: 3.7908 | Val Shape MSE: 0.9326
+Epoch 3/30 | Train Loss: 3.1338 | Train C-index: 0.6138 | Train Cox: 3.0841 | Train Shape MSE: 0.9931 | Val Loss: 3.8325 | Val C-index: 0.6011 | Val Cox: 3.7859 | Val Shape MSE: 0.9327
+Epoch 4/30 | Train Loss: 3.1088 | Train C-index: 0.6230 | Train Cox: 3.0610 | Train Shape MSE: 0.9563 | Val Loss: 3.8177 | Val C-index: 0.6079 | Val Cox: 3.7746 | Val Shape MSE: 0.8622
+Epoch 5/30 | Train Loss: 3.0537 | Train C-index: 0.6131 | Train Cox: 3.0098 | Train Shape MSE: 0.8772 | Val Loss: 3.8032 | Val C-index: 0.6090 | Val Cox: 3.7669 | Val Shape MSE: 0.7260
+Epoch 6/30 | Train Loss: 3.0003 | Train C-index: 0.6439 | Train Cox: 2.9625 | Train Shape MSE: 0.7568 | Val Loss: 3.8649 | Val C-index: 0.6090 | Val Cox: 3.8248 | Val Shape MSE: 0.8025
+Epoch 7/30 | Train Loss: 2.9849 | Train C-index: 0.6435 | Train Cox: 2.9459 | Train Shape MSE: 0.7791 | Val Loss: 3.8671 | Val C-index: 0.6169 | Val Cox: 3.8342 | Val Shape MSE: 0.6581
+Epoch 8/30 | Train Loss: 2.9690 | Train C-index: 0.6515 | Train Cox: 2.9319 | Train Shape MSE: 0.7410 | Val Loss: 3.8394 | Val C-index: 0.6169 | Val Cox: 3.8006 | Val Shape MSE: 0.7771
+Epoch 9/30 | Train Loss: 2.9348 | Train C-index: 0.6617 | Train Cox: 2.8990 | Train Shape MSE: 0.7169 | Val Loss: 3.8435 | Val C-index: 0.6260 | Val Cox: 3.8111 | Val Shape MSE: 0.6490
+Epoch 10/30 | Train Loss: 2.9769 | Train C-index: 0.6546 | Train Cox: 2.9418 | Train Shape MSE: 0.7014 | Val Loss: 3.8425 | Val C-index: 0.6282 | Val Cox: 3.8060 | Val Shape MSE: 0.7290
+Epoch 11/30 | Train Loss: 2.9498 | Train C-index: 0.6650 | Train Cox: 2.9139 | Train Shape MSE: 0.7168 | Val Loss: 3.8551 | Val C-index: 0.6316 | Val Cox: 3.8219 | Val Shape MSE: 0.6649
+Epoch 12/30 | Train Loss: 2.9770 | Train C-index: 0.6672 | Train Cox: 2.9418 | Train Shape MSE: 0.7039 | Val Loss: 3.8644 | Val C-index: 0.6362 | Val Cox: 3.8297 | Val Shape MSE: 0.6939
+Epoch 13/30 | Train Loss: 2.9253 | Train C-index: 0.6695 | Train Cox: 2.8906 | Train Shape MSE: 0.6938 | Val Loss: 3.8416 | Val C-index: 0.6282 | Val Cox: 3.8090 | Val Shape MSE: 0.6526
+Epoch 14/30 | Train Loss: 2.9298 | Train C-index: 0.6728 | Train Cox: 2.8964 | Train Shape MSE: 0.6669 | Val Loss: 3.8689 | Val C-index: 0.6395 | Val Cox: 3.8342 | Val Shape MSE: 0.6939
+Epoch 15/30 | Train Loss: 2.9283 | Train C-index: 0.6741 | Train Cox: 2.8947 | Train Shape MSE: 0.6717 | Val Loss: 3.8492 | Val C-index: 0.6316 | Val Cox: 3.8172 | Val Shape MSE: 0.6416
+Epoch 16/30 | Train Loss: 2.9228 | Train C-index: 0.6858 | Train Cox: 2.8896 | Train Shape MSE: 0.6643 | Val Loss: 3.8323 | Val C-index: 0.6350 | Val Cox: 3.7987 | Val Shape MSE: 0.6726
+Epoch 17/30 | Train Loss: 2.9393 | Train C-index: 0.6783 | Train Cox: 2.9061 | Train Shape MSE: 0.6637 | Val Loss: 3.8074 | Val C-index: 0.6463 | Val Cox: 3.7773 | Val Shape MSE: 0.6014
+Epoch 18/30 | Train Loss: 2.9706 | Train C-index: 0.6789 | Train Cox: 2.9385 | Train Shape MSE: 0.6416 | Val Loss: 3.8530 | Val C-index: 0.6475 | Val Cox: 3.8177 | Val Shape MSE: 0.7049
+Epoch 19/30 | Train Loss: 2.8950 | Train C-index: 0.6870 | Train Cox: 2.8627 | Train Shape MSE: 0.6467 | Val Loss: 3.8086 | Val C-index: 0.6463 | Val Cox: 3.7773 | Val Shape MSE: 0.6273
+Epoch 20/30 | Train Loss: 2.8865 | Train C-index: 0.6804 | Train Cox: 2.8544 | Train Shape MSE: 0.6406 | Val Loss: 3.8399 | Val C-index: 0.6508 | Val Cox: 3.8105 | Val Shape MSE: 0.5875
+Epoch 21/30 | Train Loss: 2.9174 | Train C-index: 0.6887 | Train Cox: 2.8851 | Train Shape MSE: 0.6459 | Val Loss: 3.8040 | Val C-index: 0.6576 | Val Cox: 3.7713 | Val Shape MSE: 0.6532
+Epoch 22/30 | Train Loss: 2.9126 | Train C-index: 0.6988 | Train Cox: 2.8803 | Train Shape MSE: 0.6455 | Val Loss: 3.7813 | Val C-index: 0.6723 | Val Cox: 3.7525 | Val Shape MSE: 0.5759
+Epoch 23/30 | Train Loss: 2.9348 | Train C-index: 0.7015 | Train Cox: 2.9037 | Train Shape MSE: 0.6225 | Val Loss: 3.7332 | Val C-index: 0.6825 | Val Cox: 3.7034 | Val Shape MSE: 0.5951
+Epoch 24/30 | Train Loss: 2.8790 | Train C-index: 0.7064 | Train Cox: 2.8484 | Train Shape MSE: 0.6130 | Val Loss: 3.7048 | Val C-index: 0.6791 | Val Cox: 3.6775 | Val Shape MSE: 0.5466
+Epoch 25/30 | Train Loss: 2.8945 | Train C-index: 0.7101 | Train Cox: 2.8639 | Train Shape MSE: 0.6118 | Val Loss: 3.7399 | Val C-index: 0.6881 | Val Cox: 3.7030 | Val Shape MSE: 0.7391
+Epoch 26/30 | Train Loss: 2.8299 | Train C-index: 0.7049 | Train Cox: 2.8006 | Train Shape MSE: 0.5867 | Val Loss: 3.6702 | Val C-index: 0.6960 | Val Cox: 3.6399 | Val Shape MSE: 0.6061
+Epoch 27/30 | Train Loss: 2.8264 | Train C-index: 0.7325 | Train Cox: 2.7903 | Train Shape MSE: 0.7207 | Val Loss: 3.6452 | Val C-index: 0.7085 | Val Cox: 3.6135 | Val Shape MSE: 0.6339
+Epoch 28/30 | Train Loss: 2.8005 | Train C-index: 0.7411 | Train Cox: 2.7709 | Train Shape MSE: 0.5913 | Val Loss: 3.6121 | Val C-index: 0.7085 | Val Cox: 3.5845 | Val Shape MSE: 0.5520
+Epoch 29/30 | Train Loss: 2.8033 | Train C-index: 0.7411 | Train Cox: 2.7727 | Train Shape MSE: 0.6117 | Val Loss: 3.6146 | Val C-index: 0.6915 | Val Cox: 3.5803 | Val Shape MSE: 0.6877
+Epoch 30/30 | Train Loss: 2.7667 | Train C-index: 0.7246 | Train Cox: 2.7380 | Train Shape MSE: 0.5737 | Val Loss: 3.5782 | Val C-index: 0.7051 | Val Cox: 3.5503 | Val Shape MSE: 0.5577
+
+allshape | Outer0 | lambda0.05 | Inner2 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0948 | Train C-index: 0.4872 | Train Cox: 3.0443 | Train Shape MSE: 1.0084 | Val Loss: 3.7784 | Val C-index: 0.7205 | Val Cox: 3.7360 | Val Shape MSE: 0.8477
+Epoch 2/30 | Train Loss: 3.0555 | Train C-index: 0.5618 | Train Cox: 3.0053 | Train Shape MSE: 1.0054 | Val Loss: 3.7710 | Val C-index: 0.7261 | Val Cox: 3.7295 | Val Shape MSE: 0.8293
+Epoch 3/30 | Train Loss: 3.0575 | Train C-index: 0.6156 | Train Cox: 3.0082 | Train Shape MSE: 0.9854 | Val Loss: 3.7460 | Val C-index: 0.7318 | Val Cox: 3.7054 | Val Shape MSE: 0.8107
+Epoch 4/30 | Train Loss: 3.0401 | Train C-index: 0.6375 | Train Cox: 2.9932 | Train Shape MSE: 0.9383 | Val Loss: 3.6616 | Val C-index: 0.7341 | Val Cox: 3.6237 | Val Shape MSE: 0.7577
+Epoch 5/30 | Train Loss: 2.9631 | Train C-index: 0.6516 | Train Cox: 2.9219 | Train Shape MSE: 0.8253 | Val Loss: 3.5403 | Val C-index: 0.7364 | Val Cox: 3.5056 | Val Shape MSE: 0.6952
+Epoch 6/30 | Train Loss: 2.9385 | Train C-index: 0.6655 | Train Cox: 2.8997 | Train Shape MSE: 0.7773 | Val Loss: 3.4957 | Val C-index: 0.7420 | Val Cox: 3.4618 | Val Shape MSE: 0.6794
+Epoch 7/30 | Train Loss: 2.8796 | Train C-index: 0.6838 | Train Cox: 2.8424 | Train Shape MSE: 0.7438 | Val Loss: 3.5003 | Val C-index: 0.7511 | Val Cox: 3.4668 | Val Shape MSE: 0.6705
+Epoch 8/30 | Train Loss: 2.8617 | Train C-index: 0.6918 | Train Cox: 2.8249 | Train Shape MSE: 0.7361 | Val Loss: 3.4762 | Val C-index: 0.7534 | Val Cox: 3.4418 | Val Shape MSE: 0.6873
+Epoch 9/30 | Train Loss: 2.8647 | Train C-index: 0.6883 | Train Cox: 2.8272 | Train Shape MSE: 0.7501 | Val Loss: 3.4537 | Val C-index: 0.7534 | Val Cox: 3.4191 | Val Shape MSE: 0.6908
+Epoch 10/30 | Train Loss: 2.8544 | Train C-index: 0.6878 | Train Cox: 2.8180 | Train Shape MSE: 0.7282 | Val Loss: 3.4684 | Val C-index: 0.7557 | Val Cox: 3.4271 | Val Shape MSE: 0.8262
+Epoch 11/30 | Train Loss: 2.8055 | Train C-index: 0.6858 | Train Cox: 2.7677 | Train Shape MSE: 0.7568 | Val Loss: 3.4194 | Val C-index: 0.7580 | Val Cox: 3.3801 | Val Shape MSE: 0.7855
+Epoch 12/30 | Train Loss: 2.8762 | Train C-index: 0.6812 | Train Cox: 2.8383 | Train Shape MSE: 0.7579 | Val Loss: 3.4606 | Val C-index: 0.7625 | Val Cox: 3.4221 | Val Shape MSE: 0.7712
+Epoch 13/30 | Train Loss: 2.8119 | Train C-index: 0.7174 | Train Cox: 2.7758 | Train Shape MSE: 0.7218 | Val Loss: 3.4067 | Val C-index: 0.7602 | Val Cox: 3.3754 | Val Shape MSE: 0.6265
+Epoch 14/30 | Train Loss: 2.8520 | Train C-index: 0.6994 | Train Cox: 2.8168 | Train Shape MSE: 0.7042 | Val Loss: 3.5079 | Val C-index: 0.7659 | Val Cox: 3.4555 | Val Shape MSE: 1.0481
+Epoch 15/30 | Train Loss: 2.9136 | Train C-index: 0.6842 | Train Cox: 2.8632 | Train Shape MSE: 1.0081 | Val Loss: 3.4723 | Val C-index: 0.7614 | Val Cox: 3.4318 | Val Shape MSE: 0.8103
+Epoch 16/30 | Train Loss: 2.8526 | Train C-index: 0.7179 | Train Cox: 2.8000 | Train Shape MSE: 1.0503 | Val Loss: 3.4403 | Val C-index: 0.7568 | Val Cox: 3.4089 | Val Shape MSE: 0.6280
+Epoch 17/30 | Train Loss: 2.8019 | Train C-index: 0.7112 | Train Cox: 2.7653 | Train Shape MSE: 0.7305 | Val Loss: 3.4312 | Val C-index: 0.7602 | Val Cox: 3.3980 | Val Shape MSE: 0.6648
+Epoch 18/30 | Train Loss: 2.7856 | Train C-index: 0.7105 | Train Cox: 2.7511 | Train Shape MSE: 0.6896 | Val Loss: 3.4175 | Val C-index: 0.7659 | Val Cox: 3.3875 | Val Shape MSE: 0.5998
+Epoch 19/30 | Train Loss: 2.8129 | Train C-index: 0.7135 | Train Cox: 2.7741 | Train Shape MSE: 0.7762 | Val Loss: 3.3759 | Val C-index: 0.7682 | Val Cox: 3.3458 | Val Shape MSE: 0.6017
+Epoch 20/30 | Train Loss: 2.8335 | Train C-index: 0.6933 | Train Cox: 2.7882 | Train Shape MSE: 0.9057 | Val Loss: 3.4349 | Val C-index: 0.7750 | Val Cox: 3.4053 | Val Shape MSE: 0.5916
+Epoch 21/30 | Train Loss: 2.8426 | Train C-index: 0.7138 | Train Cox: 2.7996 | Train Shape MSE: 0.8597 | Val Loss: 3.3959 | Val C-index: 0.7761 | Val Cox: 3.3658 | Val Shape MSE: 0.6033
+Epoch 22/30 | Train Loss: 2.8042 | Train C-index: 0.7048 | Train Cox: 2.7672 | Train Shape MSE: 0.7403 | Val Loss: 3.4812 | Val C-index: 0.7761 | Val Cox: 3.4419 | Val Shape MSE: 0.7852
+Epoch 23/30 | Train Loss: 2.7770 | Train C-index: 0.7024 | Train Cox: 2.7406 | Train Shape MSE: 0.7287 | Val Loss: 3.3731 | Val C-index: 0.7739 | Val Cox: 3.3343 | Val Shape MSE: 0.7765
+Epoch 24/30 | Train Loss: 2.7651 | Train C-index: 0.6839 | Train Cox: 2.7272 | Train Shape MSE: 0.7588 | Val Loss: 3.4398 | Val C-index: 0.7773 | Val Cox: 3.3968 | Val Shape MSE: 0.8605
+Epoch 25/30 | Train Loss: 2.7358 | Train C-index: 0.7344 | Train Cox: 2.7012 | Train Shape MSE: 0.6931 | Val Loss: 3.3504 | Val C-index: 0.7784 | Val Cox: 3.3212 | Val Shape MSE: 0.5843
+Epoch 26/30 | Train Loss: 2.7539 | Train C-index: 0.7379 | Train Cox: 2.7210 | Train Shape MSE: 0.6572 | Val Loss: 3.4501 | Val C-index: 0.7761 | Val Cox: 3.4214 | Val Shape MSE: 0.5752
+Epoch 27/30 | Train Loss: 2.7241 | Train C-index: 0.7388 | Train Cox: 2.6926 | Train Shape MSE: 0.6317 | Val Loss: 3.4335 | Val C-index: 0.7727 | Val Cox: 3.4011 | Val Shape MSE: 0.6487
+Epoch 28/30 | Train Loss: 2.7125 | Train C-index: 0.7257 | Train Cox: 2.6811 | Train Shape MSE: 0.6276 | Val Loss: 3.3982 | Val C-index: 0.7807 | Val Cox: 3.3711 | Val Shape MSE: 0.5415
+Epoch 29/30 | Train Loss: 2.6940 | Train C-index: 0.7523 | Train Cox: 2.6640 | Train Shape MSE: 0.6013 | Val Loss: 3.4075 | Val C-index: 0.7716 | Val Cox: 3.3811 | Val Shape MSE: 0.5294
+Epoch 30/30 | Train Loss: 2.6949 | Train C-index: 0.7471 | Train Cox: 2.6632 | Train Shape MSE: 0.6356 | Val Loss: 3.3740 | Val C-index: 0.7830 | Val Cox: 3.3404 | Val Shape MSE: 0.6712
+
+allshape | Outer0 | lambda0.2 | Inner0 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2697 | Train C-index: 0.4695 | Train Cox: 3.0698 | Train Shape MSE: 0.9998 | Val Loss: 3.8302 | Val C-index: 0.5512 | Val Cox: 3.6268 | Val Shape MSE: 1.0170
+Epoch 2/30 | Train Loss: 3.2924 | Train C-index: 0.5287 | Train Cox: 3.0958 | Train Shape MSE: 0.9828 | Val Loss: 3.8263 | Val C-index: 0.5573 | Val Cox: 3.6262 | Val Shape MSE: 1.0006
+Epoch 3/30 | Train Loss: 3.2710 | Train C-index: 0.5608 | Train Cox: 3.0761 | Train Shape MSE: 0.9744 | Val Loss: 3.8193 | Val C-index: 0.5585 | Val Cox: 3.6251 | Val Shape MSE: 0.9708
+Epoch 4/30 | Train Loss: 3.2518 | Train C-index: 0.6068 | Train Cox: 3.0601 | Train Shape MSE: 0.9590 | Val Loss: 3.8074 | Val C-index: 0.5646 | Val Cox: 3.6216 | Val Shape MSE: 0.9292
+Epoch 5/30 | Train Loss: 3.2421 | Train C-index: 0.6114 | Train Cox: 3.0607 | Train Shape MSE: 0.9070 | Val Loss: 3.7881 | Val C-index: 0.5756 | Val Cox: 3.6131 | Val Shape MSE: 0.8747
+Epoch 6/30 | Train Loss: 3.1948 | Train C-index: 0.6293 | Train Cox: 3.0259 | Train Shape MSE: 0.8448 | Val Loss: 3.7632 | Val C-index: 0.5780 | Val Cox: 3.6023 | Val Shape MSE: 0.8047
+Epoch 7/30 | Train Loss: 3.1646 | Train C-index: 0.6217 | Train Cox: 3.0050 | Train Shape MSE: 0.7981 | Val Loss: 3.7487 | Val C-index: 0.5854 | Val Cox: 3.5811 | Val Shape MSE: 0.8378
+Epoch 8/30 | Train Loss: 3.1252 | Train C-index: 0.6409 | Train Cox: 2.9635 | Train Shape MSE: 0.8085 | Val Loss: 3.7240 | Val C-index: 0.5768 | Val Cox: 3.5758 | Val Shape MSE: 0.7411
+Epoch 9/30 | Train Loss: 3.1363 | Train C-index: 0.6440 | Train Cox: 2.9879 | Train Shape MSE: 0.7420 | Val Loss: 3.7279 | Val C-index: 0.5756 | Val Cox: 3.5745 | Val Shape MSE: 0.7671
+Epoch 10/30 | Train Loss: 3.0782 | Train C-index: 0.6671 | Train Cox: 2.9344 | Train Shape MSE: 0.7191 | Val Loss: 3.7222 | Val C-index: 0.5854 | Val Cox: 3.5794 | Val Shape MSE: 0.7144
+Epoch 11/30 | Train Loss: 3.0487 | Train C-index: 0.6582 | Train Cox: 2.9005 | Train Shape MSE: 0.7409 | Val Loss: 3.7380 | Val C-index: 0.5890 | Val Cox: 3.5647 | Val Shape MSE: 0.8665
+Epoch 12/30 | Train Loss: 3.0490 | Train C-index: 0.6795 | Train Cox: 2.8986 | Train Shape MSE: 0.7516 | Val Loss: 3.7377 | Val C-index: 0.5634 | Val Cox: 3.5944 | Val Shape MSE: 0.7165
+Epoch 13/30 | Train Loss: 3.0292 | Train C-index: 0.6712 | Train Cox: 2.8944 | Train Shape MSE: 0.6739 | Val Loss: 3.7562 | Val C-index: 0.5659 | Val Cox: 3.6133 | Val Shape MSE: 0.7146
+Epoch 14/30 | Train Loss: 3.0394 | Train C-index: 0.6833 | Train Cox: 2.9065 | Train Shape MSE: 0.6644 | Val Loss: 3.7347 | Val C-index: 0.5659 | Val Cox: 3.5972 | Val Shape MSE: 0.6876
+Epoch 15/30 | Train Loss: 3.0205 | Train C-index: 0.6878 | Train Cox: 2.8908 | Train Shape MSE: 0.6489 | Val Loss: 3.7298 | Val C-index: 0.5744 | Val Cox: 3.5908 | Val Shape MSE: 0.6952
+Epoch 16/30 | Train Loss: 2.9829 | Train C-index: 0.6921 | Train Cox: 2.8582 | Train Shape MSE: 0.6232 | Val Loss: 3.7165 | Val C-index: 0.5805 | Val Cox: 3.5839 | Val Shape MSE: 0.6629
+Epoch 17/30 | Train Loss: 2.9891 | Train C-index: 0.6975 | Train Cox: 2.8679 | Train Shape MSE: 0.6058 | Val Loss: 3.7027 | Val C-index: 0.5915 | Val Cox: 3.5795 | Val Shape MSE: 0.6158
+Epoch 18/30 | Train Loss: 2.9845 | Train C-index: 0.6803 | Train Cox: 2.8573 | Train Shape MSE: 0.6363 | Val Loss: 3.7198 | Val C-index: 0.5988 | Val Cox: 3.5953 | Val Shape MSE: 0.6228
+Epoch 19/30 | Train Loss: 2.9501 | Train C-index: 0.6887 | Train Cox: 2.8275 | Train Shape MSE: 0.6131 | Val Loss: 3.7081 | Val C-index: 0.5976 | Val Cox: 3.5460 | Val Shape MSE: 0.8107
+Epoch 20/30 | Train Loss: 2.9214 | Train C-index: 0.6770 | Train Cox: 2.7947 | Train Shape MSE: 0.6334 | Val Loss: 3.6994 | Val C-index: 0.5976 | Val Cox: 3.5787 | Val Shape MSE: 0.6038
+Epoch 21/30 | Train Loss: 2.9178 | Train C-index: 0.7027 | Train Cox: 2.8005 | Train Shape MSE: 0.5866 | Val Loss: 3.7398 | Val C-index: 0.6024 | Val Cox: 3.6032 | Val Shape MSE: 0.6834
+Epoch 22/30 | Train Loss: 2.9918 | Train C-index: 0.7193 | Train Cox: 2.8621 | Train Shape MSE: 0.6489 | Val Loss: 3.7577 | Val C-index: 0.5610 | Val Cox: 3.6082 | Val Shape MSE: 0.7477
+Epoch 23/30 | Train Loss: 2.9499 | Train C-index: 0.7034 | Train Cox: 2.8312 | Train Shape MSE: 0.5935 | Val Loss: 3.6963 | Val C-index: 0.5951 | Val Cox: 3.5727 | Val Shape MSE: 0.6183
+Epoch 24/30 | Train Loss: 3.0035 | Train C-index: 0.7058 | Train Cox: 2.8897 | Train Shape MSE: 0.5688 | Val Loss: 3.7256 | Val C-index: 0.5902 | Val Cox: 3.6127 | Val Shape MSE: 0.5643
+Epoch 25/30 | Train Loss: 2.9388 | Train C-index: 0.6902 | Train Cox: 2.8206 | Train Shape MSE: 0.5911 | Val Loss: 3.6915 | Val C-index: 0.6061 | Val Cox: 3.5759 | Val Shape MSE: 0.5782
+Epoch 26/30 | Train Loss: 2.9404 | Train C-index: 0.7066 | Train Cox: 2.8271 | Train Shape MSE: 0.5663 | Val Loss: 3.6944 | Val C-index: 0.6085 | Val Cox: 3.5854 | Val Shape MSE: 0.5450
+Epoch 27/30 | Train Loss: 2.9518 | Train C-index: 0.7075 | Train Cox: 2.8417 | Train Shape MSE: 0.5505 | Val Loss: 3.7254 | Val C-index: 0.5951 | Val Cox: 3.6030 | Val Shape MSE: 0.6120
+Epoch 28/30 | Train Loss: 2.9280 | Train C-index: 0.6954 | Train Cox: 2.8073 | Train Shape MSE: 0.6033 | Val Loss: 3.7537 | Val C-index: 0.5805 | Val Cox: 3.6016 | Val Shape MSE: 0.7605
+Epoch 29/30 | Train Loss: 2.9154 | Train C-index: 0.7098 | Train Cox: 2.8018 | Train Shape MSE: 0.5681 | Val Loss: 3.7028 | Val C-index: 0.5988 | Val Cox: 3.5946 | Val Shape MSE: 0.5413
+Epoch 30/30 | Train Loss: 2.8929 | Train C-index: 0.7180 | Train Cox: 2.7869 | Train Shape MSE: 0.5297 | Val Loss: 3.7046 | Val C-index: 0.5988 | Val Cox: 3.5909 | Val Shape MSE: 0.5685
+
+allshape | Outer0 | lambda0.2 | Inner1 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2760 | Train C-index: 0.5154 | Train Cox: 3.0738 | Train Shape MSE: 1.0112 | Val Loss: 3.9819 | Val C-index: 0.5944 | Val Cox: 3.7933 | Val Shape MSE: 0.9431
+Epoch 2/30 | Train Loss: 3.2758 | Train C-index: 0.5219 | Train Cox: 3.0786 | Train Shape MSE: 0.9862 | Val Loss: 3.9761 | Val C-index: 0.5864 | Val Cox: 3.7926 | Val Shape MSE: 0.9174
+Epoch 3/30 | Train Loss: 3.2839 | Train C-index: 0.5769 | Train Cox: 3.0897 | Train Shape MSE: 0.9709 | Val Loss: 3.9711 | Val C-index: 0.6023 | Val Cox: 3.7907 | Val Shape MSE: 0.9020
+Epoch 4/30 | Train Loss: 3.2605 | Train C-index: 0.6028 | Train Cox: 3.0766 | Train Shape MSE: 0.9194 | Val Loss: 3.9511 | Val C-index: 0.6158 | Val Cox: 3.7850 | Val Shape MSE: 0.8307
+Epoch 5/30 | Train Loss: 3.2189 | Train C-index: 0.6403 | Train Cox: 3.0487 | Train Shape MSE: 0.8508 | Val Loss: 3.9251 | Val C-index: 0.6136 | Val Cox: 3.7727 | Val Shape MSE: 0.7623
+Epoch 6/30 | Train Loss: 3.1752 | Train C-index: 0.6423 | Train Cox: 3.0228 | Train Shape MSE: 0.7619 | Val Loss: 3.9180 | Val C-index: 0.6090 | Val Cox: 3.7620 | Val Shape MSE: 0.7799
+Epoch 7/30 | Train Loss: 3.1291 | Train C-index: 0.6521 | Train Cox: 2.9835 | Train Shape MSE: 0.7280 | Val Loss: 3.9468 | Val C-index: 0.6113 | Val Cox: 3.7714 | Val Shape MSE: 0.8766
+Epoch 8/30 | Train Loss: 3.0794 | Train C-index: 0.6511 | Train Cox: 2.9251 | Train Shape MSE: 0.7714 | Val Loss: 3.9229 | Val C-index: 0.6203 | Val Cox: 3.7879 | Val Shape MSE: 0.6749
+Epoch 9/30 | Train Loss: 3.0394 | Train C-index: 0.6607 | Train Cox: 2.8949 | Train Shape MSE: 0.7227 | Val Loss: 3.9306 | Val C-index: 0.6294 | Val Cox: 3.7967 | Val Shape MSE: 0.6696
+Epoch 10/30 | Train Loss: 3.0667 | Train C-index: 0.6609 | Train Cox: 2.9309 | Train Shape MSE: 0.6792 | Val Loss: 3.9261 | Val C-index: 0.6395 | Val Cox: 3.7792 | Val Shape MSE: 0.7341
+Epoch 11/30 | Train Loss: 3.0420 | Train C-index: 0.6684 | Train Cox: 2.9057 | Train Shape MSE: 0.6816 | Val Loss: 3.8880 | Val C-index: 0.6350 | Val Cox: 3.7674 | Val Shape MSE: 0.6030
+Epoch 12/30 | Train Loss: 3.0470 | Train C-index: 0.6782 | Train Cox: 2.9151 | Train Shape MSE: 0.6597 | Val Loss: 3.9041 | Val C-index: 0.6407 | Val Cox: 3.7759 | Val Shape MSE: 0.6411
+Epoch 13/30 | Train Loss: 2.9864 | Train C-index: 0.6909 | Train Cox: 2.8559 | Train Shape MSE: 0.6522 | Val Loss: 3.9358 | Val C-index: 0.6531 | Val Cox: 3.7735 | Val Shape MSE: 0.8116
+Epoch 14/30 | Train Loss: 3.0216 | Train C-index: 0.6801 | Train Cox: 2.8829 | Train Shape MSE: 0.6935 | Val Loss: 3.8616 | Val C-index: 0.6588 | Val Cox: 3.7467 | Val Shape MSE: 0.5742
+Epoch 15/30 | Train Loss: 2.9778 | Train C-index: 0.6870 | Train Cox: 2.8553 | Train Shape MSE: 0.6128 | Val Loss: 3.8322 | Val C-index: 0.6621 | Val Cox: 3.7162 | Val Shape MSE: 0.5801
+Epoch 16/30 | Train Loss: 2.9736 | Train C-index: 0.7032 | Train Cox: 2.8567 | Train Shape MSE: 0.5845 | Val Loss: 3.8015 | Val C-index: 0.6768 | Val Cox: 3.6889 | Val Shape MSE: 0.5631
+Epoch 17/30 | Train Loss: 2.9901 | Train C-index: 0.7002 | Train Cox: 2.8749 | Train Shape MSE: 0.5758 | Val Loss: 3.7626 | Val C-index: 0.6847 | Val Cox: 3.6554 | Val Shape MSE: 0.5361
+Epoch 18/30 | Train Loss: 3.0218 | Train C-index: 0.6955 | Train Cox: 2.9042 | Train Shape MSE: 0.5882 | Val Loss: 3.7425 | Val C-index: 0.6859 | Val Cox: 3.6351 | Val Shape MSE: 0.5370
+Epoch 19/30 | Train Loss: 2.9267 | Train C-index: 0.7085 | Train Cox: 2.8074 | Train Shape MSE: 0.5966 | Val Loss: 3.7444 | Val C-index: 0.6859 | Val Cox: 3.6363 | Val Shape MSE: 0.5405
+Epoch 20/30 | Train Loss: 2.9055 | Train C-index: 0.7170 | Train Cox: 2.7972 | Train Shape MSE: 0.5413 | Val Loss: 3.7402 | Val C-index: 0.6960 | Val Cox: 3.6378 | Val Shape MSE: 0.5119
+Epoch 21/30 | Train Loss: 2.9401 | Train C-index: 0.7267 | Train Cox: 2.8265 | Train Shape MSE: 0.5681 | Val Loss: 3.7196 | Val C-index: 0.6780 | Val Cox: 3.6088 | Val Shape MSE: 0.5540
+Epoch 22/30 | Train Loss: 2.9380 | Train C-index: 0.7261 | Train Cox: 2.8237 | Train Shape MSE: 0.5714 | Val Loss: 3.7038 | Val C-index: 0.6847 | Val Cox: 3.6055 | Val Shape MSE: 0.4916
+Epoch 23/30 | Train Loss: 2.9336 | Train C-index: 0.7241 | Train Cox: 2.8204 | Train Shape MSE: 0.5657 | Val Loss: 3.6722 | Val C-index: 0.6904 | Val Cox: 3.5610 | Val Shape MSE: 0.5561
+Epoch 24/30 | Train Loss: 2.8828 | Train C-index: 0.7438 | Train Cox: 2.7809 | Train Shape MSE: 0.5092 | Val Loss: 3.6912 | Val C-index: 0.6701 | Val Cox: 3.5754 | Val Shape MSE: 0.5792
+Epoch 25/30 | Train Loss: 2.8995 | Train C-index: 0.7424 | Train Cox: 2.7990 | Train Shape MSE: 0.5027 | Val Loss: 3.6486 | Val C-index: 0.6791 | Val Cox: 3.5515 | Val Shape MSE: 0.4855
+Epoch 26/30 | Train Loss: 2.8418 | Train C-index: 0.7305 | Train Cox: 2.7428 | Train Shape MSE: 0.4948 | Val Loss: 3.6493 | Val C-index: 0.7028 | Val Cox: 3.5445 | Val Shape MSE: 0.5240
+Epoch 27/30 | Train Loss: 2.8362 | Train C-index: 0.7466 | Train Cox: 2.7215 | Train Shape MSE: 0.5737 | Val Loss: 3.6183 | Val C-index: 0.6938 | Val Cox: 3.5218 | Val Shape MSE: 0.4822
+Epoch 28/30 | Train Loss: 2.8102 | Train C-index: 0.7601 | Train Cox: 2.7093 | Train Shape MSE: 0.5046 | Val Loss: 3.6539 | Val C-index: 0.6927 | Val Cox: 3.5549 | Val Shape MSE: 0.4952
+Epoch 29/30 | Train Loss: 2.8092 | Train C-index: 0.7526 | Train Cox: 2.7084 | Train Shape MSE: 0.5045 | Val Loss: 3.6367 | Val C-index: 0.6994 | Val Cox: 3.5372 | Val Shape MSE: 0.4972
+Epoch 30/30 | Train Loss: 2.8164 | Train C-index: 0.7477 | Train Cox: 2.7122 | Train Shape MSE: 0.5211 | Val Loss: 3.6496 | Val C-index: 0.6893 | Val Cox: 3.5433 | Val Shape MSE: 0.5315
+
+allshape | Outer0 | lambda0.2 | Inner2 | fit=326,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2459 | Train C-index: 0.4776 | Train Cox: 3.0448 | Train Shape MSE: 1.0053 | Val Loss: 3.9085 | Val C-index: 0.6955 | Val Cox: 3.7379 | Val Shape MSE: 0.8526
+Epoch 2/30 | Train Loss: 3.2086 | Train C-index: 0.5199 | Train Cox: 3.0078 | Train Shape MSE: 1.0040 | Val Loss: 3.8990 | Val C-index: 0.7250 | Val Cox: 3.7354 | Val Shape MSE: 0.8179
+Epoch 3/30 | Train Loss: 3.2128 | Train C-index: 0.5783 | Train Cox: 3.0173 | Train Shape MSE: 0.9771 | Val Loss: 3.8909 | Val C-index: 0.7295 | Val Cox: 3.7298 | Val Shape MSE: 0.8053
+Epoch 4/30 | Train Loss: 3.2150 | Train C-index: 0.6343 | Train Cox: 3.0244 | Train Shape MSE: 0.9535 | Val Loss: 3.8673 | Val C-index: 0.7398 | Val Cox: 3.7127 | Val Shape MSE: 0.7728
+Epoch 5/30 | Train Loss: 3.1797 | Train C-index: 0.6469 | Train Cox: 3.0026 | Train Shape MSE: 0.8855 | Val Loss: 3.8160 | Val C-index: 0.7443 | Val Cox: 3.6713 | Val Shape MSE: 0.7235
+Epoch 6/30 | Train Loss: 3.1079 | Train C-index: 0.6605 | Train Cox: 2.9467 | Train Shape MSE: 0.8060 | Val Loss: 3.7157 | Val C-index: 0.7409 | Val Cox: 3.5629 | Val Shape MSE: 0.7640
+Epoch 7/30 | Train Loss: 3.0522 | Train C-index: 0.6680 | Train Cox: 2.8979 | Train Shape MSE: 0.7715 | Val Loss: 3.6130 | Val C-index: 0.7386 | Val Cox: 3.4719 | Val Shape MSE: 0.7057
+Epoch 8/30 | Train Loss: 3.0066 | Train C-index: 0.6659 | Train Cox: 2.8615 | Train Shape MSE: 0.7253 | Val Loss: 3.6477 | Val C-index: 0.7466 | Val Cox: 3.5019 | Val Shape MSE: 0.7290
+Epoch 9/30 | Train Loss: 2.9946 | Train C-index: 0.6775 | Train Cox: 2.8447 | Train Shape MSE: 0.7496 | Val Loss: 3.5737 | Val C-index: 0.7523 | Val Cox: 3.4370 | Val Shape MSE: 0.6834
+Epoch 10/30 | Train Loss: 2.9783 | Train C-index: 0.6821 | Train Cox: 2.8349 | Train Shape MSE: 0.7169 | Val Loss: 3.5530 | Val C-index: 0.7523 | Val Cox: 3.4160 | Val Shape MSE: 0.6853
+Epoch 11/30 | Train Loss: 2.9295 | Train C-index: 0.6905 | Train Cox: 2.7927 | Train Shape MSE: 0.6838 | Val Loss: 3.5569 | Val C-index: 0.7580 | Val Cox: 3.4210 | Val Shape MSE: 0.6795
+Epoch 12/30 | Train Loss: 2.9563 | Train C-index: 0.7025 | Train Cox: 2.8253 | Train Shape MSE: 0.6549 | Val Loss: 3.5329 | Val C-index: 0.7557 | Val Cox: 3.4001 | Val Shape MSE: 0.6640
+Epoch 13/30 | Train Loss: 2.9161 | Train C-index: 0.7098 | Train Cox: 2.7843 | Train Shape MSE: 0.6592 | Val Loss: 3.5543 | Val C-index: 0.7625 | Val Cox: 3.4107 | Val Shape MSE: 0.7183
+Epoch 14/30 | Train Loss: 2.9893 | Train C-index: 0.6843 | Train Cox: 2.8422 | Train Shape MSE: 0.7354 | Val Loss: 3.6516 | Val C-index: 0.7602 | Val Cox: 3.4545 | Val Shape MSE: 0.9857
+Epoch 15/30 | Train Loss: 3.0071 | Train C-index: 0.6400 | Train Cox: 2.8440 | Train Shape MSE: 0.8157 | Val Loss: 3.5797 | Val C-index: 0.7625 | Val Cox: 3.4212 | Val Shape MSE: 0.7926
+Epoch 16/30 | Train Loss: 2.9470 | Train C-index: 0.6833 | Train Cox: 2.7961 | Train Shape MSE: 0.7545 | Val Loss: 3.6226 | Val C-index: 0.7614 | Val Cox: 3.4445 | Val Shape MSE: 0.8904
+Epoch 17/30 | Train Loss: 2.9301 | Train C-index: 0.7089 | Train Cox: 2.7834 | Train Shape MSE: 0.7333 | Val Loss: 3.4932 | Val C-index: 0.7636 | Val Cox: 3.3734 | Val Shape MSE: 0.5995
+Epoch 18/30 | Train Loss: 2.9077 | Train C-index: 0.6940 | Train Cox: 2.7613 | Train Shape MSE: 0.7320 | Val Loss: 3.4902 | Val C-index: 0.7625 | Val Cox: 3.3630 | Val Shape MSE: 0.6359
+Epoch 19/30 | Train Loss: 2.9661 | Train C-index: 0.7069 | Train Cox: 2.7915 | Train Shape MSE: 0.8729 | Val Loss: 3.4798 | Val C-index: 0.7693 | Val Cox: 3.3494 | Val Shape MSE: 0.6520
+Epoch 20/30 | Train Loss: 2.9369 | Train C-index: 0.7105 | Train Cox: 2.7633 | Train Shape MSE: 0.8682 | Val Loss: 3.4904 | Val C-index: 0.7648 | Val Cox: 3.3660 | Val Shape MSE: 0.6220
+Epoch 21/30 | Train Loss: 3.0043 | Train C-index: 0.7074 | Train Cox: 2.8329 | Train Shape MSE: 0.8566 | Val Loss: 3.4749 | Val C-index: 0.7705 | Val Cox: 3.3511 | Val Shape MSE: 0.6190
+Epoch 22/30 | Train Loss: 2.9280 | Train C-index: 0.6771 | Train Cox: 2.7695 | Train Shape MSE: 0.7923 | Val Loss: 3.5939 | Val C-index: 0.7614 | Val Cox: 3.4457 | Val Shape MSE: 0.7413
+Epoch 23/30 | Train Loss: 2.8984 | Train C-index: 0.7072 | Train Cox: 2.7504 | Train Shape MSE: 0.7403 | Val Loss: 3.4669 | Val C-index: 0.7705 | Val Cox: 3.3271 | Val Shape MSE: 0.6989
+Epoch 24/30 | Train Loss: 2.8593 | Train C-index: 0.7062 | Train Cox: 2.7218 | Train Shape MSE: 0.6876 | Val Loss: 3.5158 | Val C-index: 0.7750 | Val Cox: 3.3753 | Val Shape MSE: 0.7027
+Epoch 25/30 | Train Loss: 2.8264 | Train C-index: 0.7268 | Train Cox: 2.7005 | Train Shape MSE: 0.6296 | Val Loss: 3.4650 | Val C-index: 0.7795 | Val Cox: 3.3492 | Val Shape MSE: 0.5792
+Epoch 26/30 | Train Loss: 2.8464 | Train C-index: 0.7352 | Train Cox: 2.7216 | Train Shape MSE: 0.6236 | Val Loss: 3.4714 | Val C-index: 0.7795 | Val Cox: 3.3573 | Val Shape MSE: 0.5704
+Epoch 27/30 | Train Loss: 2.8604 | Train C-index: 0.7073 | Train Cox: 2.7219 | Train Shape MSE: 0.6924 | Val Loss: 3.6010 | Val C-index: 0.7602 | Val Cox: 3.4501 | Val Shape MSE: 0.7547
+Epoch 28/30 | Train Loss: 2.8414 | Train C-index: 0.6975 | Train Cox: 2.7038 | Train Shape MSE: 0.6878 | Val Loss: 3.4613 | Val C-index: 0.7784 | Val Cox: 3.3552 | Val Shape MSE: 0.5305
+Epoch 29/30 | Train Loss: 2.8159 | Train C-index: 0.7441 | Train Cox: 2.6910 | Train Shape MSE: 0.6243 | Val Loss: 3.4500 | Val C-index: 0.7761 | Val Cox: 3.3400 | Val Shape MSE: 0.5499
+Epoch 30/30 | Train Loss: 2.7928 | Train C-index: 0.7475 | Train Cox: 2.6724 | Train Shape MSE: 0.6019 | Val Loss: 3.4414 | Val C-index: 0.7807 | Val Cox: 3.3370 | Val Shape MSE: 0.5219
+allshape Outer0: lambda=0.2,fixed outer epochs=26 (outer labels unused)
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/26 | Train Loss: 3.2559 | Train C-index: 0.5124 | Train Cox: 3.0554 | Train Shape MSE: 1.0022
+Epoch 2/26 | Train Loss: 3.2631 | Train C-index: 0.5694 | Train Cox: 3.0686 | Train Shape MSE: 0.9724
+Epoch 3/26 | Train Loss: 3.2034 | Train C-index: 0.5999 | Train Cox: 3.0217 | Train Shape MSE: 0.9085
+Epoch 4/26 | Train Loss: 3.1469 | Train C-index: 0.6450 | Train Cox: 2.9872 | Train Shape MSE: 0.7985
+Epoch 5/26 | Train Loss: 3.1132 | Train C-index: 0.6501 | Train Cox: 2.9575 | Train Shape MSE: 0.7781
+Epoch 6/26 | Train Loss: 3.0546 | Train C-index: 0.6576 | Train Cox: 2.9104 | Train Shape MSE: 0.7209
+Epoch 7/26 | Train Loss: 3.0435 | Train C-index: 0.6801 | Train Cox: 2.8915 | Train Shape MSE: 0.7602
+Epoch 8/26 | Train Loss: 2.9885 | Train C-index: 0.6862 | Train Cox: 2.8531 | Train Shape MSE: 0.6773
+Epoch 9/26 | Train Loss: 3.0249 | Train C-index: 0.6751 | Train Cox: 2.8848 | Train Shape MSE: 0.7001
+Epoch 10/26 | Train Loss: 2.9601 | Train C-index: 0.6930 | Train Cox: 2.8252 | Train Shape MSE: 0.6746
+Epoch 11/26 | Train Loss: 2.9486 | Train C-index: 0.7036 | Train Cox: 2.8244 | Train Shape MSE: 0.6209
+Epoch 12/26 | Train Loss: 2.9594 | Train C-index: 0.7090 | Train Cox: 2.8371 | Train Shape MSE: 0.6118
+Epoch 13/26 | Train Loss: 2.9091 | Train C-index: 0.7057 | Train Cox: 2.7892 | Train Shape MSE: 0.5995
+Epoch 14/26 | Train Loss: 2.9562 | Train C-index: 0.7122 | Train Cox: 2.8357 | Train Shape MSE: 0.6024
+Epoch 15/26 | Train Loss: 2.9242 | Train C-index: 0.7238 | Train Cox: 2.8053 | Train Shape MSE: 0.5944
+Epoch 16/26 | Train Loss: 2.9057 | Train C-index: 0.7156 | Train Cox: 2.7899 | Train Shape MSE: 0.5790
+Epoch 17/26 | Train Loss: 2.8987 | Train C-index: 0.7234 | Train Cox: 2.7905 | Train Shape MSE: 0.5408
+Epoch 18/26 | Train Loss: 2.9430 | Train C-index: 0.6843 | Train Cox: 2.8138 | Train Shape MSE: 0.6458
+Epoch 19/26 | Train Loss: 2.9268 | Train C-index: 0.7014 | Train Cox: 2.7950 | Train Shape MSE: 0.6591
+Epoch 20/26 | Train Loss: 2.9008 | Train C-index: 0.7153 | Train Cox: 2.7777 | Train Shape MSE: 0.6155
+Epoch 21/26 | Train Loss: 2.8985 | Train C-index: 0.7198 | Train Cox: 2.7878 | Train Shape MSE: 0.5534
+Epoch 22/26 | Train Loss: 2.9176 | Train C-index: 0.7219 | Train Cox: 2.8140 | Train Shape MSE: 0.5180
+Epoch 23/26 | Train Loss: 2.9050 | Train C-index: 0.7299 | Train Cox: 2.7964 | Train Shape MSE: 0.5429
+Epoch 24/26 | Train Loss: 2.8875 | Train C-index: 0.7127 | Train Cox: 2.7838 | Train Shape MSE: 0.5186
+Epoch 25/26 | Train Loss: 2.8674 | Train C-index: 0.7339 | Train Cox: 2.7662 | Train Shape MSE: 0.5061
+Epoch 26/26 | Train Loss: 2.8735 | Train C-index: 0.7304 | Train Cox: 2.7706 | Train Shape MSE: 0.5148
+
+Extra survival metrics:
+cutoff_from_train_median: 0.190986
+n_test: 145
+n_high_risk: 82
+n_low_risk: 63
+n_event_test: 51
+logrank_stat: 14.220460
+logrank_p: 0.000163
+auc_36m: 0.771362
+auc_60m: 0.767229
+HR_high_vs_low: 3.255683
+HR_95CI_lower: 1.700861
+HR_95CI_upper: 6.231827
+cox_p: 0.000366
+allshape final Outer0 | Train=0.7419 | Val=0.7281
+
+allshape | Outer1 | lambda0.05 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0923 | Train C-index: 0.4507 | Train Cox: 3.0425 | Train Shape MSE: 0.9968 | Val Loss: 3.6538 | Val C-index: 0.5903 | Val Cox: 3.6130 | Val Shape MSE: 0.8160
+Epoch 2/30 | Train Loss: 3.0707 | Train C-index: 0.5316 | Train Cox: 3.0203 | Train Shape MSE: 1.0085 | Val Loss: 3.6506 | Val C-index: 0.6064 | Val Cox: 3.6111 | Val Shape MSE: 0.7909
+Epoch 3/30 | Train Loss: 3.0668 | Train C-index: 0.5994 | Train Cox: 3.0177 | Train Shape MSE: 0.9824 | Val Loss: 3.6469 | Val C-index: 0.6101 | Val Cox: 3.6074 | Val Shape MSE: 0.7895
+Epoch 4/30 | Train Loss: 3.0521 | Train C-index: 0.6158 | Train Cox: 3.0044 | Train Shape MSE: 0.9544 | Val Loss: 3.6333 | Val C-index: 0.6262 | Val Cox: 3.5966 | Val Shape MSE: 0.7328
+Epoch 5/30 | Train Loss: 3.0550 | Train C-index: 0.6246 | Train Cox: 3.0111 | Train Shape MSE: 0.8780 | Val Loss: 3.6021 | Val C-index: 0.6275 | Val Cox: 3.5712 | Val Shape MSE: 0.6188
+Epoch 6/30 | Train Loss: 3.0014 | Train C-index: 0.6496 | Train Cox: 2.9623 | Train Shape MSE: 0.7823 | Val Loss: 3.5859 | Val C-index: 0.6324 | Val Cox: 3.5580 | Val Shape MSE: 0.5577
+Epoch 7/30 | Train Loss: 2.9415 | Train C-index: 0.6565 | Train Cox: 2.9051 | Train Shape MSE: 0.7281 | Val Loss: 3.6021 | Val C-index: 0.6460 | Val Cox: 3.5741 | Val Shape MSE: 0.5595
+Epoch 8/30 | Train Loss: 2.9522 | Train C-index: 0.6669 | Train Cox: 2.9159 | Train Shape MSE: 0.7263 | Val Loss: 3.5879 | Val C-index: 0.6522 | Val Cox: 3.5593 | Val Shape MSE: 0.5719
+Epoch 9/30 | Train Loss: 2.9737 | Train C-index: 0.6770 | Train Cox: 2.9372 | Train Shape MSE: 0.7299 | Val Loss: 3.5729 | Val C-index: 0.6535 | Val Cox: 3.5456 | Val Shape MSE: 0.5455
+Epoch 10/30 | Train Loss: 2.9386 | Train C-index: 0.6813 | Train Cox: 2.9026 | Train Shape MSE: 0.7211 | Val Loss: 3.5587 | Val C-index: 0.6584 | Val Cox: 3.5312 | Val Shape MSE: 0.5511
+Epoch 11/30 | Train Loss: 2.9184 | Train C-index: 0.6844 | Train Cox: 2.8821 | Train Shape MSE: 0.7252 | Val Loss: 3.5474 | Val C-index: 0.6671 | Val Cox: 3.5227 | Val Shape MSE: 0.4945
+Epoch 12/30 | Train Loss: 2.9122 | Train C-index: 0.6810 | Train Cox: 2.8781 | Train Shape MSE: 0.6809 | Val Loss: 3.5831 | Val C-index: 0.6696 | Val Cox: 3.5547 | Val Shape MSE: 0.5663
+Epoch 13/30 | Train Loss: 2.9330 | Train C-index: 0.6819 | Train Cox: 2.8978 | Train Shape MSE: 0.7033 | Val Loss: 3.5402 | Val C-index: 0.6906 | Val Cox: 3.5102 | Val Shape MSE: 0.6020
+Epoch 14/30 | Train Loss: 2.8803 | Train C-index: 0.7014 | Train Cox: 2.8425 | Train Shape MSE: 0.7576 | Val Loss: 3.5570 | Val C-index: 0.6869 | Val Cox: 3.5285 | Val Shape MSE: 0.5703
+Epoch 15/30 | Train Loss: 2.8885 | Train C-index: 0.6931 | Train Cox: 2.8533 | Train Shape MSE: 0.7044 | Val Loss: 3.5277 | Val C-index: 0.6894 | Val Cox: 3.5027 | Val Shape MSE: 0.4989
+Epoch 16/30 | Train Loss: 2.8558 | Train C-index: 0.7217 | Train Cox: 2.8237 | Train Shape MSE: 0.6418 | Val Loss: 3.5492 | Val C-index: 0.6881 | Val Cox: 3.5225 | Val Shape MSE: 0.5349
+Epoch 17/30 | Train Loss: 2.8279 | Train C-index: 0.7154 | Train Cox: 2.7952 | Train Shape MSE: 0.6541 | Val Loss: 3.5279 | Val C-index: 0.6918 | Val Cox: 3.5053 | Val Shape MSE: 0.4512
+Epoch 18/30 | Train Loss: 2.8558 | Train C-index: 0.6830 | Train Cox: 2.8218 | Train Shape MSE: 0.6800 | Val Loss: 3.5661 | Val C-index: 0.6943 | Val Cox: 3.5412 | Val Shape MSE: 0.4985
+Epoch 19/30 | Train Loss: 2.8442 | Train C-index: 0.6848 | Train Cox: 2.8048 | Train Shape MSE: 0.7880 | Val Loss: 3.4970 | Val C-index: 0.6968 | Val Cox: 3.4687 | Val Shape MSE: 0.5657
+Epoch 20/30 | Train Loss: 2.8399 | Train C-index: 0.6707 | Train Cox: 2.8017 | Train Shape MSE: 0.7646 | Val Loss: 3.5464 | Val C-index: 0.7153 | Val Cox: 3.5191 | Val Shape MSE: 0.5467
+Epoch 21/30 | Train Loss: 2.8205 | Train C-index: 0.7106 | Train Cox: 2.7876 | Train Shape MSE: 0.6586 | Val Loss: 3.5222 | Val C-index: 0.7191 | Val Cox: 3.5009 | Val Shape MSE: 0.4258
+Epoch 22/30 | Train Loss: 2.8272 | Train C-index: 0.7346 | Train Cox: 2.7972 | Train Shape MSE: 0.6000 | Val Loss: 3.5121 | Val C-index: 0.7005 | Val Cox: 3.4923 | Val Shape MSE: 0.3961
+Epoch 23/30 | Train Loss: 2.7137 | Train C-index: 0.7247 | Train Cox: 2.6848 | Train Shape MSE: 0.5779 | Val Loss: 3.5664 | Val C-index: 0.7215 | Val Cox: 3.5335 | Val Shape MSE: 0.6570
+Epoch 24/30 | Train Loss: 2.8010 | Train C-index: 0.7346 | Train Cox: 2.7655 | Train Shape MSE: 0.7099 | Val Loss: 3.5629 | Val C-index: 0.7104 | Val Cox: 3.5355 | Val Shape MSE: 0.5481
+Epoch 25/30 | Train Loss: 2.8273 | Train C-index: 0.7139 | Train Cox: 2.7935 | Train Shape MSE: 0.6758 | Val Loss: 3.5659 | Val C-index: 0.7141 | Val Cox: 3.5384 | Val Shape MSE: 0.5497
+Epoch 26/30 | Train Loss: 2.8011 | Train C-index: 0.7247 | Train Cox: 2.7712 | Train Shape MSE: 0.5973 | Val Loss: 3.5028 | Val C-index: 0.7079 | Val Cox: 3.4840 | Val Shape MSE: 0.3752
+Epoch 27/30 | Train Loss: 2.8002 | Train C-index: 0.7395 | Train Cox: 2.7679 | Train Shape MSE: 0.6465 | Val Loss: 3.5508 | Val C-index: 0.7215 | Val Cox: 3.5302 | Val Shape MSE: 0.4116
+Epoch 28/30 | Train Loss: 2.8036 | Train C-index: 0.7390 | Train Cox: 2.7746 | Train Shape MSE: 0.5798 | Val Loss: 3.5626 | Val C-index: 0.7067 | Val Cox: 3.5438 | Val Shape MSE: 0.3754
+Epoch 29/30 | Train Loss: 2.7851 | Train C-index: 0.7295 | Train Cox: 2.7561 | Train Shape MSE: 0.5815 | Val Loss: 3.5694 | Val C-index: 0.6968 | Val Cox: 3.5466 | Val Shape MSE: 0.4575
+Epoch 30/30 | Train Loss: 2.7480 | Train C-index: 0.7340 | Train Cox: 2.7175 | Train Shape MSE: 0.6115 | Val Loss: 3.5611 | Val C-index: 0.7116 | Val Cox: 3.5391 | Val Shape MSE: 0.4395
+
+allshape | Outer1 | lambda0.05 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1062 | Train C-index: 0.4696 | Train Cox: 3.0545 | Train Shape MSE: 1.0336 | Val Loss: 3.6766 | Val C-index: 0.6945 | Val Cox: 3.6346 | Val Shape MSE: 0.8400
+Epoch 2/30 | Train Loss: 3.1098 | Train C-index: 0.5505 | Train Cox: 3.0600 | Train Shape MSE: 0.9965 | Val Loss: 3.6720 | Val C-index: 0.7030 | Val Cox: 3.6301 | Val Shape MSE: 0.8386
+Epoch 3/30 | Train Loss: 3.1173 | Train C-index: 0.6398 | Train Cox: 3.0672 | Train Shape MSE: 1.0022 | Val Loss: 3.6623 | Val C-index: 0.7188 | Val Cox: 3.6211 | Val Shape MSE: 0.8235
+Epoch 4/30 | Train Loss: 3.0917 | Train C-index: 0.6193 | Train Cox: 3.0436 | Train Shape MSE: 0.9619 | Val Loss: 3.6215 | Val C-index: 0.7248 | Val Cox: 3.5825 | Val Shape MSE: 0.7796
+Epoch 5/30 | Train Loss: 3.0369 | Train C-index: 0.6216 | Train Cox: 2.9930 | Train Shape MSE: 0.8776 | Val Loss: 3.5394 | Val C-index: 0.7285 | Val Cox: 3.5060 | Val Shape MSE: 0.6686
+Epoch 6/30 | Train Loss: 2.9531 | Train C-index: 0.6492 | Train Cox: 2.9137 | Train Shape MSE: 0.7875 | Val Loss: 3.5569 | Val C-index: 0.7273 | Val Cox: 3.5224 | Val Shape MSE: 0.6890
+Epoch 7/30 | Train Loss: 2.9484 | Train C-index: 0.6511 | Train Cox: 2.9104 | Train Shape MSE: 0.7591 | Val Loss: 3.5082 | Val C-index: 0.7394 | Val Cox: 3.4768 | Val Shape MSE: 0.6269
+Epoch 8/30 | Train Loss: 2.9239 | Train C-index: 0.6619 | Train Cox: 2.8865 | Train Shape MSE: 0.7487 | Val Loss: 3.4922 | Val C-index: 0.7455 | Val Cox: 3.4608 | Val Shape MSE: 0.6292
+Epoch 9/30 | Train Loss: 2.9307 | Train C-index: 0.6636 | Train Cox: 2.8932 | Train Shape MSE: 0.7503 | Val Loss: 3.4872 | Val C-index: 0.7333 | Val Cox: 3.4573 | Val Shape MSE: 0.5979
+Epoch 10/30 | Train Loss: 2.9067 | Train C-index: 0.6774 | Train Cox: 2.8712 | Train Shape MSE: 0.7110 | Val Loss: 3.5000 | Val C-index: 0.7418 | Val Cox: 3.4706 | Val Shape MSE: 0.5877
+Epoch 11/30 | Train Loss: 2.8772 | Train C-index: 0.6752 | Train Cox: 2.8414 | Train Shape MSE: 0.7160 | Val Loss: 3.4631 | Val C-index: 0.7358 | Val Cox: 3.4291 | Val Shape MSE: 0.6800
+Epoch 12/30 | Train Loss: 2.8893 | Train C-index: 0.6842 | Train Cox: 2.8506 | Train Shape MSE: 0.7742 | Val Loss: 3.4465 | Val C-index: 0.7394 | Val Cox: 3.4123 | Val Shape MSE: 0.6850
+Epoch 13/30 | Train Loss: 2.8269 | Train C-index: 0.6878 | Train Cox: 2.7834 | Train Shape MSE: 0.8700 | Val Loss: 3.4426 | Val C-index: 0.7406 | Val Cox: 3.4152 | Val Shape MSE: 0.5466
+Epoch 14/30 | Train Loss: 2.8663 | Train C-index: 0.7035 | Train Cox: 2.8226 | Train Shape MSE: 0.8744 | Val Loss: 3.4061 | Val C-index: 0.7382 | Val Cox: 3.3776 | Val Shape MSE: 0.5703
+Epoch 15/30 | Train Loss: 2.8664 | Train C-index: 0.6991 | Train Cox: 2.8255 | Train Shape MSE: 0.8191 | Val Loss: 3.5186 | Val C-index: 0.7515 | Val Cox: 3.4752 | Val Shape MSE: 0.8668
+Epoch 16/30 | Train Loss: 2.8585 | Train C-index: 0.6979 | Train Cox: 2.8182 | Train Shape MSE: 0.8053 | Val Loss: 3.4478 | Val C-index: 0.7224 | Val Cox: 3.4091 | Val Shape MSE: 0.7745
+Epoch 17/30 | Train Loss: 2.8296 | Train C-index: 0.7061 | Train Cox: 2.7944 | Train Shape MSE: 0.7029 | Val Loss: 3.4975 | Val C-index: 0.7455 | Val Cox: 3.4656 | Val Shape MSE: 0.6377
+Epoch 18/30 | Train Loss: 2.8405 | Train C-index: 0.7182 | Train Cox: 2.8069 | Train Shape MSE: 0.6711 | Val Loss: 3.4361 | Val C-index: 0.7527 | Val Cox: 3.4097 | Val Shape MSE: 0.5295
+Epoch 19/30 | Train Loss: 2.7808 | Train C-index: 0.7497 | Train Cox: 2.7458 | Train Shape MSE: 0.6992 | Val Loss: 3.4955 | Val C-index: 0.7479 | Val Cox: 3.4611 | Val Shape MSE: 0.6891
+Epoch 20/30 | Train Loss: 2.8131 | Train C-index: 0.7185 | Train Cox: 2.7773 | Train Shape MSE: 0.7176 | Val Loss: 3.4428 | Val C-index: 0.7503 | Val Cox: 3.4112 | Val Shape MSE: 0.6323
+Epoch 21/30 | Train Loss: 2.7584 | Train C-index: 0.7073 | Train Cox: 2.7196 | Train Shape MSE: 0.7773 | Val Loss: 3.5681 | Val C-index: 0.7418 | Val Cox: 3.5230 | Val Shape MSE: 0.9027
+Epoch 22/30 | Train Loss: 2.7244 | Train C-index: 0.7218 | Train Cox: 2.6851 | Train Shape MSE: 0.7864 | Val Loss: 3.4828 | Val C-index: 0.7406 | Val Cox: 3.4421 | Val Shape MSE: 0.8146
+Epoch 23/30 | Train Loss: 2.7217 | Train C-index: 0.7260 | Train Cox: 2.6881 | Train Shape MSE: 0.6719 | Val Loss: 3.5478 | Val C-index: 0.7067 | Val Cox: 3.5201 | Val Shape MSE: 0.5545
+Epoch 24/30 | Train Loss: 2.7132 | Train C-index: 0.7632 | Train Cox: 2.6803 | Train Shape MSE: 0.6587 | Val Loss: 3.5057 | Val C-index: 0.7552 | Val Cox: 3.4813 | Val Shape MSE: 0.4877
+Epoch 25/30 | Train Loss: 2.6760 | Train C-index: 0.7552 | Train Cox: 2.6415 | Train Shape MSE: 0.6898 | Val Loss: 3.5357 | Val C-index: 0.7176 | Val Cox: 3.5067 | Val Shape MSE: 0.5805
+Epoch 26/30 | Train Loss: 2.7657 | Train C-index: 0.7172 | Train Cox: 2.7215 | Train Shape MSE: 0.8842 | Val Loss: 3.5701 | Val C-index: 0.6861 | Val Cox: 3.5413 | Val Shape MSE: 0.5746
+Epoch 27/30 | Train Loss: 2.7587 | Train C-index: 0.7444 | Train Cox: 2.7201 | Train Shape MSE: 0.7724 | Val Loss: 3.5243 | Val C-index: 0.7358 | Val Cox: 3.5000 | Val Shape MSE: 0.4862
+Epoch 28/30 | Train Loss: 2.6807 | Train C-index: 0.7692 | Train Cox: 2.6505 | Train Shape MSE: 0.6045 | Val Loss: 3.5839 | Val C-index: 0.6994 | Val Cox: 3.5556 | Val Shape MSE: 0.5658
+Epoch 29/30 | Train Loss: 2.6408 | Train C-index: 0.7637 | Train Cox: 2.6106 | Train Shape MSE: 0.6039 | Val Loss: 3.6008 | Val C-index: 0.7261 | Val Cox: 3.5766 | Val Shape MSE: 0.4840
+Epoch 30/30 | Train Loss: 2.6648 | Train C-index: 0.7710 | Train Cox: 2.6327 | Train Shape MSE: 0.6419 | Val Loss: 3.6676 | Val C-index: 0.7236 | Val Cox: 3.6415 | Val Shape MSE: 0.5220
+
+allshape | Outer1 | lambda0.05 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0771 | Train C-index: 0.4883 | Train Cox: 3.0267 | Train Shape MSE: 1.0074 | Val Loss: 3.7002 | Val C-index: 0.6572 | Val Cox: 3.6404 | Val Shape MSE: 1.1948
+Epoch 2/30 | Train Loss: 3.0957 | Train C-index: 0.5132 | Train Cox: 3.0458 | Train Shape MSE: 0.9991 | Val Loss: 3.6965 | Val C-index: 0.6609 | Val Cox: 3.6372 | Val Shape MSE: 1.1848
+Epoch 3/30 | Train Loss: 3.0839 | Train C-index: 0.6009 | Train Cox: 3.0345 | Train Shape MSE: 0.9888 | Val Loss: 3.6878 | Val C-index: 0.6621 | Val Cox: 3.6297 | Val Shape MSE: 1.1619
+Epoch 4/30 | Train Loss: 3.0901 | Train C-index: 0.5984 | Train Cox: 3.0410 | Train Shape MSE: 0.9814 | Val Loss: 3.6696 | Val C-index: 0.6671 | Val Cox: 3.6135 | Val Shape MSE: 1.1233
+Epoch 5/30 | Train Loss: 3.0667 | Train C-index: 0.6119 | Train Cox: 3.0192 | Train Shape MSE: 0.9501 | Val Loss: 3.6296 | Val C-index: 0.6843 | Val Cox: 3.5769 | Val Shape MSE: 1.0539
+Epoch 6/30 | Train Loss: 3.0457 | Train C-index: 0.6174 | Train Cox: 3.0034 | Train Shape MSE: 0.8457 | Val Loss: 3.5339 | Val C-index: 0.6819 | Val Cox: 3.4896 | Val Shape MSE: 0.8865
+Epoch 7/30 | Train Loss: 2.9539 | Train C-index: 0.6418 | Train Cox: 2.9135 | Train Shape MSE: 0.8063 | Val Loss: 3.4892 | Val C-index: 0.6868 | Val Cox: 3.4480 | Val Shape MSE: 0.8240
+Epoch 8/30 | Train Loss: 3.0096 | Train C-index: 0.6275 | Train Cox: 2.9695 | Train Shape MSE: 0.8004 | Val Loss: 3.4758 | Val C-index: 0.7078 | Val Cox: 3.4334 | Val Shape MSE: 0.8482
+Epoch 9/30 | Train Loss: 3.0181 | Train C-index: 0.6451 | Train Cox: 2.9775 | Train Shape MSE: 0.8133 | Val Loss: 3.5040 | Val C-index: 0.7028 | Val Cox: 3.4597 | Val Shape MSE: 0.8847
+Epoch 10/30 | Train Loss: 2.9935 | Train C-index: 0.6496 | Train Cox: 2.9507 | Train Shape MSE: 0.8551 | Val Loss: 3.4636 | Val C-index: 0.7078 | Val Cox: 3.4206 | Val Shape MSE: 0.8584
+Epoch 11/30 | Train Loss: 2.9738 | Train C-index: 0.6536 | Train Cox: 2.9290 | Train Shape MSE: 0.8967 | Val Loss: 3.4463 | Val C-index: 0.7102 | Val Cox: 3.4054 | Val Shape MSE: 0.8190
+Epoch 12/30 | Train Loss: 2.9306 | Train C-index: 0.6548 | Train Cox: 2.8889 | Train Shape MSE: 0.8342 | Val Loss: 3.4531 | Val C-index: 0.7115 | Val Cox: 3.4104 | Val Shape MSE: 0.8541
+Epoch 13/30 | Train Loss: 2.9341 | Train C-index: 0.6692 | Train Cox: 2.8960 | Train Shape MSE: 0.7627 | Val Loss: 3.4512 | Val C-index: 0.7028 | Val Cox: 3.4101 | Val Shape MSE: 0.8224
+Epoch 14/30 | Train Loss: 2.8975 | Train C-index: 0.6613 | Train Cox: 2.8607 | Train Shape MSE: 0.7348 | Val Loss: 3.4400 | Val C-index: 0.7139 | Val Cox: 3.4002 | Val Shape MSE: 0.7946
+Epoch 15/30 | Train Loss: 2.9154 | Train C-index: 0.6659 | Train Cox: 2.8778 | Train Shape MSE: 0.7509 | Val Loss: 3.4426 | Val C-index: 0.7238 | Val Cox: 3.4027 | Val Shape MSE: 0.7973
+Epoch 16/30 | Train Loss: 2.9086 | Train C-index: 0.6757 | Train Cox: 2.8725 | Train Shape MSE: 0.7231 | Val Loss: 3.4424 | Val C-index: 0.7275 | Val Cox: 3.4040 | Val Shape MSE: 0.7686
+Epoch 17/30 | Train Loss: 2.9553 | Train C-index: 0.6764 | Train Cox: 2.9192 | Train Shape MSE: 0.7218 | Val Loss: 3.4444 | Val C-index: 0.7102 | Val Cox: 3.4027 | Val Shape MSE: 0.8345
+Epoch 18/30 | Train Loss: 2.9343 | Train C-index: 0.6739 | Train Cox: 2.8980 | Train Shape MSE: 0.7263 | Val Loss: 3.4403 | Val C-index: 0.7226 | Val Cox: 3.3994 | Val Shape MSE: 0.8173
+Epoch 19/30 | Train Loss: 2.9134 | Train C-index: 0.6873 | Train Cox: 2.8771 | Train Shape MSE: 0.7261 | Val Loss: 3.4385 | Val C-index: 0.7189 | Val Cox: 3.3995 | Val Shape MSE: 0.7797
+Epoch 20/30 | Train Loss: 2.9032 | Train C-index: 0.6804 | Train Cox: 2.8691 | Train Shape MSE: 0.6820 | Val Loss: 3.4217 | Val C-index: 0.7238 | Val Cox: 3.3840 | Val Shape MSE: 0.7539
+Epoch 21/30 | Train Loss: 2.9139 | Train C-index: 0.6961 | Train Cox: 2.8780 | Train Shape MSE: 0.7173 | Val Loss: 3.4301 | Val C-index: 0.7238 | Val Cox: 3.3871 | Val Shape MSE: 0.8590
+Epoch 22/30 | Train Loss: 2.9061 | Train C-index: 0.6772 | Train Cox: 2.8682 | Train Shape MSE: 0.7574 | Val Loss: 3.4283 | Val C-index: 0.7263 | Val Cox: 3.3884 | Val Shape MSE: 0.7990
+Epoch 23/30 | Train Loss: 2.8860 | Train C-index: 0.6960 | Train Cox: 2.8517 | Train Shape MSE: 0.6858 | Val Loss: 3.4205 | Val C-index: 0.7275 | Val Cox: 3.3794 | Val Shape MSE: 0.8215
+Epoch 24/30 | Train Loss: 2.8784 | Train C-index: 0.7058 | Train Cox: 2.8441 | Train Shape MSE: 0.6860 | Val Loss: 3.4254 | Val C-index: 0.7152 | Val Cox: 3.3835 | Val Shape MSE: 0.8387
+Epoch 25/30 | Train Loss: 2.9445 | Train C-index: 0.6821 | Train Cox: 2.9083 | Train Shape MSE: 0.7249 | Val Loss: 3.4515 | Val C-index: 0.7139 | Val Cox: 3.4073 | Val Shape MSE: 0.8833
+Epoch 26/30 | Train Loss: 2.8799 | Train C-index: 0.6994 | Train Cox: 2.8431 | Train Shape MSE: 0.7354 | Val Loss: 3.4160 | Val C-index: 0.7139 | Val Cox: 3.3771 | Val Shape MSE: 0.7776
+Early stopping at epoch26
+
+allshape | Outer1 | lambda0.2 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2414 | Train C-index: 0.4379 | Train Cox: 3.0428 | Train Shape MSE: 0.9929 | Val Loss: 3.7757 | Val C-index: 0.5718 | Val Cox: 3.6137 | Val Shape MSE: 0.8103
+Epoch 2/30 | Train Loss: 3.2218 | Train C-index: 0.5073 | Train Cox: 3.0219 | Train Shape MSE: 0.9997 | Val Loss: 3.7670 | Val C-index: 0.6002 | Val Cox: 3.6127 | Val Shape MSE: 0.7714
+Epoch 3/30 | Train Loss: 3.2133 | Train C-index: 0.5708 | Train Cox: 3.0208 | Train Shape MSE: 0.9628 | Val Loss: 3.7659 | Val C-index: 0.6101 | Val Cox: 3.6111 | Val Shape MSE: 0.7740
+Epoch 4/30 | Train Loss: 3.1988 | Train C-index: 0.5941 | Train Cox: 3.0138 | Train Shape MSE: 0.9251 | Val Loss: 3.7465 | Val C-index: 0.6262 | Val Cox: 3.6060 | Val Shape MSE: 0.7024
+Epoch 5/30 | Train Loss: 3.2014 | Train C-index: 0.6365 | Train Cox: 3.0295 | Train Shape MSE: 0.8595 | Val Loss: 3.7179 | Val C-index: 0.6275 | Val Cox: 3.5929 | Val Shape MSE: 0.6252
+Epoch 6/30 | Train Loss: 3.1506 | Train C-index: 0.6496 | Train Cox: 2.9942 | Train Shape MSE: 0.7822 | Val Loss: 3.6867 | Val C-index: 0.6399 | Val Cox: 3.5726 | Val Shape MSE: 0.5709
+Epoch 7/30 | Train Loss: 3.0866 | Train C-index: 0.6453 | Train Cox: 2.9352 | Train Shape MSE: 0.7573 | Val Loss: 3.6827 | Val C-index: 0.6436 | Val Cox: 3.5645 | Val Shape MSE: 0.5910
+Epoch 8/30 | Train Loss: 3.0796 | Train C-index: 0.6500 | Train Cox: 2.9324 | Train Shape MSE: 0.7358 | Val Loss: 3.6754 | Val C-index: 0.6510 | Val Cox: 3.5586 | Val Shape MSE: 0.5838
+Epoch 9/30 | Train Loss: 3.0713 | Train C-index: 0.6767 | Train Cox: 2.9299 | Train Shape MSE: 0.7070 | Val Loss: 3.6518 | Val C-index: 0.6559 | Val Cox: 3.5485 | Val Shape MSE: 0.5162
+Epoch 10/30 | Train Loss: 3.0356 | Train C-index: 0.6741 | Train Cox: 2.8934 | Train Shape MSE: 0.7110 | Val Loss: 3.6371 | Val C-index: 0.6559 | Val Cox: 3.5373 | Val Shape MSE: 0.4992
+Epoch 11/30 | Train Loss: 3.0082 | Train C-index: 0.6690 | Train Cox: 2.8703 | Train Shape MSE: 0.6895 | Val Loss: 3.6472 | Val C-index: 0.6609 | Val Cox: 3.5438 | Val Shape MSE: 0.5171
+Epoch 12/30 | Train Loss: 2.9684 | Train C-index: 0.6823 | Train Cox: 2.8329 | Train Shape MSE: 0.6776 | Val Loss: 3.7626 | Val C-index: 0.6671 | Val Cox: 3.5941 | Val Shape MSE: 0.8422
+Epoch 13/30 | Train Loss: 3.0093 | Train C-index: 0.6868 | Train Cox: 2.8565 | Train Shape MSE: 0.7639 | Val Loss: 3.6646 | Val C-index: 0.6819 | Val Cox: 3.5452 | Val Shape MSE: 0.5973
+Epoch 14/30 | Train Loss: 2.9614 | Train C-index: 0.7028 | Train Cox: 2.8297 | Train Shape MSE: 0.6586 | Val Loss: 3.6601 | Val C-index: 0.6782 | Val Cox: 3.5674 | Val Shape MSE: 0.4635
+Epoch 15/30 | Train Loss: 2.9749 | Train C-index: 0.6991 | Train Cox: 2.8519 | Train Shape MSE: 0.6149 | Val Loss: 3.6398 | Val C-index: 0.6819 | Val Cox: 3.5375 | Val Shape MSE: 0.5114
+Epoch 16/30 | Train Loss: 2.9405 | Train C-index: 0.7186 | Train Cox: 2.8188 | Train Shape MSE: 0.6085 | Val Loss: 3.6691 | Val C-index: 0.6819 | Val Cox: 3.5586 | Val Shape MSE: 0.5527
+Epoch 17/30 | Train Loss: 2.9034 | Train C-index: 0.7205 | Train Cox: 2.7803 | Train Shape MSE: 0.6155 | Val Loss: 3.6364 | Val C-index: 0.6807 | Val Cox: 3.5489 | Val Shape MSE: 0.4376
+Epoch 18/30 | Train Loss: 2.9267 | Train C-index: 0.7099 | Train Cox: 2.8085 | Train Shape MSE: 0.5909 | Val Loss: 3.6789 | Val C-index: 0.6832 | Val Cox: 3.5902 | Val Shape MSE: 0.4436
+Epoch 19/30 | Train Loss: 2.8945 | Train C-index: 0.7290 | Train Cox: 2.7785 | Train Shape MSE: 0.5800 | Val Loss: 3.6852 | Val C-index: 0.6918 | Val Cox: 3.5989 | Val Shape MSE: 0.4317
+Epoch 20/30 | Train Loss: 2.9009 | Train C-index: 0.6984 | Train Cox: 2.7861 | Train Shape MSE: 0.5743 | Val Loss: 3.7043 | Val C-index: 0.6955 | Val Cox: 3.5867 | Val Shape MSE: 0.5881
+Epoch 21/30 | Train Loss: 2.9082 | Train C-index: 0.6982 | Train Cox: 2.7909 | Train Shape MSE: 0.5868 | Val Loss: 3.6611 | Val C-index: 0.6906 | Val Cox: 3.5772 | Val Shape MSE: 0.4195
+Epoch 22/30 | Train Loss: 2.9072 | Train C-index: 0.7257 | Train Cox: 2.8022 | Train Shape MSE: 0.5254 | Val Loss: 3.6459 | Val C-index: 0.6943 | Val Cox: 3.5681 | Val Shape MSE: 0.3887
+Epoch 23/30 | Train Loss: 2.8080 | Train C-index: 0.7158 | Train Cox: 2.6990 | Train Shape MSE: 0.5449 | Val Loss: 3.6661 | Val C-index: 0.7017 | Val Cox: 3.5746 | Val Shape MSE: 0.4579
+Epoch 24/30 | Train Loss: 2.9054 | Train C-index: 0.7339 | Train Cox: 2.7898 | Train Shape MSE: 0.5781 | Val Loss: 3.6248 | Val C-index: 0.7042 | Val Cox: 3.5485 | Val Shape MSE: 0.3812
+Epoch 25/30 | Train Loss: 2.8826 | Train C-index: 0.7185 | Train Cox: 2.7788 | Train Shape MSE: 0.5193 | Val Loss: 3.6700 | Val C-index: 0.6968 | Val Cox: 3.5820 | Val Shape MSE: 0.4398
+Epoch 26/30 | Train Loss: 2.8907 | Train C-index: 0.7298 | Train Cox: 2.7884 | Train Shape MSE: 0.5116 | Val Loss: 3.6775 | Val C-index: 0.7104 | Val Cox: 3.5950 | Val Shape MSE: 0.4123
+Epoch 27/30 | Train Loss: 2.8989 | Train C-index: 0.7507 | Train Cox: 2.7864 | Train Shape MSE: 0.5621 | Val Loss: 3.6883 | Val C-index: 0.7054 | Val Cox: 3.5899 | Val Shape MSE: 0.4922
+Epoch 28/30 | Train Loss: 2.9691 | Train C-index: 0.6858 | Train Cox: 2.8312 | Train Shape MSE: 0.6897 | Val Loss: 3.5890 | Val C-index: 0.7104 | Val Cox: 3.5151 | Val Shape MSE: 0.3697
+Epoch 29/30 | Train Loss: 2.8760 | Train C-index: 0.7222 | Train Cox: 2.7529 | Train Shape MSE: 0.6157 | Val Loss: 3.6229 | Val C-index: 0.7141 | Val Cox: 3.5301 | Val Shape MSE: 0.4640
+Epoch 30/30 | Train Loss: 2.8584 | Train C-index: 0.7229 | Train Cox: 2.7417 | Train Shape MSE: 0.5832 | Val Loss: 3.6191 | Val C-index: 0.7116 | Val Cox: 3.5444 | Val Shape MSE: 0.3734
+
+allshape | Outer1 | lambda0.2 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2617 | Train C-index: 0.4742 | Train Cox: 3.0548 | Train Shape MSE: 1.0348 | Val Loss: 3.8032 | Val C-index: 0.6921 | Val Cox: 3.6359 | Val Shape MSE: 0.8364
+Epoch 2/30 | Train Loss: 3.2599 | Train C-index: 0.5264 | Train Cox: 3.0613 | Train Shape MSE: 0.9928 | Val Loss: 3.8008 | Val C-index: 0.7067 | Val Cox: 3.6345 | Val Shape MSE: 0.8313
+Epoch 3/30 | Train Loss: 3.2726 | Train C-index: 0.6159 | Train Cox: 3.0734 | Train Shape MSE: 0.9962 | Val Loss: 3.7951 | Val C-index: 0.7091 | Val Cox: 3.6323 | Val Shape MSE: 0.8138
+Epoch 4/30 | Train Loss: 3.2553 | Train C-index: 0.6017 | Train Cox: 3.0621 | Train Shape MSE: 0.9663 | Val Loss: 3.7869 | Val C-index: 0.7212 | Val Cox: 3.6259 | Val Shape MSE: 0.8051
+Epoch 5/30 | Train Loss: 3.2418 | Train C-index: 0.5963 | Train Cox: 3.0552 | Train Shape MSE: 0.9331 | Val Loss: 3.7555 | Val C-index: 0.7345 | Val Cox: 3.6069 | Val Shape MSE: 0.7427
+Epoch 6/30 | Train Loss: 3.1759 | Train C-index: 0.6320 | Train Cox: 3.0064 | Train Shape MSE: 0.8474 | Val Loss: 3.6936 | Val C-index: 0.7333 | Val Cox: 3.5604 | Val Shape MSE: 0.6657
+Epoch 7/30 | Train Loss: 3.1138 | Train C-index: 0.6304 | Train Cox: 2.9545 | Train Shape MSE: 0.7967 | Val Loss: 3.6331 | Val C-index: 0.7297 | Val Cox: 3.5004 | Val Shape MSE: 0.6634
+Epoch 8/30 | Train Loss: 3.0810 | Train C-index: 0.6462 | Train Cox: 2.9237 | Train Shape MSE: 0.7866 | Val Loss: 3.6229 | Val C-index: 0.7394 | Val Cox: 3.4918 | Val Shape MSE: 0.6553
+Epoch 9/30 | Train Loss: 3.0716 | Train C-index: 0.6429 | Train Cox: 2.9166 | Train Shape MSE: 0.7749 | Val Loss: 3.6040 | Val C-index: 0.7430 | Val Cox: 3.4777 | Val Shape MSE: 0.6318
+Epoch 10/30 | Train Loss: 3.0338 | Train C-index: 0.6680 | Train Cox: 2.8831 | Train Shape MSE: 0.7532 | Val Loss: 3.5801 | Val C-index: 0.7418 | Val Cox: 3.4604 | Val Shape MSE: 0.5983
+Epoch 11/30 | Train Loss: 3.0118 | Train C-index: 0.6628 | Train Cox: 2.8683 | Train Shape MSE: 0.7177 | Val Loss: 3.5708 | Val C-index: 0.7370 | Val Cox: 3.4531 | Val Shape MSE: 0.5884
+Epoch 12/30 | Train Loss: 3.0019 | Train C-index: 0.6737 | Train Cox: 2.8626 | Train Shape MSE: 0.6967 | Val Loss: 3.5405 | Val C-index: 0.7309 | Val Cox: 3.4262 | Val Shape MSE: 0.5712
+Epoch 13/30 | Train Loss: 2.9307 | Train C-index: 0.6857 | Train Cox: 2.7917 | Train Shape MSE: 0.6951 | Val Loss: 3.5251 | Val C-index: 0.7321 | Val Cox: 3.4093 | Val Shape MSE: 0.5791
+Epoch 14/30 | Train Loss: 2.9713 | Train C-index: 0.6947 | Train Cox: 2.8298 | Train Shape MSE: 0.7073 | Val Loss: 3.5568 | Val C-index: 0.7370 | Val Cox: 3.4297 | Val Shape MSE: 0.6359
+Epoch 15/30 | Train Loss: 2.9943 | Train C-index: 0.6768 | Train Cox: 2.8573 | Train Shape MSE: 0.6851 | Val Loss: 3.5638 | Val C-index: 0.7418 | Val Cox: 3.4523 | Val Shape MSE: 0.5571
+Epoch 16/30 | Train Loss: 2.9714 | Train C-index: 0.7055 | Train Cox: 2.8402 | Train Shape MSE: 0.6560 | Val Loss: 3.5338 | Val C-index: 0.7345 | Val Cox: 3.4301 | Val Shape MSE: 0.5184
+Epoch 17/30 | Train Loss: 2.9982 | Train C-index: 0.6997 | Train Cox: 2.8581 | Train Shape MSE: 0.7008 | Val Loss: 3.5532 | Val C-index: 0.7224 | Val Cox: 3.4392 | Val Shape MSE: 0.5703
+Epoch 18/30 | Train Loss: 2.9740 | Train C-index: 0.7097 | Train Cox: 2.8428 | Train Shape MSE: 0.6560 | Val Loss: 3.5121 | Val C-index: 0.7418 | Val Cox: 3.4122 | Val Shape MSE: 0.4996
+Epoch 19/30 | Train Loss: 2.9113 | Train C-index: 0.7256 | Train Cox: 2.7898 | Train Shape MSE: 0.6075 | Val Loss: 3.5168 | Val C-index: 0.7430 | Val Cox: 3.4191 | Val Shape MSE: 0.4885
+Early stopping at epoch19
+
+allshape | Outer1 | lambda0.2 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2280 | Train C-index: 0.4940 | Train Cox: 3.0267 | Train Shape MSE: 1.0065 | Val Loss: 3.8792 | Val C-index: 0.6597 | Val Cox: 3.6415 | Val Shape MSE: 1.1882
+Epoch 2/30 | Train Loss: 3.2457 | Train C-index: 0.4941 | Train Cox: 3.0470 | Train Shape MSE: 0.9933 | Val Loss: 3.8726 | Val C-index: 0.6584 | Val Cox: 3.6401 | Val Shape MSE: 1.1625
+Epoch 3/30 | Train Loss: 3.2316 | Train C-index: 0.5998 | Train Cox: 3.0366 | Train Shape MSE: 0.9748 | Val Loss: 3.8630 | Val C-index: 0.6609 | Val Cox: 3.6368 | Val Shape MSE: 1.1313
+Epoch 4/30 | Train Loss: 3.2383 | Train C-index: 0.5636 | Train Cox: 3.0469 | Train Shape MSE: 0.9569 | Val Loss: 3.8464 | Val C-index: 0.6794 | Val Cox: 3.6302 | Val Shape MSE: 1.0806
+Epoch 5/30 | Train Loss: 3.2165 | Train C-index: 0.5976 | Train Cox: 3.0311 | Train Shape MSE: 0.9269 | Val Loss: 3.8155 | Val C-index: 0.6745 | Val Cox: 3.6152 | Val Shape MSE: 1.0011
+Epoch 6/30 | Train Loss: 3.1898 | Train C-index: 0.6051 | Train Cox: 3.0183 | Train Shape MSE: 0.8576 | Val Loss: 3.7699 | Val C-index: 0.6806 | Val Cox: 3.5800 | Val Shape MSE: 0.9497
+Epoch 7/30 | Train Loss: 3.1238 | Train C-index: 0.6193 | Train Cox: 2.9615 | Train Shape MSE: 0.8114 | Val Loss: 3.6891 | Val C-index: 0.6880 | Val Cox: 3.5222 | Val Shape MSE: 0.8343
+Epoch 8/30 | Train Loss: 3.1367 | Train C-index: 0.6323 | Train Cox: 2.9771 | Train Shape MSE: 0.7980 | Val Loss: 3.6454 | Val C-index: 0.6893 | Val Cox: 3.4814 | Val Shape MSE: 0.8197
+Epoch 9/30 | Train Loss: 3.1222 | Train C-index: 0.6468 | Train Cox: 2.9632 | Train Shape MSE: 0.7952 | Val Loss: 3.6832 | Val C-index: 0.6856 | Val Cox: 3.4895 | Val Shape MSE: 0.9686
+Epoch 10/30 | Train Loss: 3.1219 | Train C-index: 0.6254 | Train Cox: 2.9510 | Train Shape MSE: 0.8540 | Val Loss: 3.6417 | Val C-index: 0.6954 | Val Cox: 3.4537 | Val Shape MSE: 0.9397
+Epoch 11/30 | Train Loss: 3.0776 | Train C-index: 0.6527 | Train Cox: 2.9287 | Train Shape MSE: 0.7443 | Val Loss: 3.6002 | Val C-index: 0.6979 | Val Cox: 3.4340 | Val Shape MSE: 0.8311
+Epoch 12/30 | Train Loss: 3.0272 | Train C-index: 0.6470 | Train Cox: 2.8805 | Train Shape MSE: 0.7336 | Val Loss: 3.6051 | Val C-index: 0.7053 | Val Cox: 3.4418 | Val Shape MSE: 0.8166
+Epoch 13/30 | Train Loss: 3.0568 | Train C-index: 0.6308 | Train Cox: 2.9111 | Train Shape MSE: 0.7285 | Val Loss: 3.5730 | Val C-index: 0.7102 | Val Cox: 3.4173 | Val Shape MSE: 0.7783
+Epoch 14/30 | Train Loss: 3.0027 | Train C-index: 0.6682 | Train Cox: 2.8643 | Train Shape MSE: 0.6923 | Val Loss: 3.5658 | Val C-index: 0.7115 | Val Cox: 3.4131 | Val Shape MSE: 0.7636
+Epoch 15/30 | Train Loss: 3.0061 | Train C-index: 0.6678 | Train Cox: 2.8685 | Train Shape MSE: 0.6881 | Val Loss: 3.5594 | Val C-index: 0.7152 | Val Cox: 3.4109 | Val Shape MSE: 0.7427
+Epoch 16/30 | Train Loss: 3.0124 | Train C-index: 0.6887 | Train Cox: 2.8790 | Train Shape MSE: 0.6666 | Val Loss: 3.5500 | Val C-index: 0.7213 | Val Cox: 3.4025 | Val Shape MSE: 0.7375
+Epoch 17/30 | Train Loss: 3.0519 | Train C-index: 0.6774 | Train Cox: 2.9219 | Train Shape MSE: 0.6501 | Val Loss: 3.5577 | Val C-index: 0.7115 | Val Cox: 3.4104 | Val Shape MSE: 0.7364
+Epoch 18/30 | Train Loss: 3.0154 | Train C-index: 0.6912 | Train Cox: 2.8871 | Train Shape MSE: 0.6415 | Val Loss: 3.5468 | Val C-index: 0.7127 | Val Cox: 3.4044 | Val Shape MSE: 0.7118
+Epoch 19/30 | Train Loss: 3.0027 | Train C-index: 0.6878 | Train Cox: 2.8753 | Train Shape MSE: 0.6372 | Val Loss: 3.5528 | Val C-index: 0.7152 | Val Cox: 3.4047 | Val Shape MSE: 0.7402
+Epoch 20/30 | Train Loss: 2.9945 | Train C-index: 0.6807 | Train Cox: 2.8706 | Train Shape MSE: 0.6194 | Val Loss: 3.5435 | Val C-index: 0.7139 | Val Cox: 3.4026 | Val Shape MSE: 0.7044
+Epoch 21/30 | Train Loss: 2.9989 | Train C-index: 0.6972 | Train Cox: 2.8711 | Train Shape MSE: 0.6386 | Val Loss: 3.5518 | Val C-index: 0.7189 | Val Cox: 3.3991 | Val Shape MSE: 0.7635
+Epoch 22/30 | Train Loss: 2.9866 | Train C-index: 0.6984 | Train Cox: 2.8594 | Train Shape MSE: 0.6360 | Val Loss: 3.6173 | Val C-index: 0.7164 | Val Cox: 3.4208 | Val Shape MSE: 0.9823
+Epoch 23/30 | Train Loss: 3.0261 | Train C-index: 0.6462 | Train Cox: 2.8598 | Train Shape MSE: 0.8315 | Val Loss: 3.5644 | Val C-index: 0.7201 | Val Cox: 3.4066 | Val Shape MSE: 0.7890
+Epoch 24/30 | Train Loss: 2.9647 | Train C-index: 0.7036 | Train Cox: 2.8344 | Train Shape MSE: 0.6515 | Val Loss: 3.5502 | Val C-index: 0.7115 | Val Cox: 3.4080 | Val Shape MSE: 0.7109
+Epoch 25/30 | Train Loss: 3.0308 | Train C-index: 0.6738 | Train Cox: 2.9086 | Train Shape MSE: 0.6110 | Val Loss: 3.5564 | Val C-index: 0.7139 | Val Cox: 3.4037 | Val Shape MSE: 0.7638
+Epoch 26/30 | Train Loss: 2.9624 | Train C-index: 0.6887 | Train Cox: 2.8428 | Train Shape MSE: 0.5979 | Val Loss: 3.5292 | Val C-index: 0.7139 | Val Cox: 3.3972 | Val Shape MSE: 0.6604
+Early stopping at epoch26
+allshape Outer1: lambda=0,fixed outer epochs=25 (outer labels unused)
+Selected lambda0: reusing A comparison outputs only; auxiliary head metrics=N/A.
+
+Extra survival metrics:
+cutoff_from_train_median: -0.142281
+n_test: 144
+n_high_risk: 67
+n_low_risk: 77
+n_event_test: 50
+logrank_stat: 20.571331
+logrank_p: 0.000006
+auc_36m: 0.724985
+auc_60m: 0.698406
+HR_high_vs_low: 3.787783
+HR_95CI_lower: 2.040469
+HR_95CI_upper: 7.031372
+cox_p: 0.000024
+allshape final Outer1 | Train=0.7449 | Val=0.7039
+
+allshape | Outer2 | lambda0.05 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1067 | Train C-index: 0.4247 | Train Cox: 3.0563 | Train Shape MSE: 1.0076 | Val Loss: 3.7341 | Val C-index: 0.6262 | Val Cox: 3.6880 | Val Shape MSE: 0.9219
+Epoch 2/30 | Train Loss: 3.0600 | Train C-index: 0.5363 | Train Cox: 3.0100 | Train Shape MSE: 1.0000 | Val Loss: 3.7322 | Val C-index: 0.6286 | Val Cox: 3.6864 | Val Shape MSE: 0.9165
+Epoch 3/30 | Train Loss: 3.0738 | Train C-index: 0.5802 | Train Cox: 3.0242 | Train Shape MSE: 0.9930 | Val Loss: 3.7264 | Val C-index: 0.6286 | Val Cox: 3.6812 | Val Shape MSE: 0.9051
+Epoch 4/30 | Train Loss: 3.0885 | Train C-index: 0.6059 | Train Cox: 3.0402 | Train Shape MSE: 0.9674 | Val Loss: 3.7067 | Val C-index: 0.6286 | Val Cox: 3.6640 | Val Shape MSE: 0.8532
+Epoch 5/30 | Train Loss: 3.0696 | Train C-index: 0.6176 | Train Cox: 3.0247 | Train Shape MSE: 0.8977 | Val Loss: 3.6717 | Val C-index: 0.6143 | Val Cox: 3.6323 | Val Shape MSE: 0.7886
+Epoch 6/30 | Train Loss: 3.0028 | Train C-index: 0.6452 | Train Cox: 2.9620 | Train Shape MSE: 0.8146 | Val Loss: 3.6059 | Val C-index: 0.6274 | Val Cox: 3.5710 | Val Shape MSE: 0.6974
+Epoch 7/30 | Train Loss: 3.0044 | Train C-index: 0.6298 | Train Cox: 2.9639 | Train Shape MSE: 0.8101 | Val Loss: 3.5856 | Val C-index: 0.6321 | Val Cox: 3.5478 | Val Shape MSE: 0.7556
+Epoch 8/30 | Train Loss: 2.9669 | Train C-index: 0.6377 | Train Cox: 2.9250 | Train Shape MSE: 0.8386 | Val Loss: 3.5835 | Val C-index: 0.6393 | Val Cox: 3.5449 | Val Shape MSE: 0.7702
+Epoch 9/30 | Train Loss: 2.9368 | Train C-index: 0.6607 | Train Cox: 2.8988 | Train Shape MSE: 0.7601 | Val Loss: 3.5742 | Val C-index: 0.6631 | Val Cox: 3.5404 | Val Shape MSE: 0.6754
+Epoch 10/30 | Train Loss: 2.9795 | Train C-index: 0.6600 | Train Cox: 2.9427 | Train Shape MSE: 0.7358 | Val Loss: 3.5689 | Val C-index: 0.6714 | Val Cox: 3.5334 | Val Shape MSE: 0.7110
+Epoch 11/30 | Train Loss: 2.9501 | Train C-index: 0.6568 | Train Cox: 2.9126 | Train Shape MSE: 0.7504 | Val Loss: 3.5507 | Val C-index: 0.6774 | Val Cox: 3.5179 | Val Shape MSE: 0.6553
+Epoch 12/30 | Train Loss: 2.9204 | Train C-index: 0.6602 | Train Cox: 2.8825 | Train Shape MSE: 0.7575 | Val Loss: 3.5449 | Val C-index: 0.6726 | Val Cox: 3.5124 | Val Shape MSE: 0.6503
+Epoch 13/30 | Train Loss: 2.9482 | Train C-index: 0.6756 | Train Cox: 2.9119 | Train Shape MSE: 0.7273 | Val Loss: 3.5480 | Val C-index: 0.6726 | Val Cox: 3.5121 | Val Shape MSE: 0.7174
+Epoch 14/30 | Train Loss: 2.9182 | Train C-index: 0.6793 | Train Cox: 2.8819 | Train Shape MSE: 0.7264 | Val Loss: 3.5307 | Val C-index: 0.6869 | Val Cox: 3.4981 | Val Shape MSE: 0.6529
+Epoch 15/30 | Train Loss: 2.9464 | Train C-index: 0.6735 | Train Cox: 2.9128 | Train Shape MSE: 0.6721 | Val Loss: 3.5133 | Val C-index: 0.6798 | Val Cox: 3.4815 | Val Shape MSE: 0.6352
+Epoch 16/30 | Train Loss: 2.8991 | Train C-index: 0.6940 | Train Cox: 2.8657 | Train Shape MSE: 0.6674 | Val Loss: 3.5081 | Val C-index: 0.6917 | Val Cox: 3.4748 | Val Shape MSE: 0.6661
+Epoch 17/30 | Train Loss: 2.9386 | Train C-index: 0.6984 | Train Cox: 2.9051 | Train Shape MSE: 0.6696 | Val Loss: 3.5304 | Val C-index: 0.6917 | Val Cox: 3.4882 | Val Shape MSE: 0.8434
+Epoch 18/30 | Train Loss: 2.9358 | Train C-index: 0.6499 | Train Cox: 2.8939 | Train Shape MSE: 0.8379 | Val Loss: 3.5151 | Val C-index: 0.7036 | Val Cox: 3.4760 | Val Shape MSE: 0.7835
+Epoch 19/30 | Train Loss: 2.8798 | Train C-index: 0.6745 | Train Cox: 2.8449 | Train Shape MSE: 0.6981 | Val Loss: 3.5315 | Val C-index: 0.6798 | Val Cox: 3.4990 | Val Shape MSE: 0.6503
+Epoch 20/30 | Train Loss: 2.8604 | Train C-index: 0.6874 | Train Cox: 2.8264 | Train Shape MSE: 0.6810 | Val Loss: 3.5005 | Val C-index: 0.6976 | Val Cox: 3.4696 | Val Shape MSE: 0.6182
+Epoch 21/30 | Train Loss: 2.8671 | Train C-index: 0.7009 | Train Cox: 2.8334 | Train Shape MSE: 0.6743 | Val Loss: 3.4958 | Val C-index: 0.7012 | Val Cox: 3.4652 | Val Shape MSE: 0.6119
+Epoch 22/30 | Train Loss: 2.8744 | Train C-index: 0.7035 | Train Cox: 2.8430 | Train Shape MSE: 0.6272 | Val Loss: 3.4937 | Val C-index: 0.7048 | Val Cox: 3.4627 | Val Shape MSE: 0.6208
+Epoch 23/30 | Train Loss: 2.8719 | Train C-index: 0.6742 | Train Cox: 2.8376 | Train Shape MSE: 0.6864 | Val Loss: 3.5080 | Val C-index: 0.7060 | Val Cox: 3.4759 | Val Shape MSE: 0.6422
+Epoch 24/30 | Train Loss: 2.9246 | Train C-index: 0.6838 | Train Cox: 2.8800 | Train Shape MSE: 0.8927 | Val Loss: 3.5207 | Val C-index: 0.7167 | Val Cox: 3.4829 | Val Shape MSE: 0.7555
+Epoch 25/30 | Train Loss: 2.9177 | Train C-index: 0.6664 | Train Cox: 2.8593 | Train Shape MSE: 1.1697 | Val Loss: 3.5006 | Val C-index: 0.7060 | Val Cox: 3.4624 | Val Shape MSE: 0.7630
+Epoch 26/30 | Train Loss: 2.9182 | Train C-index: 0.6680 | Train Cox: 2.8684 | Train Shape MSE: 0.9964 | Val Loss: 3.5304 | Val C-index: 0.7179 | Val Cox: 3.4883 | Val Shape MSE: 0.8424
+Epoch 27/30 | Train Loss: 2.9114 | Train C-index: 0.6803 | Train Cox: 2.8642 | Train Shape MSE: 0.9444 | Val Loss: 3.4965 | Val C-index: 0.7083 | Val Cox: 3.4527 | Val Shape MSE: 0.8743
+Epoch 28/30 | Train Loss: 2.8699 | Train C-index: 0.7095 | Train Cox: 2.8312 | Train Shape MSE: 0.7741 | Val Loss: 3.4866 | Val C-index: 0.7143 | Val Cox: 3.4529 | Val Shape MSE: 0.6741
+Epoch 29/30 | Train Loss: 2.8575 | Train C-index: 0.7136 | Train Cox: 2.8222 | Train Shape MSE: 0.7047 | Val Loss: 3.5000 | Val C-index: 0.7131 | Val Cox: 3.4685 | Val Shape MSE: 0.6303
+Epoch 30/30 | Train Loss: 2.8077 | Train C-index: 0.7036 | Train Cox: 2.7758 | Train Shape MSE: 0.6379 | Val Loss: 3.5213 | Val C-index: 0.7095 | Val Cox: 3.4856 | Val Shape MSE: 0.7132
+
+allshape | Outer2 | lambda0.05 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0294 | Train C-index: 0.4839 | Train Cox: 2.9790 | Train Shape MSE: 1.0082 | Val Loss: 3.8520 | Val C-index: 0.6118 | Val Cox: 3.7956 | Val Shape MSE: 1.1278
+Epoch 2/30 | Train Loss: 3.0453 | Train C-index: 0.5201 | Train Cox: 2.9957 | Train Shape MSE: 0.9915 | Val Loss: 3.8487 | Val C-index: 0.6229 | Val Cox: 3.7935 | Val Shape MSE: 1.1024
+Epoch 3/30 | Train Loss: 3.0441 | Train C-index: 0.5914 | Train Cox: 2.9945 | Train Shape MSE: 0.9924 | Val Loss: 3.8446 | Val C-index: 0.6396 | Val Cox: 3.7891 | Val Shape MSE: 1.1096
+Epoch 4/30 | Train Loss: 3.0380 | Train C-index: 0.5753 | Train Cox: 2.9898 | Train Shape MSE: 0.9629 | Val Loss: 3.8320 | Val C-index: 0.6518 | Val Cox: 3.7788 | Val Shape MSE: 1.0633
+Epoch 5/30 | Train Loss: 3.0176 | Train C-index: 0.6232 | Train Cox: 2.9714 | Train Shape MSE: 0.9256 | Val Loss: 3.8064 | Val C-index: 0.6552 | Val Cox: 3.7569 | Val Shape MSE: 0.9899
+Epoch 6/30 | Train Loss: 2.9774 | Train C-index: 0.6202 | Train Cox: 2.9347 | Train Shape MSE: 0.8538 | Val Loss: 3.7299 | Val C-index: 0.6541 | Val Cox: 3.6904 | Val Shape MSE: 0.7903
+Epoch 7/30 | Train Loss: 2.9363 | Train C-index: 0.6324 | Train Cox: 2.8983 | Train Shape MSE: 0.7614 | Val Loss: 3.7165 | Val C-index: 0.6552 | Val Cox: 3.6749 | Val Shape MSE: 0.8333
+Epoch 8/30 | Train Loss: 2.9296 | Train C-index: 0.6357 | Train Cox: 2.8917 | Train Shape MSE: 0.7567 | Val Loss: 3.7385 | Val C-index: 0.6585 | Val Cox: 3.6999 | Val Shape MSE: 0.7704
+Epoch 9/30 | Train Loss: 2.8854 | Train C-index: 0.6565 | Train Cox: 2.8499 | Train Shape MSE: 0.7099 | Val Loss: 3.6808 | Val C-index: 0.6652 | Val Cox: 3.6474 | Val Shape MSE: 0.6668
+Epoch 10/30 | Train Loss: 2.8876 | Train C-index: 0.6584 | Train Cox: 2.8526 | Train Shape MSE: 0.7002 | Val Loss: 3.6941 | Val C-index: 0.6696 | Val Cox: 3.6592 | Val Shape MSE: 0.6979
+Epoch 11/30 | Train Loss: 2.9122 | Train C-index: 0.6713 | Train Cox: 2.8791 | Train Shape MSE: 0.6621 | Val Loss: 3.7467 | Val C-index: 0.6340 | Val Cox: 3.7095 | Val Shape MSE: 0.7439
+Epoch 12/30 | Train Loss: 2.9138 | Train C-index: 0.6569 | Train Cox: 2.8770 | Train Shape MSE: 0.7350 | Val Loss: 3.7026 | Val C-index: 0.6529 | Val Cox: 3.6642 | Val Shape MSE: 0.7671
+Epoch 13/30 | Train Loss: 2.8410 | Train C-index: 0.6939 | Train Cox: 2.8050 | Train Shape MSE: 0.7201 | Val Loss: 3.7051 | Val C-index: 0.6741 | Val Cox: 3.6611 | Val Shape MSE: 0.8796
+Epoch 14/30 | Train Loss: 2.9047 | Train C-index: 0.6817 | Train Cox: 2.8668 | Train Shape MSE: 0.7575 | Val Loss: 3.7559 | Val C-index: 0.6240 | Val Cox: 3.7142 | Val Shape MSE: 0.8342
+Epoch 15/30 | Train Loss: 2.8801 | Train C-index: 0.6859 | Train Cox: 2.8468 | Train Shape MSE: 0.6655 | Val Loss: 3.7276 | Val C-index: 0.6541 | Val Cox: 3.6915 | Val Shape MSE: 0.7217
+Epoch 16/30 | Train Loss: 2.8905 | Train C-index: 0.6846 | Train Cox: 2.8592 | Train Shape MSE: 0.6270 | Val Loss: 3.6945 | Val C-index: 0.6607 | Val Cox: 3.6632 | Val Shape MSE: 0.6274
+Epoch 17/30 | Train Loss: 2.8220 | Train C-index: 0.6958 | Train Cox: 2.7919 | Train Shape MSE: 0.6019 | Val Loss: 3.6621 | Val C-index: 0.6696 | Val Cox: 3.6319 | Val Shape MSE: 0.6057
+Epoch 18/30 | Train Loss: 2.8646 | Train C-index: 0.6921 | Train Cox: 2.8337 | Train Shape MSE: 0.6168 | Val Loss: 3.6866 | Val C-index: 0.6652 | Val Cox: 3.6563 | Val Shape MSE: 0.6067
+Epoch 19/30 | Train Loss: 2.7732 | Train C-index: 0.7061 | Train Cox: 2.7434 | Train Shape MSE: 0.5948 | Val Loss: 3.6533 | Val C-index: 0.6796 | Val Cox: 3.6252 | Val Shape MSE: 0.5613
+Epoch 20/30 | Train Loss: 2.8347 | Train C-index: 0.7163 | Train Cox: 2.8066 | Train Shape MSE: 0.5617 | Val Loss: 3.7476 | Val C-index: 0.6140 | Val Cox: 3.7131 | Val Shape MSE: 0.6902
+Epoch 21/30 | Train Loss: 2.7816 | Train C-index: 0.6936 | Train Cox: 2.7492 | Train Shape MSE: 0.6470 | Val Loss: 3.6299 | Val C-index: 0.7008 | Val Cox: 3.6023 | Val Shape MSE: 0.5518
+Epoch 22/30 | Train Loss: 2.7787 | Train C-index: 0.7125 | Train Cox: 2.7410 | Train Shape MSE: 0.7540 | Val Loss: 3.7108 | Val C-index: 0.6418 | Val Cox: 3.6792 | Val Shape MSE: 0.6324
+Epoch 23/30 | Train Loss: 2.8314 | Train C-index: 0.6737 | Train Cox: 2.7788 | Train Shape MSE: 1.0519 | Val Loss: 3.6591 | Val C-index: 0.6685 | Val Cox: 3.6230 | Val Shape MSE: 0.7222
+Epoch 24/30 | Train Loss: 2.7899 | Train C-index: 0.7165 | Train Cox: 2.7498 | Train Shape MSE: 0.8009 | Val Loss: 3.6820 | Val C-index: 0.6674 | Val Cox: 3.6463 | Val Shape MSE: 0.7139
+Epoch 25/30 | Train Loss: 2.7714 | Train C-index: 0.7160 | Train Cox: 2.7390 | Train Shape MSE: 0.6464 | Val Loss: 3.7220 | Val C-index: 0.6574 | Val Cox: 3.6846 | Val Shape MSE: 0.7478
+Epoch 26/30 | Train Loss: 2.8279 | Train C-index: 0.6680 | Train Cox: 2.7889 | Train Shape MSE: 0.7807 | Val Loss: 3.6680 | Val C-index: 0.6808 | Val Cox: 3.6250 | Val Shape MSE: 0.8596
+Epoch 27/30 | Train Loss: 2.7652 | Train C-index: 0.7083 | Train Cox: 2.7297 | Train Shape MSE: 0.7095 | Val Loss: 3.6883 | Val C-index: 0.6752 | Val Cox: 3.6558 | Val Shape MSE: 0.6494
+Epoch 28/30 | Train Loss: 2.8002 | Train C-index: 0.7145 | Train Cox: 2.7695 | Train Shape MSE: 0.6151 | Val Loss: 3.7870 | Val C-index: 0.6174 | Val Cox: 3.7384 | Val Shape MSE: 0.9729
+Epoch 29/30 | Train Loss: 2.7478 | Train C-index: 0.7328 | Train Cox: 2.7092 | Train Shape MSE: 0.7721 | Val Loss: 3.6805 | Val C-index: 0.6730 | Val Cox: 3.6480 | Val Shape MSE: 0.6499
+Epoch 30/30 | Train Loss: 2.7075 | Train C-index: 0.7231 | Train Cox: 2.6792 | Train Shape MSE: 0.5666 | Val Loss: 3.7082 | Val C-index: 0.6574 | Val Cox: 3.6787 | Val Shape MSE: 0.5905
+
+allshape | Outer2 | lambda0.05 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1584 | Train C-index: 0.5187 | Train Cox: 3.1077 | Train Shape MSE: 1.0147 | Val Loss: 3.6789 | Val C-index: 0.6956 | Val Cox: 3.6237 | Val Shape MSE: 1.1041
+Epoch 2/30 | Train Loss: 3.1325 | Train C-index: 0.4636 | Train Cox: 3.0829 | Train Shape MSE: 0.9911 | Val Loss: 3.6784 | Val C-index: 0.7066 | Val Cox: 3.6236 | Val Shape MSE: 1.0968
+Epoch 3/30 | Train Loss: 3.1500 | Train C-index: 0.5578 | Train Cox: 3.1007 | Train Shape MSE: 0.9859 | Val Loss: 3.6764 | Val C-index: 0.6993 | Val Cox: 3.6221 | Val Shape MSE: 1.0858
+Epoch 4/30 | Train Loss: 3.1449 | Train C-index: 0.5297 | Train Cox: 3.0960 | Train Shape MSE: 0.9791 | Val Loss: 3.6722 | Val C-index: 0.6968 | Val Cox: 3.6189 | Val Shape MSE: 1.0670
+Epoch 5/30 | Train Loss: 3.1149 | Train C-index: 0.5482 | Train Cox: 3.0671 | Train Shape MSE: 0.9562 | Val Loss: 3.6630 | Val C-index: 0.6980 | Val Cox: 3.6116 | Val Shape MSE: 1.0268
+Epoch 6/30 | Train Loss: 3.0839 | Train C-index: 0.5967 | Train Cox: 3.0386 | Train Shape MSE: 0.9064 | Val Loss: 3.6381 | Val C-index: 0.6968 | Val Cox: 3.5905 | Val Shape MSE: 0.9517
+Epoch 7/30 | Train Loss: 3.1179 | Train C-index: 0.5961 | Train Cox: 3.0758 | Train Shape MSE: 0.8408 | Val Loss: 3.5992 | Val C-index: 0.6956 | Val Cox: 3.5559 | Val Shape MSE: 0.8671
+Epoch 8/30 | Train Loss: 3.0832 | Train C-index: 0.6046 | Train Cox: 3.0446 | Train Shape MSE: 0.7718 | Val Loss: 3.5511 | Val C-index: 0.6932 | Val Cox: 3.5097 | Val Shape MSE: 0.8280
+Epoch 9/30 | Train Loss: 3.0533 | Train C-index: 0.6254 | Train Cox: 3.0141 | Train Shape MSE: 0.7854 | Val Loss: 3.5557 | Val C-index: 0.6870 | Val Cox: 3.5144 | Val Shape MSE: 0.8246
+Epoch 10/30 | Train Loss: 3.0280 | Train C-index: 0.6441 | Train Cox: 2.9903 | Train Shape MSE: 0.7532 | Val Loss: 3.5767 | Val C-index: 0.6614 | Val Cox: 3.5370 | Val Shape MSE: 0.7926
+Epoch 11/30 | Train Loss: 3.0009 | Train C-index: 0.6409 | Train Cox: 2.9629 | Train Shape MSE: 0.7596 | Val Loss: 3.6145 | Val C-index: 0.6614 | Val Cox: 3.5714 | Val Shape MSE: 0.8631
+Epoch 12/30 | Train Loss: 3.0055 | Train C-index: 0.6564 | Train Cox: 2.9682 | Train Shape MSE: 0.7471 | Val Loss: 3.6157 | Val C-index: 0.6100 | Val Cox: 3.5721 | Val Shape MSE: 0.8725
+Early stopping at epoch12
+
+allshape | Outer2 | lambda0.2 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2577 | Train C-index: 0.4210 | Train Cox: 3.0564 | Train Shape MSE: 1.0068 | Val Loss: 3.8724 | Val C-index: 0.6119 | Val Cox: 3.6887 | Val Shape MSE: 0.9184
+Epoch 2/30 | Train Loss: 3.2094 | Train C-index: 0.5236 | Train Cox: 3.0106 | Train Shape MSE: 0.9943 | Val Loss: 3.8693 | Val C-index: 0.6286 | Val Cox: 3.6875 | Val Shape MSE: 0.9091
+Epoch 3/30 | Train Loss: 3.2213 | Train C-index: 0.5545 | Train Cox: 3.0256 | Train Shape MSE: 0.9784 | Val Loss: 3.8613 | Val C-index: 0.6357 | Val Cox: 3.6845 | Val Shape MSE: 0.8840
+Epoch 4/30 | Train Loss: 3.2332 | Train C-index: 0.5906 | Train Cox: 3.0446 | Train Shape MSE: 0.9431 | Val Loss: 3.8430 | Val C-index: 0.6286 | Val Cox: 3.6749 | Val Shape MSE: 0.8406
+Epoch 5/30 | Train Loss: 3.2119 | Train C-index: 0.6253 | Train Cox: 3.0367 | Train Shape MSE: 0.8758 | Val Loss: 3.8177 | Val C-index: 0.6238 | Val Cox: 3.6579 | Val Shape MSE: 0.7994
+Epoch 6/30 | Train Loss: 3.1504 | Train C-index: 0.6557 | Train Cox: 2.9897 | Train Shape MSE: 0.8038 | Val Loss: 3.7732 | Val C-index: 0.6286 | Val Cox: 3.6231 | Val Shape MSE: 0.7508
+Epoch 7/30 | Train Loss: 3.1404 | Train C-index: 0.6269 | Train Cox: 2.9802 | Train Shape MSE: 0.8008 | Val Loss: 3.7205 | Val C-index: 0.6405 | Val Cox: 3.5730 | Val Shape MSE: 0.7375
+Epoch 8/30 | Train Loss: 3.1101 | Train C-index: 0.6146 | Train Cox: 2.9379 | Train Shape MSE: 0.8613 | Val Loss: 3.6921 | Val C-index: 0.6560 | Val Cox: 3.5418 | Val Shape MSE: 0.7515
+Epoch 9/30 | Train Loss: 3.0567 | Train C-index: 0.6311 | Train Cox: 2.9045 | Train Shape MSE: 0.7612 | Val Loss: 3.6693 | Val C-index: 0.6607 | Val Cox: 3.5230 | Val Shape MSE: 0.7315
+Epoch 10/30 | Train Loss: 3.0893 | Train C-index: 0.6342 | Train Cox: 2.9437 | Train Shape MSE: 0.7282 | Val Loss: 3.6407 | Val C-index: 0.6869 | Val Cox: 3.5065 | Val Shape MSE: 0.6711
+Epoch 11/30 | Train Loss: 3.0591 | Train C-index: 0.6629 | Train Cox: 2.9144 | Train Shape MSE: 0.7231 | Val Loss: 3.6250 | Val C-index: 0.6845 | Val Cox: 3.4862 | Val Shape MSE: 0.6941
+Epoch 12/30 | Train Loss: 3.0225 | Train C-index: 0.6755 | Train Cox: 2.8771 | Train Shape MSE: 0.7268 | Val Loss: 3.6235 | Val C-index: 0.6821 | Val Cox: 3.4843 | Val Shape MSE: 0.6961
+Epoch 13/30 | Train Loss: 3.0325 | Train C-index: 0.6761 | Train Cox: 2.8960 | Train Shape MSE: 0.6825 | Val Loss: 3.6021 | Val C-index: 0.6845 | Val Cox: 3.4711 | Val Shape MSE: 0.6547
+Epoch 14/30 | Train Loss: 2.9978 | Train C-index: 0.6851 | Train Cox: 2.8682 | Train Shape MSE: 0.6480 | Val Loss: 3.5804 | Val C-index: 0.7036 | Val Cox: 3.4574 | Val Shape MSE: 0.6146
+Epoch 15/30 | Train Loss: 3.0458 | Train C-index: 0.6788 | Train Cox: 2.9170 | Train Shape MSE: 0.6438 | Val Loss: 3.5656 | Val C-index: 0.6964 | Val Cox: 3.4410 | Val Shape MSE: 0.6232
+Epoch 16/30 | Train Loss: 2.9952 | Train C-index: 0.6889 | Train Cox: 2.8667 | Train Shape MSE: 0.6426 | Val Loss: 3.6310 | Val C-index: 0.7048 | Val Cox: 3.4722 | Val Shape MSE: 0.7941
+Epoch 17/30 | Train Loss: 3.0354 | Train C-index: 0.6898 | Train Cox: 2.8997 | Train Shape MSE: 0.6786 | Val Loss: 3.5562 | Val C-index: 0.7083 | Val Cox: 3.4344 | Val Shape MSE: 0.6089
+Epoch 18/30 | Train Loss: 3.0170 | Train C-index: 0.6920 | Train Cox: 2.8900 | Train Shape MSE: 0.6347 | Val Loss: 3.5648 | Val C-index: 0.7155 | Val Cox: 3.4404 | Val Shape MSE: 0.6220
+Epoch 19/30 | Train Loss: 2.9675 | Train C-index: 0.6927 | Train Cox: 2.8484 | Train Shape MSE: 0.5953 | Val Loss: 3.5569 | Val C-index: 0.7000 | Val Cox: 3.4343 | Val Shape MSE: 0.6131
+Epoch 20/30 | Train Loss: 2.9285 | Train C-index: 0.6995 | Train Cox: 2.8088 | Train Shape MSE: 0.5984 | Val Loss: 3.5983 | Val C-index: 0.7131 | Val Cox: 3.4405 | Val Shape MSE: 0.7891
+Epoch 21/30 | Train Loss: 2.9958 | Train C-index: 0.6838 | Train Cox: 2.8563 | Train Shape MSE: 0.6975 | Val Loss: 3.5864 | Val C-index: 0.7155 | Val Cox: 3.4289 | Val Shape MSE: 0.7878
+Epoch 22/30 | Train Loss: 2.9770 | Train C-index: 0.6869 | Train Cox: 2.8493 | Train Shape MSE: 0.6383 | Val Loss: 3.5315 | Val C-index: 0.7202 | Val Cox: 3.4190 | Val Shape MSE: 0.5625
+Epoch 23/30 | Train Loss: 2.9700 | Train C-index: 0.6910 | Train Cox: 2.8514 | Train Shape MSE: 0.5928 | Val Loss: 3.5258 | Val C-index: 0.7202 | Val Cox: 3.4148 | Val Shape MSE: 0.5552
+Epoch 24/30 | Train Loss: 2.9797 | Train C-index: 0.7017 | Train Cox: 2.8536 | Train Shape MSE: 0.6307 | Val Loss: 3.5986 | Val C-index: 0.7250 | Val Cox: 3.4374 | Val Shape MSE: 0.8059
+Epoch 25/30 | Train Loss: 2.9600 | Train C-index: 0.7049 | Train Cox: 2.8394 | Train Shape MSE: 0.6027 | Val Loss: 3.5343 | Val C-index: 0.7202 | Val Cox: 3.4184 | Val Shape MSE: 0.5793
+Epoch 26/30 | Train Loss: 2.9521 | Train C-index: 0.7023 | Train Cox: 2.8402 | Train Shape MSE: 0.5594 | Val Loss: 3.5512 | Val C-index: 0.7119 | Val Cox: 3.4234 | Val Shape MSE: 0.6390
+Epoch 27/30 | Train Loss: 2.9642 | Train C-index: 0.7047 | Train Cox: 2.8470 | Train Shape MSE: 0.5864 | Val Loss: 3.5623 | Val C-index: 0.7238 | Val Cox: 3.4334 | Val Shape MSE: 0.6442
+Epoch 28/30 | Train Loss: 2.9445 | Train C-index: 0.6992 | Train Cox: 2.8194 | Train Shape MSE: 0.6255 | Val Loss: 3.5245 | Val C-index: 0.7119 | Val Cox: 3.4119 | Val Shape MSE: 0.5630
+Epoch 29/30 | Train Loss: 2.9108 | Train C-index: 0.7196 | Train Cox: 2.8006 | Train Shape MSE: 0.5511 | Val Loss: 3.5388 | Val C-index: 0.7119 | Val Cox: 3.4190 | Val Shape MSE: 0.5992
+Epoch 30/30 | Train Loss: 2.8999 | Train C-index: 0.6972 | Train Cox: 2.7770 | Train Shape MSE: 0.6146 | Val Loss: 3.7033 | Val C-index: 0.7167 | Val Cox: 3.5052 | Val Shape MSE: 0.9904
+
+allshape | Outer2 | lambda0.2 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1809 | Train C-index: 0.4856 | Train Cox: 2.9791 | Train Shape MSE: 1.0091 | Val Loss: 4.0210 | Val C-index: 0.6007 | Val Cox: 3.7962 | Val Shape MSE: 1.1240
+Epoch 2/30 | Train Loss: 3.1935 | Train C-index: 0.5052 | Train Cox: 2.9965 | Train Shape MSE: 0.9847 | Val Loss: 4.0121 | Val C-index: 0.6162 | Val Cox: 3.7953 | Val Shape MSE: 1.0842
+Epoch 3/30 | Train Loss: 3.1935 | Train C-index: 0.5688 | Train Cox: 2.9973 | Train Shape MSE: 0.9806 | Val Loss: 4.0092 | Val C-index: 0.6374 | Val Cox: 3.7933 | Val Shape MSE: 1.0795
+Epoch 4/30 | Train Loss: 3.1813 | Train C-index: 0.5431 | Train Cox: 2.9939 | Train Shape MSE: 0.9371 | Val Loss: 3.9894 | Val C-index: 0.6452 | Val Cox: 3.7880 | Val Shape MSE: 1.0070
+Epoch 5/30 | Train Loss: 3.1585 | Train C-index: 0.6160 | Train Cox: 2.9805 | Train Shape MSE: 0.8902 | Val Loss: 3.9597 | Val C-index: 0.6529 | Val Cox: 3.7737 | Val Shape MSE: 0.9299
+Epoch 6/30 | Train Loss: 3.1232 | Train C-index: 0.6336 | Train Cox: 2.9600 | Train Shape MSE: 0.8160 | Val Loss: 3.9037 | Val C-index: 0.6541 | Val Cox: 3.7417 | Val Shape MSE: 0.8099
+Epoch 7/30 | Train Loss: 3.0707 | Train C-index: 0.6241 | Train Cox: 2.9214 | Train Shape MSE: 0.7463 | Val Loss: 3.8661 | Val C-index: 0.6585 | Val Cox: 3.7085 | Val Shape MSE: 0.7879
+Epoch 8/30 | Train Loss: 3.0370 | Train C-index: 0.6496 | Train Cox: 2.8935 | Train Shape MSE: 0.7175 | Val Loss: 3.8414 | Val C-index: 0.6596 | Val Cox: 3.6918 | Val Shape MSE: 0.7481
+Epoch 9/30 | Train Loss: 2.9780 | Train C-index: 0.6569 | Train Cox: 2.8364 | Train Shape MSE: 0.7084 | Val Loss: 3.7913 | Val C-index: 0.6641 | Val Cox: 3.6544 | Val Shape MSE: 0.6846
+Epoch 10/30 | Train Loss: 2.9804 | Train C-index: 0.6623 | Train Cox: 2.8440 | Train Shape MSE: 0.6821 | Val Loss: 3.8097 | Val C-index: 0.6607 | Val Cox: 3.6693 | Val Shape MSE: 0.7022
+Epoch 11/30 | Train Loss: 2.9738 | Train C-index: 0.6633 | Train Cox: 2.8413 | Train Shape MSE: 0.6629 | Val Loss: 3.9126 | Val C-index: 0.6263 | Val Cox: 3.7515 | Val Shape MSE: 0.8056
+Epoch 12/30 | Train Loss: 2.9745 | Train C-index: 0.6744 | Train Cox: 2.8325 | Train Shape MSE: 0.7100 | Val Loss: 3.8128 | Val C-index: 0.6618 | Val Cox: 3.6800 | Val Shape MSE: 0.6640
+Epoch 13/30 | Train Loss: 2.9296 | Train C-index: 0.6746 | Train Cox: 2.7998 | Train Shape MSE: 0.6488 | Val Loss: 3.8180 | Val C-index: 0.6618 | Val Cox: 3.6626 | Val Shape MSE: 0.7769
+Epoch 14/30 | Train Loss: 3.0184 | Train C-index: 0.6905 | Train Cox: 2.8798 | Train Shape MSE: 0.6929 | Val Loss: 3.8756 | Val C-index: 0.6251 | Val Cox: 3.7222 | Val Shape MSE: 0.7671
+Epoch 15/30 | Train Loss: 2.9599 | Train C-index: 0.6920 | Train Cox: 2.8428 | Train Shape MSE: 0.5854 | Val Loss: 3.7995 | Val C-index: 0.6596 | Val Cox: 3.6761 | Val Shape MSE: 0.6173
+Epoch 16/30 | Train Loss: 2.9628 | Train C-index: 0.6906 | Train Cox: 2.8465 | Train Shape MSE: 0.5816 | Val Loss: 3.8012 | Val C-index: 0.6541 | Val Cox: 3.6712 | Val Shape MSE: 0.6499
+Epoch 17/30 | Train Loss: 2.9121 | Train C-index: 0.6980 | Train Cox: 2.7978 | Train Shape MSE: 0.5715 | Val Loss: 3.8306 | Val C-index: 0.6474 | Val Cox: 3.7104 | Val Shape MSE: 0.6008
+Epoch 18/30 | Train Loss: 2.9015 | Train C-index: 0.7116 | Train Cox: 2.7909 | Train Shape MSE: 0.5530 | Val Loss: 3.8066 | Val C-index: 0.6607 | Val Cox: 3.6921 | Val Shape MSE: 0.5722
+Epoch 19/30 | Train Loss: 2.8424 | Train C-index: 0.7098 | Train Cox: 2.7342 | Train Shape MSE: 0.5409 | Val Loss: 3.8689 | Val C-index: 0.6452 | Val Cox: 3.7389 | Val Shape MSE: 0.6504
+Early stopping at epoch19
+
+allshape | Outer2 | lambda0.2 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.3106 | Train C-index: 0.5219 | Train Cox: 3.1077 | Train Shape MSE: 1.0147 | Val Loss: 3.8441 | Val C-index: 0.6883 | Val Cox: 3.6242 | Val Shape MSE: 1.0991
+Epoch 2/30 | Train Loss: 3.2799 | Train C-index: 0.4628 | Train Cox: 3.0829 | Train Shape MSE: 0.9852 | Val Loss: 3.8408 | Val C-index: 0.6993 | Val Cox: 3.6243 | Val Shape MSE: 1.0822
+Epoch 3/30 | Train Loss: 3.2947 | Train C-index: 0.5499 | Train Cox: 3.1009 | Train Shape MSE: 0.9689 | Val Loss: 3.8325 | Val C-index: 0.6993 | Val Cox: 3.6227 | Val Shape MSE: 1.0490
+Epoch 4/30 | Train Loss: 3.2841 | Train C-index: 0.5270 | Train Cox: 3.0963 | Train Shape MSE: 0.9390 | Val Loss: 3.8158 | Val C-index: 0.7005 | Val Cox: 3.6172 | Val Shape MSE: 0.9927
+Epoch 5/30 | Train Loss: 3.2424 | Train C-index: 0.5645 | Train Cox: 3.0652 | Train Shape MSE: 0.8861 | Val Loss: 3.7868 | Val C-index: 0.7029 | Val Cox: 3.6041 | Val Shape MSE: 0.9136
+Epoch 6/30 | Train Loss: 3.1992 | Train C-index: 0.6034 | Train Cox: 3.0340 | Train Shape MSE: 0.8264 | Val Loss: 3.7570 | Val C-index: 0.7042 | Val Cox: 3.5822 | Val Shape MSE: 0.8739
+Epoch 7/30 | Train Loss: 3.2215 | Train C-index: 0.6233 | Train Cox: 3.0708 | Train Shape MSE: 0.7538 | Val Loss: 3.7139 | Val C-index: 0.6968 | Val Cox: 3.5483 | Val Shape MSE: 0.8278
+Epoch 8/30 | Train Loss: 3.1765 | Train C-index: 0.6255 | Train Cox: 3.0357 | Train Shape MSE: 0.7037 | Val Loss: 3.6782 | Val C-index: 0.6797 | Val Cox: 3.5249 | Val Shape MSE: 0.7664
+Epoch 9/30 | Train Loss: 3.1363 | Train C-index: 0.6281 | Train Cox: 2.9989 | Train Shape MSE: 0.6870 | Val Loss: 3.6284 | Val C-index: 0.6883 | Val Cox: 3.4823 | Val Shape MSE: 0.7305
+Epoch 10/30 | Train Loss: 3.1045 | Train C-index: 0.6515 | Train Cox: 2.9717 | Train Shape MSE: 0.6641 | Val Loss: 3.6897 | Val C-index: 0.6418 | Val Cox: 3.5305 | Val Shape MSE: 0.7962
+Epoch 11/30 | Train Loss: 3.0600 | Train C-index: 0.6612 | Train Cox: 2.9267 | Train Shape MSE: 0.6667 | Val Loss: 3.6360 | Val C-index: 0.6650 | Val Cox: 3.4956 | Val Shape MSE: 0.7020
+Epoch 12/30 | Train Loss: 3.0908 | Train C-index: 0.6381 | Train Cox: 2.9526 | Train Shape MSE: 0.6910 | Val Loss: 3.6936 | Val C-index: 0.6491 | Val Cox: 3.5336 | Val Shape MSE: 0.8002
+Epoch 13/30 | Train Loss: 3.0520 | Train C-index: 0.6787 | Train Cox: 2.9304 | Train Shape MSE: 0.6082 | Val Loss: 3.5997 | Val C-index: 0.6638 | Val Cox: 3.4589 | Val Shape MSE: 0.7042
+Epoch 14/30 | Train Loss: 3.0453 | Train C-index: 0.6609 | Train Cox: 2.9197 | Train Shape MSE: 0.6282 | Val Loss: 3.6529 | Val C-index: 0.6284 | Val Cox: 3.5091 | Val Shape MSE: 0.7190
+Epoch 15/30 | Train Loss: 3.0327 | Train C-index: 0.6929 | Train Cox: 2.9180 | Train Shape MSE: 0.5734 | Val Loss: 3.5701 | Val C-index: 0.6785 | Val Cox: 3.4421 | Val Shape MSE: 0.6401
+Epoch 16/30 | Train Loss: 3.0164 | Train C-index: 0.6838 | Train Cox: 2.9011 | Train Shape MSE: 0.5765 | Val Loss: 3.6010 | Val C-index: 0.6577 | Val Cox: 3.4709 | Val Shape MSE: 0.6503
+Early stopping at epoch16
+allshape Outer2: lambda=0.05,fixed outer epochs=21 (outer labels unused)
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/21 | Train Loss: 3.0836 | Train C-index: 0.5359 | Train Cox: 3.0333 | Train Shape MSE: 1.0067
+Epoch 2/21 | Train Loss: 3.0887 | Train C-index: 0.5161 | Train Cox: 3.0394 | Train Shape MSE: 0.9848
+Epoch 3/21 | Train Loss: 3.0720 | Train C-index: 0.5909 | Train Cox: 3.0246 | Train Shape MSE: 0.9484
+Epoch 4/21 | Train Loss: 3.0582 | Train C-index: 0.6247 | Train Cox: 3.0178 | Train Shape MSE: 0.8090
+Epoch 5/21 | Train Loss: 2.9930 | Train C-index: 0.6292 | Train Cox: 2.9526 | Train Shape MSE: 0.8090
+Epoch 6/21 | Train Loss: 2.9973 | Train C-index: 0.6389 | Train Cox: 2.9588 | Train Shape MSE: 0.7697
+Epoch 7/21 | Train Loss: 2.9500 | Train C-index: 0.6501 | Train Cox: 2.9132 | Train Shape MSE: 0.7353
+Epoch 8/21 | Train Loss: 2.9399 | Train C-index: 0.6583 | Train Cox: 2.9042 | Train Shape MSE: 0.7148
+Epoch 9/21 | Train Loss: 2.9350 | Train C-index: 0.6622 | Train Cox: 2.8989 | Train Shape MSE: 0.7219
+Epoch 10/21 | Train Loss: 2.9452 | Train C-index: 0.6650 | Train Cox: 2.9101 | Train Shape MSE: 0.7017
+Epoch 11/21 | Train Loss: 2.9308 | Train C-index: 0.6744 | Train Cox: 2.8982 | Train Shape MSE: 0.6522
+Epoch 12/21 | Train Loss: 2.9051 | Train C-index: 0.6366 | Train Cox: 2.8712 | Train Shape MSE: 0.6773
+Epoch 13/21 | Train Loss: 2.9417 | Train C-index: 0.6537 | Train Cox: 2.9013 | Train Shape MSE: 0.8088
+Epoch 14/21 | Train Loss: 2.9147 | Train C-index: 0.6538 | Train Cox: 2.8776 | Train Shape MSE: 0.7431
+Epoch 15/21 | Train Loss: 2.9196 | Train C-index: 0.6676 | Train Cox: 2.8801 | Train Shape MSE: 0.7911
+Epoch 16/21 | Train Loss: 2.9232 | Train C-index: 0.6907 | Train Cox: 2.8900 | Train Shape MSE: 0.6647
+Epoch 17/21 | Train Loss: 2.8594 | Train C-index: 0.6996 | Train Cox: 2.8287 | Train Shape MSE: 0.6142
+Epoch 18/21 | Train Loss: 2.8558 | Train C-index: 0.6856 | Train Cox: 2.8265 | Train Shape MSE: 0.5866
+Epoch 19/21 | Train Loss: 2.8443 | Train C-index: 0.6488 | Train Cox: 2.8073 | Train Shape MSE: 0.7405
+Epoch 20/21 | Train Loss: 2.8924 | Train C-index: 0.6818 | Train Cox: 2.8592 | Train Shape MSE: 0.6623
+Epoch 21/21 | Train Loss: 2.8711 | Train C-index: 0.6792 | Train Cox: 2.8363 | Train Shape MSE: 0.6954
+
+Extra survival metrics:
+cutoff_from_train_median: -0.176319
+n_test: 144
+n_high_risk: 71
+n_low_risk: 73
+n_event_test: 50
+logrank_stat: 34.599425
+logrank_p: 0.000000
+auc_36m: 0.794281
+auc_60m: 0.827101
+HR_high_vs_low: 6.182905
+HR_95CI_lower: 3.119070
+HR_95CI_upper: 12.256319
+cox_p: 0.000000
+allshape final Outer2 | Train=0.7132 | Val=0.7746
+
+allshape | Outer3 | lambda0.05 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0654 | Train C-index: 0.4584 | Train Cox: 3.0152 | Train Shape MSE: 1.0037 | Val Loss: 3.6635 | Val C-index: 0.5828 | Val Cox: 3.6231 | Val Shape MSE: 0.8078
+Epoch 2/30 | Train Loss: 3.0949 | Train C-index: 0.5032 | Train Cox: 3.0449 | Train Shape MSE: 0.9987 | Val Loss: 3.6622 | Val C-index: 0.5828 | Val Cox: 3.6221 | Val Shape MSE: 0.8026
+Epoch 3/30 | Train Loss: 3.0931 | Train C-index: 0.5658 | Train Cox: 3.0433 | Train Shape MSE: 0.9953 | Val Loss: 3.6595 | Val C-index: 0.5876 | Val Cox: 3.6203 | Val Shape MSE: 0.7833
+Epoch 4/30 | Train Loss: 3.1037 | Train C-index: 0.5946 | Train Cox: 3.0552 | Train Shape MSE: 0.9701 | Val Loss: 3.6540 | Val C-index: 0.5983 | Val Cox: 3.6155 | Val Shape MSE: 0.7703
+Epoch 5/30 | Train Loss: 3.0390 | Train C-index: 0.6068 | Train Cox: 2.9922 | Train Shape MSE: 0.9357 | Val Loss: 3.6416 | Val C-index: 0.5971 | Val Cox: 3.6048 | Val Shape MSE: 0.7375
+Epoch 6/30 | Train Loss: 3.0256 | Train C-index: 0.6199 | Train Cox: 2.9825 | Train Shape MSE: 0.8622 | Val Loss: 3.6203 | Val C-index: 0.6019 | Val Cox: 3.5818 | Val Shape MSE: 0.7703
+Epoch 7/30 | Train Loss: 3.0215 | Train C-index: 0.5852 | Train Cox: 2.9779 | Train Shape MSE: 0.8710 | Val Loss: 3.6355 | Val C-index: 0.5697 | Val Cox: 3.5975 | Val Shape MSE: 0.7612
+Epoch 8/30 | Train Loss: 3.0008 | Train C-index: 0.6074 | Train Cox: 2.9574 | Train Shape MSE: 0.8686 | Val Loss: 3.6187 | Val C-index: 0.5936 | Val Cox: 3.5806 | Val Shape MSE: 0.7621
+Epoch 9/30 | Train Loss: 2.9996 | Train C-index: 0.6309 | Train Cox: 2.9535 | Train Shape MSE: 0.9227 | Val Loss: 3.6017 | Val C-index: 0.6114 | Val Cox: 3.5648 | Val Shape MSE: 0.7365
+Epoch 10/30 | Train Loss: 3.0057 | Train C-index: 0.6283 | Train Cox: 2.9630 | Train Shape MSE: 0.8547 | Val Loss: 3.5951 | Val C-index: 0.6186 | Val Cox: 3.5613 | Val Shape MSE: 0.6776
+Epoch 11/30 | Train Loss: 3.0010 | Train C-index: 0.6401 | Train Cox: 2.9593 | Train Shape MSE: 0.8328 | Val Loss: 3.5879 | Val C-index: 0.6317 | Val Cox: 3.5516 | Val Shape MSE: 0.7242
+Epoch 12/30 | Train Loss: 2.9546 | Train C-index: 0.6369 | Train Cox: 2.9165 | Train Shape MSE: 0.7624 | Val Loss: 3.5878 | Val C-index: 0.5983 | Val Cox: 3.5550 | Val Shape MSE: 0.6549
+Epoch 13/30 | Train Loss: 2.9820 | Train C-index: 0.6415 | Train Cox: 2.9422 | Train Shape MSE: 0.7954 | Val Loss: 3.5877 | Val C-index: 0.6055 | Val Cox: 3.5543 | Val Shape MSE: 0.6685
+Epoch 14/30 | Train Loss: 2.9348 | Train C-index: 0.6422 | Train Cox: 2.8922 | Train Shape MSE: 0.8523 | Val Loss: 3.5578 | Val C-index: 0.6520 | Val Cox: 3.5222 | Val Shape MSE: 0.7119
+Epoch 15/30 | Train Loss: 2.9412 | Train C-index: 0.6317 | Train Cox: 2.9011 | Train Shape MSE: 0.8014 | Val Loss: 3.5580 | Val C-index: 0.6448 | Val Cox: 3.5233 | Val Shape MSE: 0.6937
+Epoch 16/30 | Train Loss: 2.9459 | Train C-index: 0.6653 | Train Cox: 2.9057 | Train Shape MSE: 0.8044 | Val Loss: 3.5517 | Val C-index: 0.6460 | Val Cox: 3.5183 | Val Shape MSE: 0.6680
+Epoch 17/30 | Train Loss: 2.9400 | Train C-index: 0.6585 | Train Cox: 2.9018 | Train Shape MSE: 0.7655 | Val Loss: 3.5559 | Val C-index: 0.6436 | Val Cox: 3.5182 | Val Shape MSE: 0.7538
+Epoch 18/30 | Train Loss: 2.9426 | Train C-index: 0.6448 | Train Cox: 2.9053 | Train Shape MSE: 0.7460 | Val Loss: 3.5419 | Val C-index: 0.6532 | Val Cox: 3.5096 | Val Shape MSE: 0.6469
+Epoch 19/30 | Train Loss: 2.9167 | Train C-index: 0.6705 | Train Cox: 2.8809 | Train Shape MSE: 0.7163 | Val Loss: 3.5249 | Val C-index: 0.6615 | Val Cox: 3.4928 | Val Shape MSE: 0.6432
+Epoch 20/30 | Train Loss: 2.9083 | Train C-index: 0.6603 | Train Cox: 2.8733 | Train Shape MSE: 0.6996 | Val Loss: 3.5146 | Val C-index: 0.6746 | Val Cox: 3.4815 | Val Shape MSE: 0.6612
+Epoch 21/30 | Train Loss: 2.9284 | Train C-index: 0.6696 | Train Cox: 2.8935 | Train Shape MSE: 0.6999 | Val Loss: 3.5010 | Val C-index: 0.6913 | Val Cox: 3.4691 | Val Shape MSE: 0.6382
+Epoch 22/30 | Train Loss: 2.9340 | Train C-index: 0.6500 | Train Cox: 2.8975 | Train Shape MSE: 0.7293 | Val Loss: 3.4726 | Val C-index: 0.7104 | Val Cox: 3.4394 | Val Shape MSE: 0.6650
+Epoch 23/30 | Train Loss: 2.8437 | Train C-index: 0.6601 | Train Cox: 2.8070 | Train Shape MSE: 0.7337 | Val Loss: 3.5069 | Val C-index: 0.6853 | Val Cox: 3.4691 | Val Shape MSE: 0.7568
+Epoch 24/30 | Train Loss: 2.9030 | Train C-index: 0.6745 | Train Cox: 2.8654 | Train Shape MSE: 0.7520 | Val Loss: 3.5491 | Val C-index: 0.6687 | Val Cox: 3.5165 | Val Shape MSE: 0.6507
+Epoch 25/30 | Train Loss: 2.8859 | Train C-index: 0.6624 | Train Cox: 2.8517 | Train Shape MSE: 0.6850 | Val Loss: 3.4935 | Val C-index: 0.7080 | Val Cox: 3.4603 | Val Shape MSE: 0.6625
+Epoch 26/30 | Train Loss: 2.9139 | Train C-index: 0.6837 | Train Cox: 2.8800 | Train Shape MSE: 0.6764 | Val Loss: 3.4900 | Val C-index: 0.7139 | Val Cox: 3.4596 | Val Shape MSE: 0.6086
+Epoch 27/30 | Train Loss: 2.8828 | Train C-index: 0.6805 | Train Cox: 2.8494 | Train Shape MSE: 0.6682 | Val Loss: 3.4290 | Val C-index: 0.7402 | Val Cox: 3.3930 | Val Shape MSE: 0.7211
+Epoch 28/30 | Train Loss: 2.8967 | Train C-index: 0.6824 | Train Cox: 2.8630 | Train Shape MSE: 0.6740 | Val Loss: 3.4582 | Val C-index: 0.7271 | Val Cox: 3.4285 | Val Shape MSE: 0.5952
+Epoch 29/30 | Train Loss: 2.9110 | Train C-index: 0.6797 | Train Cox: 2.8765 | Train Shape MSE: 0.6896 | Val Loss: 3.4718 | Val C-index: 0.7223 | Val Cox: 3.4406 | Val Shape MSE: 0.6249
+Epoch 30/30 | Train Loss: 2.8822 | Train C-index: 0.6860 | Train Cox: 2.8441 | Train Shape MSE: 0.7620 | Val Loss: 3.4618 | Val C-index: 0.7235 | Val Cox: 3.4317 | Val Shape MSE: 0.6006
+
+allshape | Outer3 | lambda0.05 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.0923 | Train C-index: 0.4695 | Train Cox: 3.0414 | Train Shape MSE: 1.0197 | Val Loss: 3.7358 | Val C-index: 0.6270 | Val Cox: 3.6861 | Val Shape MSE: 0.9934
+Epoch 2/30 | Train Loss: 3.0733 | Train C-index: 0.5405 | Train Cox: 3.0230 | Train Shape MSE: 1.0051 | Val Loss: 3.7327 | Val C-index: 0.6443 | Val Cox: 3.6838 | Val Shape MSE: 0.9768
+Epoch 3/30 | Train Loss: 3.0908 | Train C-index: 0.6064 | Train Cox: 3.0407 | Train Shape MSE: 1.0017 | Val Loss: 3.7268 | Val C-index: 0.6501 | Val Cox: 3.6785 | Val Shape MSE: 0.9671
+Epoch 4/30 | Train Loss: 3.0957 | Train C-index: 0.5933 | Train Cox: 3.0473 | Train Shape MSE: 0.9696 | Val Loss: 3.7112 | Val C-index: 0.6570 | Val Cox: 3.6657 | Val Shape MSE: 0.9102
+Epoch 5/30 | Train Loss: 3.0594 | Train C-index: 0.6206 | Train Cox: 3.0139 | Train Shape MSE: 0.9116 | Val Loss: 3.6694 | Val C-index: 0.6547 | Val Cox: 3.6310 | Val Shape MSE: 0.7691
+Epoch 6/30 | Train Loss: 3.0092 | Train C-index: 0.6188 | Train Cox: 2.9675 | Train Shape MSE: 0.8341 | Val Loss: 3.6360 | Val C-index: 0.6570 | Val Cox: 3.6045 | Val Shape MSE: 0.6292
+Epoch 7/30 | Train Loss: 2.9356 | Train C-index: 0.6525 | Train Cox: 2.8969 | Train Shape MSE: 0.7726 | Val Loss: 3.6431 | Val C-index: 0.6709 | Val Cox: 3.6108 | Val Shape MSE: 0.6468
+Epoch 8/30 | Train Loss: 2.9772 | Train C-index: 0.6664 | Train Cox: 2.9390 | Train Shape MSE: 0.7627 | Val Loss: 3.6411 | Val C-index: 0.6767 | Val Cox: 3.6114 | Val Shape MSE: 0.5950
+Epoch 9/30 | Train Loss: 2.9897 | Train C-index: 0.6596 | Train Cox: 2.9522 | Train Shape MSE: 0.7502 | Val Loss: 3.6291 | Val C-index: 0.6836 | Val Cox: 3.5980 | Val Shape MSE: 0.6227
+Epoch 10/30 | Train Loss: 2.9297 | Train C-index: 0.6720 | Train Cox: 2.8895 | Train Shape MSE: 0.8023 | Val Loss: 3.6463 | Val C-index: 0.6801 | Val Cox: 3.6031 | Val Shape MSE: 0.8638
+Epoch 11/30 | Train Loss: 2.8978 | Train C-index: 0.6952 | Train Cox: 2.8566 | Train Shape MSE: 0.8232 | Val Loss: 3.6369 | Val C-index: 0.6836 | Val Cox: 3.6041 | Val Shape MSE: 0.6541
+Epoch 12/30 | Train Loss: 2.8991 | Train C-index: 0.6898 | Train Cox: 2.8624 | Train Shape MSE: 0.7352 | Val Loss: 3.6421 | Val C-index: 0.6859 | Val Cox: 3.6091 | Val Shape MSE: 0.6602
+Epoch 13/30 | Train Loss: 2.8363 | Train C-index: 0.7107 | Train Cox: 2.7974 | Train Shape MSE: 0.7774 | Val Loss: 3.6349 | Val C-index: 0.6778 | Val Cox: 3.6038 | Val Shape MSE: 0.6215
+Epoch 14/30 | Train Loss: 2.8035 | Train C-index: 0.7164 | Train Cox: 2.7693 | Train Shape MSE: 0.6835 | Val Loss: 3.6736 | Val C-index: 0.6836 | Val Cox: 3.6441 | Val Shape MSE: 0.5906
+Epoch 15/30 | Train Loss: 2.8322 | Train C-index: 0.7147 | Train Cox: 2.7981 | Train Shape MSE: 0.6805 | Val Loss: 3.6818 | Val C-index: 0.6697 | Val Cox: 3.6500 | Val Shape MSE: 0.6343
+Epoch 16/30 | Train Loss: 2.7427 | Train C-index: 0.7242 | Train Cox: 2.7083 | Train Shape MSE: 0.6880 | Val Loss: 3.6759 | Val C-index: 0.6986 | Val Cox: 3.6439 | Val Shape MSE: 0.6406
+Epoch 17/30 | Train Loss: 2.8142 | Train C-index: 0.7216 | Train Cox: 2.7806 | Train Shape MSE: 0.6710 | Val Loss: 3.6499 | Val C-index: 0.6917 | Val Cox: 3.6200 | Val Shape MSE: 0.5981
+Epoch 18/30 | Train Loss: 2.7666 | Train C-index: 0.7364 | Train Cox: 2.7329 | Train Shape MSE: 0.6728 | Val Loss: 3.6484 | Val C-index: 0.7125 | Val Cox: 3.6231 | Val Shape MSE: 0.5057
+Epoch 19/30 | Train Loss: 2.8011 | Train C-index: 0.6971 | Train Cox: 2.7668 | Train Shape MSE: 0.6859 | Val Loss: 3.6007 | Val C-index: 0.6975 | Val Cox: 3.5626 | Val Shape MSE: 0.7631
+Epoch 20/30 | Train Loss: 2.7668 | Train C-index: 0.7372 | Train Cox: 2.7333 | Train Shape MSE: 0.6718 | Val Loss: 3.5923 | Val C-index: 0.7055 | Val Cox: 3.5628 | Val Shape MSE: 0.5888
+Epoch 21/30 | Train Loss: 2.8580 | Train C-index: 0.7239 | Train Cox: 2.8213 | Train Shape MSE: 0.7359 | Val Loss: 3.5973 | Val C-index: 0.7079 | Val Cox: 3.5657 | Val Shape MSE: 0.6327
+Epoch 22/30 | Train Loss: 2.7973 | Train C-index: 0.7396 | Train Cox: 2.7552 | Train Shape MSE: 0.8429 | Val Loss: 3.5707 | Val C-index: 0.7240 | Val Cox: 3.5411 | Val Shape MSE: 0.5931
+Epoch 23/30 | Train Loss: 2.8089 | Train C-index: 0.7302 | Train Cox: 2.7743 | Train Shape MSE: 0.6905 | Val Loss: 3.5982 | Val C-index: 0.7286 | Val Cox: 3.5734 | Val Shape MSE: 0.4961
+Epoch 24/30 | Train Loss: 2.7671 | Train C-index: 0.7466 | Train Cox: 2.7355 | Train Shape MSE: 0.6310 | Val Loss: 3.5544 | Val C-index: 0.7333 | Val Cox: 3.5269 | Val Shape MSE: 0.5503
+Epoch 25/30 | Train Loss: 2.7443 | Train C-index: 0.7451 | Train Cox: 2.7132 | Train Shape MSE: 0.6214 | Val Loss: 3.5802 | Val C-index: 0.7240 | Val Cox: 3.5546 | Val Shape MSE: 0.5123
+Epoch 26/30 | Train Loss: 2.7603 | Train C-index: 0.7500 | Train Cox: 2.7293 | Train Shape MSE: 0.6184 | Val Loss: 3.6070 | Val C-index: 0.7217 | Val Cox: 3.5831 | Val Shape MSE: 0.4779
+Epoch 27/30 | Train Loss: 2.7627 | Train C-index: 0.7424 | Train Cox: 2.7333 | Train Shape MSE: 0.5883 | Val Loss: 3.5406 | Val C-index: 0.7286 | Val Cox: 3.5124 | Val Shape MSE: 0.5647
+Epoch 28/30 | Train Loss: 2.7430 | Train C-index: 0.7495 | Train Cox: 2.7132 | Train Shape MSE: 0.5949 | Val Loss: 3.5573 | Val C-index: 0.7309 | Val Cox: 3.5342 | Val Shape MSE: 0.4628
+Epoch 29/30 | Train Loss: 2.7178 | Train C-index: 0.7608 | Train Cox: 2.6891 | Train Shape MSE: 0.5732 | Val Loss: 3.5488 | Val C-index: 0.7344 | Val Cox: 3.5221 | Val Shape MSE: 0.5343
+Epoch 30/30 | Train Loss: 2.6740 | Train C-index: 0.7651 | Train Cox: 2.6432 | Train Shape MSE: 0.6163 | Val Loss: 3.6542 | Val C-index: 0.7240 | Val Cox: 3.6304 | Val Shape MSE: 0.4767
+
+allshape | Outer3 | lambda0.05 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1191 | Train C-index: 0.4904 | Train Cox: 3.0685 | Train Shape MSE: 1.0120 | Val Loss: 3.8833 | Val C-index: 0.5993 | Val Cox: 3.8238 | Val Shape MSE: 1.1908
+Epoch 2/30 | Train Loss: 3.1055 | Train C-index: 0.5463 | Train Cox: 3.0558 | Train Shape MSE: 0.9933 | Val Loss: 3.8815 | Val C-index: 0.5982 | Val Cox: 3.8222 | Val Shape MSE: 1.1873
+Epoch 3/30 | Train Loss: 3.0816 | Train C-index: 0.5913 | Train Cox: 3.0321 | Train Shape MSE: 0.9901 | Val Loss: 3.8758 | Val C-index: 0.5960 | Val Cox: 3.8176 | Val Shape MSE: 1.1630
+Epoch 4/30 | Train Loss: 3.1025 | Train C-index: 0.6210 | Train Cox: 3.0546 | Train Shape MSE: 0.9580 | Val Loss: 3.8640 | Val C-index: 0.5939 | Val Cox: 3.8089 | Val Shape MSE: 1.1024
+Epoch 5/30 | Train Loss: 3.0907 | Train C-index: 0.6171 | Train Cox: 3.0461 | Train Shape MSE: 0.8907 | Val Loss: 3.8376 | Val C-index: 0.5960 | Val Cox: 3.7908 | Val Shape MSE: 0.9367
+Epoch 6/30 | Train Loss: 3.0170 | Train C-index: 0.6302 | Train Cox: 2.9787 | Train Shape MSE: 0.7669 | Val Loss: 3.8415 | Val C-index: 0.5982 | Val Cox: 3.8010 | Val Shape MSE: 0.8107
+Epoch 7/30 | Train Loss: 2.9930 | Train C-index: 0.6538 | Train Cox: 2.9561 | Train Shape MSE: 0.7388 | Val Loss: 3.8104 | Val C-index: 0.6158 | Val Cox: 3.7686 | Val Shape MSE: 0.8340
+Epoch 8/30 | Train Loss: 2.9608 | Train C-index: 0.6737 | Train Cox: 2.9245 | Train Shape MSE: 0.7255 | Val Loss: 3.8276 | Val C-index: 0.6224 | Val Cox: 3.7849 | Val Shape MSE: 0.8547
+Epoch 9/30 | Train Loss: 2.9162 | Train C-index: 0.6919 | Train Cox: 2.8811 | Train Shape MSE: 0.7014 | Val Loss: 3.7786 | Val C-index: 0.6389 | Val Cox: 3.7401 | Val Shape MSE: 0.7710
+Epoch 10/30 | Train Loss: 2.8978 | Train C-index: 0.6989 | Train Cox: 2.8650 | Train Shape MSE: 0.6569 | Val Loss: 3.7683 | Val C-index: 0.6465 | Val Cox: 3.7295 | Val Shape MSE: 0.7764
+Epoch 11/30 | Train Loss: 2.8458 | Train C-index: 0.7092 | Train Cox: 2.8146 | Train Shape MSE: 0.6245 | Val Loss: 3.7181 | Val C-index: 0.6564 | Val Cox: 3.6794 | Val Shape MSE: 0.7740
+Epoch 12/30 | Train Loss: 2.9168 | Train C-index: 0.6847 | Train Cox: 2.8799 | Train Shape MSE: 0.7375 | Val Loss: 3.8065 | Val C-index: 0.6520 | Val Cox: 3.7550 | Val Shape MSE: 1.0300
+Epoch 13/30 | Train Loss: 2.8028 | Train C-index: 0.7262 | Train Cox: 2.7707 | Train Shape MSE: 0.6420 | Val Loss: 3.6909 | Val C-index: 0.6751 | Val Cox: 3.6524 | Val Shape MSE: 0.7703
+Epoch 14/30 | Train Loss: 2.7938 | Train C-index: 0.7051 | Train Cox: 2.7619 | Train Shape MSE: 0.6387 | Val Loss: 3.7429 | Val C-index: 0.6652 | Val Cox: 3.7052 | Val Shape MSE: 0.7541
+Epoch 15/30 | Train Loss: 2.7835 | Train C-index: 0.7387 | Train Cox: 2.7555 | Train Shape MSE: 0.5597 | Val Loss: 3.6912 | Val C-index: 0.6652 | Val Cox: 3.6573 | Val Shape MSE: 0.6791
+Epoch 16/30 | Train Loss: 2.8098 | Train C-index: 0.7386 | Train Cox: 2.7773 | Train Shape MSE: 0.6491 | Val Loss: 3.6918 | Val C-index: 0.6707 | Val Cox: 3.6579 | Val Shape MSE: 0.6780
+Epoch 17/30 | Train Loss: 2.7968 | Train C-index: 0.7511 | Train Cox: 2.7691 | Train Shape MSE: 0.5544 | Val Loss: 3.6783 | Val C-index: 0.6674 | Val Cox: 3.6450 | Val Shape MSE: 0.6651
+Epoch 18/30 | Train Loss: 2.7319 | Train C-index: 0.7181 | Train Cox: 2.6998 | Train Shape MSE: 0.6434 | Val Loss: 3.7756 | Val C-index: 0.6663 | Val Cox: 3.7305 | Val Shape MSE: 0.9017
+Epoch 19/30 | Train Loss: 2.7432 | Train C-index: 0.7264 | Train Cox: 2.7116 | Train Shape MSE: 0.6305 | Val Loss: 3.6496 | Val C-index: 0.6784 | Val Cox: 3.6122 | Val Shape MSE: 0.7478
+Epoch 20/30 | Train Loss: 2.6927 | Train C-index: 0.7366 | Train Cox: 2.6574 | Train Shape MSE: 0.7064 | Val Loss: 4.0290 | Val C-index: 0.6674 | Val Cox: 3.9598 | Val Shape MSE: 1.3845
+Epoch 21/30 | Train Loss: 2.8381 | Train C-index: 0.7296 | Train Cox: 2.8005 | Train Shape MSE: 0.7523 | Val Loss: 3.6538 | Val C-index: 0.6773 | Val Cox: 3.6060 | Val Shape MSE: 0.9549
+Epoch 22/30 | Train Loss: 2.7263 | Train C-index: 0.7418 | Train Cox: 2.6907 | Train Shape MSE: 0.7111 | Val Loss: 3.7342 | Val C-index: 0.6762 | Val Cox: 3.6938 | Val Shape MSE: 0.8090
+Epoch 23/30 | Train Loss: 2.6911 | Train C-index: 0.7661 | Train Cox: 2.6602 | Train Shape MSE: 0.6177 | Val Loss: 3.6798 | Val C-index: 0.6883 | Val Cox: 3.6458 | Val Shape MSE: 0.6798
+Epoch 24/30 | Train Loss: 2.7302 | Train C-index: 0.7638 | Train Cox: 2.7007 | Train Shape MSE: 0.5898 | Val Loss: 3.6649 | Val C-index: 0.6740 | Val Cox: 3.6230 | Val Shape MSE: 0.8376
+Epoch 25/30 | Train Loss: 2.7614 | Train C-index: 0.7617 | Train Cox: 2.7285 | Train Shape MSE: 0.6591 | Val Loss: 3.7432 | Val C-index: 0.6740 | Val Cox: 3.7009 | Val Shape MSE: 0.8449
+Epoch 26/30 | Train Loss: 2.7438 | Train C-index: 0.7556 | Train Cox: 2.7137 | Train Shape MSE: 0.6030 | Val Loss: 3.6353 | Val C-index: 0.6839 | Val Cox: 3.6009 | Val Shape MSE: 0.6896
+Epoch 27/30 | Train Loss: 2.7136 | Train C-index: 0.7302 | Train Cox: 2.6834 | Train Shape MSE: 0.6034 | Val Loss: 3.7266 | Val C-index: 0.6762 | Val Cox: 3.6900 | Val Shape MSE: 0.7320
+Epoch 28/30 | Train Loss: 2.6473 | Train C-index: 0.7524 | Train Cox: 2.6109 | Train Shape MSE: 0.7287 | Val Loss: 3.7668 | Val C-index: 0.6894 | Val Cox: 3.7336 | Val Shape MSE: 0.6644
+Epoch 29/30 | Train Loss: 2.6539 | Train C-index: 0.7522 | Train Cox: 2.6249 | Train Shape MSE: 0.5798 | Val Loss: 3.6654 | Val C-index: 0.6817 | Val Cox: 3.6292 | Val Shape MSE: 0.7231
+Epoch 30/30 | Train Loss: 2.6968 | Train C-index: 0.7631 | Train Cox: 2.6661 | Train Shape MSE: 0.6142 | Val Loss: 3.7814 | Val C-index: 0.6773 | Val Cox: 3.7426 | Val Shape MSE: 0.7755
+
+allshape | Outer3 | lambda0.2 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2156 | Train C-index: 0.4604 | Train Cox: 3.0152 | Train Shape MSE: 1.0018 | Val Loss: 3.7835 | Val C-index: 0.5793 | Val Cox: 3.6234 | Val Shape MSE: 0.8002
+Epoch 2/30 | Train Loss: 3.2430 | Train C-index: 0.4924 | Train Cox: 3.0456 | Train Shape MSE: 0.9866 | Val Loss: 3.7797 | Val C-index: 0.5816 | Val Cox: 3.6228 | Val Shape MSE: 0.7846
+Epoch 3/30 | Train Loss: 3.2394 | Train C-index: 0.5525 | Train Cox: 3.0446 | Train Shape MSE: 0.9744 | Val Loss: 3.7754 | Val C-index: 0.5888 | Val Cox: 3.6216 | Val Shape MSE: 0.7688
+Epoch 4/30 | Train Loss: 3.2418 | Train C-index: 0.5941 | Train Cox: 3.0574 | Train Shape MSE: 0.9223 | Val Loss: 3.7624 | Val C-index: 0.5948 | Val Cox: 3.6172 | Val Shape MSE: 0.7259
+Epoch 5/30 | Train Loss: 3.1677 | Train C-index: 0.6248 | Train Cox: 2.9965 | Train Shape MSE: 0.8563 | Val Loss: 3.7417 | Val C-index: 0.5983 | Val Cox: 3.6068 | Val Shape MSE: 0.6749
+Epoch 6/30 | Train Loss: 3.1577 | Train C-index: 0.6265 | Train Cox: 2.9986 | Train Shape MSE: 0.7954 | Val Loss: 3.7207 | Val C-index: 0.6114 | Val Cox: 3.5879 | Val Shape MSE: 0.6644
+Epoch 7/30 | Train Loss: 3.1254 | Train C-index: 0.6199 | Train Cox: 2.9717 | Train Shape MSE: 0.7684 | Val Loss: 3.7230 | Val C-index: 0.6293 | Val Cox: 3.5646 | Val Shape MSE: 0.7922
+Epoch 8/30 | Train Loss: 3.1026 | Train C-index: 0.6179 | Train Cox: 2.9445 | Train Shape MSE: 0.7902 | Val Loss: 3.6721 | Val C-index: 0.6389 | Val Cox: 3.5465 | Val Shape MSE: 0.6281
+Epoch 9/30 | Train Loss: 3.0760 | Train C-index: 0.6402 | Train Cox: 2.9338 | Train Shape MSE: 0.7111 | Val Loss: 3.6539 | Val C-index: 0.6544 | Val Cox: 3.5231 | Val Shape MSE: 0.6540
+Epoch 10/30 | Train Loss: 3.0711 | Train C-index: 0.6475 | Train Cox: 2.9327 | Train Shape MSE: 0.6916 | Val Loss: 3.6232 | Val C-index: 0.6818 | Val Cox: 3.4883 | Val Shape MSE: 0.6744
+Epoch 11/30 | Train Loss: 3.0777 | Train C-index: 0.6521 | Train Cox: 2.9400 | Train Shape MSE: 0.6886 | Val Loss: 3.6054 | Val C-index: 0.6913 | Val Cox: 3.4781 | Val Shape MSE: 0.6363
+Epoch 12/30 | Train Loss: 3.0178 | Train C-index: 0.6575 | Train Cox: 2.8808 | Train Shape MSE: 0.6851 | Val Loss: 3.6001 | Val C-index: 0.6949 | Val Cox: 3.4745 | Val Shape MSE: 0.6280
+Epoch 13/30 | Train Loss: 3.0300 | Train C-index: 0.6635 | Train Cox: 2.9005 | Train Shape MSE: 0.6475 | Val Loss: 3.5891 | Val C-index: 0.7056 | Val Cox: 3.4685 | Val Shape MSE: 0.6032
+Epoch 14/30 | Train Loss: 2.9904 | Train C-index: 0.6670 | Train Cox: 2.8649 | Train Shape MSE: 0.6275 | Val Loss: 3.5676 | Val C-index: 0.7151 | Val Cox: 3.4336 | Val Shape MSE: 0.6700
+Epoch 15/30 | Train Loss: 2.9982 | Train C-index: 0.6510 | Train Cox: 2.8624 | Train Shape MSE: 0.6788 | Val Loss: 3.5336 | Val C-index: 0.7306 | Val Cox: 3.4203 | Val Shape MSE: 0.5664
+Epoch 16/30 | Train Loss: 2.9918 | Train C-index: 0.6752 | Train Cox: 2.8734 | Train Shape MSE: 0.5920 | Val Loss: 3.5380 | Val C-index: 0.7235 | Val Cox: 3.4203 | Val Shape MSE: 0.5884
+Epoch 17/30 | Train Loss: 2.9983 | Train C-index: 0.6682 | Train Cox: 2.8735 | Train Shape MSE: 0.6239 | Val Loss: 3.5497 | Val C-index: 0.7306 | Val Cox: 3.4103 | Val Shape MSE: 0.6969
+Epoch 18/30 | Train Loss: 3.0100 | Train C-index: 0.6534 | Train Cox: 2.8819 | Train Shape MSE: 0.6405 | Val Loss: 3.5504 | Val C-index: 0.7497 | Val Cox: 3.4004 | Val Shape MSE: 0.7499
+Epoch 19/30 | Train Loss: 2.9972 | Train C-index: 0.6376 | Train Cox: 2.8555 | Train Shape MSE: 0.7088 | Val Loss: 3.5648 | Val C-index: 0.7271 | Val Cox: 3.4282 | Val Shape MSE: 0.6827
+Epoch 20/30 | Train Loss: 2.9676 | Train C-index: 0.6883 | Train Cox: 2.8390 | Train Shape MSE: 0.6433 | Val Loss: 3.5590 | Val C-index: 0.7223 | Val Cox: 3.4387 | Val Shape MSE: 0.6016
+Epoch 21/30 | Train Loss: 3.0242 | Train C-index: 0.6449 | Train Cox: 2.8931 | Train Shape MSE: 0.6557 | Val Loss: 3.4961 | Val C-index: 0.7652 | Val Cox: 3.3673 | Val Shape MSE: 0.6437
+Epoch 22/30 | Train Loss: 3.0072 | Train C-index: 0.6765 | Train Cox: 2.8890 | Train Shape MSE: 0.5911 | Val Loss: 3.4885 | Val C-index: 0.7664 | Val Cox: 3.3761 | Val Shape MSE: 0.5621
+Epoch 23/30 | Train Loss: 2.9273 | Train C-index: 0.6740 | Train Cox: 2.8055 | Train Shape MSE: 0.6094 | Val Loss: 3.5354 | Val C-index: 0.7414 | Val Cox: 3.4029 | Val Shape MSE: 0.6621
+Epoch 24/30 | Train Loss: 2.9944 | Train C-index: 0.6656 | Train Cox: 2.8567 | Train Shape MSE: 0.6883 | Val Loss: 3.5148 | Val C-index: 0.7342 | Val Cox: 3.4072 | Val Shape MSE: 0.5380
+Epoch 25/30 | Train Loss: 2.9312 | Train C-index: 0.6954 | Train Cox: 2.8146 | Train Shape MSE: 0.5832 | Val Loss: 3.5008 | Val C-index: 0.7402 | Val Cox: 3.3951 | Val Shape MSE: 0.5283
+Epoch 26/30 | Train Loss: 2.9882 | Train C-index: 0.6757 | Train Cox: 2.8785 | Train Shape MSE: 0.5485 | Val Loss: 3.4744 | Val C-index: 0.7628 | Val Cox: 3.3657 | Val Shape MSE: 0.5436
+Epoch 27/30 | Train Loss: 2.9433 | Train C-index: 0.6857 | Train Cox: 2.8334 | Train Shape MSE: 0.5492 | Val Loss: 3.5032 | Val C-index: 0.7652 | Val Cox: 3.3572 | Val Shape MSE: 0.7301
+Epoch 28/30 | Train Loss: 2.9671 | Train C-index: 0.6894 | Train Cox: 2.8460 | Train Shape MSE: 0.6051 | Val Loss: 3.4820 | Val C-index: 0.7509 | Val Cox: 3.3715 | Val Shape MSE: 0.5526
+Epoch 29/30 | Train Loss: 2.9592 | Train C-index: 0.6925 | Train Cox: 2.8364 | Train Shape MSE: 0.6138 | Val Loss: 3.5503 | Val C-index: 0.7402 | Val Cox: 3.4001 | Val Shape MSE: 0.7508
+Epoch 30/30 | Train Loss: 2.9813 | Train C-index: 0.6738 | Train Cox: 2.8500 | Train Shape MSE: 0.6563 | Val Loss: 3.4828 | Val C-index: 0.7580 | Val Cox: 3.3718 | Val Shape MSE: 0.5550
+
+allshape | Outer3 | lambda0.2 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2452 | Train C-index: 0.4834 | Train Cox: 3.0413 | Train Shape MSE: 1.0195 | Val Loss: 3.8837 | Val C-index: 0.6270 | Val Cox: 3.6870 | Val Shape MSE: 0.9834
+Epoch 2/30 | Train Loss: 3.2247 | Train C-index: 0.5203 | Train Cox: 3.0244 | Train Shape MSE: 1.0015 | Val Loss: 3.8772 | Val C-index: 0.6328 | Val Cox: 3.6859 | Val Shape MSE: 0.9563
+Epoch 3/30 | Train Loss: 3.2423 | Train C-index: 0.5997 | Train Cox: 3.0438 | Train Shape MSE: 0.9927 | Val Loss: 3.8710 | Val C-index: 0.6455 | Val Cox: 3.6835 | Val Shape MSE: 0.9374
+Epoch 4/30 | Train Loss: 3.2457 | Train C-index: 0.5660 | Train Cox: 3.0547 | Train Shape MSE: 0.9549 | Val Loss: 3.8547 | Val C-index: 0.6478 | Val Cox: 3.6787 | Val Shape MSE: 0.8799
+Epoch 5/30 | Train Loss: 3.2203 | Train C-index: 0.6253 | Train Cox: 3.0376 | Train Shape MSE: 0.9139 | Val Loss: 3.8267 | Val C-index: 0.6570 | Val Cox: 3.6671 | Val Shape MSE: 0.7983
+Epoch 6/30 | Train Loss: 3.1871 | Train C-index: 0.6268 | Train Cox: 3.0169 | Train Shape MSE: 0.8507 | Val Loss: 3.7727 | Val C-index: 0.6501 | Val Cox: 3.6375 | Val Shape MSE: 0.6758
+Epoch 7/30 | Train Loss: 3.1095 | Train C-index: 0.6397 | Train Cox: 2.9492 | Train Shape MSE: 0.8016 | Val Loss: 3.7488 | Val C-index: 0.6594 | Val Cox: 3.6209 | Val Shape MSE: 0.6394
+Epoch 8/30 | Train Loss: 3.1197 | Train C-index: 0.6551 | Train Cox: 2.9622 | Train Shape MSE: 0.7879 | Val Loss: 3.7416 | Val C-index: 0.6721 | Val Cox: 3.6158 | Val Shape MSE: 0.6292
+Epoch 9/30 | Train Loss: 3.1014 | Train C-index: 0.6643 | Train Cox: 2.9505 | Train Shape MSE: 0.7547 | Val Loss: 3.7262 | Val C-index: 0.6755 | Val Cox: 3.6015 | Val Shape MSE: 0.6238
+Epoch 10/30 | Train Loss: 3.0397 | Train C-index: 0.6704 | Train Cox: 2.8861 | Train Shape MSE: 0.7681 | Val Loss: 3.7484 | Val C-index: 0.6801 | Val Cox: 3.6204 | Val Shape MSE: 0.6397
+Epoch 11/30 | Train Loss: 3.0290 | Train C-index: 0.6805 | Train Cox: 2.8785 | Train Shape MSE: 0.7529 | Val Loss: 3.7123 | Val C-index: 0.6755 | Val Cox: 3.5800 | Val Shape MSE: 0.6617
+Epoch 12/30 | Train Loss: 3.0306 | Train C-index: 0.6754 | Train Cox: 2.8882 | Train Shape MSE: 0.7118 | Val Loss: 3.7046 | Val C-index: 0.6882 | Val Cox: 3.5915 | Val Shape MSE: 0.5654
+Epoch 13/30 | Train Loss: 2.9496 | Train C-index: 0.7141 | Train Cox: 2.8076 | Train Shape MSE: 0.7101 | Val Loss: 3.6923 | Val C-index: 0.6928 | Val Cox: 3.5801 | Val Shape MSE: 0.5608
+Epoch 14/30 | Train Loss: 2.9146 | Train C-index: 0.7113 | Train Cox: 2.7808 | Train Shape MSE: 0.6692 | Val Loss: 3.7160 | Val C-index: 0.6928 | Val Cox: 3.6110 | Val Shape MSE: 0.5250
+Epoch 15/30 | Train Loss: 2.9390 | Train C-index: 0.7099 | Train Cox: 2.8066 | Train Shape MSE: 0.6620 | Val Loss: 3.6779 | Val C-index: 0.6986 | Val Cox: 3.5522 | Val Shape MSE: 0.6287
+Epoch 16/30 | Train Loss: 2.8573 | Train C-index: 0.7167 | Train Cox: 2.7300 | Train Shape MSE: 0.6363 | Val Loss: 3.6588 | Val C-index: 0.7125 | Val Cox: 3.5602 | Val Shape MSE: 0.4931
+Epoch 17/30 | Train Loss: 2.9206 | Train C-index: 0.7079 | Train Cox: 2.7957 | Train Shape MSE: 0.6246 | Val Loss: 3.6493 | Val C-index: 0.7055 | Val Cox: 3.5453 | Val Shape MSE: 0.5203
+Epoch 18/30 | Train Loss: 2.8714 | Train C-index: 0.7185 | Train Cox: 2.7456 | Train Shape MSE: 0.6289 | Val Loss: 3.6458 | Val C-index: 0.7275 | Val Cox: 3.5515 | Val Shape MSE: 0.4714
+Epoch 19/30 | Train Loss: 2.8610 | Train C-index: 0.7185 | Train Cox: 2.7338 | Train Shape MSE: 0.6357 | Val Loss: 3.6090 | Val C-index: 0.7356 | Val Cox: 3.5161 | Val Shape MSE: 0.4647
+Epoch 20/30 | Train Loss: 2.8593 | Train C-index: 0.7172 | Train Cox: 2.7295 | Train Shape MSE: 0.6491 | Val Loss: 3.6214 | Val C-index: 0.7217 | Val Cox: 3.4365 | Val Shape MSE: 0.9245
+Epoch 21/30 | Train Loss: 2.9690 | Train C-index: 0.6702 | Train Cox: 2.8012 | Train Shape MSE: 0.8389 | Val Loss: 3.6426 | Val C-index: 0.7413 | Val Cox: 3.5179 | Val Shape MSE: 0.6237
+Epoch 22/30 | Train Loss: 2.9114 | Train C-index: 0.7278 | Train Cox: 2.7703 | Train Shape MSE: 0.7057 | Val Loss: 3.6092 | Val C-index: 0.7321 | Val Cox: 3.4682 | Val Shape MSE: 0.7049
+Epoch 23/30 | Train Loss: 2.9030 | Train C-index: 0.7192 | Train Cox: 2.7826 | Train Shape MSE: 0.6021 | Val Loss: 3.6010 | Val C-index: 0.7413 | Val Cox: 3.5195 | Val Shape MSE: 0.4074
+Epoch 24/30 | Train Loss: 2.8610 | Train C-index: 0.7379 | Train Cox: 2.7464 | Train Shape MSE: 0.5729 | Val Loss: 3.5769 | Val C-index: 0.7321 | Val Cox: 3.4846 | Val Shape MSE: 0.4616
+Epoch 25/30 | Train Loss: 2.8366 | Train C-index: 0.7413 | Train Cox: 2.7267 | Train Shape MSE: 0.5494 | Val Loss: 3.5572 | Val C-index: 0.7471 | Val Cox: 3.4696 | Val Shape MSE: 0.4377
+Epoch 26/30 | Train Loss: 2.8382 | Train C-index: 0.7490 | Train Cox: 2.7306 | Train Shape MSE: 0.5377 | Val Loss: 3.5809 | Val C-index: 0.7483 | Val Cox: 3.5013 | Val Shape MSE: 0.3983
+Epoch 27/30 | Train Loss: 2.8689 | Train C-index: 0.7498 | Train Cox: 2.7527 | Train Shape MSE: 0.5814 | Val Loss: 3.5710 | Val C-index: 0.7598 | Val Cox: 3.4793 | Val Shape MSE: 0.4583
+Epoch 28/30 | Train Loss: 2.8391 | Train C-index: 0.7455 | Train Cox: 2.7252 | Train Shape MSE: 0.5698 | Val Loss: 3.5652 | Val C-index: 0.7517 | Val Cox: 3.4834 | Val Shape MSE: 0.4094
+Epoch 29/30 | Train Loss: 2.8005 | Train C-index: 0.7489 | Train Cox: 2.6942 | Train Shape MSE: 0.5319 | Val Loss: 3.5668 | Val C-index: 0.7448 | Val Cox: 3.4371 | Val Shape MSE: 0.6488
+Epoch 30/30 | Train Loss: 2.8171 | Train C-index: 0.7360 | Train Cox: 2.6902 | Train Shape MSE: 0.6346 | Val Loss: 3.6323 | Val C-index: 0.7436 | Val Cox: 3.5468 | Val Shape MSE: 0.4274
+
+allshape | Outer3 | lambda0.2 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2707 | Train C-index: 0.4928 | Train Cox: 3.0686 | Train Shape MSE: 1.0107 | Val Loss: 4.0613 | Val C-index: 0.6048 | Val Cox: 3.8245 | Val Shape MSE: 1.1838
+Epoch 2/30 | Train Loss: 3.2537 | Train C-index: 0.5192 | Train Cox: 3.0569 | Train Shape MSE: 0.9840 | Val Loss: 4.0574 | Val C-index: 0.6037 | Val Cox: 3.8239 | Val Shape MSE: 1.1678
+Epoch 3/30 | Train Loss: 3.2303 | Train C-index: 0.5875 | Train Cox: 3.0363 | Train Shape MSE: 0.9700 | Val Loss: 4.0477 | Val C-index: 0.5971 | Val Cox: 3.8220 | Val Shape MSE: 1.1288
+Epoch 4/30 | Train Loss: 3.2487 | Train C-index: 0.5815 | Train Cox: 3.0635 | Train Shape MSE: 0.9259 | Val Loss: 4.0291 | Val C-index: 0.5895 | Val Cox: 3.8182 | Val Shape MSE: 1.0544
+Epoch 5/30 | Train Loss: 3.2358 | Train C-index: 0.6112 | Train Cox: 3.0629 | Train Shape MSE: 0.8643 | Val Loss: 4.0189 | Val C-index: 0.5884 | Val Cox: 3.8092 | Val Shape MSE: 1.0485
+Epoch 6/30 | Train Loss: 3.1813 | Train C-index: 0.6269 | Train Cox: 3.0236 | Train Shape MSE: 0.7884 | Val Loss: 3.9719 | Val C-index: 0.5906 | Val Cox: 3.7918 | Val Shape MSE: 0.9005
+Epoch 7/30 | Train Loss: 3.1396 | Train C-index: 0.6382 | Train Cox: 2.9946 | Train Shape MSE: 0.7251 | Val Loss: 3.9532 | Val C-index: 0.5971 | Val Cox: 3.7818 | Val Shape MSE: 0.8571
+Epoch 8/30 | Train Loss: 3.0958 | Train C-index: 0.6601 | Train Cox: 2.9515 | Train Shape MSE: 0.7214 | Val Loss: 3.9677 | Val C-index: 0.6103 | Val Cox: 3.7993 | Val Shape MSE: 0.8419
+Epoch 9/30 | Train Loss: 3.0385 | Train C-index: 0.6726 | Train Cox: 2.8986 | Train Shape MSE: 0.6992 | Val Loss: 3.9554 | Val C-index: 0.6136 | Val Cox: 3.7866 | Val Shape MSE: 0.8440
+Epoch 10/30 | Train Loss: 3.0285 | Train C-index: 0.6691 | Train Cox: 2.8963 | Train Shape MSE: 0.6609 | Val Loss: 3.9213 | Val C-index: 0.6213 | Val Cox: 3.7612 | Val Shape MSE: 0.8004
+Epoch 11/30 | Train Loss: 2.9702 | Train C-index: 0.6844 | Train Cox: 2.8412 | Train Shape MSE: 0.6449 | Val Loss: 3.8481 | Val C-index: 0.6323 | Val Cox: 3.6837 | Val Shape MSE: 0.8217
+Epoch 12/30 | Train Loss: 3.0390 | Train C-index: 0.6858 | Train Cox: 2.9053 | Train Shape MSE: 0.6685 | Val Loss: 3.8424 | Val C-index: 0.6356 | Val Cox: 3.6945 | Val Shape MSE: 0.7396
+Epoch 13/30 | Train Loss: 2.9588 | Train C-index: 0.6876 | Train Cox: 2.8346 | Train Shape MSE: 0.6210 | Val Loss: 3.9285 | Val C-index: 0.6422 | Val Cox: 3.7871 | Val Shape MSE: 0.7072
+Epoch 14/30 | Train Loss: 2.8977 | Train C-index: 0.7060 | Train Cox: 2.7687 | Train Shape MSE: 0.6453 | Val Loss: 3.8939 | Val C-index: 0.6422 | Val Cox: 3.7454 | Val Shape MSE: 0.7427
+Epoch 15/30 | Train Loss: 2.9064 | Train C-index: 0.7225 | Train Cox: 2.7916 | Train Shape MSE: 0.5737 | Val Loss: 3.8209 | Val C-index: 0.6454 | Val Cox: 3.6859 | Val Shape MSE: 0.6752
+Epoch 16/30 | Train Loss: 2.9547 | Train C-index: 0.7184 | Train Cox: 2.8292 | Train Shape MSE: 0.6271 | Val Loss: 3.7974 | Val C-index: 0.6498 | Val Cox: 3.6654 | Val Shape MSE: 0.6600
+Epoch 17/30 | Train Loss: 2.9193 | Train C-index: 0.7284 | Train Cox: 2.8094 | Train Shape MSE: 0.5495 | Val Loss: 3.8137 | Val C-index: 0.6465 | Val Cox: 3.6871 | Val Shape MSE: 0.6326
+Epoch 18/30 | Train Loss: 2.8427 | Train C-index: 0.7301 | Train Cox: 2.7321 | Train Shape MSE: 0.5531 | Val Loss: 3.8368 | Val C-index: 0.6520 | Val Cox: 3.6974 | Val Shape MSE: 0.6967
+Epoch 19/30 | Train Loss: 2.8779 | Train C-index: 0.7366 | Train Cox: 2.7652 | Train Shape MSE: 0.5633 | Val Loss: 3.7603 | Val C-index: 0.6509 | Val Cox: 3.6277 | Val Shape MSE: 0.6627
+Epoch 20/30 | Train Loss: 2.8482 | Train C-index: 0.7316 | Train Cox: 2.7119 | Train Shape MSE: 0.6817 | Val Loss: 3.9072 | Val C-index: 0.6509 | Val Cox: 3.7566 | Val Shape MSE: 0.7529
+Epoch 21/30 | Train Loss: 2.8845 | Train C-index: 0.7438 | Train Cox: 2.7737 | Train Shape MSE: 0.5539 | Val Loss: 3.8059 | Val C-index: 0.6487 | Val Cox: 3.6844 | Val Shape MSE: 0.6073
+Epoch 22/30 | Train Loss: 2.8237 | Train C-index: 0.7511 | Train Cox: 2.7185 | Train Shape MSE: 0.5261 | Val Loss: 3.7943 | Val C-index: 0.6334 | Val Cox: 3.6676 | Val Shape MSE: 0.6338
+Epoch 23/30 | Train Loss: 2.8110 | Train C-index: 0.7401 | Train Cox: 2.6935 | Train Shape MSE: 0.5874 | Val Loss: 3.7951 | Val C-index: 0.6389 | Val Cox: 3.6734 | Val Shape MSE: 0.6084
+Epoch 24/30 | Train Loss: 2.8387 | Train C-index: 0.7421 | Train Cox: 2.7305 | Train Shape MSE: 0.5412 | Val Loss: 3.7636 | Val C-index: 0.6542 | Val Cox: 3.6251 | Val Shape MSE: 0.6925
+Epoch 25/30 | Train Loss: 2.8988 | Train C-index: 0.7465 | Train Cox: 2.7795 | Train Shape MSE: 0.5965 | Val Loss: 3.8543 | Val C-index: 0.6422 | Val Cox: 3.7253 | Val Shape MSE: 0.6450
+Epoch 26/30 | Train Loss: 2.8680 | Train C-index: 0.7401 | Train Cox: 2.7488 | Train Shape MSE: 0.5960 | Val Loss: 3.8957 | Val C-index: 0.6323 | Val Cox: 3.7461 | Val Shape MSE: 0.7480
+Epoch 27/30 | Train Loss: 2.8459 | Train C-index: 0.7412 | Train Cox: 2.7420 | Train Shape MSE: 0.5193 | Val Loss: 3.7480 | Val C-index: 0.6498 | Val Cox: 3.6226 | Val Shape MSE: 0.6275
+Epoch 28/30 | Train Loss: 2.7957 | Train C-index: 0.7189 | Train Cox: 2.6788 | Train Shape MSE: 0.5844 | Val Loss: 3.7589 | Val C-index: 0.6487 | Val Cox: 3.6400 | Val Shape MSE: 0.5945
+Epoch 29/30 | Train Loss: 2.8096 | Train C-index: 0.7482 | Train Cox: 2.7059 | Train Shape MSE: 0.5187 | Val Loss: 3.7543 | Val C-index: 0.6597 | Val Cox: 3.6371 | Val Shape MSE: 0.5861
+Epoch 30/30 | Train Loss: 2.7805 | Train C-index: 0.7565 | Train Cox: 2.6753 | Train Shape MSE: 0.5260 | Val Loss: 3.7744 | Val C-index: 0.6422 | Val Cox: 3.6539 | Val Shape MSE: 0.6024
+allshape Outer3: lambda=0.2,fixed outer epochs=27 (outer labels unused)
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/27 | Train Loss: 3.2457 | Train C-index: 0.5147 | Train Cox: 3.0421 | Train Shape MSE: 1.0180
+Epoch 2/27 | Train Loss: 3.2401 | Train C-index: 0.5206 | Train Cox: 3.0442 | Train Shape MSE: 0.9799
+Epoch 3/27 | Train Loss: 3.2111 | Train C-index: 0.6083 | Train Cox: 3.0289 | Train Shape MSE: 0.9112
+Epoch 4/27 | Train Loss: 3.1779 | Train C-index: 0.6026 | Train Cox: 3.0175 | Train Shape MSE: 0.8022
+Epoch 5/27 | Train Loss: 3.1173 | Train C-index: 0.6236 | Train Cox: 2.9622 | Train Shape MSE: 0.7751
+Epoch 6/27 | Train Loss: 3.0563 | Train C-index: 0.6474 | Train Cox: 2.9128 | Train Shape MSE: 0.7174
+Epoch 7/27 | Train Loss: 3.0504 | Train C-index: 0.6694 | Train Cox: 2.9164 | Train Shape MSE: 0.6700
+Epoch 8/27 | Train Loss: 2.9878 | Train C-index: 0.6873 | Train Cox: 2.8581 | Train Shape MSE: 0.6484
+Epoch 9/27 | Train Loss: 3.0201 | Train C-index: 0.6782 | Train Cox: 2.8801 | Train Shape MSE: 0.6999
+Epoch 10/27 | Train Loss: 2.9721 | Train C-index: 0.6862 | Train Cox: 2.8288 | Train Shape MSE: 0.7166
+Epoch 11/27 | Train Loss: 2.9787 | Train C-index: 0.6865 | Train Cox: 2.8493 | Train Shape MSE: 0.6473
+Epoch 12/27 | Train Loss: 2.9419 | Train C-index: 0.7052 | Train Cox: 2.8253 | Train Shape MSE: 0.5831
+Epoch 13/27 | Train Loss: 2.9008 | Train C-index: 0.7175 | Train Cox: 2.7910 | Train Shape MSE: 0.5490
+Epoch 14/27 | Train Loss: 2.9288 | Train C-index: 0.7174 | Train Cox: 2.8151 | Train Shape MSE: 0.5685
+Epoch 15/27 | Train Loss: 2.9172 | Train C-index: 0.7153 | Train Cox: 2.7998 | Train Shape MSE: 0.5873
+Epoch 16/27 | Train Loss: 2.8757 | Train C-index: 0.7164 | Train Cox: 2.7674 | Train Shape MSE: 0.5413
+Epoch 17/27 | Train Loss: 2.8682 | Train C-index: 0.7084 | Train Cox: 2.7584 | Train Shape MSE: 0.5491
+Epoch 18/27 | Train Loss: 2.9037 | Train C-index: 0.7173 | Train Cox: 2.7950 | Train Shape MSE: 0.5439
+Epoch 19/27 | Train Loss: 2.8271 | Train C-index: 0.7156 | Train Cox: 2.7125 | Train Shape MSE: 0.5729
+Epoch 20/27 | Train Loss: 2.9004 | Train C-index: 0.7200 | Train Cox: 2.7815 | Train Shape MSE: 0.5947
+Epoch 21/27 | Train Loss: 2.9513 | Train C-index: 0.7128 | Train Cox: 2.8293 | Train Shape MSE: 0.6097
+Epoch 22/27 | Train Loss: 2.8808 | Train C-index: 0.7260 | Train Cox: 2.7766 | Train Shape MSE: 0.5211
+Epoch 23/27 | Train Loss: 2.9123 | Train C-index: 0.6893 | Train Cox: 2.7827 | Train Shape MSE: 0.6482
+Epoch 24/27 | Train Loss: 2.9158 | Train C-index: 0.6872 | Train Cox: 2.7916 | Train Shape MSE: 0.6208
+Epoch 25/27 | Train Loss: 2.9232 | Train C-index: 0.6896 | Train Cox: 2.7864 | Train Shape MSE: 0.6844
+Epoch 26/27 | Train Loss: 2.8686 | Train C-index: 0.7220 | Train Cox: 2.7612 | Train Shape MSE: 0.5372
+Epoch 27/27 | Train Loss: 2.8373 | Train C-index: 0.7379 | Train Cox: 2.7359 | Train Shape MSE: 0.5067
+
+Extra survival metrics:
+cutoff_from_train_median: -0.153427
+n_test: 144
+n_high_risk: 58
+n_low_risk: 86
+n_event_test: 50
+logrank_stat: 21.091718
+logrank_p: 0.000004
+auc_36m: 0.747580
+auc_60m: 0.758773
+HR_high_vs_low: 3.629405
+HR_95CI_lower: 2.015885
+HR_95CI_upper: 6.534391
+cox_p: 0.000017
+allshape final Outer3 | Train=0.7428 | Val=0.7276
+
+allshape | Outer4 | lambda0.05 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1044 | Train C-index: 0.4260 | Train Cox: 3.0538 | Train Shape MSE: 1.0113 | Val Loss: 3.6629 | Val C-index: 0.6114 | Val Cox: 3.6159 | Val Shape MSE: 0.9417
+Epoch 2/30 | Train Loss: 3.1193 | Train C-index: 0.5050 | Train Cox: 3.0693 | Train Shape MSE: 0.9991 | Val Loss: 3.6614 | Val C-index: 0.6175 | Val Cox: 3.6147 | Val Shape MSE: 0.9344
+Epoch 3/30 | Train Loss: 3.0891 | Train C-index: 0.5760 | Train Cox: 3.0395 | Train Shape MSE: 0.9931 | Val Loss: 3.6583 | Val C-index: 0.6114 | Val Cox: 3.6124 | Val Shape MSE: 0.9190
+Epoch 4/30 | Train Loss: 3.1174 | Train C-index: 0.6243 | Train Cox: 3.0689 | Train Shape MSE: 0.9708 | Val Loss: 3.6472 | Val C-index: 0.6066 | Val Cox: 3.6035 | Val Shape MSE: 0.8742
+Epoch 5/30 | Train Loss: 3.0893 | Train C-index: 0.6363 | Train Cox: 3.0443 | Train Shape MSE: 0.8985 | Val Loss: 3.6239 | Val C-index: 0.6066 | Val Cox: 3.5855 | Val Shape MSE: 0.7684
+Epoch 6/30 | Train Loss: 3.0469 | Train C-index: 0.6548 | Train Cox: 3.0066 | Train Shape MSE: 0.8054 | Val Loss: 3.6221 | Val C-index: 0.6078 | Val Cox: 3.5884 | Val Shape MSE: 0.6735
+Epoch 7/30 | Train Loss: 3.0107 | Train C-index: 0.6655 | Train Cox: 2.9698 | Train Shape MSE: 0.8169 | Val Loss: 3.6444 | Val C-index: 0.6163 | Val Cox: 3.6074 | Val Shape MSE: 0.7398
+Epoch 8/30 | Train Loss: 2.9600 | Train C-index: 0.6876 | Train Cox: 2.9213 | Train Shape MSE: 0.7752 | Val Loss: 3.6026 | Val C-index: 0.6285 | Val Cox: 3.5685 | Val Shape MSE: 0.6829
+Epoch 9/30 | Train Loss: 3.0061 | Train C-index: 0.6898 | Train Cox: 2.9663 | Train Shape MSE: 0.7953 | Val Loss: 3.6139 | Val C-index: 0.6419 | Val Cox: 3.5811 | Val Shape MSE: 0.6574
+Epoch 10/30 | Train Loss: 2.9349 | Train C-index: 0.7031 | Train Cox: 2.8955 | Train Shape MSE: 0.7878 | Val Loss: 3.5823 | Val C-index: 0.6431 | Val Cox: 3.5507 | Val Shape MSE: 0.6323
+Epoch 11/30 | Train Loss: 2.9304 | Train C-index: 0.7107 | Train Cox: 2.8930 | Train Shape MSE: 0.7478 | Val Loss: 3.6167 | Val C-index: 0.6419 | Val Cox: 3.5856 | Val Shape MSE: 0.6208
+Epoch 12/30 | Train Loss: 2.8228 | Train C-index: 0.7382 | Train Cox: 2.7878 | Train Shape MSE: 0.7000 | Val Loss: 3.5975 | Val C-index: 0.6443 | Val Cox: 3.5630 | Val Shape MSE: 0.6891
+Epoch 13/30 | Train Loss: 2.8699 | Train C-index: 0.7348 | Train Cox: 2.8354 | Train Shape MSE: 0.6905 | Val Loss: 3.6610 | Val C-index: 0.6334 | Val Cox: 3.6326 | Val Shape MSE: 0.5677
+Epoch 14/30 | Train Loss: 2.8317 | Train C-index: 0.7315 | Train Cox: 2.7953 | Train Shape MSE: 0.7275 | Val Loss: 3.6234 | Val C-index: 0.6334 | Val Cox: 3.5896 | Val Shape MSE: 0.6758
+Epoch 15/30 | Train Loss: 2.8342 | Train C-index: 0.6955 | Train Cox: 2.7926 | Train Shape MSE: 0.8312 | Val Loss: 3.6614 | Val C-index: 0.6188 | Val Cox: 3.6212 | Val Shape MSE: 0.8041
+Epoch 16/30 | Train Loss: 2.7306 | Train C-index: 0.7433 | Train Cox: 2.6980 | Train Shape MSE: 0.6526 | Val Loss: 3.7548 | Val C-index: 0.6188 | Val Cox: 3.7258 | Val Shape MSE: 0.5804
+Epoch 17/30 | Train Loss: 2.7732 | Train C-index: 0.7534 | Train Cox: 2.7426 | Train Shape MSE: 0.6112 | Val Loss: 3.6989 | Val C-index: 0.6188 | Val Cox: 3.6656 | Val Shape MSE: 0.6660
+Epoch 18/30 | Train Loss: 2.7182 | Train C-index: 0.7558 | Train Cox: 2.6844 | Train Shape MSE: 0.6758 | Val Loss: 3.8268 | Val C-index: 0.6188 | Val Cox: 3.7954 | Val Shape MSE: 0.6296
+Epoch 19/30 | Train Loss: 2.6596 | Train C-index: 0.7653 | Train Cox: 2.6299 | Train Shape MSE: 0.5932 | Val Loss: 3.7375 | Val C-index: 0.6200 | Val Cox: 3.7062 | Val Shape MSE: 0.6250
+Epoch 20/30 | Train Loss: 2.7116 | Train C-index: 0.7765 | Train Cox: 2.6818 | Train Shape MSE: 0.5964 | Val Loss: 3.7851 | Val C-index: 0.6163 | Val Cox: 3.7551 | Val Shape MSE: 0.5992
+Epoch 21/30 | Train Loss: 2.6964 | Train C-index: 0.7680 | Train Cox: 2.6670 | Train Shape MSE: 0.5895 | Val Loss: 3.7369 | Val C-index: 0.6273 | Val Cox: 3.7080 | Val Shape MSE: 0.5770
+Epoch 22/30 | Train Loss: 2.6762 | Train C-index: 0.7817 | Train Cox: 2.6488 | Train Shape MSE: 0.5485 | Val Loss: 3.7809 | Val C-index: 0.6188 | Val Cox: 3.7511 | Val Shape MSE: 0.5967
+Early stopping at epoch22
+
+allshape | Outer4 | lambda0.05 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1764 | Train C-index: 0.5087 | Train Cox: 3.1256 | Train Shape MSE: 1.0166 | Val Loss: 3.6346 | Val C-index: 0.5737 | Val Cox: 3.5866 | Val Shape MSE: 0.9607
+Epoch 2/30 | Train Loss: 3.1505 | Train C-index: 0.5285 | Train Cox: 3.1008 | Train Shape MSE: 0.9942 | Val Loss: 3.6323 | Val C-index: 0.5787 | Val Cox: 3.5853 | Val Shape MSE: 0.9411
+Epoch 3/30 | Train Loss: 3.1633 | Train C-index: 0.6047 | Train Cox: 3.1139 | Train Shape MSE: 0.9891 | Val Loss: 3.6290 | Val C-index: 0.5837 | Val Cox: 3.5823 | Val Shape MSE: 0.9333
+Epoch 4/30 | Train Loss: 3.1790 | Train C-index: 0.6120 | Train Cox: 3.1307 | Train Shape MSE: 0.9665 | Val Loss: 3.6219 | Val C-index: 0.5813 | Val Cox: 3.5756 | Val Shape MSE: 0.9269
+Epoch 5/30 | Train Loss: 3.1051 | Train C-index: 0.6147 | Train Cox: 3.0613 | Train Shape MSE: 0.8761 | Val Loss: 3.6082 | Val C-index: 0.5787 | Val Cox: 3.5643 | Val Shape MSE: 0.8789
+Epoch 6/30 | Train Loss: 3.0944 | Train C-index: 0.6118 | Train Cox: 3.0556 | Train Shape MSE: 0.7756 | Val Loss: 3.6097 | Val C-index: 0.5913 | Val Cox: 3.5645 | Val Shape MSE: 0.9040
+Epoch 7/30 | Train Loss: 3.0113 | Train C-index: 0.6401 | Train Cox: 2.9746 | Train Shape MSE: 0.7340 | Val Loss: 3.6156 | Val C-index: 0.5938 | Val Cox: 3.5718 | Val Shape MSE: 0.8754
+Epoch 8/30 | Train Loss: 3.0346 | Train C-index: 0.6467 | Train Cox: 2.9981 | Train Shape MSE: 0.7308 | Val Loss: 3.5996 | Val C-index: 0.6038 | Val Cox: 3.5609 | Val Shape MSE: 0.7735
+Epoch 9/30 | Train Loss: 3.0040 | Train C-index: 0.6627 | Train Cox: 2.9671 | Train Shape MSE: 0.7368 | Val Loss: 3.6167 | Val C-index: 0.6062 | Val Cox: 3.5720 | Val Shape MSE: 0.8937
+Epoch 10/30 | Train Loss: 2.9945 | Train C-index: 0.6806 | Train Cox: 2.9575 | Train Shape MSE: 0.7400 | Val Loss: 3.6041 | Val C-index: 0.6012 | Val Cox: 3.5672 | Val Shape MSE: 0.7370
+Epoch 11/30 | Train Loss: 3.0027 | Train C-index: 0.6733 | Train Cox: 2.9652 | Train Shape MSE: 0.7505 | Val Loss: 3.6101 | Val C-index: 0.5988 | Val Cox: 3.5696 | Val Shape MSE: 0.8109
+Epoch 12/30 | Train Loss: 2.9611 | Train C-index: 0.6773 | Train Cox: 2.9235 | Train Shape MSE: 0.7520 | Val Loss: 3.5865 | Val C-index: 0.6138 | Val Cox: 3.5525 | Val Shape MSE: 0.6782
+Epoch 13/30 | Train Loss: 2.9280 | Train C-index: 0.6910 | Train Cox: 2.8921 | Train Shape MSE: 0.7182 | Val Loss: 3.6479 | Val C-index: 0.5800 | Val Cox: 3.6074 | Val Shape MSE: 0.8094
+Epoch 14/30 | Train Loss: 2.9438 | Train C-index: 0.6894 | Train Cox: 2.9078 | Train Shape MSE: 0.7210 | Val Loss: 3.5986 | Val C-index: 0.6262 | Val Cox: 3.5659 | Val Shape MSE: 0.6540
+Epoch 15/30 | Train Loss: 2.8599 | Train C-index: 0.7211 | Train Cox: 2.8262 | Train Shape MSE: 0.6746 | Val Loss: 3.6039 | Val C-index: 0.6325 | Val Cox: 3.5703 | Val Shape MSE: 0.6703
+Epoch 16/30 | Train Loss: 2.8634 | Train C-index: 0.7240 | Train Cox: 2.8297 | Train Shape MSE: 0.6727 | Val Loss: 3.5984 | Val C-index: 0.6575 | Val Cox: 3.5645 | Val Shape MSE: 0.6795
+Epoch 17/30 | Train Loss: 2.8580 | Train C-index: 0.7232 | Train Cox: 2.8265 | Train Shape MSE: 0.6294 | Val Loss: 3.6386 | Val C-index: 0.6225 | Val Cox: 3.6051 | Val Shape MSE: 0.6690
+Epoch 18/30 | Train Loss: 2.7833 | Train C-index: 0.7400 | Train Cox: 2.7510 | Train Shape MSE: 0.6471 | Val Loss: 3.6457 | Val C-index: 0.6562 | Val Cox: 3.6124 | Val Shape MSE: 0.6669
+Epoch 19/30 | Train Loss: 2.8210 | Train C-index: 0.7382 | Train Cox: 2.7863 | Train Shape MSE: 0.6929 | Val Loss: 3.5918 | Val C-index: 0.6725 | Val Cox: 3.5583 | Val Shape MSE: 0.6707
+Epoch 20/30 | Train Loss: 2.7640 | Train C-index: 0.7341 | Train Cox: 2.7308 | Train Shape MSE: 0.6650 | Val Loss: 3.6194 | Val C-index: 0.6813 | Val Cox: 3.5776 | Val Shape MSE: 0.8369
+Epoch 21/30 | Train Loss: 2.8668 | Train C-index: 0.7336 | Train Cox: 2.8336 | Train Shape MSE: 0.6651 | Val Loss: 3.5927 | Val C-index: 0.6800 | Val Cox: 3.5598 | Val Shape MSE: 0.6577
+Epoch 22/30 | Train Loss: 2.7592 | Train C-index: 0.7420 | Train Cox: 2.7188 | Train Shape MSE: 0.8071 | Val Loss: 3.7208 | Val C-index: 0.6488 | Val Cox: 3.6908 | Val Shape MSE: 0.5988
+Epoch 23/30 | Train Loss: 2.8181 | Train C-index: 0.7313 | Train Cox: 2.7803 | Train Shape MSE: 0.7563 | Val Loss: 3.6575 | Val C-index: 0.6813 | Val Cox: 3.6259 | Val Shape MSE: 0.6322
+Epoch 24/30 | Train Loss: 2.7007 | Train C-index: 0.7758 | Train Cox: 2.6691 | Train Shape MSE: 0.6322 | Val Loss: 3.5580 | Val C-index: 0.6737 | Val Cox: 3.5191 | Val Shape MSE: 0.7777
+Epoch 25/30 | Train Loss: 2.6708 | Train C-index: 0.7634 | Train Cox: 2.6389 | Train Shape MSE: 0.6383 | Val Loss: 3.6801 | Val C-index: 0.6900 | Val Cox: 3.6506 | Val Shape MSE: 0.5901
+Epoch 26/30 | Train Loss: 2.6709 | Train C-index: 0.7572 | Train Cox: 2.6416 | Train Shape MSE: 0.5865 | Val Loss: 3.6852 | Val C-index: 0.6462 | Val Cox: 3.6535 | Val Shape MSE: 0.6327
+Epoch 27/30 | Train Loss: 2.6770 | Train C-index: 0.7675 | Train Cox: 2.6483 | Train Shape MSE: 0.5755 | Val Loss: 3.6938 | Val C-index: 0.6925 | Val Cox: 3.6641 | Val Shape MSE: 0.5937
+Epoch 28/30 | Train Loss: 2.6699 | Train C-index: 0.7705 | Train Cox: 2.6419 | Train Shape MSE: 0.5591 | Val Loss: 3.7255 | Val C-index: 0.6650 | Val Cox: 3.6953 | Val Shape MSE: 0.6040
+Epoch 29/30 | Train Loss: 2.6606 | Train C-index: 0.7771 | Train Cox: 2.6326 | Train Shape MSE: 0.5585 | Val Loss: 3.6920 | Val C-index: 0.6763 | Val Cox: 3.6590 | Val Shape MSE: 0.6600
+Epoch 30/30 | Train Loss: 2.6937 | Train C-index: 0.7737 | Train Cox: 2.6642 | Train Shape MSE: 0.5896 | Val Loss: 3.6744 | Val C-index: 0.6775 | Val Cox: 3.6443 | Val Shape MSE: 0.6015
+
+allshape | Outer4 | lambda0.05 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.1186 | Train C-index: 0.4833 | Train Cox: 3.0665 | Train Shape MSE: 1.0420 | Val Loss: 3.5895 | Val C-index: 0.6919 | Val Cox: 3.5384 | Val Shape MSE: 1.0210
+Epoch 2/30 | Train Loss: 3.0815 | Train C-index: 0.5712 | Train Cox: 3.0317 | Train Shape MSE: 0.9945 | Val Loss: 3.5835 | Val C-index: 0.6956 | Val Cox: 3.5316 | Val Shape MSE: 1.0374
+Epoch 3/30 | Train Loss: 3.1250 | Train C-index: 0.6671 | Train Cox: 3.0752 | Train Shape MSE: 0.9948 | Val Loss: 3.5605 | Val C-index: 0.6980 | Val Cox: 3.5105 | Val Shape MSE: 0.9993
+Epoch 4/30 | Train Loss: 3.0728 | Train C-index: 0.6509 | Train Cox: 3.0256 | Train Shape MSE: 0.9431 | Val Loss: 3.4970 | Val C-index: 0.6980 | Val Cox: 3.4516 | Val Shape MSE: 0.9095
+Epoch 5/30 | Train Loss: 3.0018 | Train C-index: 0.6521 | Train Cox: 2.9590 | Train Shape MSE: 0.8577 | Val Loss: 3.3766 | Val C-index: 0.7017 | Val Cox: 3.3400 | Val Shape MSE: 0.7334
+Epoch 6/30 | Train Loss: 2.9641 | Train C-index: 0.6765 | Train Cox: 2.9257 | Train Shape MSE: 0.7687 | Val Loss: 3.3306 | Val C-index: 0.7176 | Val Cox: 3.2954 | Val Shape MSE: 0.7037
+Epoch 7/30 | Train Loss: 2.9836 | Train C-index: 0.6719 | Train Cox: 2.9405 | Train Shape MSE: 0.8616 | Val Loss: 3.4284 | Val C-index: 0.7017 | Val Cox: 3.3910 | Val Shape MSE: 0.7469
+Epoch 8/30 | Train Loss: 2.9240 | Train C-index: 0.6981 | Train Cox: 2.8815 | Train Shape MSE: 0.8507 | Val Loss: 3.3595 | Val C-index: 0.7152 | Val Cox: 3.3215 | Val Shape MSE: 0.7595
+Epoch 9/30 | Train Loss: 2.9252 | Train C-index: 0.6977 | Train Cox: 2.8896 | Train Shape MSE: 0.7119 | Val Loss: 3.3459 | Val C-index: 0.7188 | Val Cox: 3.3127 | Val Shape MSE: 0.6637
+Epoch 10/30 | Train Loss: 2.8761 | Train C-index: 0.7066 | Train Cox: 2.8405 | Train Shape MSE: 0.7118 | Val Loss: 3.3416 | Val C-index: 0.7188 | Val Cox: 3.3094 | Val Shape MSE: 0.6445
+Epoch 11/30 | Train Loss: 2.8221 | Train C-index: 0.7120 | Train Cox: 2.7879 | Train Shape MSE: 0.6839 | Val Loss: 3.3358 | Val C-index: 0.7188 | Val Cox: 3.3049 | Val Shape MSE: 0.6178
+Epoch 12/30 | Train Loss: 2.8435 | Train C-index: 0.7233 | Train Cox: 2.8089 | Train Shape MSE: 0.6904 | Val Loss: 3.3394 | Val C-index: 0.7298 | Val Cox: 3.3070 | Val Shape MSE: 0.6479
+Epoch 13/30 | Train Loss: 2.8000 | Train C-index: 0.7015 | Train Cox: 2.7628 | Train Shape MSE: 0.7445 | Val Loss: 3.3214 | Val C-index: 0.7274 | Val Cox: 3.2884 | Val Shape MSE: 0.6604
+Epoch 14/30 | Train Loss: 2.8438 | Train C-index: 0.7274 | Train Cox: 2.8074 | Train Shape MSE: 0.7276 | Val Loss: 3.3243 | Val C-index: 0.7359 | Val Cox: 3.2886 | Val Shape MSE: 0.7144
+Epoch 15/30 | Train Loss: 2.8253 | Train C-index: 0.7282 | Train Cox: 2.7873 | Train Shape MSE: 0.7584 | Val Loss: 3.3067 | Val C-index: 0.7347 | Val Cox: 3.2773 | Val Shape MSE: 0.5898
+Epoch 16/30 | Train Loss: 2.8308 | Train C-index: 0.7248 | Train Cox: 2.7951 | Train Shape MSE: 0.7130 | Val Loss: 3.2900 | Val C-index: 0.7408 | Val Cox: 3.2601 | Val Shape MSE: 0.5970
+Epoch 17/30 | Train Loss: 2.8204 | Train C-index: 0.7304 | Train Cox: 2.7891 | Train Shape MSE: 0.6255 | Val Loss: 3.2659 | Val C-index: 0.7469 | Val Cox: 3.2352 | Val Shape MSE: 0.6138
+Epoch 18/30 | Train Loss: 2.7484 | Train C-index: 0.7395 | Train Cox: 2.7137 | Train Shape MSE: 0.6950 | Val Loss: 3.2514 | Val C-index: 0.7494 | Val Cox: 3.2201 | Val Shape MSE: 0.6265
+Epoch 19/30 | Train Loss: 2.7766 | Train C-index: 0.7160 | Train Cox: 2.7447 | Train Shape MSE: 0.6389 | Val Loss: 3.2341 | Val C-index: 0.7518 | Val Cox: 3.2059 | Val Shape MSE: 0.5645
+Epoch 20/30 | Train Loss: 2.8263 | Train C-index: 0.7372 | Train Cox: 2.7964 | Train Shape MSE: 0.5974 | Val Loss: 3.2280 | Val C-index: 0.7531 | Val Cox: 3.2003 | Val Shape MSE: 0.5534
+Epoch 21/30 | Train Loss: 2.8127 | Train C-index: 0.7419 | Train Cox: 2.7827 | Train Shape MSE: 0.6017 | Val Loss: 3.2338 | Val C-index: 0.7494 | Val Cox: 3.2035 | Val Shape MSE: 0.6074
+Epoch 22/30 | Train Loss: 2.7655 | Train C-index: 0.7291 | Train Cox: 2.7244 | Train Shape MSE: 0.8220 | Val Loss: 3.2374 | Val C-index: 0.7653 | Val Cox: 3.1959 | Val Shape MSE: 0.8292
+Epoch 23/30 | Train Loss: 2.8545 | Train C-index: 0.6785 | Train Cox: 2.8080 | Train Shape MSE: 0.9297 | Val Loss: 3.2749 | Val C-index: 0.7567 | Val Cox: 3.2100 | Val Shape MSE: 1.2977
+Epoch 24/30 | Train Loss: 2.7465 | Train C-index: 0.7327 | Train Cox: 2.7072 | Train Shape MSE: 0.7852 | Val Loss: 3.2334 | Val C-index: 0.7592 | Val Cox: 3.1903 | Val Shape MSE: 0.8632
+Epoch 25/30 | Train Loss: 2.7668 | Train C-index: 0.7375 | Train Cox: 2.7266 | Train Shape MSE: 0.8038 | Val Loss: 3.2488 | Val C-index: 0.7531 | Val Cox: 3.2117 | Val Shape MSE: 0.7427
+Epoch 26/30 | Train Loss: 2.8102 | Train C-index: 0.7212 | Train Cox: 2.7678 | Train Shape MSE: 0.8480 | Val Loss: 3.2478 | Val C-index: 0.7543 | Val Cox: 3.2142 | Val Shape MSE: 0.6721
+Epoch 27/30 | Train Loss: 2.7751 | Train C-index: 0.7533 | Train Cox: 2.7389 | Train Shape MSE: 0.7247 | Val Loss: 3.2118 | Val C-index: 0.7653 | Val Cox: 3.1803 | Val Shape MSE: 0.6288
+Epoch 28/30 | Train Loss: 2.7877 | Train C-index: 0.7120 | Train Cox: 2.7504 | Train Shape MSE: 0.7463 | Val Loss: 3.2648 | Val C-index: 0.7714 | Val Cox: 3.2230 | Val Shape MSE: 0.8364
+Epoch 29/30 | Train Loss: 2.6930 | Train C-index: 0.7210 | Train Cox: 2.6567 | Train Shape MSE: 0.7258 | Val Loss: 3.2422 | Val C-index: 0.7567 | Val Cox: 3.2024 | Val Shape MSE: 0.7955
+Epoch 30/30 | Train Loss: 2.7125 | Train C-index: 0.7554 | Train Cox: 2.6804 | Train Shape MSE: 0.6432 | Val Loss: 3.1898 | Val C-index: 0.7702 | Val Cox: 3.1599 | Val Shape MSE: 0.5988
+
+allshape | Outer4 | lambda0.2 | Inner0 | fit=326,STOP=58,HELD=193
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2563 | Train C-index: 0.4223 | Train Cox: 3.0540 | Train Shape MSE: 1.0115 | Val Loss: 3.8041 | Val C-index: 0.6114 | Val Cox: 3.6162 | Val Shape MSE: 0.9396
+Epoch 2/30 | Train Loss: 3.2688 | Train C-index: 0.4842 | Train Cox: 3.0703 | Train Shape MSE: 0.9925 | Val Loss: 3.8005 | Val C-index: 0.6163 | Val Cox: 3.6156 | Val Shape MSE: 0.9246
+Epoch 3/30 | Train Loss: 3.2375 | Train C-index: 0.5394 | Train Cox: 3.0417 | Train Shape MSE: 0.9786 | Val Loss: 3.7956 | Val C-index: 0.6114 | Val Cox: 3.6147 | Val Shape MSE: 0.9043
+Epoch 4/30 | Train Loss: 3.2675 | Train C-index: 0.5841 | Train Cox: 3.0775 | Train Shape MSE: 0.9499 | Val Loss: 3.7832 | Val C-index: 0.6163 | Val Cox: 3.6111 | Val Shape MSE: 0.8605
+Epoch 5/30 | Train Loss: 3.2505 | Train C-index: 0.6387 | Train Cox: 3.0728 | Train Shape MSE: 0.8888 | Val Loss: 3.7657 | Val C-index: 0.6127 | Val Cox: 3.6028 | Val Shape MSE: 0.8142
+Epoch 6/30 | Train Loss: 3.2282 | Train C-index: 0.6518 | Train Cox: 3.0647 | Train Shape MSE: 0.8176 | Val Loss: 3.7311 | Val C-index: 0.6090 | Val Cox: 3.5872 | Val Shape MSE: 0.7192
+Epoch 7/30 | Train Loss: 3.1617 | Train C-index: 0.6486 | Train Cox: 3.0054 | Train Shape MSE: 0.7816 | Val Loss: 3.7058 | Val C-index: 0.6127 | Val Cox: 3.5730 | Val Shape MSE: 0.6638
+Epoch 8/30 | Train Loss: 3.1166 | Train C-index: 0.6566 | Train Cox: 2.9584 | Train Shape MSE: 0.7910 | Val Loss: 3.6957 | Val C-index: 0.6297 | Val Cox: 3.5675 | Val Shape MSE: 0.6410
+Epoch 9/30 | Train Loss: 3.1187 | Train C-index: 0.7055 | Train Cox: 2.9654 | Train Shape MSE: 0.7663 | Val Loss: 3.7029 | Val C-index: 0.6443 | Val Cox: 3.5596 | Val Shape MSE: 0.7163
+Epoch 10/30 | Train Loss: 3.0431 | Train C-index: 0.6868 | Train Cox: 2.8914 | Train Shape MSE: 0.7585 | Val Loss: 3.7393 | Val C-index: 0.6382 | Val Cox: 3.5600 | Val Shape MSE: 0.8964
+Epoch 11/30 | Train Loss: 3.0614 | Train C-index: 0.6852 | Train Cox: 2.9016 | Train Shape MSE: 0.7992 | Val Loss: 3.6766 | Val C-index: 0.6431 | Val Cox: 3.5596 | Val Shape MSE: 0.5852
+Epoch 12/30 | Train Loss: 2.9468 | Train C-index: 0.7235 | Train Cox: 2.7975 | Train Shape MSE: 0.7466 | Val Loss: 3.6955 | Val C-index: 0.6504 | Val Cox: 3.5726 | Val Shape MSE: 0.6146
+Epoch 13/30 | Train Loss: 2.9713 | Train C-index: 0.7334 | Train Cox: 2.8245 | Train Shape MSE: 0.7339 | Val Loss: 3.7436 | Val C-index: 0.6395 | Val Cox: 3.6166 | Val Shape MSE: 0.6348
+Epoch 14/30 | Train Loss: 2.9332 | Train C-index: 0.7278 | Train Cox: 2.7999 | Train Shape MSE: 0.6664 | Val Loss: 3.7471 | Val C-index: 0.6297 | Val Cox: 3.6289 | Val Shape MSE: 0.5909
+Epoch 15/30 | Train Loss: 2.9002 | Train C-index: 0.7326 | Train Cox: 2.7723 | Train Shape MSE: 0.6392 | Val Loss: 3.7277 | Val C-index: 0.6273 | Val Cox: 3.6075 | Val Shape MSE: 0.6010
+Epoch 16/30 | Train Loss: 2.8305 | Train C-index: 0.7229 | Train Cox: 2.7012 | Train Shape MSE: 0.6464 | Val Loss: 3.9410 | Val C-index: 0.6127 | Val Cox: 3.8069 | Val Shape MSE: 0.6703
+Epoch 17/30 | Train Loss: 2.8631 | Train C-index: 0.7543 | Train Cox: 2.7332 | Train Shape MSE: 0.6494 | Val Loss: 3.8056 | Val C-index: 0.6309 | Val Cox: 3.6921 | Val Shape MSE: 0.5676
+Epoch 18/30 | Train Loss: 2.8003 | Train C-index: 0.7561 | Train Cox: 2.6795 | Train Shape MSE: 0.6041 | Val Loss: 3.8386 | Val C-index: 0.6188 | Val Cox: 3.7220 | Val Shape MSE: 0.5831
+Epoch 19/30 | Train Loss: 2.7712 | Train C-index: 0.7260 | Train Cox: 2.6514 | Train Shape MSE: 0.5991 | Val Loss: 3.8739 | Val C-index: 0.6297 | Val Cox: 3.7574 | Val Shape MSE: 0.5824
+Epoch 20/30 | Train Loss: 2.8318 | Train C-index: 0.7647 | Train Cox: 2.6984 | Train Shape MSE: 0.6668 | Val Loss: 4.0180 | Val C-index: 0.6212 | Val Cox: 3.8567 | Val Shape MSE: 0.8063
+Epoch 21/30 | Train Loss: 2.7986 | Train C-index: 0.7507 | Train Cox: 2.6758 | Train Shape MSE: 0.6139 | Val Loss: 3.8688 | Val C-index: 0.6151 | Val Cox: 3.7561 | Val Shape MSE: 0.5631
+Epoch 22/30 | Train Loss: 2.7320 | Train C-index: 0.7803 | Train Cox: 2.6236 | Train Shape MSE: 0.5420 | Val Loss: 3.8959 | Val C-index: 0.6151 | Val Cox: 3.7767 | Val Shape MSE: 0.5961
+Early stopping at epoch22
+
+allshape | Outer4 | lambda0.2 | Inner1 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.3293 | Train C-index: 0.5090 | Train Cox: 3.1258 | Train Shape MSE: 1.0177 | Val Loss: 3.7784 | Val C-index: 0.5613 | Val Cox: 3.5870 | Val Shape MSE: 0.9572
+Epoch 2/30 | Train Loss: 3.2989 | Train C-index: 0.5102 | Train Cox: 3.1019 | Train Shape MSE: 0.9852 | Val Loss: 3.7727 | Val C-index: 0.5675 | Val Cox: 3.5866 | Val Shape MSE: 0.9304
+Epoch 3/30 | Train Loss: 3.3121 | Train C-index: 0.5637 | Train Cox: 3.1187 | Train Shape MSE: 0.9669 | Val Loss: 3.7703 | Val C-index: 0.5813 | Val Cox: 3.5853 | Val Shape MSE: 0.9251
+Epoch 4/30 | Train Loss: 3.3262 | Train C-index: 0.5775 | Train Cox: 3.1392 | Train Shape MSE: 0.9350 | Val Loss: 3.7641 | Val C-index: 0.5787 | Val Cox: 3.5822 | Val Shape MSE: 0.9096
+Epoch 5/30 | Train Loss: 3.2536 | Train C-index: 0.6025 | Train Cox: 3.0837 | Train Shape MSE: 0.8499 | Val Loss: 3.7484 | Val C-index: 0.5800 | Val Cox: 3.5752 | Val Shape MSE: 0.8663
+Epoch 6/30 | Train Loss: 3.2304 | Train C-index: 0.6137 | Train Cox: 3.0758 | Train Shape MSE: 0.7729 | Val Loss: 3.7319 | Val C-index: 0.5800 | Val Cox: 3.5598 | Val Shape MSE: 0.8603
+Epoch 7/30 | Train Loss: 3.1630 | Train C-index: 0.6280 | Train Cox: 3.0153 | Train Shape MSE: 0.7389 | Val Loss: 3.7350 | Val C-index: 0.6175 | Val Cox: 3.5596 | Val Shape MSE: 0.8770
+Epoch 8/30 | Train Loss: 3.1441 | Train C-index: 0.6472 | Train Cox: 3.0030 | Train Shape MSE: 0.7057 | Val Loss: 3.6919 | Val C-index: 0.6138 | Val Cox: 3.5416 | Val Shape MSE: 0.7513
+Epoch 9/30 | Train Loss: 3.1041 | Train C-index: 0.6666 | Train Cox: 2.9607 | Train Shape MSE: 0.7165 | Val Loss: 3.7040 | Val C-index: 0.6125 | Val Cox: 3.5583 | Val Shape MSE: 0.7282
+Epoch 10/30 | Train Loss: 3.0868 | Train C-index: 0.6750 | Train Cox: 2.9512 | Train Shape MSE: 0.6780 | Val Loss: 3.6858 | Val C-index: 0.6275 | Val Cox: 3.5527 | Val Shape MSE: 0.6655
+Epoch 11/30 | Train Loss: 3.0788 | Train C-index: 0.6809 | Train Cox: 2.9460 | Train Shape MSE: 0.6638 | Val Loss: 3.6706 | Val C-index: 0.6375 | Val Cox: 3.5375 | Val Shape MSE: 0.6652
+Epoch 12/30 | Train Loss: 3.0311 | Train C-index: 0.6928 | Train Cox: 2.9063 | Train Shape MSE: 0.6237 | Val Loss: 3.6370 | Val C-index: 0.6525 | Val Cox: 3.5193 | Val Shape MSE: 0.5882
+Epoch 13/30 | Train Loss: 2.9962 | Train C-index: 0.7076 | Train Cox: 2.8657 | Train Shape MSE: 0.6526 | Val Loss: 3.6437 | Val C-index: 0.6288 | Val Cox: 3.4958 | Val Shape MSE: 0.7392
+Epoch 14/30 | Train Loss: 3.0100 | Train C-index: 0.6976 | Train Cox: 2.8805 | Train Shape MSE: 0.6475 | Val Loss: 3.7009 | Val C-index: 0.6750 | Val Cox: 3.5256 | Val Shape MSE: 0.8768
+Epoch 15/30 | Train Loss: 2.9797 | Train C-index: 0.7114 | Train Cox: 2.8490 | Train Shape MSE: 0.6533 | Val Loss: 3.5978 | Val C-index: 0.6600 | Val Cox: 3.4806 | Val Shape MSE: 0.5863
+Epoch 16/30 | Train Loss: 2.9627 | Train C-index: 0.7209 | Train Cox: 2.8407 | Train Shape MSE: 0.6097 | Val Loss: 3.6303 | Val C-index: 0.6800 | Val Cox: 3.5140 | Val Shape MSE: 0.5813
+Epoch 17/30 | Train Loss: 2.9487 | Train C-index: 0.7182 | Train Cox: 2.8307 | Train Shape MSE: 0.5903 | Val Loss: 3.5980 | Val C-index: 0.6700 | Val Cox: 3.4926 | Val Shape MSE: 0.5273
+Epoch 18/30 | Train Loss: 2.8813 | Train C-index: 0.7366 | Train Cox: 2.7661 | Train Shape MSE: 0.5761 | Val Loss: 3.6266 | Val C-index: 0.6850 | Val Cox: 3.5186 | Val Shape MSE: 0.5398
+Epoch 19/30 | Train Loss: 2.8967 | Train C-index: 0.7400 | Train Cox: 2.7925 | Train Shape MSE: 0.5208 | Val Loss: 3.5697 | Val C-index: 0.6787 | Val Cox: 3.4569 | Val Shape MSE: 0.5640
+Epoch 20/30 | Train Loss: 2.8742 | Train C-index: 0.7461 | Train Cox: 2.7646 | Train Shape MSE: 0.5483 | Val Loss: 3.5694 | Val C-index: 0.6950 | Val Cox: 3.4709 | Val Shape MSE: 0.4928
+Epoch 21/30 | Train Loss: 2.9171 | Train C-index: 0.7506 | Train Cox: 2.8132 | Train Shape MSE: 0.5194 | Val Loss: 3.5566 | Val C-index: 0.6863 | Val Cox: 3.4581 | Val Shape MSE: 0.4926
+Epoch 22/30 | Train Loss: 2.8401 | Train C-index: 0.7602 | Train Cox: 2.7426 | Train Shape MSE: 0.4876 | Val Loss: 3.5861 | Val C-index: 0.6950 | Val Cox: 3.4512 | Val Shape MSE: 0.6745
+Epoch 23/30 | Train Loss: 2.8927 | Train C-index: 0.7123 | Train Cox: 2.7640 | Train Shape MSE: 0.6436 | Val Loss: 3.6328 | Val C-index: 0.6863 | Val Cox: 3.5163 | Val Shape MSE: 0.5824
+Epoch 24/30 | Train Loss: 2.8229 | Train C-index: 0.7103 | Train Cox: 2.7073 | Train Shape MSE: 0.5782 | Val Loss: 3.6464 | Val C-index: 0.6975 | Val Cox: 3.5268 | Val Shape MSE: 0.5979
+Epoch 25/30 | Train Loss: 2.7753 | Train C-index: 0.7280 | Train Cox: 2.6654 | Train Shape MSE: 0.5495 | Val Loss: 3.6200 | Val C-index: 0.6987 | Val Cox: 3.5134 | Val Shape MSE: 0.5328
+Epoch 26/30 | Train Loss: 2.7803 | Train C-index: 0.7574 | Train Cox: 2.6846 | Train Shape MSE: 0.4786 | Val Loss: 3.7052 | Val C-index: 0.6700 | Val Cox: 3.6048 | Val Shape MSE: 0.5021
+Epoch 27/30 | Train Loss: 2.7938 | Train C-index: 0.7643 | Train Cox: 2.6965 | Train Shape MSE: 0.4867 | Val Loss: 3.6033 | Val C-index: 0.6975 | Val Cox: 3.4979 | Val Shape MSE: 0.5266
+Epoch 28/30 | Train Loss: 2.7840 | Train C-index: 0.7564 | Train Cox: 2.6897 | Train Shape MSE: 0.4712 | Val Loss: 3.6834 | Val C-index: 0.7037 | Val Cox: 3.5777 | Val Shape MSE: 0.5288
+Epoch 29/30 | Train Loss: 2.7863 | Train C-index: 0.7517 | Train Cox: 2.6808 | Train Shape MSE: 0.5277 | Val Loss: 3.6648 | Val C-index: 0.6900 | Val Cox: 3.4854 | Val Shape MSE: 0.8973
+Epoch 30/30 | Train Loss: 2.8262 | Train C-index: 0.7481 | Train Cox: 2.7198 | Train Shape MSE: 0.5321 | Val Loss: 3.6462 | Val C-index: 0.6875 | Val Cox: 3.5440 | Val Shape MSE: 0.5109
+
+allshape | Outer4 | lambda0.2 | Inner2 | fit=327,STOP=58,HELD=192
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/30 | Train Loss: 3.2759 | Train C-index: 0.4825 | Train Cox: 3.0669 | Train Shape MSE: 1.0449 | Val Loss: 3.7430 | Val C-index: 0.7078 | Val Cox: 3.5400 | Val Shape MSE: 1.0151
+Epoch 2/30 | Train Loss: 3.2318 | Train C-index: 0.5441 | Train Cox: 3.0337 | Train Shape MSE: 0.9908 | Val Loss: 3.7431 | Val C-index: 0.6956 | Val Cox: 3.5373 | Val Shape MSE: 1.0292
+Epoch 3/30 | Train Loss: 3.2819 | Train C-index: 0.6526 | Train Cox: 3.0843 | Train Shape MSE: 0.9884 | Val Loss: 3.7286 | Val C-index: 0.7017 | Val Cox: 3.5306 | Val Shape MSE: 0.9901
+Epoch 4/30 | Train Loss: 3.2465 | Train C-index: 0.6267 | Train Cox: 3.0553 | Train Shape MSE: 0.9557 | Val Loss: 3.7062 | Val C-index: 0.7017 | Val Cox: 3.5157 | Val Shape MSE: 0.9524
+Epoch 5/30 | Train Loss: 3.2062 | Train C-index: 0.6549 | Train Cox: 3.0242 | Train Shape MSE: 0.9100 | Val Loss: 3.6399 | Val C-index: 0.7005 | Val Cox: 3.4705 | Val Shape MSE: 0.8469
+Epoch 6/30 | Train Loss: 3.1396 | Train C-index: 0.6616 | Train Cox: 2.9776 | Train Shape MSE: 0.8097 | Val Loss: 3.5401 | Val C-index: 0.7078 | Val Cox: 3.3910 | Val Shape MSE: 0.7451
+Epoch 7/30 | Train Loss: 3.0966 | Train C-index: 0.6797 | Train Cox: 2.9231 | Train Shape MSE: 0.8675 | Val Loss: 3.5269 | Val C-index: 0.7066 | Val Cox: 3.3453 | Val Shape MSE: 0.9080
+Epoch 8/30 | Train Loss: 3.0407 | Train C-index: 0.6932 | Train Cox: 2.8841 | Train Shape MSE: 0.7832 | Val Loss: 3.5383 | Val C-index: 0.7042 | Val Cox: 3.3776 | Val Shape MSE: 0.8038
+Epoch 9/30 | Train Loss: 3.0396 | Train C-index: 0.6907 | Train Cox: 2.8775 | Train Shape MSE: 0.8101 | Val Loss: 3.4932 | Val C-index: 0.7090 | Val Cox: 3.3493 | Val Shape MSE: 0.7195
+Epoch 10/30 | Train Loss: 2.9878 | Train C-index: 0.6973 | Train Cox: 2.8397 | Train Shape MSE: 0.7407 | Val Loss: 3.4801 | Val C-index: 0.7115 | Val Cox: 3.3487 | Val Shape MSE: 0.6573
+Epoch 11/30 | Train Loss: 2.9450 | Train C-index: 0.7054 | Train Cox: 2.8042 | Train Shape MSE: 0.7040 | Val Loss: 3.4516 | Val C-index: 0.7164 | Val Cox: 3.3238 | Val Shape MSE: 0.6391
+Epoch 12/30 | Train Loss: 2.9689 | Train C-index: 0.7136 | Train Cox: 2.8307 | Train Shape MSE: 0.6911 | Val Loss: 3.4735 | Val C-index: 0.7200 | Val Cox: 3.3423 | Val Shape MSE: 0.6561
+Epoch 13/30 | Train Loss: 2.9276 | Train C-index: 0.6996 | Train Cox: 2.7824 | Train Shape MSE: 0.7259 | Val Loss: 3.4242 | Val C-index: 0.7225 | Val Cox: 3.3011 | Val Shape MSE: 0.6154
+Epoch 14/30 | Train Loss: 2.9415 | Train C-index: 0.7095 | Train Cox: 2.8092 | Train Shape MSE: 0.6613 | Val Loss: 3.4365 | Val C-index: 0.7225 | Val Cox: 3.3098 | Val Shape MSE: 0.6335
+Epoch 15/30 | Train Loss: 2.9424 | Train C-index: 0.7115 | Train Cox: 2.8082 | Train Shape MSE: 0.6712 | Val Loss: 3.4351 | Val C-index: 0.7213 | Val Cox: 3.3116 | Val Shape MSE: 0.6175
+Epoch 16/30 | Train Loss: 2.9442 | Train C-index: 0.7141 | Train Cox: 2.8099 | Train Shape MSE: 0.6713 | Val Loss: 3.4142 | Val C-index: 0.7359 | Val Cox: 3.2929 | Val Shape MSE: 0.6064
+Epoch 17/30 | Train Loss: 2.9362 | Train C-index: 0.7126 | Train Cox: 2.8093 | Train Shape MSE: 0.6344 | Val Loss: 3.3792 | Val C-index: 0.7433 | Val Cox: 3.2603 | Val Shape MSE: 0.5944
+Epoch 18/30 | Train Loss: 2.8636 | Train C-index: 0.7270 | Train Cox: 2.7358 | Train Shape MSE: 0.6389 | Val Loss: 3.3699 | Val C-index: 0.7469 | Val Cox: 3.2409 | Val Shape MSE: 0.6449
+Epoch 19/30 | Train Loss: 2.8782 | Train C-index: 0.7251 | Train Cox: 2.7541 | Train Shape MSE: 0.6208 | Val Loss: 3.3492 | Val C-index: 0.7518 | Val Cox: 3.2315 | Val Shape MSE: 0.5887
+Epoch 20/30 | Train Loss: 2.9582 | Train C-index: 0.7146 | Train Cox: 2.8215 | Train Shape MSE: 0.6834 | Val Loss: 3.3692 | Val C-index: 0.7531 | Val Cox: 3.2369 | Val Shape MSE: 0.6615
+Epoch 21/30 | Train Loss: 2.9331 | Train C-index: 0.7318 | Train Cox: 2.8049 | Train Shape MSE: 0.6408 | Val Loss: 3.3447 | Val C-index: 0.7494 | Val Cox: 3.2251 | Val Shape MSE: 0.5981
+Epoch 22/30 | Train Loss: 2.8709 | Train C-index: 0.7384 | Train Cox: 2.7433 | Train Shape MSE: 0.6382 | Val Loss: 3.3419 | Val C-index: 0.7518 | Val Cox: 3.2294 | Val Shape MSE: 0.5626
+Epoch 23/30 | Train Loss: 2.9486 | Train C-index: 0.7353 | Train Cox: 2.8199 | Train Shape MSE: 0.6433 | Val Loss: 3.3729 | Val C-index: 0.7482 | Val Cox: 3.2307 | Val Shape MSE: 0.7109
+Epoch 24/30 | Train Loss: 2.8270 | Train C-index: 0.7467 | Train Cox: 2.7061 | Train Shape MSE: 0.6043 | Val Loss: 3.3474 | Val C-index: 0.7555 | Val Cox: 3.2189 | Val Shape MSE: 0.6427
+Epoch 25/30 | Train Loss: 2.8603 | Train C-index: 0.7341 | Train Cox: 2.7474 | Train Shape MSE: 0.5648 | Val Loss: 3.3245 | Val C-index: 0.7531 | Val Cox: 3.2072 | Val Shape MSE: 0.5862
+Epoch 26/30 | Train Loss: 2.8784 | Train C-index: 0.7165 | Train Cox: 2.7611 | Train Shape MSE: 0.5865 | Val Loss: 3.3438 | Val C-index: 0.7494 | Val Cox: 3.2209 | Val Shape MSE: 0.6146
+Epoch 27/30 | Train Loss: 2.8615 | Train C-index: 0.7409 | Train Cox: 2.7492 | Train Shape MSE: 0.5612 | Val Loss: 3.3155 | Val C-index: 0.7641 | Val Cox: 3.2086 | Val Shape MSE: 0.5343
+Epoch 28/30 | Train Loss: 2.8618 | Train C-index: 0.7544 | Train Cox: 2.7496 | Train Shape MSE: 0.5611 | Val Loss: 3.3789 | Val C-index: 0.7653 | Val Cox: 3.2230 | Val Shape MSE: 0.7794
+Epoch 29/30 | Train Loss: 2.8251 | Train C-index: 0.7382 | Train Cox: 2.6995 | Train Shape MSE: 0.6279 | Val Loss: 3.2868 | Val C-index: 0.7689 | Val Cox: 3.1779 | Val Shape MSE: 0.5444
+Epoch 30/30 | Train Loss: 2.7872 | Train C-index: 0.7480 | Train Cox: 2.6827 | Train Shape MSE: 0.5229 | Val Loss: 3.2761 | Val C-index: 0.7677 | Val Cox: 3.1645 | Val Shape MSE: 0.5578
+allshape Outer4: lambda=0.05,fixed outer epochs=27 (outer labels unused)
+[ResNetCox] Loaded pretrained from /home/gly001/cqj/pa_ct_surv/model/ct_pretrain/resnet_18_23dataset.pth
+  Missing keys (ok): ['fc.0.weight', 'fc.0.bias', 'fc.3.weight', 'fc.3.bias']
+Epoch 1/27 | Train Loss: 3.1209 | Train C-index: 0.5466 | Train Cox: 3.0707 | Train Shape MSE: 1.0049
+Epoch 2/27 | Train Loss: 3.1030 | Train C-index: 0.5644 | Train Cox: 3.0543 | Train Shape MSE: 0.9740
+Epoch 3/27 | Train Loss: 3.0614 | Train C-index: 0.6072 | Train Cox: 3.0201 | Train Shape MSE: 0.8273
+Epoch 4/27 | Train Loss: 2.9864 | Train C-index: 0.6442 | Train Cox: 2.9451 | Train Shape MSE: 0.8250
+Epoch 5/27 | Train Loss: 2.9769 | Train C-index: 0.6542 | Train Cox: 2.9377 | Train Shape MSE: 0.7842
+Epoch 6/27 | Train Loss: 2.9829 | Train C-index: 0.6720 | Train Cox: 2.9449 | Train Shape MSE: 0.7615
+Epoch 7/27 | Train Loss: 2.9352 | Train C-index: 0.6819 | Train Cox: 2.8951 | Train Shape MSE: 0.8021
+Epoch 8/27 | Train Loss: 2.9215 | Train C-index: 0.6984 | Train Cox: 2.8830 | Train Shape MSE: 0.7699
+Epoch 9/27 | Train Loss: 2.8686 | Train C-index: 0.7152 | Train Cox: 2.8356 | Train Shape MSE: 0.6594
+Epoch 10/27 | Train Loss: 2.8720 | Train C-index: 0.6885 | Train Cox: 2.8389 | Train Shape MSE: 0.6618
+Epoch 11/27 | Train Loss: 2.8307 | Train C-index: 0.7053 | Train Cox: 2.7955 | Train Shape MSE: 0.7055
+Epoch 12/27 | Train Loss: 2.8273 | Train C-index: 0.7210 | Train Cox: 2.7979 | Train Shape MSE: 0.5867
+Epoch 13/27 | Train Loss: 2.8320 | Train C-index: 0.7220 | Train Cox: 2.8033 | Train Shape MSE: 0.5756
+Epoch 14/27 | Train Loss: 2.8205 | Train C-index: 0.7219 | Train Cox: 2.7872 | Train Shape MSE: 0.6660
+Epoch 15/27 | Train Loss: 2.8122 | Train C-index: 0.7084 | Train Cox: 2.7741 | Train Shape MSE: 0.7623
+Epoch 16/27 | Train Loss: 2.8484 | Train C-index: 0.6495 | Train Cox: 2.7994 | Train Shape MSE: 0.9800
+Epoch 17/27 | Train Loss: 2.8630 | Train C-index: 0.7123 | Train Cox: 2.8258 | Train Shape MSE: 0.7442
+Epoch 18/27 | Train Loss: 2.7471 | Train C-index: 0.7506 | Train Cox: 2.7185 | Train Shape MSE: 0.5704
+Epoch 19/27 | Train Loss: 2.7537 | Train C-index: 0.7185 | Train Cox: 2.7206 | Train Shape MSE: 0.6620
+Epoch 20/27 | Train Loss: 2.7795 | Train C-index: 0.7005 | Train Cox: 2.7363 | Train Shape MSE: 0.8638
+Epoch 21/27 | Train Loss: 2.8081 | Train C-index: 0.7059 | Train Cox: 2.7767 | Train Shape MSE: 0.6280
+Epoch 22/27 | Train Loss: 2.7455 | Train C-index: 0.7556 | Train Cox: 2.7167 | Train Shape MSE: 0.5753
+Epoch 23/27 | Train Loss: 2.7704 | Train C-index: 0.7476 | Train Cox: 2.7439 | Train Shape MSE: 0.5311
+Epoch 24/27 | Train Loss: 2.7721 | Train C-index: 0.7463 | Train Cox: 2.7447 | Train Shape MSE: 0.5476
+Epoch 25/27 | Train Loss: 2.7913 | Train C-index: 0.7218 | Train Cox: 2.7536 | Train Shape MSE: 0.7536
+Epoch 26/27 | Train Loss: 2.8417 | Train C-index: 0.7296 | Train Cox: 2.8104 | Train Shape MSE: 0.6258
+Epoch 27/27 | Train Loss: 2.7831 | Train C-index: 0.7238 | Train Cox: 2.7468 | Train Shape MSE: 0.7260
+
+Extra survival metrics:
+cutoff_from_train_median: 0.297273
+n_test: 144
+n_high_risk: 74
+n_low_risk: 70
+n_event_test: 50
+logrank_stat: 9.594952
+logrank_p: 0.001951
+auc_36m: 0.670619
+auc_60m: 0.588105
+HR_high_vs_low: 2.540025
+HR_95CI_lower: 1.379324
+HR_95CI_upper: 4.677457
+cox_p: 0.002769
+allshape final Outer4 | Train=0.7537 | Val=0.6339
+
+==================================================
+5-Fold CV Summary
+==================================================
+  Train C-index: 0.7393 ± 0.0153
+  Val C-index: 0.7136 ± 0.0514
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer Probe A fold0 | log_volume_mm3:R2=0.751, diameter_mm:R2=0.655, sphericity:R2=0.224, sphere_residual_given_true_VD:R2=0.004
+Outer Probe A fold1 | log_volume_mm3:R2=0.766, diameter_mm:R2=0.730, sphericity:R2=0.327, sphere_residual_given_true_VD:R2=0.037
+Outer Probe A fold2 | log_volume_mm3:R2=0.748, diameter_mm:R2=0.707, sphericity:R2=0.329, sphere_residual_given_true_VD:R2=-0.033
+Outer Probe A fold3 | log_volume_mm3:R2=0.788, diameter_mm:R2=0.646, sphericity:R2=0.314, sphere_residual_given_true_VD:R2=0.006
+Outer Probe A fold4 | log_volume_mm3:R2=0.789, diameter_mm:R2=0.696, sphericity:R2=0.253, sphere_residual_given_true_VD:R2=-0.005
+CV cohort: 721 | Held-out test: 0
+5-fold CV uses all samples; no held-out test set
+Outer Probe aux fold0 | log_volume_mm3:R2=0.804, diameter_mm:R2=0.714, sphericity:R2=0.160, sphere_residual_given_true_VD:R2=-0.095
+Outer Probe aux fold1 | log_volume_mm3:R2=0.766, diameter_mm:R2=0.730, sphericity:R2=0.327, sphere_residual_given_true_VD:R2=0.037
+Outer Probe aux fold2 | log_volume_mm3:R2=0.770, diameter_mm:R2=0.707, sphericity:R2=0.358, sphere_residual_given_true_VD:R2=0.022
+Outer Probe aux fold3 | log_volume_mm3:R2=0.795, diameter_mm:R2=0.692, sphericity:R2=0.330, sphere_residual_given_true_VD:R2=0.063
+Outer Probe aux fold4 | log_volume_mm3:R2=0.794, diameter_mm:R2=0.708, sphericity:R2=0.252, sphere_residual_given_true_VD:R2=-0.001
+CT Shape auxiliary allshape complete; no teacher/student training started.

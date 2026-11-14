@@ -30,7 +30,7 @@ def select_probe(contexts,penalties,targets):
         errors=[]
         for c in contexts:
             head=fit_probe(c['train_ct'],c['train_targets'],[alpha]*len(targets))
-            pred=head.predict(c['val_ct'])
+            pred=head.predict(c['val_ct']).reshape(len(c['val_ct']),len(targets))
             error=np.mean((pred-np.asarray(c['val_targets'],dtype=float))**2,axis=0)
             if error.shape!=(len(targets),) or not np.isfinite(error).all():raise ValueError('Invalid inner probe error')
             errors.append(error.tolist())

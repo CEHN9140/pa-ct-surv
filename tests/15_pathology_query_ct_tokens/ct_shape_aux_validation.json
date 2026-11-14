@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "initialization_rng_and_prediction_parity": true,
+  "gpu_parameter_max_abs": 7.275957614183426e-12,
+  "gpu_parameter_atol": 1e-08,
+  "source_repeat_max_abs": 9.313225746154785e-10,
+  "lambda0_STOP_epoch": 1,
+  "source_A_prediction_parity32": true,
+  "auxiliary_updates": [
+    {
+      "target": "sphericity",
+      "lambda_s": 0.05,
+      "risk_sets": [
+        32,
+        34
+      ],
+      "scaler_fit": 66,
+      "stem_and_shape_head_updated": true,
+      "bn_unchanged": true,
+      "reload_exact": true
+    },
+    {
+      "target": "allshape",
+      "lambda_s": 0.2,
+      "risk_sets": [
+        32,
+        34
+      ],
+      "scaler_fit": 66,
+      "stem_and_shape_head_updated": true,
+      "bn_unchanged": true,
+      "reload_exact": true
+    }
+  ],
+  "peak_gpu_MiB": 2043.57275390625,
+  "temporary_artifacts": "/tmp/pact15_ct_shape_aux_smoke_08tqw5o_",
+  "smoke_not_reused_for_full_runs": true
+}

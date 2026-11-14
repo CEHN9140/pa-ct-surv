@@ -4,6 +4,46 @@ Repository scope: code, launchers, tests, logs, aggregate metrics, diagnostic
 reports and KM plots are versioned. Checkpoints, Python caches, patient-level
 prediction tables and permutation/patient-risk NPZ files remain local.
 
+## CT-only auxiliary sphere/allShape supervision (A/B/C)
+
+```bash
+bash tests/15_pathology_query_ct_tokens/run_ct_shape_aux.sh
+```
+
+Two parallel jobs: B`sphericity` and C`allshape`. A is the verified nested CT
+baseline in `results/nested_risk_increment/ct`. Each new candidate/refit starts
+from public MedicalNet plus fresh original512->256->ReLU->Dropout.25->1 risk
+head. A new Linear512->K head predicts FIT-standardized Shape. Shared sphere
+head initialization and base/dropout RNG are matched. All CT parameters train;
+BN running statistics stay fixed. Same721 cases/251 events,ROI64,true batch32
+plus tail,headLR1e-4/backbone1e-5,wd5e-4,seed123,max30/STOP patience10.
+
+Lambda0/.05/.2:STOP selects epochs,HELD selects lambda,outer evaluates once.
+lambda0 reuses matched A outputs,never initializes an auxiliary model from A.
+Nonzero candidates require30 inner fits plus up to5 fresh outer fits per B/C.
+MSE averages across patients and targets;C per-target weight is lambda/3.
+Missing trained aux head for lambda0 is N/A,not a random-head recovery result.
+
+After training,selected encoders' rawShape and LINEAR-VD-residual sphere Probes
+are fitted inside outertrain. ResidualR²,oracleVD/reconstructedS error and DFS
+metrics are distinct. Each inner Probe uses its own encoder basis. This does
+not establish complete independence from size or guarantee DFS improvement.
+Output roots: `results/ct_shape_aux/{sphericity,allshape}` and corresponding
+`checkpoints/ct_shape_aux/`; logs:`logs/ct_shape_sphericity.log` and
+`logs/ct_shape_allshape.log`. No teacher/student or main model edits.
+
+Prelaunch verification:103 tests pass;real66-case GPU smoke uses32+34 updates,
+both stem/Shape heads update,BN fixed,checkpoint reload exact. Init/RNG and
+lambda0 predictions/STOP selection match A. GPU parameter error7.3e-12 is below
+the source's own9.3e-10 repeat noise (bound1e-8);CPU parity is exact. Peak GPU
+allocation~2044MiB. Smoke weights stay in/tmp and are never reused. See
+`ct_shape_aux_plan.md` and `ct_shape_aux_validation.json`.
+
+Both full jobs are now running in parallel (launch PIDs1450276/1450277,PPID1),
+each verified on CUDA with~4744MiB and advancing through inner fits. They are
+not completed results. A remains the matched historical control;B/C each select
+lambda and epochs inside outertrain before final validation.
+
 ## Stage1 Shape subset ablation (no auxiliary training)
 
 ```bash
