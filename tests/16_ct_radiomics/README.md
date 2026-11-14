@@ -232,3 +232,58 @@ bash tests/16_ct_radiomics/run_teacher_controls.sh
 结果与方法说明见`teacher_results/comparison/report.md`，该目录仅包含不含
 患者ID的汇总及重复扰动指标。验证包含60个训练折次、15个最终模型重载；
 本次分析没有新增神经网络训练，也未拟合风险级Late Fusion。
+
+## M3：PA＋Radiomics Risk条件增量
+
+`radiomics_risk_increment.py`沿用实验15的同一套严格Nested PA Risk，统一重算
+M0(PA)、M1(PA+原MedicalNet Risk)、M2(PA+固定Shape λ=0.2的CT Risk)，
+补充M3(PA+完整107项Radiomics拟合得到的标量Risk)。复算的M0/M1/M2预测
+必须与原`shape_risk_increment`一致，否则终止。该PA模型与原v7配置相同，
+严格内层选轮后的C-index为0.7390；历史外层选轮的0.7528不能直接代入。
+两折病理外层训练仅1轮，仍是当前基线稳定性的局限，不宣称已得到最强病理模型。
+
+保留721例、251事件和原五折。每个外层内再按既有三组HELD交叉拟合Radiomics：
+基模型只使用对应FIT+STOP患者，在其中另做3折选择Ridge，所有候选折内重新
+筛选、Z-score及Cox拟合。HELD和外层验证均不参与选参。最终外层CT模型仅在
+完整外层训练集内部选参、重拟合，再预测外层验证。共20次基模型拟合及360次
+候选CV拟合；不使用已有721例外层OOF表训练当前外层的融合头。
+
+基模型风险的标准化使用其拟合患者的预测统计量；融合`IncrementCox`的缩放器
+只拟合堆叠OOF风险。固定CT系数Ridge=1、病理系数不惩罚，两个斜率可正可负。
+不再调融合头参数、不训练神经网络、不做特征组搜索；主教师/学生保持原方案。
+此诊断复用风险预测，不涉及用单模态训练权重初始化教师或学生。
+
+运行纯CPU后台实验：
+
+```bash
+bash tests/16_ct_radiomics/run_risk_increment.sh
+tail -f tests/16_ct_radiomics/logs/radiomics_risk_increment.log
+```
+
+结果在`conditional_risk_increment/`：M0–M3各自逐折指标、KM、验证集Cox NLL，
+汇总均值±样本标准差、2000次配对患者Bootstrap及纠正/破坏排序数量。基模型、
+过滤/标准化、角色与患者级OOF/Train/Val预测、包含患者路径的配置均仅留本地。
+仅小体积汇总及图像可随Git提交，此处不会自动commit/push。
+风险级无增量不能证明高维CT表征无互补信息；相对PA Risk的增量也不等于
+相对全部病理图像信息的增量。Brier Score和Shape/First-order/Texture分组
+消融暂不开展，后续由完整Radiomics Risk结果决定。
+
+### M3已完成
+
+全部20个Radiomics基模型、360次候选CV拟合和20个条件Cox Head已完成并
+重载验证。M0/M1/M2与实验15原预测一致，输入147个源文件哈希保持不变。
+23项测试通过，核查记录见`risk_increment_validation.json`。
+
+| 模型 | Train C-index | Val C-index | 36月AUC | 60月AUC |
+|---|---:|---:|---:|---:|
+| M0：PA | 0.7637±0.0441 | 0.7390±0.0350 | 0.7744±0.0279 | 0.7571±0.0525 |
+| M1：PA+原CT Risk | 0.7780±0.0377 | 0.7433±0.0337 | 0.7776±0.0222 | 0.7633±0.0588 |
+| M2：PA+Shape辅助CT Risk | 0.7769±0.0378 | 0.7501±0.0360 | 0.7864±0.0242 | 0.7710±0.0578 |
+| M3：PA+Radiomics Risk | 0.7720±0.0331 | 0.7513±0.0420 | 0.7918±0.0290 | 0.7661±0.0570 |
+
+M3−M0为+0.0123，名义条件95%区间[+0.0015,+0.0234]，4/5折正向；
+M3−M2仅+0.0012，区间[−0.0067,+0.0089]，2/5折正向。相对当前固定
+病理Risk出现正向增量信号，但没有证据表明完整Radiomics Risk稳定超过
+Shape辅助CT。区间未覆盖重新训练、此前探索或多重比较，不作独立确认结论。
+完整表及逐折差值见`conditional_risk_increment/report.md`及
+`per_fold_comparison.csv`。本次未新增神经网络训练，也未自动commit/push。
