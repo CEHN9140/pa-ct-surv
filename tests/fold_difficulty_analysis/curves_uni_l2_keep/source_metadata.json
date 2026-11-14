@@ -1,0 +1,77 @@
+{
+  "UNI (raw)": {
+    "log": "logs/pact_v6/pathology/trident_features_uni_v1_cv5_roi64_abmil_cox_dropout0.25_epochs30_coxbs64_lr1e-4_wd5e-4.log",
+    "folds": {
+      "0": {
+        "n_epochs": 25,
+        "best_epoch_from_logged_cindex": 15
+      },
+      "1": {
+        "n_epochs": 15,
+        "best_epoch_from_logged_cindex": 5
+      },
+      "2": {
+        "n_epochs": 19,
+        "best_epoch_from_logged_cindex": 9
+      },
+      "3": {
+        "n_epochs": 22,
+        "best_epoch_from_logged_cindex": 12
+      },
+      "4": {
+        "n_epochs": 29,
+        "best_epoch_from_logged_cindex": 19
+      }
+    }
+  },
+  "UNI + L2": {
+    "log": "tests/02_uni_l2_pathology/logs/uni_l2_roi64_abmil_cox_dropout0.25_epochs30_coxbs64_lr1e-4_wd5e-4_diagnostics.log",
+    "folds": {
+      "0": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 30
+      },
+      "1": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 24
+      },
+      "2": {
+        "n_epochs": 29,
+        "best_epoch_from_logged_cindex": 19
+      },
+      "3": {
+        "n_epochs": 11,
+        "best_epoch_from_logged_cindex": 1
+      },
+      "4": {
+        "n_epochs": 12,
+        "best_epoch_from_logged_cindex": 2
+      }
+    }
+  },
+  "KEEP": {
+    "log": "tests/01_keep_pathology/logs/keep_roi64_abmil_cox_dropout0.25_epochs30_coxbs64_lr1e-4_wd5e-4.log",
+    "folds": {
+      "0": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 23
+      },
+      "1": {
+        "n_epochs": 15,
+        "best_epoch_from_logged_cindex": 5
+      },
+      "2": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 28
+      },
+      "3": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 26
+      },
+      "4": {
+        "n_epochs": 30,
+        "best_epoch_from_logged_cindex": 30
+      }
+    }
+  }
+}
