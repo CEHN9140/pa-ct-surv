@@ -197,3 +197,45 @@ def test_concat_control_keeps_both_modalities_and_common_initialization():
     risk, info = concat(ct, pa, return_attention=True)
     assert risk.shape == (2,) and info['attention'] is None
     torch.testing.assert_close(info['guided_ct'], info['ct_tokens'].mean(1))
+
+
+def test_pa_only_has_matched_head_and_no_ct_dependence_or_parameters():
+    from loss import cox_loss
+    torch.manual_seed(123)
+    cross = RadiomicsTeacher([[i] for i in range(7)]).eval()
+    torch.manual_seed(123)
+    model = RadiomicsTeacher(None, fusion_type='pa_only').eval()
+    torch.testing.assert_close(model.pa_branch.compression[0].weight, cross.pa_branch.compression[0].weight)
+    linears = [layer for layer in model.head.modules() if isinstance(layer, torch.nn.Linear)]
+    assert [(layer.in_features, layer.out_features) for layer in linears] == [(256, 256), (256, 128), (128, 1)]
+    assert all(name.startswith(('pa_branch.', 'head.')) for name, _ in model.named_parameters())
+    pa = torch.randn(4, 25, 1280)
+    first = model(None, pa)
+    changed = model(torch.full((4, 100), float('nan')), pa)
+    torch.testing.assert_close(first, changed, rtol=0, atol=0)
+    loss = cox_loss(first, torch.tensor([1., 2., 3., 4.]), torch.tensor([1, 0, 1, 1]))
+    loss.backward()
+    assert all(parameter.grad is not None and torch.isfinite(parameter.grad).all()
+               for parameter in model.parameters())
+    assert model.pa_branch.attention[0].weight.grad.abs().sum() > 0
+
+
+@pytest.mark.parametrize('fusion_type', ['pa_only', 'concat'])
+def test_control_training_and_checkpoint_roundtrip(tmp_path, fusion_type):
+    torch.set_num_threads(2)
+    samples = pd.DataFrame(dict(case_id=[f'p{i}' for i in range(14)],
+                                event=np.tile([1, 0], 7), time=np.arange(14.)+1))
+    dataset = PaRadiomicsDataset(samples, torch.randn(14, 25, 1280), radiomics_table(14))
+    args = SimpleNamespace(seed=123, dropout=.25, fusion_type=fusion_type, lr=1e-4,
+                           weight_decay=5e-4, cox_batch_size=4, num_epochs=2, patience=1, num_workers=0)
+    directory = tmp_path/fusion_type
+    model, prep, info = fit_teacher(dataset, np.arange(10), None, args, torch.device('cpu'),
+                                    directory, fixed_epochs=2)
+    assert (prep is None) == (fusion_type == 'pa_only')
+    assert (directory/'preprocessor.joblib').exists() == (fusion_type != 'pa_only')
+    loaded, same, stored = load_teacher(directory, torch.device('cpu'))
+    before = predict_teacher(model, dataset, prep, np.arange(10, 14), args, torch.device('cpu'))
+    after = predict_teacher(loaded, dataset, same, np.arange(10, 14), args, torch.device('cpu'))
+    np.testing.assert_array_equal(before.risk_score, after.risk_score)
+    assert info['training_risk_set_sizes'] == [4, 6]
+    assert stored['selected_epoch'] == 2

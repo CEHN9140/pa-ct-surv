@@ -89,7 +89,8 @@ class PaRadiomicsDataset(Dataset):
 
     def with_preprocessor(self, preprocessor):
         return PaRadiomicsDataset(self.samples, self.pathology, self.radiomics,
-                                  preprocessor.transform(self.radiomics))
+                                  np.empty((len(self), 0), dtype=np.float32) if preprocessor is None
+                                  else preprocessor.transform(self.radiomics))
 
     def __len__(self):
         return len(self.samples)
@@ -154,6 +155,8 @@ def load_teacher_inputs(cohort_csv, features_csv):
 
 
 def save_preprocessor(preprocessor, directory):
+    if preprocessor is None:  # PA-only has no fitted CT preprocessing to persist.
+        return
     directory = Path(directory)
     joblib.dump(preprocessor, directory / 'preprocessor.joblib')
     (directory / 'preprocessing.json').write_text(json.dumps(preprocessor.metadata(), indent=2))

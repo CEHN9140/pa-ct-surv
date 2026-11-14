@@ -56,7 +56,7 @@ and test15 remain unchanged. No automatic commit/push/full-training launch.
   reproducible. Results/checkpoints/logs under separate teacher_* directories;
   large files and patient-level tables remain excluded by Git allowlist.
 
-## Verification
+## Initial implementation verification (before Cross-Attention full training)
 
 - [x] Tests first: IDs/labels/shuffled-table alignment, FIT-only selection and
   scaling, empty-group handling, input L2, MHA Q/K/V/manual formula/axes/masks,
@@ -75,3 +75,37 @@ full Cox and KM generation succeeded. No complete five-fold training launched.
 Source extraction signature (parameters/version/CT and Mask size/mtime) and
 cohort/cache/patch feature hashes are checked. All new learned modules remain
 jointly trainable; no project-trained unimodal model is loaded.
+
+## Approved follow-up: Concat and matched PA-only
+
+Cross-Attention five-fold training is now complete (see its completed.json).
+User selected only Concat and PA-only controls; no risk-level fusion in this run.
+Keep existing completed Cross-Attention outputs immutable. Launch two new runs
+in parallel after tests and small real-data verification.
+
+- Concat: existing seven FIT-encoded CT families -> valid-token mean256;
+  concatenate PA256 ->512, same256/128 hidden risk head. No MHA/query pooling.
+- PA-only: same patch L2, ABMIL1280->512, pooling and512->256; risk head
+  256->256->128->1, same LayerNorm/ReLU/dropout. First input width changes from
+  512 to256 because CT is absent. Native new initialization, same seed123;
+  shared ABMIL starts identically, head weights need not be bit-identical across
+  different input widths. No CT parameters, CT feature filtering/scaling or CT
+  input dependence. Common paired cohort still audited for patient membership.
+- Same optimizer, loss coefficient1, Cox32+merged tail, saved outer folds and
+  local inner FIT/STOP/HELD roles, median STOP-selected epochs and fresh outer
+  refit. Each independently selects its own epochs without outer outcomes.
+- Reuse one training entry and checkpoint API; PA-only preprocessor=None and
+  no unused scaler file. Log/output names concat and pa_only remain separate.
+- Verify PA-only invariance to CT changes/None, correct head dimensions and
+  gradient flow, native shared ABMIL initialization, STOP/fixed training and
+  checkpoint roundtrip in both control modes; reload old cross checkpoint to
+  guard backward compatibility. Update smoke-vs-full completion records and
+  publish allowlist only for aggregate small results, never patient tables or
+  checkpoints. Do not automatically commit/push.
+
+Follow-up verification complete:19 tests pass (12 teacher/control,7 original
+Radiomics); real20 FIT/10 STOP GPU smoke passes for each control including
+selected-checkpoint reload and8+12 tail sizes. Five old Cross-Attention outer
+models still reproduce metrics. Read-only review found no important defects.
+Both full controls are now running in separate setsid/nohup sessions; each has
+real epoch output. See teacher_controls_validation.json for launch metadata.

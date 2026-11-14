@@ -16,12 +16,21 @@ from model.fusion import ConcatFusion
 class RadiomicsTeacher(nn.Module):
     def __init__(self, group_indices, dropout=.25, fusion_type='crossattention'):
         super().__init__()
+        if fusion_type == 'pa_only':
+            self.fusion_type = fusion_type
+            self.pa_branch = ABMIL(in_dim=1280, dropout=dropout)
+            self.pa_branch.risk_head = nn.Identity()
+            # Match the fused head's hidden layers; only its input lacks CT256.
+            self.head = nn.Sequential(nn.Linear(256, 256), nn.LayerNorm(256),
+                nn.ReLU(), nn.Dropout(dropout), nn.Linear(256, 128), nn.LayerNorm(128),
+                nn.ReLU(), nn.Dropout(dropout), nn.Linear(128, 1))
+            return
         flattened = [int(i) for group in group_indices for i in group]
         if (len(group_indices) != 7 or sorted(flattened) != list(range(len(flattened)))
                 or sum(bool(group) for group in group_indices) < 2):
             raise ValueError('Need seven disjoint groups covering CT features, at least two nonempty')
         if fusion_type not in ['crossattention', 'concat']:
-            raise ValueError('Use crossattention or the matched concat control')
+            raise ValueError('Use crossattention, concat or pa_only')
         self.group_indices = [list(group) for group in group_indices]
         self.input_dim = len(flattened)
         self.fusion_type = fusion_type
@@ -41,13 +50,23 @@ class RadiomicsTeacher(nn.Module):
             self.pa_projection = self.coattn = self.query_pool = None
 
     def forward(self, ct, pa, return_attention=False):
-        if ct.ndim != 2 or ct.shape[1] != self.input_dim or pa.shape != (ct.size(0), 25, 1280):
+        if pa.ndim != 3 or pa.shape[1:] != (25, 1280):
+            raise ValueError('Expected PA [B,25,1280]')
+        if self.fusion_type != 'pa_only' and (
+                ct.ndim != 2 or ct.shape != (pa.size(0), self.input_dim)):
             raise ValueError('Expected paired CT [B,D] and PA [B,25,1280]')
-        if not torch.isfinite(ct).all() or not torch.isfinite(pa).all():
+        if not torch.isfinite(pa).all() or (self.fusion_type != 'pa_only' and not torch.isfinite(ct).all()):
             raise ValueError('Nonfinite teacher inputs')
         patches = self.pa_branch.compression(F.normalize(pa, p=2, dim=-1, eps=1e-12))
         patient, pa_weights = self.pa_branch.pool_attention(patches, self.pa_branch.attention(patches))
         patient = self.pa_branch.post_compression(patient)
+        if self.fusion_type == 'pa_only':
+            risk = self.head(patient).squeeze(-1)
+            if not return_attention:
+                return risk
+            return risk, dict(attention=None, ct_tokens=None, guided_ct=None,
+                              pathology_feature=patient, pathology_weights=pa_weights,
+                              query_pool_weights=None)
         tokens = torch.stack([encoder(ct[:, group]) if group else ct.new_zeros(ct.size(0), 256)
                               for group, encoder in zip(self.group_indices, self.ct_encoders)], dim=1)
         if self.fusion_type == 'crossattention':

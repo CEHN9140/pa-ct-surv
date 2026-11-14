@@ -171,3 +171,45 @@ tests/16_ct_radiomics/.runtime/bin/python tests/16_ct_radiomics/teacher_train.py
 Attention是类别权重，不能解释为CT空间定位。推理仍依赖相同Radiomics提取及Mask。
 此处尚未实现学生的Radiomics教师特征适配或蒸馏，不能据此宣称CT-only学生已完成。
 教师大文件、患者级表和日志仍被Git忽略。新功能核查记录见`teacher_validation.json`。
+
+### Cross-Attention五折已经完成
+
+721例、251事件，15次内层及5次外层训练完成。五折均值±样本标准差：
+
+| Train C-index | Val C-index | 36月AUC | 60月AUC |
+|---:|---:|---:|---:|
+| 0.8017±0.0426 | 0.7476±0.0456 | 0.7862±0.0343 | 0.7677±0.0478 |
+
+Fold4 Train/Val为0.8751/0.6874，仍有明显泛化差距。该结果不能单独证明
+Cross-Attention优于Concat或病理-only。`teacher_validation.json`现在将原始
+冒烟记录与已完成的五折验证分开；不能用其中原始冒烟阶段的状态推断当前进度。
+小体积汇总metrics、完成标记、选轮记录及KM图可随Git提交；患者级表、模型、
+含患者路径的run_config、原始特征和日志继续忽略。此次未自动commit/push。
+
+### 匹配Concat与PA-only对照
+
+保持Cross-Attention结果不变，两个新对照均从新初始化开始，分别独立执行相同
+内层选轮及外层评价，不引用外层最佳分数选择轮数。运行参数与已完成教师一致。
+
+- `concat`：七类CT token的有效类别均值256维，与ABMIL病理256维拼接，
+  接相同512→256→128→1风险头；没有Cross-Attention和Query pooling。
+- `pa_only`：相同Patch L2、ABMIL投影和池化，风险头256→256→128→1，
+  相同LayerNorm/ReLU/Dropout。仅首层输入宽度由512改为256。病理编码器在
+  同一seed下初始化一致；不同宽度风险头采用原生初始化，不声称所有参数或
+  Dropout序列逐位相同。没有CT参数，预测可仅传病理；不拟合或保存CT过滤器、
+  标准化。使用同一配对队列做完整性核验，CT缓存不进入其风险计算。
+
+这组PA-only仅为比较基线，不能用它的训练权重初始化教师或学生。尚未加入
+Radiomics风险级融合，也未修改Shape监督或主流程。
+
+后台并行运行两组（脚本已含nohup，拒绝覆盖已有对照）：
+
+```bash
+bash tests/16_ct_radiomics/run_teacher_controls.sh
+```
+
+脚本使用setsid独立会话，防止执行工具会话结束时回收后台进程。
+
+日志分别为`logs/teacher_concat.log`、`logs/teacher_pa_only.log`；结果分别为
+`teacher_results/concat/`、`teacher_results/pa_only/`；权重在同名
+`teacher_checkpoints/`子目录。两组各包含15次内层及5次外层拟合。

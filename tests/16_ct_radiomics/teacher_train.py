@@ -66,10 +66,11 @@ def fit_teacher(dataset, fit, stop, args, device, directory, fixed_epochs=None):
         raise ValueError('Need at least one training epoch')
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
-    prep = RadiomicsPreprocessor().fit(dataset.radiomics.iloc[fit], dataset.samples.iloc[fit].case_id.tolist())
+    prep = (None if args.fusion_type == 'pa_only' else RadiomicsPreprocessor().fit(
+        dataset.radiomics.iloc[fit], dataset.samples.iloc[fit].case_id.tolist()))
     save_preprocessor(prep, directory)
     seed_everything(args.seed)
-    model = RadiomicsTeacher(prep.group_indices, args.dropout, args.fusion_type).to(device)
+    model = RadiomicsTeacher(None if prep is None else prep.group_indices, args.dropout, args.fusion_type).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     loader = build_dataloader(dataset.with_preprocessor(prep), fit, batch_size=1, shuffle=True,
                               num_workers=args.num_workers, pin_memory=device.type == 'cuda')
@@ -124,9 +125,9 @@ def fit_teacher(dataset, fit, stop, args, device, directory, fixed_epochs=None):
                     training_risk_set_sizes=sizes, fit_n=len(fit),
                     stop_n=0 if stop is None else len(stop), dropout=args.dropout,
                     fusion_type=args.fusion_type, seed=args.seed,
-                    preprocessing=prep.metadata(),
+                    preprocessing=None if prep is None else prep.metadata(),
                     initialization='All learned modules newly initialized; no downstream checkpoint',
-                    loss='Fused Cox only, Breslow, divided by events',
+                    loss=('PA-only Cox' if prep is None else 'Fused Cox only') + ', Breslow, divided by events',
                     epoch_policy='STOP best C-index' if stop is not None else 'Fixed before outer evaluation',
                     train_metric='Online train-mode epoch risks; final metrics separately reevaluated in eval mode')
     (directory/'checkpoint_metadata.json').write_text(json.dumps(metadata, indent=2))
@@ -136,11 +137,12 @@ def fit_teacher(dataset, fit, stop, args, device, directory, fixed_epochs=None):
 
 def load_teacher(directory, device):
     directory = Path(directory)
-    prep = joblib.load(directory/'preprocessor.joblib')
     metadata = json.loads((directory/'checkpoint_metadata.json').read_text())
-    if prep.metadata() != metadata['preprocessing']:
+    prep = None if metadata['preprocessing'] is None else joblib.load(directory/'preprocessor.joblib')
+    if prep is not None and prep.metadata() != metadata['preprocessing']:
         raise ValueError('Checkpoint and preprocessing layout differ')
-    model = RadiomicsTeacher(prep.group_indices, metadata['dropout'], metadata['fusion_type']).to(device)
+    model = RadiomicsTeacher(None if prep is None else prep.group_indices,
+                             metadata['dropout'], metadata['fusion_type']).to(device)
     model.load_state_dict(torch.load(directory/'best_model.pth', map_location=device, weights_only=True), strict=True)
     return model.eval(), prep, metadata
 
@@ -157,6 +159,9 @@ def run(args):
               np.flatnonzero(samples.split.to_numpy() == fold)) for fold in range(5)]
     roles = [teacher_partitions(samples, train, args.seed) for train, _ in folds]
     if args.audit_only:
+        if args.fusion_type == 'pa_only':
+            print('PA-only: paired cohort audited; no CT feature filtering/scaling used.', flush=True)
+            return
         for fold, ((train, _), partitions) in enumerate(zip(folds, roles)):
             for name, fit in [(f'inner_{i}', part[0]) for i, part in enumerate(partitions)] + [('outer', train)]:
                 prep = RadiomicsPreprocessor().fit(dataset.radiomics.iloc[fit], samples.iloc[fit].case_id.tolist())
@@ -169,13 +174,16 @@ def run(args):
     for path in (args.results_root, args.checkpoint_root):
         if Path(path).exists():
             raise FileExistsError(f'Refusing to overwrite teacher run: {path}')
+    pa_only = args.fusion_type == 'pa_only'
     save_run_config(args, 'pact', args.fusion_type, excluded=('audit_only',), extra=dict(
-        source_sha256=sources, ct_tokens='Seven Original Radiomics families; empty families masked',
+        source_sha256=sources, ct_tokens='Unused' if pa_only else 'Seven Original Radiomics families; empty families masked',
         pathology='EAGLE Top25 Virchow2-CLS1280; patch L2 before ABMIL',
-        attention='PA Q, Radiomics K/V, single head256, attention-weight dropout0',
-        supervision='Fused Cox only; all learned modules jointly trained from new initialization',
+        attention=('PA Q, Radiomics K/V, single head256, attention-weight dropout0'
+                   if args.fusion_type == 'crossattention' else 'No cross-attention'),
+        supervision=('PA-only Cox' if pa_only else 'Fused Cox only') + '; all learned modules newly initialized',
         validation='Saved outer5; inner3 FIT/STOP/HELD; median STOP-selected epochs; outer evaluated once',
-        scope='Experimental Mask-assisted Radiomics teacher; no student implementation'))
+        scope=('Matched pathology-only comparison baseline' if pa_only else
+               'Experimental Mask-assisted Radiomics teacher; no student implementation')))
     metrics, oof = [], []
     for fold, ((train, val), partitions) in enumerate(zip(folds, roles)):
         root = Path(args.checkpoint_root)/f'fold_{fold}'
@@ -201,7 +209,7 @@ def run(args):
         (destination/'selection.json').write_text(json.dumps(dict(inner_best_epochs=selected,
             outer_epochs=epochs, outer_validation_used_for_selection=False), indent=2))
         row = dict(fold=fold, **extra, train_loss=full_cox(train_pred), val_loss=full_cox(val_pred),
-                   selected_epoch=epochs, n_selected=len(prep.selected_))
+                   selected_epoch=epochs, n_selected=0 if prep is None else len(prep.selected_))
         metrics.append(row)
         oof.append(val_pred.assign(fold=fold))
         print(f'Final fold{fold}: Train C-index={row["train_cindex"]:.4f}, '
@@ -223,7 +231,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cohort_csv', default=str(experiment.parents[1]/'data/eagle/top25/all_label_roi64.csv'))
     parser.add_argument('--features_csv', default=str(experiment/'output/features.csv'))
-    parser.add_argument('--fusion_type', choices=['crossattention', 'concat'], default='crossattention')
+    parser.add_argument('--fusion_type', choices=['crossattention', 'concat', 'pa_only'], default='crossattention')
     parser.add_argument('--results_root', default=None)
     parser.add_argument('--checkpoint_root', default=None)
     parser.add_argument('--lr', type=float, default=1e-4)
