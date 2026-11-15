@@ -64,3 +64,31 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 \
 
 仅代码、说明和小体积聚合结果允许后续人工提交；日志、患者数据和模型不上传。
 本任务不执行commit或push。
+
+## 后续：WSI组织审查材料
+
+`review_wsi.py`使用相同的Stage6模型，在每折验证集按patch数量分位点固定选5例，
+共25例；每例展示ABMIL最高/最低Attention、随机和独立CHIEF四组各16个patch。
+高Attention表示池化权重较大，不等于该patch提高风险，更不等于肿瘤组织。
+
+实际H5已保存完整coords和CHIEF selected_indices；脚本强制逐行核对坐标、
+源UNI特征值、WSI身份、源文件及512 level0像素的视野。不能直接套用旧CLAM的
+256 level0像素设置。名义20x不替代真实MPP，后者另存于私有QC表。
+
+```bash
+setsid nohup env CUDA_VISIBLE_DEVICES=0 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=4 MPLCONFIGDIR=/tmp/pact_matplotlib \
+  /home/gly001/cqj/pa_ct_surv/tests/16_ct_radiomics/.runtime/bin/python -u \
+  /home/gly001/cqj/pa_ct_surv/tests/fold_difficulty_analysis/patch_redundancy/review_wsi.py \
+  > /home/gly001/cqj/pa_ct_surv/tests/fold_difficulty_analysis/patch_redundancy/wsi_review.log 2>&1 < /dev/null &
+```
+
+材料保存在`wsi_review/reviewer/`：先读`REVIEW_GUIDE.md`，每例`overview.jpg`便于浏览，
+`A_tiles.png`等为原尺寸256px的无损拼图，`A_locations.png`等显示对应原图位置。
+组名和组内展示顺序已按病例独立打乱，不显示策略、Attention、病例ID或结局。
+`review.csv`保留空白，供医生填写组织类型、伪影、质量和备注；不由脚本生成组织标签。
+透明的边界填充值显示为白色，不把黑色透明背景误当组织；边界覆盖率另存私有表。
+
+`wsi_review/private/selection_key.csv`为解盲键，审查前不要向审查者提供；
+同目录的`planned_cases.csv`、`case_qc.csv`及来源清单留本地。所有病例图像、
+人工审查表与解盲键均Git忽略，只允许小体积聚合完成记录公开。
+材料完成不表示组织学审查完成，也不授权后续256 patch Nested训练。
