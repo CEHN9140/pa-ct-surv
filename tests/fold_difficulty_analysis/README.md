@@ -14,6 +14,10 @@
 
 ## 第一阶段诊断图
 
+第六阶段为[ABMIL严格Nested CV](pathology_stage6/README.md)：
+原五折中各做内层三折固定更新步选轮，再从头训练Outer Train并评估一次Outer Val。
+仅与Stage5嵌套Ridge比较，记录逐折差值及条件配对区间，本轮不继续增加诊断实验。
+
 第五阶段为[Raw UNI MeanPool + Ridge-Cox](pathology_stage5/README.md)：
 只新增折内标准化、三折选择惩罚的低容量线性模型，不调用含MLP的MeanPool。
 沿用721例/251事件和原五折，输出与历史ABMIL的风险及患者对错误对照。
