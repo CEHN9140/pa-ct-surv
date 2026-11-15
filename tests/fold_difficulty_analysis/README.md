@@ -14,6 +14,10 @@
 
 ## 第一阶段诊断图
 
+第五阶段为[Raw UNI MeanPool + Ridge-Cox](pathology_stage5/README.md)：
+只新增折内标准化、三折选择惩罚的低容量线性模型，不调用含MLP的MeanPool。
+沿用721例/251事件和原五折，输出与历史ABMIL的风险及患者对错误对照。
+
 第四阶段为[后期过拟合与患者对错误定位](pathology_stage4/plan.md)：
 只读实验10五折Best/Last及全部50次样本量训练；统计纠正/破坏、时间组成、
 患者集中度和固定180步学习曲线，不重训。详见该阶段results/report.md。
