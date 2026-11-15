@@ -1,0 +1,32 @@
+{
+  "seed": 123,
+  "feature_dim": 1024,
+  "hidden_dim": 128,
+  "attention_dim": 32,
+  "post_hidden_dim": 64,
+  "feature_source": "raw_all_patch_UNI",
+  "l2_normalize": false,
+  "survival_loss": "cox",
+  "dropout": 0.25,
+  "cox_batch_size": 64,
+  "lr": 0.0001,
+  "weight_decay": 0.0005,
+  "protocol": "Stage6 matched nested CV",
+  "candidate_steps": [
+    9,
+    18,
+    36,
+    54,
+    72,
+    90,
+    117,
+    144,
+    180
+  ],
+  "device": "cuda:0",
+  "torch_version": "2.6.0+cu118",
+  "tf32": false,
+  "full_parameters": 722178,
+  "light_parameters": 143682,
+  "reduction_fraction": 0.8010435100487692
+}

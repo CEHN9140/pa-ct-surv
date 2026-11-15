@@ -1,5 +1,8 @@
 # 实验16：单模态CT Radiomics基线
 
+另有独立的 [Raw UNI轻量ABMIL容量对照](light_abmil/README.md)，
+按用户要求也放在实验16目录中，使用Stage6严格Nested CV；不依赖或改动下述CT实验。
+
 原`train.py`仅做独立比较基线，不读取病理特征、不使用神经网络或Checkpoint，不改动
 主流程、其他实验和原始数据。此实验不替代正式的病理–CT教师与CT学生方法。
 
