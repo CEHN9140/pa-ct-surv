@@ -1,0 +1,47 @@
+{
+  "csv": "/home/gly001/cqj/pa_ct_surv/data/trident/features_uni_v1/all_label_roi64.csv",
+  "csv_sha256": "5de84052c04bf35cb29c9188fc81ad5b72a3c0d5cb030ecb98115b8713115abb",
+  "features_sha256": "4794bd698fab89eef7866418fe0014803579260d43dc0e1f9f07868dc33a091b",
+  "patches": 2222768,
+  "seed": 123,
+  "torch_version": "2.6.0+cu118",
+  "device": "cuda:0",
+  "hardware": {
+    "cpu": "x86_64",
+    "cpu_count": 112,
+    "torch_cpu_threads": 4,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "cuda_version": "11.8",
+    "cudnn_version": 90100
+  },
+  "settings": {
+    "dropout": 0.25,
+    "lr": 0.0001,
+    "d_first_weight_lr": 0.004,
+    "adam_betas": [
+      0.9,
+      0.999
+    ],
+    "adam_eps": 1e-08,
+    "weight_decay": 0.0,
+    "cox_batch_size": 64,
+    "max_steps": 60,
+    "early_stopping": false,
+    "checkpoint_selection": false,
+    "tf32": false
+  },
+  "code_sha256": {
+    "tests/fold_difficulty_analysis/pathology_stage3/train_scale.py": "a0ac306736172f985c8cbccce4f5703b15e43426756d4cb8336d98906934b6ff",
+    "tests/fold_difficulty_analysis/pathology_stage3/scale_eval.py": "eeda8378ad78dcb7a2a7a8ee23e24e20c999db1dd44ac279342637edb19f8993",
+    "tests/fold_difficulty_analysis/pathology_stage3/scale_analysis.py": "7a3f4dece76b10479fcf9d02db19c980fd21a05b95a0fd62608b8aa8ac87ad67",
+    "tests/fold_difficulty_analysis/pathology_stage2/diagnose.py": "4e1ad2706ac68fbfd03d8582e273d3c0d6ead30d1cf5267c4c542ee7c6f7e37f",
+    "model/abmil_cox.py": "cd92d0837c4754006073c0e645124b00d46cc5d65b6841424bc8f468cf4a8800",
+    "loss/survival_loss.py": "7053d3be1b4041fed1e9e8c0809a0be7f274361390d88723642ca2f23f879e73",
+    "dataset.py": "98644db05151db758bd1816a55084dfa3afd88b8d0fdcae97716d795f9e1db2d"
+  },
+  "initial_parameter_sha256_by_fold": {
+    "2": "38d417aacfa20c0d183624ec35697f73f1295d91b2b720f84850f21baa74d629",
+    "4": "38d417aacfa20c0d183624ec35697f73f1295d91b2b720f84850f21baa74d629"
+  },
+  "source_sha256_unchanged": true
+}
