@@ -14,6 +14,10 @@
 
 ## 第一阶段诊断图
 
+第二阶段为[同初始化、同64名训练患者的单步诊断](pathology_stage2/plan.md)，
+包含完整UNI特征下的激活、联合Cox梯度及Adam首步。代码独立于正式训练；
+运行结束后生成该目录的report.md及三张汇总CSV，不保存病例清单或模型。
+
 - [三种输入的训练曲线](pathology_stage1/matched_input_training_curves.png)
 - [L2排序与风险尺度](pathology_stage1/l2_ranking_and_scale.png)
 - [固定配置的Seed对照](pathology_stage1/l2_fixed_config_seed_stability.png)
