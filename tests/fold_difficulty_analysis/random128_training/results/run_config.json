@@ -1,0 +1,31 @@
+{
+  "seed": 123,
+  "feature_dim": 1024,
+  "dropout": 0.25,
+  "cox_batch_size": 64,
+  "lr": 0.0001,
+  "weight_decay": 0.0005,
+  "train_k": 128,
+  "eval_random_k": 128,
+  "eval_random_repeats": 30,
+  "eval_random_seed": 123,
+  "inner_selection_policy": "Full WSI",
+  "primary_final_policy": "Full WSI",
+  "l2_normalize": false,
+  "feature_source": "raw_all_patch_UNI",
+  "parameters": 722178,
+  "candidate_steps": [
+    9,
+    18,
+    36,
+    54,
+    72,
+    90,
+    117,
+    144,
+    180
+  ],
+  "device": "cuda:0",
+  "torch_version": "2.6.0+cu118",
+  "tf32": false
+}
