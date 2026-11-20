@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "epochs": 2,
+  "train_patients": 8,
+  "val_patients": 8,
+  "parameters": 213378,
+  "branches": "both Full WSI",
+  "metrics": {
+    "train_loss": 1.4862804412841797,
+    "train_cindex": 0.7647058823529411,
+    "val_loss": 1.1800100803375244,
+    "val_cindex": 0.7857142857142857,
+    "cutoff_from_train_median": -0.1567651,
+    "n_val": 8,
+    "n_event_val": 4,
+    "n_high_risk": 7,
+    "n_low_risk": 1,
+    "gap": -0.021008403361344574,
+    "auc_36m": 0.8333333333333334,
+    "auc_60m": 0.75,
+    "logrank_p": 0.7380516817398206,
+    "logrank_stat": 0.11184645929847788,
+    "HR_high_vs_low": 0.6383608135301284,
+    "HR_95CI_lower": 0.045580517078126305,
+    "HR_95CI_upper": 8.940322628468062,
+    "cox_p": 0.7389040589713003
+  },
+  "checkpoint_reload_exact": true,
+  "tests": "3 passed",
+  "independent_review": "No blocking findings; actual parameter count corrected and computed dynamically",
+  "approved_local_input": "Full WSI",
+  "code_sha256": {
+    "tests/fold_difficulty_analysis/mean_global_local_epoch_training/model_local.py": "79b039b723bd9b176a45f3d06ea0a0bdd4b5d0999d7fe583e2d2a54bbf0948f1",
+    "tests/fold_difficulty_analysis/mean_global_local_epoch_training/train.py": "19153c904303ee420b0bcbf728b9b332a525b59f2a9fc83d9339f7e954b81505",
+    "tests/fold_difficulty_analysis/mean_global_local_epoch_training/test_model.py": "6067e558bb5906a58682a0a74a3755ca2d2f8b5b8c2d6d6484af35ae832afed7",
+    "tests/fold_difficulty_analysis/mean_global_local_epoch_training/run.sh": "e8267271896324baaa53127cff06d54a640961e2a98e2fc744ed4e1faf013168"
+  }
+}
