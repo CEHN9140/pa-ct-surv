@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "gpu": "cuda:0",
+  "reports": [
+    {
+      "model": "meanpool",
+      "parameters": 656385,
+      "full_patches": [
+        1994,
+        2457,
+        5178,
+        2418,
+        3487,
+        3198,
+        2501,
+        4503
+      ],
+      "loss": 1.5446140766143799,
+      "backward_finite": true,
+      "reload_exact": true
+    },
+    {
+      "model": "abmil",
+      "parameters": 722178,
+      "full_patches": [
+        1994,
+        2457,
+        5178,
+        2418,
+        3487,
+        3198,
+        2501,
+        4503
+      ],
+      "loss": 1.468614101409912,
+      "backward_finite": true,
+      "reload_exact": true
+    }
+  ],
+  "source_and_config_parity": true
+}
