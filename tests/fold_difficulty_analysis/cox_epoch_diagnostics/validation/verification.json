@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "gpu_passed": true,
+  "tests": "7 passed",
+  "real_gpu_smoke": {
+    "passed": true,
+    "device": "cuda:0",
+    "patients": 16,
+    "epochs": 2,
+    "workers": 2,
+    "train_is_full_wsi": true,
+    "weights_bitwise_equal": true,
+    "cpu_cuda_rng_exact": true,
+    "final_metrics_exact": true
+  },
+  "large_riskset_gpu": {
+    "passed": true,
+    "patients": 193,
+    "events": 88,
+    "cox_loss": 4.7632927894592285,
+    "peak_gpu_mib": 5877.84326171875
+  },
+  "review": "No blocking findings after explicit publication whitelist fix and positive-affine/tie clarification"
+}
