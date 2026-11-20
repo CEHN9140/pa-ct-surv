@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "device": "cuda",
+  "epochs": 2,
+  "train_patients": 16,
+  "val_patients": 8,
+  "num_workers": 2,
+  "train_sampling": 128,
+  "validation": "Full WSI",
+  "metrics": {
+    "train_loss": 2.256307363510132,
+    "train_cindex": 0.7,
+    "val_loss": 1.1712685823440552,
+    "val_cindex": 0.6428571428571429,
+    "cutoff_from_train_median": 0.15684927999999998,
+    "n_val": 8,
+    "n_event_val": 4,
+    "n_high_risk": 6,
+    "n_low_risk": 2,
+    "gap": 0.05714285714285705,
+    "auc_36m": 0.5833333333333334,
+    "auc_60m": 0.875,
+    "logrank_p": 0.3919451133406444,
+    "logrank_stat": 0.7328990228013021,
+    "HR_high_vs_low": NaN,
+    "HR_95CI_lower": NaN,
+    "HR_95CI_upper": NaN,
+    "cox_p": NaN
+  },
+  "cpu_tests": "2 passed",
+  "independent_review": "No blocking findings; training sampling, Full WSI validation, final evaluation and checkpoint behavior verified",
+  "pid": 2850971,
+  "code_sha256": {
+    "tests/fold_difficulty_analysis/cluster128_training/epoch_training/train_epoch.py": "0d0a3876306be32587b6b3b71fa6bccb77e9634fbc9af317beb8e9ca604b7472",
+    "tests/fold_difficulty_analysis/cluster128_training/epoch_training/test_epoch.py": "b72806ed5c44e394a644fb44de831cda281ce4bc276e53570e3a8a6e2e5ecacc",
+    "tests/fold_difficulty_analysis/cluster128_training/run.sh": "1372a01e76759d29c5726d7cced4ec298def1a6a1a8d9bfe3401505a7633d452"
+  }
+}
