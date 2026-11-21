@@ -1,0 +1,74 @@
+{
+  "protocol": "original_outer_cv5_inner_stratified_80_20",
+  "cohort": 721,
+  "events": 251,
+  "data_dir": "data/trident/features_uni_v1",
+  "feature_dim": 1024,
+  "patches": "Full WSI Raw UNI",
+  "model": "abmil",
+  "parameters": 722178,
+  "input_l2": false,
+  "dropout": 0.25,
+  "cox_batch_size": 32,
+  "tail": "merge_previous",
+  "optimizer": "Adam",
+  "lr": 0.0001,
+  "weight_decay": 0.0005,
+  "seed": 123,
+  "max_inner_epochs": 30,
+  "inner_patience": 10,
+  "selection": "inner_STOP_C-index",
+  "outer_evaluation_passes": 1,
+  "outer_early_stopping": false,
+  "inner_candidates": [
+    {
+      "key": "baseline",
+      "mode": "baseline",
+      "weight": 0.0
+    },
+    {
+      "key": "entropy_w0.01",
+      "mode": "entropy",
+      "weight": 0.01
+    },
+    {
+      "key": "entropy_w0.1",
+      "mode": "entropy",
+      "weight": 0.1
+    },
+    {
+      "key": "neff_q0.05_w1",
+      "mode": "neff",
+      "weight": 1.0,
+      "q_min": 0.05
+    },
+    {
+      "key": "neff_q0.05_w10",
+      "mode": "neff",
+      "weight": 10.0,
+      "q_min": 0.05
+    },
+    {
+      "key": "neff_q0.1_w1",
+      "mode": "neff",
+      "weight": 1.0,
+      "q_min": 0.1
+    },
+    {
+      "key": "neff_q0.1_w10",
+      "mode": "neff",
+      "weight": 10.0,
+      "q_min": 0.1
+    }
+  ],
+  "inner_fits": 35,
+  "outer_fits": 15,
+  "concurrent_outer_jobs": 3,
+  "cosine_weight_annealing": false,
+  "ema": false,
+  "entropy_formula": "max(0,1-H/log(N))",
+  "neff_formula": "max(0,q_min-1/(N*sum(a^2)))^2",
+  "singleton_penalty": 0,
+  "reference": "https://papers.miccai.org/miccai-2025/0056-Paper5183.html",
+  "scope": "exploratory survival adaptation, not exact AEM classification reproduction"
+}

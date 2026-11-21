@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "gpu_passed": true,
+  "tests": 6,
+  "pytest_log": "validation/pytest_final.log",
+  "gpu_smoke": {
+    "passed": true,
+    "real_patients": 16,
+    "all_from_original_outer0_train": true,
+    "epochs": 2,
+    "zero_weight_matches_main_exact": true,
+    "cpu_cuda_rng_equal": true,
+    "entropy_neff_finite": true,
+    "checkpoint_reload": true,
+    "gpu": "NVIDIA RTX 6000 Ada Generation"
+  },
+  "review": "Independent read-only review: formulas, selection, outer pass, report and publication scope checked; floating round-trip fixed; no outstanding blocking issues.",
+  "main_source_matches_previous_full_patch_control": true,
+  "versions": {
+    "torch": "2.6.0+cu118",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3"
+  }
+}
