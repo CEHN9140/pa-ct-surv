@@ -1,0 +1,29 @@
+"""No-fit best-reference follow-up, gated by tests and real-case smoke."""
+from pathlib import Path
+import json,os,subprocess,sys
+
+BASE=Path(__file__).resolve().parent;PARENT=BASE.parent;ROOT=PARENT.parents[2]
+sys.path.insert(0,str(PARENT))
+from run import sha256
+
+
+def main():
+    if not json.loads((BASE/'validation/verification.json').read_text())['passed']:raise ValueError('Verification failed')
+    manifest=json.loads((BASE/'validation/source_sha256.json').read_text())
+    state=dict(status='running',pid=os.getpid(),training=False)
+    def save():
+        p=BASE/'status.json';temporary=p.with_suffix('.tmp');temporary.write_text(json.dumps(state,indent=2));temporary.replace(p)
+    def check():
+        for filename,digest in manifest.items():
+            if sha256(filename)!=digest:raise ValueError(f'Source drift: {filename}')
+    try:
+        for script in ['analyze.py','inspect_patches.py','summarize.py']:
+            check();state['stage']=script;save();print('Starting',script,flush=True)
+            subprocess.run([sys.executable,'-u',str(BASE/script)],cwd=ROOT,check=True)
+        check();assert json.loads((BASE/'results/validation.json').read_text())['passed']
+        state.update(status='completed',stage='all',fold_patient_observations=3605)
+    except Exception as error:state.update(status='failed',error=f'{type(error).__name__}: {error}');raise
+    finally:save()
+
+
+if __name__=='__main__':main()
