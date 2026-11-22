@@ -1,0 +1,30 @@
+{
+  "cohort": 721,
+  "events": 251,
+  "model": "Raw UNI full-patch ABMIL",
+  "saved_cox_batch_size": 32,
+  "training": false,
+  "reference_epochs": [
+    "5",
+    "best"
+  ],
+  "actual_prediction_epochs": [
+    "5",
+    "10",
+    "best",
+    "last"
+  ],
+  "fixed_modules": "late projection, late post-pooling head",
+  "attribution": "exact attention-simplex straight-line Integrated Gradients for eval Linear-ReLU-Linear",
+  "high_abs_ig_per_patient": 8,
+  "low_abs_ig_per_patient": 8,
+  "case_selection": "two worst actual E5-to-late mean pair-credit changes plus one least-changed-pair fraction control per outer fold",
+  "quality_selection_reference": "Epoch5 attention",
+  "additional_best_reference_ig": true,
+  "blinded_review_cases": 15,
+  "review_complete": false,
+  "biological_diagnosis_automated": false,
+  "conditional_quality_bootstrap": 2000,
+  "conditional_survival_bootstrap": 1000,
+  "seed": 123
+}
