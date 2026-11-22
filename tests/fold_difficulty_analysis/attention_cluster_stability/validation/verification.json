@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "unit_and_regression_tests": 17,
+  "real_case_smoke": {
+    "passed": true,
+    "folds": 1,
+    "classes_per_fold": 4,
+    "fold_patient_observations": 64,
+    "train_only_fit_verified": true,
+    "class_accounting_recomputed": true,
+    "context_margin_identity": true,
+    "neural_training": false,
+    "histology_labels": false,
+    "crossfold_class_outcomes_pooled": false
+  },
+  "real_qc_and_maps": {
+    "passed": true,
+    "unique_patients": 64,
+    "random_native_patches": 512,
+    "oof_maps": 32,
+    "train_prototype_patches": 16,
+    "selection_independent_of_outcomes_and_ig": true,
+    "histology_labels": false
+  },
+  "nonzero_context_branch_tested": true,
+  "prior_sources_unchanged": true,
+  "review": "Independent read-only review found no blockers; rare-class prototype shortfalls and sparse QC coverage explicitly reported"
+}
