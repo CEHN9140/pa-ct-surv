@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "tests": 6,
+  "complete_fivefold_report_fixture": true,
+  "outer_access_guard": true,
+  "real_gpu_smoke": {
+    "passed": true,
+    "patients": 12,
+    "all_from_original_outer0_train": true,
+    "warmup_epochs": 3,
+    "branch_epochs": 2,
+    "frozen_parameters_exact": true,
+    "paired_start_rng_and_order": true,
+    "checkpoint_reload_exact": true
+  },
+  "independent_review": "Core freezing, gradient path, common fork and selection isolation checked; numpy state hash completeness fixed and tested"
+}
