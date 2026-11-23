@@ -1,12 +1,5 @@
-# Training in progress
+# Experiment completed
 
-Snapshot: 2026-11-23T23:02:56+08:00
+Both ABMIL and TITAN completed all 50 conditions. The full report, learning curve and 100-condition audit are available in [report.md](report.md) and [validation.json](validation.json).
 
-This is an implementation/progress commit, not a completed scientific result.
-
-- abmil: 11/50 conditions completed; running.
-- titan: 13/50 conditions completed; running.
-
-Full report, fold-averaged learning curves and final validation are generated only after both pipelines finish. Partial metric CSVs contain completed conditions only and must not be interpreted as the full learning curve.
-
-Patient lists, model weights, predictions, HDF5/NPZ features and detailed logs are excluded from Git.
+This replaces the earlier incomplete progress snapshot. Patient-level outputs, weights and detailed logs remain private.
