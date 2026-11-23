@@ -70,3 +70,7 @@ Raw和UNI/40没有逐轮患者风险，因此不能恢复其逐轮Risk SD和Spea
 ## 同Patch五种固定编码器的严格Ridge对照
 
 [UNI、KEEP、GPFM、Phikon-v2、Kaiko对照](encoder_ridge_comparison/README.md)：721例、同一TRIDENT坐标/视野、全部Patch MeanPool、统一扩展alpha网格的三折内层选参与五折外层评价。包含配对不确定性和EE/EC结果；不含患者特征、预测或模型。
+
+## 同CONCH Patch的MeanPool与冻结TITAN聚合
+
+[TITAN聚合对照](titan_aggregation_comparison/README.md)：复用完整721例20×512 CONCHv1.5特征，在相同输入和Ridge协议下只比较两种聚合表示。包含真实冻结推理验证、逐折结果、EE/EC及配对区间；权重、特征和患者数据不公开。

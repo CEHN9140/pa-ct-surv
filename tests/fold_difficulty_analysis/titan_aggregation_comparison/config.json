@@ -1,0 +1,30 @@
+{
+  "seed": 123,
+  "alphas": [
+    0.1,
+    1,
+    10,
+    100,
+    1000,
+    10000,
+    100000,
+    1000000,
+    10000000,
+    100000000
+  ],
+  "inner_folds": 3,
+  "feature_dim": 768,
+  "titan_dim": 768,
+  "source": "/home/gly001/cqj/data/lung_cancer/pathology/trident/20x_512px_0px_overlap",
+  "weights": "/home/gly001/cqj/pathology_foundation_model/titan",
+  "repo": "MahmoodLab/TITAN",
+  "revision": "dac6773d9961cfc75503440676ff157a2c6e8d2e",
+  "aggregation_arms": [
+    "conch_mean",
+    "titan"
+  ],
+  "titan_inference": "eval, frozen, inference_mode, CUDA float16 autocast, no_proj official API, no added L2",
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 20261123,
+  "cox_input_dtype": "float64 for both arms"
+}
