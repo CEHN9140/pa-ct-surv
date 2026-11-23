@@ -1,0 +1,16 @@
+{
+  "sample_sizes": [128, 256, 384],
+  "sampling_seeds": [123, 7, 42],
+  "training_seed": 123,
+  "inner_seed": 123,
+  "candidate_epochs": [1, 2, 3, 5, 8, 10, 15, 20, 30],
+  "cox_batch_size": 64,
+  "dropout": 0.25,
+  "lr": 0.0001,
+  "weight_decay": 0.0005,
+  "alphas": [0.1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000],
+  "ridge_workers": 4,
+  "budget_control": "same epoch candidate grid per training patient, not same optimizer-step count",
+  "repeated_factor": "sampling only; neural initialization stays seed123",
+  "full_point": "ABMIL refit with epoch protocol; frozen TITAN full-sample Ridge reused after exact cohort/protocol checks"
+}

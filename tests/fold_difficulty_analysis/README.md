@@ -78,3 +78,5 @@ Raw和UNI/40没有逐轮患者风险，因此不能恢复其逐轮Risk SD和Spea
 ## 同CONCH三种聚合流程
 
 [从头ABMIL与MeanPool、冻结TITAN对照](conch_abmil_comparison/README.md)：新增Stage6协议的20次严格Nested训练，复用前一轮两组Ridge参照；同时补齐EE/EC患者级配对Bootstrap。三组都使用同一CONCH Patch输入，结果仍为同队列探索，非纯Attention/预训练因果消融。
+
+- [CONCH样本量学习曲线](conch_sample_learning_curve/README.md)：相同患者子集与Epoch预算的ABMIL / 冻结TITAN Ridge对照；训练中状态见该实验结果目录。
