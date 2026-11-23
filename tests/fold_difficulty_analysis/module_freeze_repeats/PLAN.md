@@ -1,0 +1,5 @@
+# Prespecified Freeze-C training-seed replication
+
+Only baseline and freeze_c. Additional training seeds7/42/2026, each originalfivefold. Existingseed123 remains a historical reference, not rerun or merged as independent patients. Outer folds and inner80/20 FIT/STOP split seed123 stay unchanged. Raw UNI/Cox32/Dropout.25/Adam1e-4 WD5e-4/common3Epoch fork/20inner continuation/max0..20selection unchanged. All new scope warmups start newly, paired arms share checkpoint/RNG/order and fresh Adam. No teacher/student change.
+
+Reuse immutable module_freeze/train.py via an experiment-local context patch of training seed, output BASE and two arms. Do not edit the old experiment/main flow. Reuse its complete saved prediction/frozen-state/selection audit with two-arm adaptation of report labels/arm count, then independently aggregate seed-specific fivefold deltas. All patient files/weights remain local. At most3fold workers concurrently; no automatic push unless requested. Confirmed seeds are not independent patient replications, intervals remain conditional on fitted models and prior exploration.
