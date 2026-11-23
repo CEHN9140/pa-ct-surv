@@ -1,0 +1,33 @@
+{
+  "seed": 123,
+  "inner_folds": 3,
+  "alphas": [
+    0.1,
+    1,
+    10,
+    100,
+    1000,
+    10000,
+    100000,
+    1000000,
+    10000000,
+    100000000
+  ],
+  "encoders": {
+    "uni_v1": 1024,
+    "keep": 768,
+    "gpfm": 1024,
+    "phikon_v2": 1024,
+    "kaiko-vitb16": 768
+  },
+  "aggregation": "all-patch float64 MeanPool, no added patch L2",
+  "scaling": "StandardScaler fitted on each FIT only",
+  "ties": "breslow",
+  "n_iter": 1000,
+  "tol": 1e-09,
+  "alpha_tie_rule": "stronger penalty for C-index means tied within 1e-12",
+  "failure_rule": "any failed inner fold makes entire alpha ineligible; no eligible alpha or failed outer refit aborts",
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 20261123,
+  "workers": 5
+}
