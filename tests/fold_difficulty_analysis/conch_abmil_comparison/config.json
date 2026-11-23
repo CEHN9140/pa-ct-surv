@@ -1,0 +1,13 @@
+{
+  "seed": 123,
+  "candidate_steps": [9, 18, 36, 54, 72, 90, 117, 144, 180],
+  "cox_batch_size": 64,
+  "dropout": 0.25,
+  "lr": 0.0001,
+  "weight_decay": 0.0005,
+  "feature_dim": 768,
+  "patch_recipe": "same CONCHv1.5 20x512 bags as TITAN/MeanPool; all patches, no added L2",
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 20261123,
+  "groups": ["all", "EE", "EC", "EE_gap>24"]
+}

@@ -74,3 +74,7 @@ Raw和UNI/40没有逐轮患者风险，因此不能恢复其逐轮Risk SD和Spea
 ## 同CONCH Patch的MeanPool与冻结TITAN聚合
 
 [TITAN聚合对照](titan_aggregation_comparison/README.md)：复用完整721例20×512 CONCHv1.5特征，在相同输入和Ridge协议下只比较两种聚合表示。包含真实冻结推理验证、逐折结果、EE/EC及配对区间；权重、特征和患者数据不公开。
+
+## 同CONCH三种聚合流程
+
+[从头ABMIL与MeanPool、冻结TITAN对照](conch_abmil_comparison/README.md)：新增Stage6协议的20次严格Nested训练，复用前一轮两组Ridge参照；同时补齐EE/EC患者级配对Bootstrap。三组都使用同一CONCH Patch输入，结果仍为同队列探索，非纯Attention/预训练因果消融。
