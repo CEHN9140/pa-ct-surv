@@ -61,3 +61,8 @@ Raw和UNI/40没有逐轮患者风险，因此不能恢复其逐轮Risk SD和Spea
 清单不上传；原始含病例报告也只保留本地。模型权重和原始病理/CT文件不在
 发布范围内。诊断结果仍属同队列内部探索，不能直接证明特征信息上限、临床
 标签错误或某个机制的唯一因果解释。
+
+## 严格Nested Ridge/ABMIL错误对照与历史特征结果
+
+- [Stage5 Ridge与Stage6 ABMIL匹配EE错误分析](dfs_cohort_audit/ridge_overlap_results/report.md)：仅复用严格Nested预测，含九类风险credit转移、EE时间间隔及大margin共同错误；患者对清单不公开。
+- [KEEP、UNI、EAGLE历史结果索引](foundation_feature_results/README.md)：补齐40个既有run的每折metrics和来源哈希，明确区分历史Outer Val选轮与严格Nested协议；不是跨编码器公平排名。
