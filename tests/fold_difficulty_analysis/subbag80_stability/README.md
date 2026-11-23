@@ -1,0 +1,9 @@
+# Frozen80% subbag stability diagnostic
+
+Original721 patients/251 events, saved five folds, Raw UNI1024 full WSI, existing bs32 best/last models. No training or consistency loss is implemented. Thirty deterministic without-replacement80% subsets per patient, rounded up; identical subsets across phase/fold, original patch order preserved. Best checkpoints were selected using Outer Val, so this remains conditional exploratory diagnosis.
+
+Eval-mode projection and patch attention logits are patch independent. Compute each once per checkpoint/bag; subset logits are softmax-renormalized, then pooled through the same risk head. Unit/direct real-case checks compare against actual subset forwards. Dropout disabled throughout. Full risks must match saved checkpoint snapshots and patient/time/event order.
+
+Report Train and Val separately: raw patient risk SD over30subbags; SD/RMSE normalized by that checkpoint's full-Train risk SD; Spearman versus full risks; subbag C-index mean/SD and change; all-pair strict flips; survival-comparable strict flips and credit changes, with same-time event/censor and risk ties handled. Raw SD alone must not be used to infer that late models are more sensitive. Replicates share patches and patients: no30independent-clinical-validation claim, and no pooled independent-Train significance across folds.
+
+Outputs: results/report.md,fold_metrics.csv,summary.csv,late_minus_best.csv,validation.json. Patient matrices and per-patient SD remain under private/. Source hashes pinned before background launch. Sampling sensitivity cannot prove it caused overfitting. No lambda/retention tuning or dual-subbag training automatically follows Outer Val findings; matched future training requires inner selection and a freshly matched baseline. The historical0.7248 baseline applies only to its exact inner80/20 protocol, not all possible protocols.
